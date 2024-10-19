@@ -1,0 +1,15 @@
+{
+    "name": "John Doe",
+    "age": 30,
+    "is_student": false,
+    "grades": {
+      "math": 85,
+      "science": 92
+    },
+    "languages": ["English", "French", "Spanish"],
+    "address": {
+      "street": "1234 Elm St",
+      "city": "Somewhere",
+      "zip_code": "12345"
+    }
+}  
