@@ -2,4 +2,5 @@ bin/
 build/
 .vscode/
 /external
+.git/
 Makefile
