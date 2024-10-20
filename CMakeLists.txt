@@ -4,12 +4,26 @@ project(SuperMario)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 
-add_subdirectory(external/raylib-master)
-add_subdirectory(external/box2d-2.4.2)
+include(FetchContent)
 
-include_directories(include())
-include_directories(${CMAKE_SOURCE_DIR}/external/box2d-2.4.2/include)
-include_directories(${CMAKE_SOURCE_DIR}/external/raylib-master/src)
+message(STATUS "Fetching raylib...")
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) 
+set(BUILD_GAMES    OFF CACHE BOOL "" FORCE)
+FetchContent_Declare(
+    raylib
+    URL https://github.com/raysan5/raylib/archive/refs/tags/5.0.zip
+)
+
+set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "" FORCE)
+message(STATUS "Fetching Box2D...")
+FetchContent_Declare(
+    box2d
+    URL https://github.com/erincatto/box2d/archive/refs/tags/v2.4.2.zip
+)
+
+message(STATUS "Making raylib and Box2D available...")
+FetchContent_MakeAvailable(raylib box2d)
 
 if(WIN32)
     message(STATUS "Configuring for Windows...")
@@ -31,12 +45,14 @@ else()
 endif()
 
 file(GLOB SOURCES src/*.cpp)
-add_executable(${PROJECT_NAME} ${SOURCES}) 
-target_link_libraries(${PROJECT_NAME} raylib box2d ${EXTRA_LIBS})
-
+set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/include/")
 set(BIN_DIR "${CMAKE_SOURCE_DIR}/bin")
 set(RESOURCE_DIR "${CMAKE_SOURCE_DIR}/resources")
 set(OUTPUT_DIR "${BIN_DIR}")
+
+add_executable(${PROJECT_NAME} ${SOURCES}) 
+target_link_libraries(${PROJECT_NAME} raylib box2d ${EXTRA_LIBS})
+target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 
 set_target_properties(SuperMario PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR}
