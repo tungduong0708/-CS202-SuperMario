@@ -12,10 +12,15 @@ using json = nlohmann::json;
 
 class Game {
 public:
-    Game(const std::string& jsonFilePath);
+    // Singleton pattern
+    static Game* getInstance(const std::string& jsonFilePath) {
+        static Game instance(jsonFilePath);
+        return &instance;
+    }
     void Run();
 
 private:
+    Game(const std::string& jsonFilePath);
     void Init();
     void LoadData();
     void UpdatePhysics();
@@ -27,6 +32,7 @@ private:
     b2Body* groundBody;      // Ground body
     b2Body* dynamicBody;     // Dynamic body
     std::string filePath;    // Path to JSON file
+    
 };
 
 #endif // GAME_H

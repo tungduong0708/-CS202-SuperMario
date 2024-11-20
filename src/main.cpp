@@ -1,14 +1,9 @@
 // main.cpp
 #include "Game.h"
+#include "character.cpp"
 
 int main() {
-    std::string file_path = "resources/data.json";
-    
-    // Create an instance of Game
-    Game game(file_path);
-    
-    // Run the game
-    game.Run();
-
+    World world;
+    world.run();
     return 0;
 }
