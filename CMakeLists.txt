@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(SuperMario) 
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 
 include(FetchContent)
@@ -50,16 +50,16 @@ set(BIN_DIR "${CMAKE_SOURCE_DIR}/bin")
 set(RESOURCE_DIR "${CMAKE_SOURCE_DIR}/resources")
 set(OUTPUT_DIR "${BIN_DIR}")
 
+add_custom_target(PrepareResources ALL
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${OUTPUT_DIR}/resources"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${RESOURCE_DIR}" "${OUTPUT_DIR}/resources"
+)
+
 add_executable(${PROJECT_NAME} ${SOURCES}) 
 target_link_libraries(${PROJECT_NAME} raylib box2d ${EXTRA_LIBS})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE})
 
+add_dependencies(${PROJECT_NAME} PrepareResources)
 set_target_properties(SuperMario PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR}
-)
-
-add_custom_command(TARGET SuperMario POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${RESOURCE_DIR}"
-    "${OUTPUT_DIR}/resources"
 )
