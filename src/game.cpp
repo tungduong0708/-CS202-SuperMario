@@ -1,9 +1,11 @@
 // Game.cpp
 #include "Game.h"
+#include "include.h"
+#include "contactlistener.h"
+#include "moving_object.h"
+#include "image.h"
 
-Game::Game(const std::string& jsonFilePath) : filePath(jsonFilePath) {
-    // Load the JSON data
-    LoadData();
+Game::Game(){
     // Initialize the game window and Box2D world
     Init();
 }
@@ -20,12 +22,14 @@ void Game::LoadData() {
 
 void Game::Init() {
     // Initialize raylib
-    InitWindow(800, 600, "JSON Data Display with raylib");
+    InitWindow(800, 600, "Character Animation with Ground Detection");
     SetTargetFPS(60);
 
     // Initialize Box2D world
     b2Vec2 gravity(0.0f, -10.0f);
     world = new b2World(gravity);
+    ContactListener contactListener;
+    world->SetContactListener(&contactListener);
 
     // Create the ground body
     b2BodyDef groundBodyDef;
@@ -34,45 +38,33 @@ void Game::Init() {
 
     // Create a ground box shape
     b2PolygonShape groundBox;
-    groundBox.SetAsBox(50.0f, 10.0f);
+    groundBox.SetAsBox(10.0f, 5.0f);
     groundBody->CreateFixture(&groundBox, 0.0f);
 
-    // Create a dynamic body
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(0.0f, 4.0f);
-    dynamicBody = world->CreateBody(&bodyDef);
+    // Create a character body
+    Player player("Player", 0, 0, true, false, 0, 0, 0, 0, 0, 0, 0, 0, {}, "smallmario");
+    ImageSet idleImageSet = IDLE;
+    player.InitCharacter(*world, b2Vec2(0.0f, 0.0f), idleImageSet);
+    player.SetOnGround(true);
+    groundBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(&player);
 
-    // Create a box shape for the dynamic body
-    b2PolygonShape dynamicBox;
-    dynamicBox.SetAsBox(1.0f, 1.0f);
-
-    // Attach the box shape to the dynamic body
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.5f;
-    dynamicBody->CreateFixture(&fixtureDef);
+    movingObjects.push_back(&player);
 }
 
 void Game::UpdatePhysics() {
     world->Step(1.0f / 60.0f, 8, 3); // Step the physics world
+    movingObjects[0]->Update(); // Update the player    
+    movingObjects[0]->HandleInput(); // Handle player input
 }
 
 void Game::Draw() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    // Display data using raylib's drawing functions
-    DrawText(("Name: " + j["name"].get<std::string>()).c_str(), 50, 50, 20, BLACK);
-    DrawText(("Age: " + std::to_string(j["age"].get<int>())).c_str(), 50, 80, 20, BLACK);
-    DrawText(("Is Student: " + std::string(j["is_student"].get<bool>() ? "Yes" : "No")).c_str(), 50, 110, 20, BLACK);
-    DrawText(("Math Grade: " + std::to_string(j["grades"]["math"].get<int>())).c_str(), 50, 140, 20, BLACK);
-    DrawText(("Science Grade: " + std::to_string(j["grades"]["science"].get<int>())).c_str(), 50, 170, 20, BLACK);
+    // Draw ground body (as a rectangle)
+    DrawRectangle(0, 550, 750, 50, GRAY);
     
-    // Draw dynamic body (as a rectangle)
-    b2Vec2 position = dynamicBody->GetPosition();
-    DrawRectangle(static_cast<int>(position.x * 20), 600 - static_cast<int>(position.y * 20), 40, 40, BLUE);
+    movingObjects[0]->Render(); // Render the player
 
     EndDrawing();
 }

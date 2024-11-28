@@ -2,25 +2,22 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <iostream>
-#include <fstream>
-#include <nlohmann/json.hpp>
-#include <raylib.h>
-#include <filesystem>
-#include <box2d/box2d.h>
-using json = nlohmann::json;
+#include "include.h"
+#include "moving_object.h"
+#include "contactlistener.h"
+#include "image.h"
 
 class Game {
 public:
     // Singleton pattern
-    static Game* getInstance(const std::string& jsonFilePath) {
-        static Game instance(jsonFilePath);
+    static Game* getInstance() {
+        static Game instance;
         return &instance;
     }
     void Run();
 
 private:
-    Game(const std::string& jsonFilePath);
+    Game();
     void Init();
     void LoadData();
     void UpdatePhysics();
@@ -30,7 +27,7 @@ private:
     json j;                  // JSON data
     b2World* world;          // Box2D world
     b2Body* groundBody;      // Ground body
-    b2Body* dynamicBody;     // Dynamic body
+    vector<MovingObject*> movingObjects; // Vector of moving objects    
     std::string filePath;    // Path to JSON file
     
 };

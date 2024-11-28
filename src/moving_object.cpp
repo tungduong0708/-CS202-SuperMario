@@ -1,4 +1,5 @@
 #include "moving_object.h"
+#include "image.h"
 
 // [-----implementation of the moving object base class -------------------]
 
@@ -92,8 +93,13 @@ Character::Character(int): MovingObject() {
     strength = 0;
 }
 
-Character::Character(int h, int s, int l, int st, float h1, float w1, float s1, float a1, vector<Image> imgs): 
-    MovingObject(h1, w1, s1, a1, imgs), health(h), score(s), level(l), strength(st) {}
+Character::Character(int h, int s, int l, int st, float h1, float w1, float s1, float a1, vector<Image> imgs, string type): 
+    MovingObject(h1, w1, s1, a1, imgs), health(h), score(s), level(l), strength(st), type(type) {
+    isOnGround = false;
+    faceLeft = false;
+    currentImage = IDLE;
+    images = ImageHandler::setImages(type);
+}
 
 Character::Character(const Character &c): MovingObject(c) {
     health = c.health;
@@ -107,6 +113,7 @@ Character::~Character() {
     score = 0;
     level = 0;
     strength = 0;
+    UnloadTexture(texture);
 }
 
 void Character::setHealth(int h) {
@@ -141,6 +148,14 @@ int Character::getStrength() {
     return strength;
 }
 
+bool Character::onGround() {
+    return isOnGround;
+}
+
+bool Character::isLeft() {
+    return faceLeft;
+}
+
 void Character::move() {
     // move the character
 }
@@ -153,6 +168,83 @@ void Character::rotate() {
     // rotate the character
 }
 
+void Character::InitCharacter(b2World &world, b2Vec2 position, ImageSet imageSet) {
+    currentImage = imageSet;
+    texture = LoadTextureFromImage(images[imageSet]); // Load character texture
+    frameWidth = texture.width;
+    frameHeight = texture.height;
+    sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
+    destRect = {position.x , position.y, (float)frameWidth, (float)frameHeight}; // Pixel dimensions
+    origin = {frameWidth / 2.0f, frameHeight / 2.0f};
+
+    // Create character physics body
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_dynamicBody;
+    bodyDef.position = b2Vec2(position.x, position.y);
+    body = world.CreateBody(&bodyDef);
+
+    // Create character shape
+    b2PolygonShape shape;
+    shape.SetAsBox(frameWidth / 2, frameHeight / 2);
+
+    // Create character fixture
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &shape;
+    fixtureDef.density = 1.0f;
+    fixtureDef.friction = 0.3f;
+    body->CreateFixture(&fixtureDef);
+
+    // Set character pointer for contact listener
+
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+    body->SetFixedRotation(true); // Prevent character rotation
+}
+
+void Character::Update() {
+    // Sync destination rectangle with Box2D body
+    b2Vec2 position = body->GetPosition();
+    destRect.x = position.x * 50;
+    destRect.y = 600 - (position.y * 50);
+
+    // Update character animation frame
+    UnloadTexture(texture);
+    texture = LoadTextureFromImage(images[currentImage]);
+    if (faceLeft) {
+        sourceRect.x *= -1;
+    }
+    
+}
+
+void Character::Render() {
+    // Draw character
+    Renderer::Draw(texture, {destRect.x, destRect.y}, {destRect.width, destRect.height});
+}
+
+void Character::HandleInput() {
+    if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
+        body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 200.0f), true);
+        isOnGround = false; // Prevent jumping again until grounded
+        currentImage = JUMP;
+    }
+
+    // Handle character input
+    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
+        body->SetLinearVelocity(b2Vec2(5.0f, body->GetLinearVelocity().y));
+        currentImage = WALK;
+        faceLeft = false;
+    } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
+        body->SetLinearVelocity(b2Vec2(-5.0f, body->GetLinearVelocity().y));
+        currentImage = WALK;
+        faceLeft = true;
+    } else {
+        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
+    }
+}
+
+void Character::SetOnGround(bool isOnGround) {
+    this->isOnGround = isOnGround;
+}
+
 // [-----implementation of moving items, derived from moving object class -------------------]
 
 Player::Player() : Character() {
@@ -163,8 +255,8 @@ Player::Player() : Character() {
     sit = false;
 }
 
-Player::Player(string n, float c, float r, bool ia, bool s, int h, int s1, int l, int st, float h1, float w1, float s2, float a1, vector<Image> imgs): 
-    Character(h, s1, l, st, h1, w1, s2, a1, imgs), name(n), coins(c), range(r), alive(ia), sit(s) {}    
+Player::Player(string n, float c, float r, bool ia, bool s, int h, int s1, int l, int st, float h1, float w1, float s2, float a1, vector<Image> imgs, string type): 
+    Character(h, s1, l, st, h1, w1, s2, a1, imgs, type), name(n), coins(c), range(r), alive(ia), sit(s) {}    
 
 Player::Player(const Player &p): Character(p) {
     name = p.name;

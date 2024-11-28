@@ -1,22 +1,16 @@
+#pragma once
 #include "include.h"
 
-enum ImageSet {
-    IDLE,
-    DUCK,
-    WALK1,
-    WALK2,
-    JUMP,
-    FALL,
-    PIPE,
-    SHOOT,
-    DEAD,
-    VICTORY
-};
+#define IMAGE_WIDTH 16 
+// MOVING_OBJECT_H
+
+#ifndef MOVING_OBJECT_H
+#define MOVING_OBJECT_H
 
 // [-----declaration of the moving object base class -------------------]
 
 class MovingObject {
-private:
+protected:
     // moving object attributes
     float height, width; // size of the object
     float speed;  // max speed that the object can move
@@ -25,7 +19,7 @@ private:
     vector<Image> images;
 public:
     MovingObject(int);
-    MovingObject(float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images);
+    MovingObject(float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images = {});
     MovingObject(const MovingObject &mo);
     ~MovingObject();
     void setHeight(float h);
@@ -43,23 +37,47 @@ public:
     void move();
     void jump();
     void rotate();
+
+
+    virtual void Update() = 0;
+    virtual void Render() = 0;  
+    virtual void InitCharacter(b2World& world, b2Vec2 position, ImageSet imageSet) = 0;
+    virtual void HandleInput() = 0;
 };
 
 // [-----declaration of Character classes derived from moving object class -------------------]
 
 class Character : public MovingObject {
-private:
+protected:
     // character attributes
     int health;
     int score;
     int level;
     int strength;
+    string type;
+
+    // attributes for the character display
+    Texture2D texture;          // Character sprite sheet
+    b2Body* body;               // Box2D body
+    Rectangle sourceRect;       // Sprite frame to draw
+    Rectangle destRect;         // Scaled drawing rectangle
+    Vector2 origin;             // Sprite origin
+    int frameWidth, frameHeight;
+    int currentFrame;
+    float frameTime, frameSpeed;
+    bool isOnGround;          // Is character on the ground
+    ImageSet currentImage;
+    bool faceLeft;            // Is character facing left
     // other attributes are inherited from the moving object class ---
 public:
+
+    // Constructor and destructor
     Character(int);
-    Character(int h = 0, int s = 0, int l = 0, int st = 0, float h1 = 0, float w1 = 0, float s1 = 0, float a1 = 0, vector<Image> images);
+    Character(int h = 0, int s = 0, int l = 0, int st = 0, float h1 = 0, float w1 = 0, float s1 = 0, float a1 = 0, vector<Image> images = {}, string type = "");
     Character(const Character &c);
     ~Character();
+
+    // Setters and getters for the character attributes
     void setHealth(int h);
     void setScore(int s);
     void setLevel(int l);
@@ -68,9 +86,21 @@ public:
     int getScore();
     int getLevel();
     int getStrength();
+    bool onGround();
+    bool isLeft();
+
+    // Move, jump and rotate the character methods
     void move();
     void jump();
     void rotate();
+
+    // Update and render the character methods
+    // default image = IDLE
+    void InitCharacter(b2World& world, b2Vec2 position, ImageSet imageSet = IDLE);  
+    void Update();
+    void Render();
+    void HandleInput();
+    void SetOnGround(bool onGround); // Setter for ground state
 };
 
 class Player : public Character {
@@ -84,10 +114,13 @@ private:
     // speed = max speed that the player can move
     // other attributes are inherited from the character class ---
 public:
+    // Constructor and destructor
     Player();
-    Player(string n = "", float c = 0, float r = 0, bool ia = true, bool s = false, int h = 0, int s1 = 0, int l = 0, int st = 0, float h1 = 0, float w1 = 0, float s2 = 0, float a1 = 0, vector<Image> images);
+    Player(string n = "", float c = 0, float r = 0, bool ia = true, bool s = false, int h = 0, int s1 = 0, int l = 0, int st = 0, float h1 = 0, float w1 = 0, float s2 = 0, float a1 = 0, vector<Image> images = {}, string type = "");
     Player(const Player &p);
     ~Player();
+
+    // Setters and getters for the player attributes
     void setName(string n);
     void setCoins(float c);
     void setRange(float r);
@@ -98,6 +131,8 @@ public:
     float getRange();
     bool isAlive();
     bool isSitting();
+
+    // Move, jump, rotate and shoot the player methods
     void move();
     void jump();
     void rotate();
@@ -116,7 +151,7 @@ private:
     // other attributes are inherited from the character class ---
 public:
     Enemy();
-    Enemy(string t = "", float r = 0, bool ia = true, bool s = false, int h = 0, int s1 = 0, int l = 0, int st = 0, float h1 = 0, float w1 = 0, float s2 = 0, float a1 = 0, vector<Image> images);
+    Enemy(string t = "", float r = 0, bool ia = true, bool s = false, int h = 0, int s1 = 0, int l = 0, int st = 0, float h1 = 0, float w1 = 0, float s2 = 0, float a1 = 0, vector<Image> images = {});
     Enemy(const Enemy &e);
     ~Enemy();
     void setType(string t);
@@ -143,7 +178,7 @@ private:
     // other attributes are inherited from the moving object class ---
 public:
     FireFlower();
-    FireFlower(float d = 0, float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images);
+    FireFlower(float d = 0, float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images = {});
     FireFlower(const FireFlower &ff);
     ~FireFlower();
     void setDamage(float d);
@@ -161,7 +196,7 @@ private:
     // other attributes are inherited from the moving object class ---
 public:
     Bullet();
-    Bullet(float d = 0, float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images);
+    Bullet(float d = 0, float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images = {});
     Bullet(const Bullet &b);
     ~Bullet();
     void setDamage(float d);
@@ -179,7 +214,7 @@ private:
     // other attributes are inherited from the moving object class ---
 public:
     Coin();
-    Coin(float v = 0, float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images);
+    Coin(float v = 0, float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images = {});
     Coin(const Coin &c);
     ~Coin();
     void setValue(float v);
@@ -187,4 +222,7 @@ public:
     void jump();
     void rotate();
 };
+
+
+#endif
 

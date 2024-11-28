@@ -23,7 +23,7 @@ private:
 
         // create ground body
         b2BodyDef groundBodyDef;
-        groundBodyDef.position.Set(0.0f, -10.0f);
+        groundBodyDef.position.Set(50.0f, 10.0f);
         groundBody = world->CreateBody(&groundBodyDef);
 
         // create dynamic body

@@ -15,3 +15,18 @@
 #include <math.h>
 using json = nlohmann::json;
 using namespace std;
+
+
+#include "renderer.h"
+
+enum ImageSet {
+    IDLE,
+    DUCK,
+    WALK,
+    JUMP,
+    FALL,
+    PIPE,
+    HOLD,
+    DEAD,
+    VICTORY
+};

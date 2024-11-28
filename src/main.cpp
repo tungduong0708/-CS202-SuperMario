@@ -1,9 +1,9 @@
 // main.cpp
-#include "Game.h"
+#include "game.h"
 #include "character.cpp"
 
 int main() {
-    World world;
-    world.run();
+    Game* game = Game::getInstance();
+    game->Run();
     return 0;
 }
