@@ -5,6 +5,8 @@
 #include "moving_object.h"
 #include "image.h"
 
+Player player("Player", 0, 0, true, false, 0, 0, 0, 0, 0, 0, 0, 0, {}, "smallmario");
+ContactListener contactListener;
 Game::Game(){
     // Initialize the game window and Box2D world
     Init();
@@ -28,7 +30,7 @@ void Game::Init() {
     // Initialize Box2D world
     b2Vec2 gravity(0.0f, -10.0f);
     world = new b2World(gravity);
-    ContactListener contactListener;
+    
     world->SetContactListener(&contactListener);
 
     // Create the ground body
@@ -42,7 +44,6 @@ void Game::Init() {
     groundBody->CreateFixture(&groundBox, 0.0f);
 
     // Create a character body
-    Player player("Player", 0, 0, true, false, 0, 0, 0, 0, 0, 0, 0, 0, {}, "smallmario");
     ImageSet idleImageSet = IDLE;
     player.InitCharacter(*world, b2Vec2(0.0f, 0.0f), idleImageSet);
     player.SetOnGround(true);
