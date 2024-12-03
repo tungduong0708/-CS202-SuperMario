@@ -19,7 +19,10 @@ MovingObject::MovingObject(const MovingObject &mo) {
     width = mo.width;
     speed = mo.speed;
     angle = mo.angle;
-    images = mo.images;
+    images = {};
+    for (auto img : mo.images) {
+        images.push_back(ImageCopy(img));
+    }
 }
 
 MovingObject::~MovingObject() {}
@@ -98,6 +101,7 @@ Character::Character(int h, int s, int l, int st, float h1, float w1, float s1, 
     isOnGround = false;
     faceLeft = false;
     currentImage = IDLE;
+    previousImage = IDLE;
     images = ImageHandler::setImages(type);
 }
 
@@ -168,6 +172,10 @@ void Character::rotate() {
     // rotate the character
 }
 
+MovingObject* Character::copy() const {
+    return new Character(*this);
+}
+
 void Character::InitCharacter(b2World &world, b2Vec2 position, ImageSet imageSet) {
     currentImage = imageSet;
     texture = LoadTextureFromImage(images[imageSet]); // Load character texture
@@ -180,7 +188,7 @@ void Character::InitCharacter(b2World &world, b2Vec2 position, ImageSet imageSet
     // Create character physics body
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    bodyDef.position = b2Vec2(position.x, position.y);
+    bodyDef.position.Set(position.x, position.y);
     body = world.CreateBody(&bodyDef);
 
     // Create character shape
@@ -203,26 +211,30 @@ void Character::InitCharacter(b2World &world, b2Vec2 position, ImageSet imageSet
 void Character::Update() {
     // Sync destination rectangle with Box2D body
     b2Vec2 position = body->GetPosition();
-    destRect.x = position.x * 50;
-    destRect.y = 600 - (position.y * 50);
+    destRect.x = position.x;
+    destRect.y = position.y;
 
     // Update character animation frame
-    UnloadTexture(texture);
-    texture = LoadTextureFromImage(images[currentImage]);
-    if (faceLeft) {
-        sourceRect.x *= -1;
+    if (currentImage != previousImage) {
+        UnloadTexture(texture);
+        texture = LoadTextureFromImage(images[currentImage]);
+        previousImage = currentImage;
+        if (currentImage == WALK) {
+            currentImage = IDLE;
+        }
     }
-    
+
+    //cout << currentImage << " " << previousImage << endl;
 }
 
 void Character::Render() {
     // Draw character
-    Renderer::Draw(texture, {destRect.x, destRect.y}, {destRect.width, destRect.height});
+    Renderer::DrawPro(texture, sourceRect, {destRect.x, destRect.y}, {destRect.width, destRect.height}, faceLeft);
 }
 
 void Character::HandleInput() {
     if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
-        body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 200.0f), true);
+        body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 10.0f), true);
         isOnGround = false; // Prevent jumping again until grounded
         currentImage = JUMP;
     }
@@ -236,9 +248,14 @@ void Character::HandleInput() {
         body->SetLinearVelocity(b2Vec2(-5.0f, body->GetLinearVelocity().y));
         currentImage = WALK;
         faceLeft = true;
-    } else {
-        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
     }
+    else {
+        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
+        currentImage = IDLE;
+    }
+
+    //cout << isOnGround << endl;
+    //cout << 
 }
 
 void Character::SetOnGround(bool isOnGround) {
@@ -302,6 +319,10 @@ float Player::getCoins() {
     return coins;
 }
 
+float Player::getRange() {
+    return range;
+}
+
 bool Player::isAlive() {
     return alive;
 }
@@ -324,6 +345,10 @@ void Player::rotate() {
 
 void Player::shoot() {
     // shoot the player
+}
+
+MovingObject* Player::copy() const {
+    return new Player(*this);
 }
 
 Enemy::Enemy() : Character() {
@@ -392,6 +417,14 @@ void Enemy::jump() {
 
 void Enemy::rotate() {
     // rotate the enemy
+}
+
+void Enemy::shoot() {
+    // shoot the enemy
+}
+
+MovingObject* Enemy::copy() const {
+    return new Enemy(*this);
 }
 
 
@@ -468,6 +501,7 @@ void Bullet::jump() {
 void Bullet::rotate() {
     // rotate the bullet
 }
+
 
 Coin::Coin() : MovingObject() {
     value = 0;

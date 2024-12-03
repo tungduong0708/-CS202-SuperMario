@@ -8,8 +8,12 @@ void Renderer::Draw(Texture2D texture, const Vector2& position, const Vector2& s
     DrawTexture(texture, position.x, position.y, WHITE);
 }
 
-void Renderer::DrawPro(Texture2D texture, const Rectangle &srcRect, const Vector2& position, const Vector2 &size)
-{
+void Renderer::DrawPro(Texture2D texture, const Rectangle &srcRect, const Vector2& position, const Vector2 &size, bool isLeft) {
     Rectangle destRect = { position.x, position.y, size.x, size.y };
-    DrawTexturePro(texture, srcRect, destRect, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+    Rectangle sourceRect = srcRect;
+    if (!isLeft) {
+        sourceRect.width *= -1; // Flip horizontally
+        sourceRect.x += srcRect.width; // Adjust the x position to flip correctly
+    }
+    DrawTexturePro(texture, sourceRect, destRect, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }

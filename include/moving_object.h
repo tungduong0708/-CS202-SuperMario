@@ -37,8 +37,9 @@ public:
     void move();
     void jump();
     void rotate();
-
-
+    
+    // virtual functions
+    virtual MovingObject* copy() const = 0;  // Prototype design pattern
     virtual void Update() = 0;
     virtual void Render() = 0;  
     virtual void InitCharacter(b2World& world, b2Vec2 position, ImageSet imageSet) = 0;
@@ -67,6 +68,7 @@ protected:
     float frameTime, frameSpeed;
     bool isOnGround;          // Is character on the ground
     ImageSet currentImage;
+    ImageSet previousImage;
     bool faceLeft;            // Is character facing left
     // other attributes are inherited from the moving object class ---
 public:
@@ -94,6 +96,7 @@ public:
     void jump();
     void rotate();
 
+    MovingObject* copy() const;  // Prototype design pattern
     // Update and render the character methods
     // default image = IDLE
     void InitCharacter(b2World& world, b2Vec2 position, ImageSet imageSet = IDLE);  
@@ -137,6 +140,7 @@ public:
     void jump();
     void rotate();
     void shoot();
+    MovingObject* copy() const;
 };
 
 
@@ -166,6 +170,8 @@ public:
     void jump();
     void rotate();
     void shoot();
+
+    MovingObject* copy() const;
 };
 
 // [-----declaration of moving items, derived from moving object class -------------------]
@@ -186,6 +192,8 @@ public:
     void move();
     void jump();
     void rotate();
+
+    //MovingObject* copy() const;
 };
 
 class Bullet : public MovingObject {
@@ -204,6 +212,8 @@ public:
     void move();
     void jump();
     void rotate();
+
+    //MovingObject* copy() const;
 };
 
 class Coin : public MovingObject {
@@ -221,6 +231,8 @@ public:
     float getValue();
     void jump();
     void rotate();
+
+    //MovingObject* copy() const;
 };
 
 

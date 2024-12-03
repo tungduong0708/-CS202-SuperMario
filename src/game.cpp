@@ -28,34 +28,34 @@ void Game::Init() {
     SetTargetFPS(60);
 
     // Initialize Box2D world
-    b2Vec2 gravity(0.0f, -10.0f);
+    b2Vec2 gravity(0.0f, 49.8f);
     world = new b2World(gravity);
     
     world->SetContactListener(&contactListener);
 
     // Create the ground body
     b2BodyDef groundBodyDef;
-    groundBodyDef.position.Set(0.0f, -10.0f);
+    groundBodyDef.position.Set(0.0f, 550.0f);
     groundBody = world->CreateBody(&groundBodyDef);
 
     // Create a ground box shape
     b2PolygonShape groundBox;
-    groundBox.SetAsBox(10.0f, 5.0f);
+    groundBox.SetAsBox(375.0f, 25.0f);
     groundBody->CreateFixture(&groundBox, 0.0f);
 
     // Create a character body
     ImageSet idleImageSet = IDLE;
-    player.InitCharacter(*world, b2Vec2(0.0f, 0.0f), idleImageSet);
-    player.SetOnGround(true);
+    movingObjects.push_back(player.copy());
+
+    movingObjects[0]->InitCharacter(*world, b2Vec2(100.0f, 500.0f), idleImageSet);
     groundBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(&player);
 
-    movingObjects.push_back(&player);
 }
 
 void Game::UpdatePhysics() {
     world->Step(1.0f / 60.0f, 8, 3); // Step the physics world
-    movingObjects[0]->Update(); // Update the player    
     movingObjects[0]->HandleInput(); // Handle player input
+    movingObjects[0]->Update(); // Update the player    
 }
 
 void Game::Draw() {
