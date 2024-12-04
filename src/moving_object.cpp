@@ -1,7 +1,7 @@
 #include "moving_object.h"
-#include "image.h"
+#include "imagehandler.h"
+#include "physics.h"
 
-// [-----implementation of the moving object base class -------------------]
 
 MovingObject::MovingObject(int) {
     height = 0;
@@ -23,6 +23,7 @@ MovingObject::MovingObject(const MovingObject &mo) {
     for (auto img : mo.images) {
         images.push_back(ImageCopy(img));
     }
+    body = mo.body;
 }
 
 MovingObject::~MovingObject() {}
@@ -75,6 +76,16 @@ vector<Image> MovingObject::getImages() {
     return images;
 }
 
+b2Vec2 MovingObject::getPosition()
+{
+    return body->GetPosition();
+}
+
+b2Vec2 MovingObject::getVelocity()
+{
+    return body->GetLinearVelocity();
+}
+
 void MovingObject::move() {
     // move the object
 }
@@ -87,7 +98,6 @@ void MovingObject::rotate() {
     // rotate the object
 }
 
-// [-----implementation of Character classes derived from moving object class -------------------]
 
 Character::Character(int): MovingObject() {
     health = 0;
@@ -105,11 +115,28 @@ Character::Character(int h, int s, int l, int st, float h1, float w1, float s1, 
     images = ImageHandler::setImages(type);
 }
 
-Character::Character(const Character &c): MovingObject(c) {
-    health = c.health;
-    score = c.score;
-    level = c.level;
-    strength = c.strength;
+Character::Character(const Character &c)
+    : MovingObject(c),                
+      health(c.health),
+      score(c.score),
+      level(c.level),
+      strength(c.strength),
+      type(c.type),
+      texture(c.texture),             
+
+      sourceRect(c.sourceRect),
+      destRect(c.destRect),
+      origin(c.origin),
+      frameWidth(c.frameWidth),
+      frameHeight(c.frameHeight),
+      currentFrame(c.currentFrame),
+      frameTime(c.frameTime),
+      frameSpeed(c.frameSpeed),
+      isOnGround(c.isOnGround),
+      currentImage(c.currentImage),
+      previousImage(c.previousImage),
+      faceLeft(c.faceLeft)
+{
 }
 
 Character::~Character() {
@@ -176,24 +203,25 @@ MovingObject* Character::copy() const {
     return new Character(*this);
 }
 
-void Character::InitCharacter(b2World &world, b2Vec2 position, ImageSet imageSet) {
+void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     currentImage = imageSet;
     texture = LoadTextureFromImage(images[imageSet]); // Load character texture
     frameWidth = texture.width;
     frameHeight = texture.height;
     sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
-    destRect = {position.x , position.y, (float)frameWidth, (float)frameHeight}; // Pixel dimensions
+    // destRect = {position.x , position.y, (float)frameWidth, (float)frameHeight}; 
+    destRect = {position.x, position.y, 1.0f, 1.0f};
     origin = {frameWidth / 2.0f, frameHeight / 2.0f};
 
     // Create character physics body
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(position.x, position.y);
-    body = world.CreateBody(&bodyDef);
+    body = Physics::world.CreateBody(&bodyDef);
 
     // Create character shape
     b2PolygonShape shape;
-    shape.SetAsBox(frameWidth / 2, frameHeight / 2);
+    shape.SetAsBox(0.5f, 0.5f);
 
     // Create character fixture
     b2FixtureDef fixtureDef;
@@ -203,18 +231,15 @@ void Character::InitCharacter(b2World &world, b2Vec2 position, ImageSet imageSet
     body->CreateFixture(&fixtureDef);
 
     // Set character pointer for contact listener
-
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
     body->SetFixedRotation(true); // Prevent character rotation
 }
 
-void Character::Update() {
-    // Sync destination rectangle with Box2D body
+void Character::Update(float deltaTime) {
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
     destRect.y = position.y;
 
-    // Update character animation frame
     if (currentImage != previousImage) {
         UnloadTexture(texture);
         texture = LoadTextureFromImage(images[currentImage]);
@@ -223,29 +248,31 @@ void Character::Update() {
             currentImage = IDLE;
         }
     }
-
     //cout << currentImage << " " << previousImage << endl;
 }
 
 void Character::Render() {
-    // Draw character
+    std::cout << "Rendering character" << std::endl;
     Renderer::DrawPro(texture, sourceRect, {destRect.x, destRect.y}, {destRect.width, destRect.height}, faceLeft);
 }
 
 void Character::HandleInput() {
     if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
-        body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 10.0f), true);
-        isOnGround = false; // Prevent jumping again until grounded
+        cout << "Call this one" << endl;
+        cout << isOnGround << endl;
+        cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
+        body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 40.0f), true);
+        //isOnGround = false; // Prevent jumping again until grounded
         currentImage = JUMP;
     }
 
     // Handle character input
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        body->SetLinearVelocity(b2Vec2(5.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(15.0f, body->GetLinearVelocity().y));
         currentImage = WALK;
         faceLeft = false;
     } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-        body->SetLinearVelocity(b2Vec2(-5.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(-15.0f, body->GetLinearVelocity().y));
         currentImage = WALK;
         faceLeft = true;
     }
@@ -253,16 +280,12 @@ void Character::HandleInput() {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         currentImage = IDLE;
     }
-
-    //cout << isOnGround << endl;
-    //cout << 
 }
 
 void Character::SetOnGround(bool isOnGround) {
     this->isOnGround = isOnGround;
 }
 
-// [-----implementation of moving items, derived from moving object class -------------------]
 
 Player::Player() : Character() {
     name = "";
@@ -275,12 +298,8 @@ Player::Player() : Character() {
 Player::Player(string n, float c, float r, bool ia, bool s, int h, int s1, int l, int st, float h1, float w1, float s2, float a1, vector<Image> imgs, string type): 
     Character(h, s1, l, st, h1, w1, s2, a1, imgs, type), name(n), coins(c), range(r), alive(ia), sit(s) {}    
 
-Player::Player(const Player &p): Character(p) {
-    name = p.name;
-    coins = p.coins;
-    range = p.range;
-    alive = p.alive;
-    sit = p.sit;
+Player::Player(const Player &p): Character(p), name(p.name), coins(p.coins), range(p.range), alive(p.alive), sit(p.sit) 
+{
 }
 
 Player::~Player() {

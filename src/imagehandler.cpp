@@ -1,4 +1,4 @@
-#include "image.h"
+#include "imagehandler.h"
 
 vector<Image> ImageHandler::images;
 
@@ -37,7 +37,6 @@ void ImageHandler::addImage(const Image &img) {
 
 vector<Image>& ImageHandler::setImages(string path) {
     images.clear();
-    // read type from the path
     if (path == "smallmario") {
         images.push_back(LoadImage("resources/images/smallmario/idle.png"));
         images.push_back(LoadImage("resources/images/smallmario/duck.png"));

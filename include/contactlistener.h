@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CONTACTLISTENER_H
+#define CONTACTLISTENER_H
+
 #include "include.h"
 #include "moving_object.h"
 #include <iostream>
@@ -29,12 +31,14 @@ public:
 
         if (userDataA) {
             Character* character = static_cast<Character*>(userDataA);
-            character->SetOnGround(true); 
+            character->SetOnGround(false); 
         }
 
         if (userDataB) {
             Character* character = static_cast<Character*>(userDataB);
-            character->SetOnGround(true);
+            character->SetOnGround(false);
         }
     }
 };
+
+#endif // CONTACTLISTENER_H

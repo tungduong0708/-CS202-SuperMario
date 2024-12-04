@@ -1,4 +1,6 @@
-#pragma once
+#ifndef IMAGEHANDLER_H
+#define IMAGEHANDLER_H
+
 #include "include.h"
 
 class ImageHandler {
@@ -14,3 +16,5 @@ public:
     static void addImage(const Image &img);
     static vector<Image>& setImages(string path = "smallmario");
 };
+
+#endif // IMAGEHANDLER_H
