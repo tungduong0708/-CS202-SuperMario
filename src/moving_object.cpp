@@ -221,7 +221,8 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
 
     // Create character shape
     b2PolygonShape shape;
-    shape.SetAsBox(frameWidth / 2, frameHeight / 2);
+    // shape.SetAsBox(frameWidth / 2, frameHeight / 2);
+    shape.SetAsBox(0.5f, 0.5f);
 
     // Create character fixture
     b2FixtureDef fixtureDef;
@@ -252,6 +253,7 @@ void Character::Update(float deltaTime) {
 }
 
 void Character::Render() {
+    std::cout << "Rendering character" << std::endl;
     Renderer::DrawPro(texture, sourceRect, {destRect.x, destRect.y}, {destRect.width, destRect.height}, faceLeft);
 }
 

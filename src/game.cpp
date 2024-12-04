@@ -38,7 +38,7 @@ void Game::Init() {
     ImageSet idleImageSet = IDLE;
     movingObjects.push_back(player.copy());
 
-    movingObjects[0]->InitCharacter(b2Vec2(10.0f, 50.0f), idleImageSet);
+    movingObjects[0]->InitCharacter(b2Vec2(10.0f, 10.0f), idleImageSet);
     // groundBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(&player);
 
     TilesetHandler::Init();
@@ -67,8 +67,8 @@ void Game::Draw() {
     BeginMode2D(camera.GetCamera());
 
     // DrawRectangle(0, 550, 750, 50, GRAY);
-    movingObjects[0]->Render(); 
     tilemap.Draw();
+    movingObjects[0]->Render(); 
     Physics::world.DebugDraw(); 
 
     EndMode2D();
