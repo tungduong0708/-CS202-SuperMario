@@ -1,9 +1,8 @@
-// main.cpp
 #include "game.h"
-#include "character.cpp"
 
 int main() {
     Game* game = Game::getInstance();
     game->Run();
+    delete game;
     return 0;
 }

@@ -1,85 +1,91 @@
-// Game.cpp
-#include "Game.h"
+#include "game.h"
 #include "include.h"
+#include "physics.h"
 #include "contactlistener.h"
 #include "moving_object.h"
-#include "image.h"
+#include "imagehandler.h"
+#include "tileset_handler.h"
+#include "tilemap.h"
+#include "camera.h"
+#include <raylib.h>
+#include <box2d/box2d.h>
+
+const int screenWidth = 800;
+const int screenHeight = 600;
 
 Player player("Player", 0, 0, true, false, 0, 0, 0, 0, 0, 0, 0, 0, {}, "smallmario");
-ContactListener contactListener;
+MyCamera camera;
+Tilemap tilemap;
+
 Game::Game(){
-    // Initialize the game window and Box2D world
     Init();
 }
 
-void Game::LoadData() {
-    std::ifstream input_file(filePath);
-    if (!input_file.is_open()) {
-        std::cerr << "Could not open the file!" << std::endl;
-        exit(1); // Exit if the file cannot be opened
-    }
-
-    input_file >> j; // Parse the JSON
-}
-
 void Game::Init() {
-    // Initialize raylib
-    InitWindow(800, 600, "Character Animation with Ground Detection");
+    InitWindow(screenWidth, screenHeight, "Super Mario Bros");
     SetTargetFPS(60);
 
-    // Initialize Box2D world
-    b2Vec2 gravity(0.0f, 49.8f);
-    world = new b2World(gravity);
-    
-    world->SetContactListener(&contactListener);
+    Physics::Init(); 
 
-    // Create the ground body
     b2BodyDef groundBodyDef;
     groundBodyDef.position.Set(0.0f, 550.0f);
-    groundBody = world->CreateBody(&groundBodyDef);
+    groundBody = Physics::world.CreateBody(&groundBodyDef);
 
-    // Create a ground box shape
-    b2PolygonShape groundBox;
-    groundBox.SetAsBox(375.0f, 25.0f);
-    groundBody->CreateFixture(&groundBox, 0.0f);
+    // b2PolygonShape groundBox;
+    // groundBox.SetAsBox(375.0f, 25.0f);
+    // groundBody->CreateFixture(&groundBox, 0.0f);
 
-    // Create a character body
     ImageSet idleImageSet = IDLE;
     movingObjects.push_back(player.copy());
 
-    movingObjects[0]->InitCharacter(*world, b2Vec2(100.0f, 500.0f), idleImageSet);
-    groundBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(&player);
+    movingObjects[0]->InitCharacter(b2Vec2(10.0f, 50.0f), idleImageSet);
+    // groundBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(&player);
 
+    TilesetHandler::Init();
+    tilemap.LoadMapFromJson("resources/tilemaps/map-1-1.json");
+    camera = MyCamera(50.0f, Vector2{ (float)tilemap.GetWidth(), (float)tilemap.GetHeight() }, screenWidth, screenHeight);
 }
 
-void Game::UpdatePhysics() {
-    world->Step(1.0f / 60.0f, 8, 3); // Step the physics world
-    movingObjects[0]->HandleInput(); // Handle player input
-    movingObjects[0]->Update(); // Update the player    
+void Game::Update(float deltaTime) {
+    if (GetMouseWheelMove() > 0) camera.SetZoom(camera.GetZoom() * 1.1f);
+    if (GetMouseWheelMove() < 0) camera.SetZoom(camera.GetZoom() / 1.1f);
+
+    b2Vec2 pos = movingObjects[0]->getPosition();
+    camera.Update(Vector2{ pos.x, pos.y });
+    movingObjects[0]->HandleInput(); 
+    movingObjects[0]->Update(deltaTime); 
+
+    b2Vec2 velocity = movingObjects[0]->getVelocity();
+    tilemap.Update(Vector2{velocity.x, velocity.y}, deltaTime);
+
+    Physics::Update(deltaTime); 
 }
 
 void Game::Draw() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
+    BeginMode2D(camera.GetCamera());
 
-    // Draw ground body (as a rectangle)
-    DrawRectangle(0, 550, 750, 50, GRAY);
-    
-    movingObjects[0]->Render(); // Render the player
+    // DrawRectangle(0, 550, 750, 50, GRAY);
+    movingObjects[0]->Render(); 
+    tilemap.Draw();
+    Physics::world.DebugDraw(); 
 
+    EndMode2D();
     EndDrawing();
 }
 
 void Game::Cleanup() {
-    // Close the window and clean up resources
-    delete world; // Free the Box2D world
-    CloseWindow(); // Close the raylib window
+    Physics::world.DestroyBody(groundBody); 
+    TilesetHandler::Clear();
+    CloseWindow(); 
 }
 
 void Game::Run() {
     while (!WindowShouldClose()) {
-        UpdatePhysics(); // Update physics
-        Draw();          // Draw everything
+        float deltaTime = GetFrameTime();
+        Update(deltaTime); 
+        Draw();         
     }
-    Cleanup(); // Cleanup resources
+    Cleanup(); 
 }

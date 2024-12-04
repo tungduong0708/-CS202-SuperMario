@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CONTACTLISTENER_H
+#define CONTACTLISTENER_H
+
 #include "include.h"
 #include "moving_object.h"
 #include <iostream>
@@ -38,3 +40,5 @@ public:
         }
     }
 };
+
+#endif // CONTACTLISTENER_H
