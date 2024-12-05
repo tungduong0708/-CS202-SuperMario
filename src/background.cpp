@@ -20,9 +20,18 @@ void Background::Update(Vector2 playerVelocity, float deltaTime)
 
 void Background::Draw()
 {
+    position.x -= texture.width;
     for (int i = 0; i < numRepeated; i++) {
         DrawTextureEx(texture, position, 0.0f, 1.0f, WHITE);
         position.x += texture.width;
     }
 
+}
+
+void Background::OnBeginContact(SceneNode* other)
+{
+}
+
+void Background::OnEndContact(SceneNode* other)
+{
 }

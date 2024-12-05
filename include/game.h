@@ -22,7 +22,6 @@ private:
     void Draw();
     void Cleanup();
 
-    b2Body* groundBody;     
     vector<MovingObject*> movingObjects;      
 };
 

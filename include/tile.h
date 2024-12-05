@@ -32,6 +32,8 @@ public:
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void Draw();
     void print() const;
+    virtual void OnBeginContact(SceneNode* other);
+    virtual void OnEndContact(SceneNode* other);
 };
 
 #endif // TILE_H

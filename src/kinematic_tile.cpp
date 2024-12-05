@@ -1,6 +1,7 @@
 #include "kinematic_tile.h"
 #include "tileset_handler.h"
 #include "renderer.h"
+#include "scene_node.h"
 
 KinematicTile::KinematicTile(int id, std::string tilesetName, const std::vector<std::pair<int, int>> &frames)
     : Tile(id, tilesetName), frames(frames)
@@ -61,4 +62,12 @@ void KinematicTile::Draw()
                         static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };
 
     Renderer::DrawPro(TilesetHandler::getTexture(tilesetPath), srcRect, getPosition(), Vector2{ 1, 1 }, true);
+}
+
+void KinematicTile::OnBeginContact(SceneNode* other)
+{
+}
+
+void KinematicTile::OnEndContact(SceneNode* other)
+{
 }

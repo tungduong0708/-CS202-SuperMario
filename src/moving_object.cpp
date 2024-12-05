@@ -3,20 +3,18 @@
 #include "physics.h"
 
 
-MovingObject::MovingObject(int) {
-    height = 0;
-    width = 0;
+MovingObject::MovingObject() {
+    size = {0, 0};
     speed = 0;
     angle = 0;
     images = {};
 }
 
-MovingObject::MovingObject(float h, float w, float s, float a, vector<Image> imgs): 
-    height(h), width(w), speed(s), angle(a), images(imgs) {}
+MovingObject::MovingObject(Vector2 size, float speed, float angle, vector<Image> images): 
+    size(size), speed(speed), angle(angle), images(images) {}
 
 MovingObject::MovingObject(const MovingObject &mo) {
-    height = mo.height;
-    width = mo.width;
+    size = mo.size;
     speed = mo.speed;
     angle = mo.angle;
     ImageHandler::ImageVectorCopy(mo.images, images);
@@ -25,28 +23,25 @@ MovingObject::MovingObject(const MovingObject &mo) {
 
 MovingObject::~MovingObject() {}
 
-void MovingObject::setHeight(float h) {
-    height = h;
+void MovingObject::setSize(Vector2 size)
+{
+    this->size = size;
 }
 
-void MovingObject::setWidth(float w) {
-    width = w;
+void MovingObject::setSpeed(float speed) {
+    this->speed = speed;
 }
 
-void MovingObject::setSpeed(float s) {
-    speed = s;
-}
-
-void MovingObject::setAngle(float a) {
-    angle = a;
+void MovingObject::setAngle(float angle) {
+    this->angle = angle;
 }
 
 void MovingObject::setImage(const Image &img) {
     images.push_back(img);
 }
 
-void MovingObject::setDensity(float d) {
-    density = d;
+void MovingObject::setDensity(float density) {
+    this->density = density;
 }
 
 void MovingObject::setElapsedTime(float et) {
@@ -65,16 +60,8 @@ float MovingObject::getFrameTime() {
     return frameTime;
 }
 
-float MovingObject::getHeight() {
-    return height;
-}
-
-float MovingObject::getWidth() {
-    return width;
-}
-
-float MovingObject::getSpeed() {
-    return speed;
+Vector2 MovingObject::getSize() {
+    return size;
 }
 
 float MovingObject::getAngle() {
@@ -99,6 +86,11 @@ b2Vec2 MovingObject::getVelocity()
     return body->GetLinearVelocity();
 }
 
+b2Body *MovingObject::getBody()
+{
+    return body;
+}
+
 void MovingObject::move() {
     // move the object
 }
@@ -119,8 +111,7 @@ Character::Character(int): MovingObject() {
     strength = 0;
 }
 
-Character::Character(int h, int s, int l, int st, float h1, float w1, float s1, float a1, vector<Image> imgs, string type): 
-    MovingObject(h1, w1, s1, a1, imgs), health(h), score(s), level(l), strength(st), type(type) {
+Character::Character(int h, int s, int l, int st, Vector2 size, float s1, float a1, vector<Image> images, string type): MovingObject(size, s1, a1, images), health(h), score(s), level(l), strength(st), type(type) {
     isOnGround = false;
     faceLeft = false;
     currentImage = IDLE;
@@ -238,30 +229,24 @@ MovingObject* Character::copy() const {
 
 void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     currentImage = imageSet;
-    //texture = LoadTextureFromImage(images[imageSet]); // Load character texture
 
-    // Load character textures
     for (auto img : images) {
         textures.push_back(LoadTextureFromImage(img));
     }
 
     texture = textures[imageSet];
 
-    //texture = images[imageSet];
     frameWidth = texture.width;
     frameHeight = texture.height;
     sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
-    // destRect = {position.x , position.y, (float)frameWidth, (float)frameHeight}; 
 
     float ratio = (float)frameWidth / (float)frameHeight;
-    Vector2 size{};
     if (ratio < 1.0f) 
-        destRect = {position.x, position.y, 1.0f * ratio, 1.0f};
+        size = {1.0f * ratio, 1.0f};
     else 
-        destRect = {position.x, position.y, 1.0f, 1.0f / ratio};
+        size = {1.0f, 1.0f / ratio};
 
-
-    origin = {frameWidth / 2.0f, frameHeight / 2.0f};
+    destRect = {position.x, position.y, size.x, size.y};
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -269,7 +254,7 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     body = Physics::world.CreateBody(&bodyDef);
 
     b2PolygonShape shape;
-    shape.SetAsBox(destRect.width / 2.0f, destRect.height / 2.0f, b2Vec2(0.0f, 0.0f), 0.0f);
+    shape.SetAsBox(destRect.width / 2.0f, destRect.height / 2.0f, b2Vec2(destRect.width / 2.0f, destRect.height / 2.0f), 0.0f);
 
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
@@ -281,23 +266,18 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     body->SetFixedRotation(true); 
 }
 
-void Character::Update(float deltaTime) {
+void Character::Update(Vector2 playerVelocity, float deltaTime) {
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
     destRect.y = position.y;
-    // std::cout << position.x << " " << position.y << std::endl;
-    // std::cout << previousImage << " " << currentImage << std::endl;
-
-
     texture = textures[currentImage];
-    // if (currentImage == WALK) {
-    //     currentImage = IDLE;
-    // }
-    //cout << currentImage << " " << previousImage << endl;
 }
 
-void Character::Render() {
-    Renderer::DrawPro(texture, sourceRect, {destRect.x - destRect.width/2, destRect.y - destRect.height/2}, {destRect.width, destRect.height}, faceLeft);
+void Character::Draw() {
+    b2Vec2 pos = body->GetPosition();
+    std::cout << "Character position: " << pos.x << " " << pos.y << std::endl;
+    std::cout << destRect.x << " " << destRect.y << std::endl;
+    Renderer::DrawPro(texture, sourceRect, Vector2{pos.x, pos.y}, {destRect.width, destRect.height}, faceLeft);
 }
 
 void Character::HandleInput() {
@@ -330,10 +310,15 @@ void Character::HandleInput() {
     }
 }
 
-void Character::SetOnGround(bool isOnGround) {
-    this->isOnGround = isOnGround;
+void Character::OnBeginContact(SceneNode* other)
+{
+    this->isOnGround = true;
 }
 
+void Character::OnEndContact(SceneNode* other)
+{
+    this->isOnGround = false;
+}
 
 Player::Player() : Character() {
     name = "";
@@ -343,8 +328,8 @@ Player::Player() : Character() {
     sit = false;
 }
 
-Player::Player(string n, float c, float r, bool ia, bool s, int h, int s1, int l, int st, float h1, float w1, float s2, float a1, vector<Image> imgs, string type): 
-    Character(h, s1, l, st, h1, w1, s2, a1, imgs, type), name(n), coins(c), range(r), alive(ia), sit(s) {}    
+Player::Player(string n, float c, float r, bool ia, bool s, int h, int s1, int l, int st, Vector2 size, float s2, float a1, vector<Image> imgs, string type): 
+    Character(h, s1, l, st, size, s2, a1, imgs, type), name(n), coins(c), range(r), alive(ia), sit(s) {}    
 
 Player::Player(const Player &p): Character(p), name(p.name), coins(p.coins), range(p.range), alive(p.alive), sit(p.sit) 
 {
@@ -425,8 +410,8 @@ Enemy::Enemy() : Character() {
     sit = false;
 }
 
-Enemy::Enemy(string t, float r, bool ia, bool s, int h, int s1, int l, int st, float h1, float w1, float s2, float a1, vector<Image> imgs): 
-    Character(h, s1, l, st, h1, w1, s2, a1, imgs), type(t), range(r), alive(ia), sit(s) {}
+Enemy::Enemy(string t, float r, bool ia, bool s, int h, int s1, int l, int st, Vector2 size, float s2, float a1, vector<Image> imgs): 
+    Character(h, s1, l, st, size, s2, a1, imgs), type(t), range(r), alive(ia), sit(s) {}
 
 Enemy::Enemy(const Enemy &e): Character(e) {
     type = e.type;
@@ -501,8 +486,8 @@ FireFlower::FireFlower() : MovingObject() {
     damage = 0;
 }
 
-FireFlower::FireFlower(float d, float h, float w, float s, float a, vector<Image> imgs): 
-    MovingObject(h, w, s, a, imgs), damage(d) {}
+FireFlower::FireFlower(float d, Vector2 size, float s, float a, vector<Image> imgs): 
+    MovingObject(size, s, a, imgs), damage(d) {}
 
 FireFlower::FireFlower(const FireFlower &ff): MovingObject(ff) {
     damage = ff.damage;
@@ -537,8 +522,8 @@ Bullet::Bullet() : MovingObject() {
     damage = 0;
 }
 
-Bullet::Bullet(float d, float h, float w, float s, float a, vector<Image> imgs): 
-    MovingObject(h, w, s, a, imgs), damage(d) {}
+Bullet::Bullet(float d, Vector2 size, float s, float a, vector<Image> imgs): 
+    MovingObject(size, s, a, imgs), damage(d) {}
 
 
 Bullet::Bullet(const Bullet &b): MovingObject(b) {
@@ -574,8 +559,8 @@ Coin::Coin() : MovingObject() {
     value = 0;
 }
 
-Coin::Coin(float v, float h, float w, float s, float a, vector<Image> imgs): 
-    MovingObject(h, w, s, a, imgs), value(v) {}
+Coin::Coin(float v, Vector2 size, float s, float a, vector<Image> imgs): 
+    MovingObject(size, s, a, imgs), value(v) {}
 
 Coin::Coin(const Coin &c): MovingObject(c) {
     value = c.value;
@@ -600,6 +585,8 @@ void Coin::jump() {
 void Coin::rotate() {
     // rotate the coin
 }
+
+
 
 
 
