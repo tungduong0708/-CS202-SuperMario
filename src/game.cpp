@@ -38,7 +38,7 @@ void Game::Init() {
     ImageSet idleImageSet = IDLE;
     movingObjects.push_back(player.copy());
 
-    movingObjects[0]->InitCharacter(b2Vec2(10.0f, 10.0f), idleImageSet);
+    movingObjects[0]->InitCharacter(b2Vec2(10.0f, 13.0f), idleImageSet);
     // groundBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(&player);
 
     TilesetHandler::Init();
