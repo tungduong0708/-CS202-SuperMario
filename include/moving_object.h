@@ -107,7 +107,7 @@ public:
     void Draw();  
     virtual void OnBeginContact(SceneNode* other);
     virtual void OnEndContact(SceneNode* other);
-    virtual void HandleInput() = 0;
+    virtual void HandleInput();
 };
 
 class Player : public Character {

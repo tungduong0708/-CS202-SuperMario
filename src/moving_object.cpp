@@ -8,6 +8,7 @@ MovingObject::MovingObject() {
     speed = 0;
     angle = 0;
     images = {};
+    elapsedTime = 0.0f;
 }
 
 MovingObject::MovingObject(Vector2 size, float speed, float angle, vector<Image> images): 
@@ -109,6 +110,7 @@ Character::Character(int): MovingObject() {
     score = 0;
     level = 0;
     strength = 0;
+    type = "";
 }
 
 
@@ -135,7 +137,6 @@ Character::Character(const Character &c)
       level(c.level),
       strength(c.strength),
       type(c.type),
-      texture(c.texture),             
 
       sourceRect(c.sourceRect),
       destRect(c.destRect),
@@ -158,7 +159,6 @@ Character::~Character() {
     level = 0;
     strength = 0;
     type = "";
-    texture = {};
     sourceRect = {};
     destRect = {};
     origin = {};
@@ -231,18 +231,12 @@ void Character::rotate() {
     // rotate the character
 }
 
-MovingObject* Character::copy() const {
-    return new Character(*this);
-}
-
 void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     currentImage = imageSet;
+    animations = AnimationHandler::setAnimations(type);
+    curAnim = animations[currentImage];
 
-    for (auto img : images) {
-        textures.push_back(LoadTextureFromImage(img));
-    }
-
-    texture = textures[imageSet];
+    texture = curAnim.GetFrame();
 
     frameWidth = texture.width;
     frameHeight = texture.height;
@@ -278,7 +272,12 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
     destRect.y = position.y;
-    texture = textures[currentImage];
+    // std::cout << position.x << " " << position.y << std::endl;
+    // std::cout << previousImage << " " << currentImage << std::endl;
+    cout << currentImage << endl;
+    curAnim = animations[currentImage];
+    curAnim.Update(deltaTime);
+    texture = curAnim.GetFrame();
 }
 
 void Character::Draw() {
@@ -289,33 +288,6 @@ void Character::Draw() {
 }
 
 void Character::HandleInput() {
-    if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
-        // cout << "Call this one" << endl;
-        // cout << isOnGround << endl;
-        // cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
-        jump();
-    }
-
-    // Handle character input
-    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
-        if (currentImage == WALK) {
-            currentImage = WALK2;
-        }
-        else currentImage = WALK;
-        faceLeft = false;
-    } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-        body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
-        if (currentImage == WALK) {
-            currentImage = WALK2;
-        }
-        else currentImage = WALK;
-        faceLeft = true;
-    }
-    else {
-        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
-        currentImage = IDLE;
-    }
 }
 
 void Character::OnBeginContact(SceneNode* other)
@@ -410,7 +382,40 @@ void Player::move() {
 }
 
 void Player::jump() {
-    // jump the player
+    if (!isOnGround) return;
+    body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
+    //isOnGround = false; // Prevent jumping again until grounded
+    currentImage = JUMP;
+}
+
+
+void Player::HandleInput() {
+    if (isOnGround && currentImage == JUMP) {
+        currentImage = IDLE;
+    }
+
+    if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
+        // cout << "Call this one" << endl;
+        // cout << isOnGround << endl;
+        // cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
+        jump();
+    }
+
+    // Handle character input
+    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
+        body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
+        if (currentImage != JUMP) currentImage = WALK;   
+        faceLeft = false;
+    } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
+        body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
+        if (currentImage != JUMP) currentImage = WALK;
+        faceLeft = true;
+    }
+    else {
+        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
+        if (currentImage != JUMP) currentImage = IDLE;
+    }
+
 }
 
 void Player::rotate() {
@@ -504,6 +509,10 @@ void Enemy::rotate() {
 
 void Enemy::shoot() {
     // shoot the enemy
+}
+
+void Enemy::HandleInput()
+{
 }
 
 MovingObject* Enemy::copy() const {
