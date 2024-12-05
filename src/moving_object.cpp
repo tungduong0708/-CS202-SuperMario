@@ -35,7 +35,7 @@ void MovingObject::setSpeed(float speed) {
 
 void MovingObject::setAngle(float angle) {
     this->angle = angle;
-
+}
 
 void MovingObject::setImage(const Image &img) {
     images.push_back(img);
@@ -114,9 +114,9 @@ Character::Character(int): MovingObject() {
 }
 
 
-Character::Character(int health, int score, int level, int strength, float height, 
-                     float width, float speed, float angle, vector<Image> imgs, string type): 
-    MovingObject(height, width, speed, angle, imgs), 
+Character::Character(int health, int score, int level, int strength, 
+                     Vector2 size, float speed, float angle, vector<Image> imgs, string type): 
+    MovingObject(size, speed, angle, imgs), 
     health(health), 
     score(score), 
     level(level), 
@@ -310,9 +310,9 @@ Player::Player() : Character() {
 
 
 Player::Player(string name, float coins, float range, bool alive, bool sit, int health, 
-               int score, int level, int strength, float height, float width, float speed, 
+               int score, int level, int strength, Vector2 size, float speed, 
                float angle, vector<Image> imgs, string type): 
-    Character(health, score, level, strength, height, width, speed, angle, imgs), 
+    Character(health, score, level, strength, size, speed, angle, imgs, type), 
     name(name), 
     coins(coins), 
     range(range), 
@@ -439,8 +439,8 @@ Enemy::Enemy() : Character() {
 
 
 Enemy::Enemy(string type, float range, bool alive, bool sit, int health, int score, int level, 
-             int strength, float height, float width, float speed, float angle, vector<Image> imgs): 
-    Character(health, score, level, strength, height, width, speed, angle, imgs), 
+             int strength, Vector2 size, float speed, float angle, vector<Image> imgs): 
+    Character(health, score, level, strength, size, speed, angle, imgs, type), 
     type(type), 
     range(range), 
     alive(alive), 
@@ -602,7 +602,7 @@ Coin::Coin() : MovingObject() {
 
 
 Coin::Coin(float value, Vector2 size, float speed, float angle, vector<Image> imgs): 
-    MovingObject(size, speed, angle, imgs), value(v) {}
+    MovingObject(size, speed, angle, imgs), value(value) {}
 
 
 Coin::Coin(const Coin &c): MovingObject(c) {
