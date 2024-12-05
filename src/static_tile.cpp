@@ -1,6 +1,8 @@
 #include "static_tile.h"
 #include "tileset_handler.h"
 #include "renderer.h"
+#include "scene_node.h"
+#include "moving_object.h"
 
 StaticTile::StaticTile(int id, std::string tilesetName) : Tile(id, tilesetName)
 {
@@ -44,4 +46,19 @@ void StaticTile::Draw()
                         static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };
     Renderer::DrawPro(TilesetHandler::getTexture(tilesetPath), srcRect, getPosition(), Vector2{ 1, 1 }, true);
     // Physics::DebugDraw();
+}
+
+void StaticTile::OnBeginContact(SceneNode* other)
+{
+    MovingObject* player = dynamic_cast<MovingObject*>(other);
+    if (player != nullptr)
+    {
+        b2Vec2 pos = player->getPosition();
+        Vector2 size = player->getSize();
+        player->getBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
+    }
+}
+
+void StaticTile::OnEndContact(SceneNode* other)
+{
 }
