@@ -236,44 +236,43 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     frameHeight = texture.height;
     sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
     // destRect = {position.x , position.y, (float)frameWidth, (float)frameHeight}; 
-    destRect = {position.x, position.y, 1.0f, 1.0f};
+
+    float ratio = (float)frameWidth / (float)frameHeight;
+    Vector2 size{};
+    if (ratio < 1.0f) 
+        destRect = {position.x, position.y, 1.0f * ratio, 1.0f};
+    else 
+        destRect = {position.x, position.y, 1.0f, 1.0f / ratio};
+
+
     origin = {frameWidth / 2.0f, frameHeight / 2.0f};
 
-    // Create character physics body
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.position.Set(position.x, position.y);
     body = Physics::world.CreateBody(&bodyDef);
 
-    // Create character shape
     b2PolygonShape shape;
-    shape.SetAsBox(0.5f, 0.5f);
+    // shape.SetAsBox(0.5f, 0.5f);
+    shape.SetAsBox(destRect.width / 2.0f, destRect.height / 2.0f, b2Vec2(0.0f, 0.0f), 0.0f);
 
-    // Create character fixture
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &shape;
     fixtureDef.density = 1.0f;
     fixtureDef.friction = 0.3f;
     body->CreateFixture(&fixtureDef);
 
-    // Set character pointer for contact listener
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
-    body->SetFixedRotation(true); // Prevent character rotation
+    body->SetFixedRotation(true); 
 }
 
 void Character::Update(float deltaTime) {
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
     destRect.y = position.y;
+    std::cout << position.x << " " << position.y << std::endl;
+    std::cout << previousImage << " " << currentImage << std::endl;
 
-    // if (currentImage != previousImage) {
-    //     UnloadImage(texture);
-    //     texture = LoadImageFromImage(images[currentImage]);
-    //     previousImage = currentImage;
-    //     if (currentImage == WALK) {
-    //         currentImage = IDLE;
-    //     }
-    // }
 
     texture = textures[currentImage];
     // if (currentImage == WALK) {
@@ -283,8 +282,7 @@ void Character::Update(float deltaTime) {
 }
 
 void Character::Render() {
-    std::cout << "Rendering character" << std::endl;
-    Renderer::DrawPro(texture, sourceRect, {destRect.x, destRect.y}, {destRect.width, destRect.height}, faceLeft);
+    Renderer::DrawPro(texture, sourceRect, {destRect.x - destRect.width/2, destRect.y - destRect.height/2}, {destRect.width, destRect.height}, faceLeft);
 }
 
 void Character::HandleInput() {
