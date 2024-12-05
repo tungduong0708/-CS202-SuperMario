@@ -31,12 +31,12 @@ public:
 
         if (userDataA) {
             Character* character = static_cast<Character*>(userDataA);
-            character->SetOnGround(true); 
+            character->SetOnGround(false); 
         }
 
         if (userDataB) {
             Character* character = static_cast<Character*>(userDataB);
-            character->SetOnGround(true);
+            character->SetOnGround(false);
         }
     }
 };

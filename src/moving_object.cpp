@@ -267,18 +267,21 @@ void Character::Render() {
 
 void Character::HandleInput() {
     if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
-        body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 10.0f), true);
-        isOnGround = false; // Prevent jumping again until grounded
+        cout << "Call this one" << endl;
+        cout << isOnGround << endl;
+        cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
+        body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 40.0f), true);
+        //isOnGround = false; // Prevent jumping again until grounded
         currentImage = JUMP;
     }
 
     // Handle character input
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        body->SetLinearVelocity(b2Vec2(5.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(15.0f, body->GetLinearVelocity().y));
         currentImage = WALK;
         faceLeft = false;
     } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-        body->SetLinearVelocity(b2Vec2(-5.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(-15.0f, body->GetLinearVelocity().y));
         currentImage = WALK;
         faceLeft = true;
     }
