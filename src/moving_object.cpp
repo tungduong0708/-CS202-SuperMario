@@ -117,7 +117,8 @@ Character::Character(int h, int s, int l, int st, Vector2 size, float s1, float 
     currentImage = IDLE;
     previousImage = IDLE;
     images = ImageHandler::setImages(type);
-    textures = {};
+    curAnim = Animation();
+
 }
 
 Character::Character(const Character &c)
