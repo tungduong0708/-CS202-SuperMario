@@ -15,6 +15,8 @@ protected:
     float density; // density of the object, can determine the mass of the object
     vector<Image> images;
     vector<Texture> textures;
+    float elapsedTime;
+    float frameTime;
     b2Body* body; 
 public:
     MovingObject(int);
@@ -27,7 +29,11 @@ public:
     void setAngle(float a);
     void setDensity(float d);
     void setImage(const Image &img);
+    void setElapsedTime(float et);
+    void setFrameTime(float ft);
 
+    float getElapsedTime();
+    float getFrameTime();   
     float getHeight();
     float getWidth();
     float getSpeed();

@@ -49,6 +49,22 @@ void MovingObject::setDensity(float d) {
     density = d;
 }
 
+void MovingObject::setElapsedTime(float et) {
+    elapsedTime = et;
+}
+
+void MovingObject::setFrameTime(float ft) {
+    frameTime = ft;
+}
+
+float MovingObject::getElapsedTime() {
+    return elapsedTime;
+}
+
+float MovingObject::getFrameTime() {
+    return frameTime;
+}
+
 float MovingObject::getHeight() {
     return height;
 }
@@ -270,8 +286,8 @@ void Character::Update(float deltaTime) {
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
     destRect.y = position.y;
-    std::cout << position.x << " " << position.y << std::endl;
-    std::cout << previousImage << " " << currentImage << std::endl;
+    // std::cout << position.x << " " << position.y << std::endl;
+    // std::cout << previousImage << " " << currentImage << std::endl;
 
 
     texture = textures[currentImage];
@@ -295,14 +311,14 @@ void Character::HandleInput() {
 
     // Handle character input
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        body->SetLinearVelocity(b2Vec2(15.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
         if (currentImage == WALK) {
             currentImage = WALK2;
         }
         else currentImage = WALK;
         faceLeft = false;
     } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-        body->SetLinearVelocity(b2Vec2(-15.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
         if (currentImage == WALK) {
             currentImage = WALK2;
         }
