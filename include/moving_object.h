@@ -14,6 +14,7 @@ protected:
     float angle;  // initial angle of the object when moving
     float density; // density of the object, can determine the mass of the object
     vector<Image> images;
+    vector<Texture> textures;
     b2Body* body; 
 public:
     MovingObject(int);
@@ -218,7 +219,6 @@ public:
 
     //MovingObject* copy() const;
 };
-
 
 #endif
 

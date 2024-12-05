@@ -19,10 +19,7 @@ MovingObject::MovingObject(const MovingObject &mo) {
     width = mo.width;
     speed = mo.speed;
     angle = mo.angle;
-    images = {};
-    for (auto img : mo.images) {
-        images.push_back(ImageCopy(img));
-    }
+    ImageHandler::ImageVectorCopy(mo.images, images);
     body = mo.body;
 }
 
@@ -113,6 +110,7 @@ Character::Character(int h, int s, int l, int st, float h1, float w1, float s1, 
     currentImage = IDLE;
     previousImage = IDLE;
     images = ImageHandler::setImages(type);
+    textures = {};
 }
 
 Character::Character(const Character &c)
@@ -144,7 +142,23 @@ Character::~Character() {
     score = 0;
     level = 0;
     strength = 0;
-    UnloadTexture(texture);
+    type = "";
+    texture = {};
+    sourceRect = {};
+    destRect = {};
+    origin = {};
+    frameWidth = 0;
+    frameHeight = 0;
+    currentFrame = 0;
+    frameTime = 0;
+    frameSpeed = 0;
+    isOnGround = false;
+    currentImage = IDLE;
+    previousImage = IDLE;
+    faceLeft = false;
+    for (auto img : images) {
+        UnloadImage(img);
+    }
 }
 
 void Character::setHealth(int h) {
@@ -193,6 +207,9 @@ void Character::move() {
 
 void Character::jump() {
     // jump the character
+    body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 40.0f), true);
+    //isOnGround = false; // Prevent jumping again until grounded
+    currentImage = JUMP;
 }
 
 void Character::rotate() {
@@ -205,7 +222,16 @@ MovingObject* Character::copy() const {
 
 void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     currentImage = imageSet;
-    texture = LoadTextureFromImage(images[imageSet]); // Load character texture
+    //texture = LoadTextureFromImage(images[imageSet]); // Load character texture
+
+    // Load character textures
+    for (auto img : images) {
+        textures.push_back(LoadTextureFromImage(img));
+    }
+
+    texture = textures[imageSet];
+
+    //texture = images[imageSet];
     frameWidth = texture.width;
     frameHeight = texture.height;
     sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
@@ -240,14 +266,19 @@ void Character::Update(float deltaTime) {
     destRect.x = position.x;
     destRect.y = position.y;
 
-    if (currentImage != previousImage) {
-        UnloadTexture(texture);
-        texture = LoadTextureFromImage(images[currentImage]);
-        previousImage = currentImage;
-        if (currentImage == WALK) {
-            currentImage = IDLE;
-        }
-    }
+    // if (currentImage != previousImage) {
+    //     UnloadImage(texture);
+    //     texture = LoadImageFromImage(images[currentImage]);
+    //     previousImage = currentImage;
+    //     if (currentImage == WALK) {
+    //         currentImage = IDLE;
+    //     }
+    // }
+
+    texture = textures[currentImage];
+    // if (currentImage == WALK) {
+    //     currentImage = IDLE;
+    // }
     //cout << currentImage << " " << previousImage << endl;
 }
 
@@ -258,22 +289,26 @@ void Character::Render() {
 
 void Character::HandleInput() {
     if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
-        cout << "Call this one" << endl;
-        cout << isOnGround << endl;
-        cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
-        body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 40.0f), true);
-        //isOnGround = false; // Prevent jumping again until grounded
-        currentImage = JUMP;
+        // cout << "Call this one" << endl;
+        // cout << isOnGround << endl;
+        // cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
+        jump();
     }
 
     // Handle character input
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
         body->SetLinearVelocity(b2Vec2(15.0f, body->GetLinearVelocity().y));
-        currentImage = WALK;
+        if (currentImage == WALK) {
+            currentImage = WALK2;
+        }
+        else currentImage = WALK;
         faceLeft = false;
     } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
         body->SetLinearVelocity(b2Vec2(-15.0f, body->GetLinearVelocity().y));
-        currentImage = WALK;
+        if (currentImage == WALK) {
+            currentImage = WALK2;
+        }
+        else currentImage = WALK;
         faceLeft = true;
     }
     else {
