@@ -14,7 +14,7 @@ public:
         void* userDataA = reinterpret_cast<void*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer);
         void* userDataB = reinterpret_cast<void*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer);
 
-        if (userDataA) {
+        if (userDataA ) {
             Character* character = static_cast<Character*>(userDataA);
             character->SetOnGround(true); 
         }

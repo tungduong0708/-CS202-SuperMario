@@ -197,7 +197,7 @@ bool Character::onGround() {
     return isOnGround;
 }
 
-bool Character::isLeft() {
+bool Character::isLeft() { 
     return faceLeft;
 }
 
@@ -206,8 +206,8 @@ void Character::move() {
 }
 
 void Character::jump() {
-    // jump the character
-    body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 40.0f), true);
+    if (!isOnGround) return;
+    body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
     //isOnGround = false; // Prevent jumping again until grounded
     currentImage = JUMP;
 }
@@ -253,7 +253,6 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     body = Physics::world.CreateBody(&bodyDef);
 
     b2PolygonShape shape;
-    // shape.SetAsBox(0.5f, 0.5f);
     shape.SetAsBox(destRect.width / 2.0f, destRect.height / 2.0f, b2Vec2(0.0f, 0.0f), 0.0f);
 
     b2FixtureDef fixtureDef;
@@ -295,7 +294,7 @@ void Character::HandleInput() {
 
     // Handle character input
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        body->SetLinearVelocity(b2Vec2(15.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
         if (currentImage == WALK) {
             currentImage = WALK2;
         }
