@@ -12,8 +12,8 @@ MovingObject::MovingObject(int) {
     elapsedTime = 0.0f;
 }
 
-MovingObject::MovingObject(float h, float w, float s, float a, vector<Image> imgs): 
-    height(h), width(w), speed(s), angle(a), images(imgs) {}
+MovingObject::MovingObject(float height, float width, float speed, float angle, vector<Image> imgs): 
+    height(height), width(width), speed(speed), angle(angle), images(imgs) {}
 
 MovingObject::MovingObject(const MovingObject &mo) {
     height = mo.height;
@@ -38,16 +38,16 @@ void MovingObject::setSpeed(float s) {
     speed = s;
 }
 
-void MovingObject::setAngle(float a) {
-    angle = a;
+void MovingObject::setAngle(float angle) {
+    angle = angle;
 }
 
 void MovingObject::setImage(const Image &img) {
     images.push_back(img);
 }
 
-void MovingObject::setDensity(float d) {
-    density = d;
+void MovingObject::setDensity(float density) {
+    this->density = density;
 }
 
 void MovingObject::setElapsedTime(float et) {
@@ -121,15 +121,20 @@ Character::Character(int): MovingObject() {
     type = "";
 }
 
-Character::Character(int h, int s, int l, int st, float h1, float w1, float s1, float a1, vector<Image> imgs, string type): 
-    MovingObject(h1, w1, s1, a1, imgs), health(h), score(s), level(l), strength(st), type(type) {
+Character::Character(int health, int score, int level, int strength, float height, 
+                     float width, float speed, float angle, vector<Image> imgs, string type): 
+    MovingObject(height, width, speed, angle, imgs), 
+    health(health), 
+    score(score), 
+    level(level), 
+    strength(strength), 
+    type(type) {
     isOnGround = false;
     faceLeft = false;
     currentImage = IDLE;
     previousImage = IDLE;
     images = ImageHandler::setImages(type);
     curAnim = Animation();
-
 }
 
 Character::Character(const Character &c)
@@ -178,8 +183,8 @@ Character::~Character() {
     }
 }
 
-void Character::setHealth(int h) {
-    health = h;
+void Character::setHealth(int health) {
+    health = health;
 }
 
 void Character::setScore(int s) {
@@ -302,10 +307,26 @@ Player::Player() : Character() {
     sit = false;
 }
 
-Player::Player(string n, float c, float r, bool ia, bool s, int h, int s1, int l, int st, float h1, float w1, float s2, float a1, vector<Image> imgs, string type): 
-    Character(h, s1, l, st, h1, w1, s2, a1, imgs, type), name(n), coins(c), range(r), alive(ia), sit(s) {}    
+// Player::Player(string n, float c, float r, bool ia, bool s, int health, int s1, int l, int st, float h1, float w1, float s2, float a1, vector<Image> imgs, string type): 
+//     Character(health, s1, l, st, h1, w1, s2, a1, imgs, type), name(n), coins(c), range(r), alive(ia), sit(s) {}    
 
-Player::Player(const Player &p): Character(p), name(p.name), coins(p.coins), range(p.range), alive(p.alive), sit(p.sit) 
+Player::Player(string name, float coins, float range, bool alive, bool sit, int health, 
+               int score, int level, int strength, float height, float width, float speed, 
+               float angle, vector<Image> imgs, string type): 
+    Character(health, score, level, strength, height, width, speed, angle, imgs), 
+    name(name), 
+    coins(coins), 
+    range(range), 
+    alive(alive), 
+    sit(sit) {}
+
+Player::Player(const Player &p): 
+    Character(p), 
+    name(p.name), 
+    coins(p.coins), 
+    range(p.range), 
+    alive(p.alive), 
+    sit(p.sit) 
 {
 }
 
@@ -416,8 +437,16 @@ Enemy::Enemy() : Character() {
     sit = false;
 }
 
-Enemy::Enemy(string t, float r, bool ia, bool s, int h, int s1, int l, int st, float h1, float w1, float s2, float a1, vector<Image> imgs): 
-    Character(h, s1, l, st, h1, w1, s2, a1, imgs), type(t), range(r), alive(ia), sit(s) {}
+
+Enemy::Enemy(string type, float range, bool alive, bool sit, int health, int score, int level, 
+             int strength, float height, float width, float speed, float angle, vector<Image> imgs): 
+    Character(health, score, level, strength, height, width, speed, angle, imgs), 
+    type(type), 
+    range(range), 
+    alive(alive), 
+    sit(sit)
+{
+}
 
 Enemy::Enemy(const Enemy &e): Character(e) {
     type = e.type;
@@ -492,8 +521,8 @@ FireFlower::FireFlower() : MovingObject() {
     damage = 0;
 }
 
-FireFlower::FireFlower(float d, float h, float w, float s, float a, vector<Image> imgs): 
-    MovingObject(h, w, s, a, imgs), damage(d) {}
+FireFlower::FireFlower(float damage, float height, float width, float speed, float angle, vector<Image> imgs): 
+    MovingObject(height, width, speed, angle, imgs), damage(damage) {}
 
 FireFlower::FireFlower(const FireFlower &ff): MovingObject(ff) {
     damage = ff.damage;
@@ -503,8 +532,8 @@ FireFlower::~FireFlower() {
     damage = 0;
 }
 
-void FireFlower::setDamage(float d) {
-    damage = d;
+void FireFlower::setDamage(float damage) {
+    this->damage = damage;
 }
 
 float FireFlower::getDamage() {
@@ -528,8 +557,8 @@ Bullet::Bullet() : MovingObject() {
     damage = 0;
 }
 
-Bullet::Bullet(float d, float h, float w, float s, float a, vector<Image> imgs): 
-    MovingObject(h, w, s, a, imgs), damage(d) {}
+Bullet::Bullet(float damage, float height, float width, float speed, float angle, vector<Image> imgs): 
+    MovingObject(height, width, speed, angle, imgs), damage(damage) {}
 
 
 Bullet::Bullet(const Bullet &b): MovingObject(b) {
@@ -540,8 +569,8 @@ Bullet::~Bullet() {
     damage = 0;
 }
 
-void Bullet::setDamage(float d) {
-    damage = d;
+void Bullet::setDamage(float damage) {
+    this->damage = damage;
 }
 
 float Bullet::getDamage() {
@@ -565,8 +594,8 @@ Coin::Coin() : MovingObject() {
     value = 0;
 }
 
-Coin::Coin(float v, float h, float w, float s, float a, vector<Image> imgs): 
-    MovingObject(h, w, s, a, imgs), value(v) {}
+Coin::Coin(float v, float height, float width, float speed, float angle, vector<Image> imgs): 
+    MovingObject(height, width, speed, angle, imgs), value(v) {}
 
 Coin::Coin(const Coin &c): MovingObject(c) {
     value = c.value;
