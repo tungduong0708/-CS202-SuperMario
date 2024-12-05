@@ -67,7 +67,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"bg-2-1.json"
+         "source":"..\/tilesets\/bg-2-1.json"
         }],
  "tilewidth":16,
  "type":"map",

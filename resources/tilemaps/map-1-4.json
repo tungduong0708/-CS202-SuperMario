@@ -4,7 +4,7 @@
  "layers":[
         {
          "id":3,
-         "image":"b4.png",
+         "image":"..\/background\/b4.png",
          "name":"Background",
          "opacity":1,
          "type":"imagelayer",
@@ -59,15 +59,15 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"bg-1-4.json"
+         "source":"..\/tilesets\/bg-1-4.json"
         }, 
         {
          "firstgid":2401,
-         "source":"Castle.json"
+         "source":"..\/tilesets\/Castle.json"
         }, 
         {
          "firstgid":2426,
-         "source":"SMW_tileset.json"
+         "source":"..\/tilesets\/SMW_tileset.json"
         }],
  "tilewidth":16,
  "type":"map",
