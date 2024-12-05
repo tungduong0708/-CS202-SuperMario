@@ -17,6 +17,8 @@ public:
 
     void Update(Vector2 playerPosition, float deltaTime);
     void Draw();
+    void OnBeginContact(SceneNode* other);
+    void OnEndContact(SceneNode* other);
 };
 
 #endif // BACKGROUND_H

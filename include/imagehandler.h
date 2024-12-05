@@ -2,6 +2,7 @@
 #define IMAGEHANDLER_H
 
 #include "include.h"
+#include "animation.h"
 
 class ImageHandler {
 private:
@@ -26,6 +27,15 @@ public:
     vector<Texture> getTextures();
     static void addTexture(const Texture &img);
     static vector<Texture>& setTextures(string path = "smallmario");
+};
+
+class AnimationHandler {
+private:
+    static vector<Animation> animations;
+public:
+    static void setAnimations(const vector<Animation> &anim);
+    static vector<Animation>& setAnimations(string path);
+    static void AnimationVectorCopy(const vector<Animation> &src, vector<Animation> &dest);
 };
 
 #endif // IMAGEHANDLER_H

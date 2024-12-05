@@ -1,5 +1,7 @@
 #pragma once
 #include "include.h"
+#include "scene_node.h"
+#include "imagehandler.h"
 
 #define IMAGE_WIDTH 16 
 
@@ -7,41 +9,40 @@
 #define MOVING_OBJECT_H
 
 
-class MovingObject {
+class MovingObject : public SceneNode {
 protected:
-    float height, width; // size of the object
+    Vector2 size; // size of the object
     float speed;  // max speed that the object can move
     float angle;  // initial angle of the object when moving
     float density; // density of the object, can determine the mass of the object
     vector<Image> images;
-    vector<Texture> textures;
+    vector<Animation> animations;
     float elapsedTime;
     float frameTime;
     b2Body* body; 
 public:
-    MovingObject(int);
-    MovingObject(float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images = {});
+    MovingObject();
+    MovingObject(Vector2 size, float speed, float angle, vector<Image> images = {});
     MovingObject(const MovingObject &mo);
     ~MovingObject();
-    void setHeight(float h);
-    void setWidth(float w);
-    void setSpeed(float s);
-    void setAngle(float a);
-    void setDensity(float d);
+    void setSize(Vector2 size);
+    void setSpeed(float speed);
+    void setAngle(float angle);
+    void setDensity(float density);
     void setImage(const Image &img);
     void setElapsedTime(float et);
     void setFrameTime(float ft);
 
     float getElapsedTime();
     float getFrameTime();   
-    float getHeight();
-    float getWidth();
+    Vector2 getSize();
     float getSpeed();
     float getAngle();
     float getDensity();
     vector<Image> getImages();
     b2Vec2 getPosition();
     b2Vec2 getVelocity();
+    b2Body* getBody();
 
     void move();
     void jump();
@@ -49,10 +50,12 @@ public:
     
     // virtual functions
     virtual MovingObject* copy() const = 0;  // Prototype design pattern
-    virtual void Update(float deltaTime) = 0;
-    virtual void Render() = 0;  
+    virtual void Update(Vector2 playerVelocity, float deltaTime) = 0;
+    virtual void Draw() = 0;  
     virtual void InitCharacter(b2Vec2 position, ImageSet imageSet) = 0;
     virtual void HandleInput() = 0;
+    virtual void OnBeginContact(SceneNode* other) = 0;
+    virtual void OnEndContact(SceneNode* other) = 0;
 };
 
 
@@ -64,7 +67,8 @@ protected:
     int strength;
     string type;
 
-    Texture2D texture;          // Character sprite sheet              
+    Texture texture;            // Character texture
+    Animation curAnim;          // Character sprite sheet              
     Rectangle sourceRect;       // Sprite frame to draw
     Rectangle destRect;         // Scaled drawing rectangle
     Vector2 origin;             // Sprite origin
@@ -77,7 +81,7 @@ protected:
     bool faceLeft;            // Is character facing left
 public:
     Character(int);
-    Character(int h = 0, int s = 0, int l = 0, int st = 0, float h1 = 0, float w1 = 0, float s1 = 0, float a1 = 0, vector<Image> images = {}, string type = "");
+    Character(int h = 0, int s = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s1 = 0, float a1 = 0, vector<Image> images = {}, string type = "");
     Character(const Character &c);
     ~Character();
 
@@ -96,13 +100,14 @@ public:
     void jump();
     void rotate();
 
-    MovingObject* copy() const;  // Prototype design pattern
+    //MovingObject* copy() const;  // Prototype design pattern
     // default image = IDLE
     void InitCharacter(b2Vec2 position, ImageSet imageSet = IDLE);  
-    void Update(float deltaTime);
-    void Render();
-    void HandleInput();
-    void SetOnGround(bool onGround); // Setter for ground state
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void Draw();  
+    virtual void OnBeginContact(SceneNode* other);
+    virtual void OnEndContact(SceneNode* other);
+    virtual void HandleInput();
 };
 
 class Player : public Character {
@@ -115,7 +120,7 @@ private:
     // speed = max speed that the player can move
 public:
     Player();
-    Player(string n = "", float c = 0, float r = 0, bool ia = true, bool s = false, int h = 0, int s1 = 0, int l = 0, int st = 0, float h1 = 0, float w1 = 0, float s2 = 0, float a1 = 0, vector<Image> images = {}, string type = "");
+    Player(string n = "", float c = 0, float r = 0, bool ia = true, bool s = false, int h = 0, int s1 = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s2 = 0, float a1 = 0, vector<Image> images = {}, string type = "");
     Player(const Player &p);
     ~Player();
 
@@ -135,6 +140,10 @@ public:
     void jump();
     void rotate();
     void shoot();
+
+    void OnBeginContact(SceneNode* other);
+    void OnEndContact(SceneNode* other);
+    void HandleInput() ;
     MovingObject* copy() const;
 };
 
@@ -148,7 +157,7 @@ private:
     // speed = max speed that the enemy can move
 public:
     Enemy();
-    Enemy(string t = "", float r = 0, bool ia = true, bool s = false, int h = 0, int s1 = 0, int l = 0, int st = 0, float h1 = 0, float w1 = 0, float s2 = 0, float a1 = 0, vector<Image> images = {});
+    Enemy(string t = "", float r = 0, bool ia = true, bool s = false, int h = 0, int s1 = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s2 = 0, float a1 = 0, vector<Image> images = {});
     Enemy(const Enemy &e);
     ~Enemy();
     void setType(string t);
@@ -163,6 +172,7 @@ public:
     void jump();
     void rotate();
     void shoot();
+    void HandleInput();
 
     MovingObject* copy() const;
 };
@@ -175,7 +185,7 @@ private:
     // other attributes are inherited from the moving object class ---
 public:
     FireFlower();
-    FireFlower(float d = 0, float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images = {});
+    FireFlower(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0, vector<Image> images = {});
     FireFlower(const FireFlower &ff);
     ~FireFlower();
     void setDamage(float d);
@@ -195,7 +205,7 @@ private:
     // other attributes are inherited from the moving object class ---
 public:
     Bullet();
-    Bullet(float d = 0, float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images = {});
+    Bullet(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0, vector<Image> images = {});
     Bullet(const Bullet &b);
     ~Bullet();
     void setDamage(float d);
@@ -215,7 +225,7 @@ private:
     // other attributes are inherited from the moving object class ---
 public:
     Coin();
-    Coin(float v = 0, float h = 0, float w = 0, float s = 0, float a = 0, vector<Image> images = {});
+    Coin(float v = 0, Vector2 size = {0, 0}, float s = 0, float a = 0, vector<Image> images = {});
     Coin(const Coin &c);
     ~Coin();
     void setValue(float v);

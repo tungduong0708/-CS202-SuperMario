@@ -10,35 +10,9 @@ using namespace std;
 
 class ContactListener : public b2ContactListener {
 public:
-    void BeginContact(b2Contact* contact) override {
-        void* userDataA = reinterpret_cast<void*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer);
-        void* userDataB = reinterpret_cast<void*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer);
+    void BeginContact(b2Contact* contact) override;
 
-        if (userDataA ) {
-            Character* character = static_cast<Character*>(userDataA);
-            character->SetOnGround(true); 
-        }
-
-        if (userDataB) {
-            Character* character = static_cast<Character*>(userDataB);
-            character->SetOnGround(true);
-        }
-    }
-
-    void EndContact(b2Contact* contact) override {
-        void* userDataA = reinterpret_cast<void*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer);
-        void* userDataB = reinterpret_cast<void*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer);
-
-        if (userDataA) {
-            Character* character = static_cast<Character*>(userDataA);
-            character->SetOnGround(false); 
-        }
-
-        if (userDataB) {
-            Character* character = static_cast<Character*>(userDataB);
-            character->SetOnGround(false);
-        }
-    }
+    void EndContact(b2Contact* contact) override;
 };
 
 #endif // CONTACTLISTENER_H

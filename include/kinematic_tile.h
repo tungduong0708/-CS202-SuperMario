@@ -4,6 +4,7 @@
 #include "tile.h"
 #include "my_bounding_box.h"
 #include "renderer.h"
+#include "scene_node.h"
 #include <box2d/box2d.h>
 #include <vector>
 #include <string>
@@ -26,6 +27,8 @@ public:
     void setPosition(const Vector2& position);
     void Update(Vector2 playerVelocity, float deltaTime);
     void Draw();
+    void OnBeginContact(SceneNode* other);
+    void OnEndContact(SceneNode* other);
 };
 
 #endif // KINEMATIC_TILE_H

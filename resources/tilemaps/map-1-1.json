@@ -8,7 +8,7 @@
          "name":"Background Color",
          "opacity":1,
          "type":"imagelayer",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -18,7 +18,7 @@
          "name":"Background",
          "opacity":1,
          "type":"imagelayer",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -55,7 +55,18 @@
          "draworder":"topdown",
          "id":4,
          "name":"Object Layer 1",
-         "objects":[],
+         "objects":[
+                {
+                 "height":31.9646739130435,
+                 "id":46,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":976.016304347826,
+                 "x":0.608695652173913,
+                 "y":223.347826086957
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
