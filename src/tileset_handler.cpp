@@ -24,7 +24,11 @@ void TilesetHandler::Init()
                                               "resources/tilesets/bg-2-2",
                                               "resources/tilesets/bg-2-3",
                                               "resources/tilesets/bg-2-4",
-                                              "resources/tilesets/items-objects"};
+                                              "resources/tilesets/items-objects",
+                                              "resources/tilesets/bg-3-1",
+                                              "resources/tilesets/bg-3-2",
+                                              "resources/tilesets/bg-3-3",
+                                              "resources/tilesets/bg-3-4"};
     for (const auto& tilesetPath : tilesetPaths) {
         addTileSet(tilesetPath + ".json", tilesetPath + ".png");
     }
