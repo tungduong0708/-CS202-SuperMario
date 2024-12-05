@@ -1,0 +1,14 @@
+{ "columns":163,
+ "image":"bg-3-3.png",
+ "imageheight":240,
+ "imagewidth":2608,
+ "margin":0,
+ "name":"bg-3-3",
+ "spacing":0,
+ "tilecount":2445,
+ "tiledversion":"1.10.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10"
+}
