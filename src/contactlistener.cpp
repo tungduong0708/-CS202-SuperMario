@@ -5,7 +5,6 @@ void ContactListener::BeginContact(b2Contact *contact)
 {
     SceneNode* nodeA = reinterpret_cast<SceneNode*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer);
     SceneNode* nodeB = reinterpret_cast<SceneNode*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer);
-
     if (nodeA) nodeA->OnBeginContact(nodeB);
     if (nodeB) nodeB->OnBeginContact(nodeA);
 }

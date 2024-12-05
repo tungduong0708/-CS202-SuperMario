@@ -141,6 +141,8 @@ public:
     void rotate();
     void shoot();
 
+    void OnBeginContact(SceneNode* other);
+    void OnEndContact(SceneNode* other);
     void HandleInput() ;
     MovingObject* copy() const;
 };

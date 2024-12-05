@@ -9,7 +9,7 @@
 #include <vector>
 #include <iostream>
 
-b2World Physics::world{ b2Vec2(0.0f, 0.0f) };
+b2World Physics::world{ b2Vec2(0.0f, 50.0f) };
 b2DrawRayLib* Physics::debugDraw{ nullptr };
 
 b2DrawRayLib::b2DrawRayLib(float scale) noexcept
@@ -123,14 +123,14 @@ void Physics::Init() {
 }
 
 void Physics::Update(float deltaTime) {
-    world.Step(deltaTime, 6, 2);
     world.SetContactListener(new ContactListener());
+    world.Step(deltaTime, 6, 2);
 }
 
 void Physics::DebugDraw() {
     if (!debugDraw) {
         debugDraw = new b2DrawRayLib();
-        debugDraw->SetFlags(b2Draw::e_shapeBit);
+        debugDraw->SetFlags(b2Draw::e_shapeBit | b2Draw::e_aabbBit);
         world.SetDebugDraw(debugDraw);
     }
     world.DebugDraw();

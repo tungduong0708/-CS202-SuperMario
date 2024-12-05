@@ -30,7 +30,7 @@ void Game::Init() {
     ImageSet idleImageSet = IDLE;
     movingObjects.push_back(player.copy());
 
-    movingObjects[0]->InitCharacter(b2Vec2(10.0f, 13.0f), idleImageSet);
+    movingObjects[0]->InitCharacter(b2Vec2(10.0f, 12.0f), idleImageSet);
 
     TilesetHandler::Init();
     tilemap.LoadMapFromJson("resources/tilemaps/map-1-1.json");
@@ -38,6 +38,7 @@ void Game::Init() {
 }
 
 void Game::Update(float deltaTime) {
+    Physics::Update(deltaTime); 
     if (GetMouseWheelMove() > 0) camera.SetZoom(camera.GetZoom() * 1.1f);
     if (GetMouseWheelMove() < 0) camera.SetZoom(camera.GetZoom() / 1.1f);
 
@@ -49,7 +50,6 @@ void Game::Update(float deltaTime) {
 
     tilemap.Update(Vector2{velocity.x, velocity.y}, deltaTime);
 
-    Physics::Update(deltaTime); 
 }
 
 void Game::Draw() {

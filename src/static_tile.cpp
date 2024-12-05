@@ -45,7 +45,7 @@ void StaticTile::Draw()
     Rectangle srcRect = { static_cast<float>(src_x), static_cast<float>(src_y), 
                         static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };
     Renderer::DrawPro(TilesetHandler::getTexture(tilesetPath), srcRect, getPosition(), Vector2{ 1, 1 }, true);
-    // Physics::DebugDraw();
+    Physics::DebugDraw();
 }
 
 void StaticTile::OnBeginContact(SceneNode* other)
@@ -55,7 +55,7 @@ void StaticTile::OnBeginContact(SceneNode* other)
     {
         b2Vec2 pos = player->getPosition();
         Vector2 size = player->getSize();
-        player->getBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
+        player->getBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -50.0f), true);
     }
 }
 
