@@ -9,6 +9,7 @@ MovingObject::MovingObject(int) {
     speed = 0;
     angle = 0;
     images = {};
+    elapsedTime = 0.0f;
 }
 
 MovingObject::MovingObject(float h, float w, float s, float a, vector<Image> imgs): 
@@ -117,6 +118,7 @@ Character::Character(int): MovingObject() {
     score = 0;
     level = 0;
     strength = 0;
+    type = "";
 }
 
 Character::Character(int h, int s, int l, int st, float h1, float w1, float s1, float a1, vector<Image> imgs, string type): 
@@ -126,7 +128,8 @@ Character::Character(int h, int s, int l, int st, float h1, float w1, float s1, 
     currentImage = IDLE;
     previousImage = IDLE;
     images = ImageHandler::setImages(type);
-    textures = {};
+    curAnim = Animation();
+
 }
 
 Character::Character(const Character &c)
@@ -135,8 +138,7 @@ Character::Character(const Character &c)
       score(c.score),
       level(c.level),
       strength(c.strength),
-      type(c.type),
-      texture(c.texture),             
+      type(c.type),             
 
       sourceRect(c.sourceRect),
       destRect(c.destRect),
@@ -159,7 +161,6 @@ Character::~Character() {
     level = 0;
     strength = 0;
     type = "";
-    texture = {};
     sourceRect = {};
     destRect = {};
     origin = {};
@@ -232,22 +233,13 @@ void Character::rotate() {
     // rotate the character
 }
 
-MovingObject* Character::copy() const {
-    return new Character(*this);
-}
 
 void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     currentImage = imageSet;
-    //texture = LoadTextureFromImage(images[imageSet]); // Load character texture
+    animations = AnimationHandler::setAnimations(type);
+    curAnim = animations[currentImage];
 
-    // Load character textures
-    for (auto img : images) {
-        textures.push_back(LoadTextureFromImage(img));
-    }
-
-    texture = textures[imageSet];
-
-    //texture = images[imageSet];
+    texture = curAnim.GetFrame();
     frameWidth = texture.width;
     frameHeight = texture.height;
     sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
@@ -261,7 +253,7 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
         destRect = {position.x, position.y, 1.0f, 1.0f / ratio};
 
 
-    origin = {frameWidth / 2.0f, frameHeight / 2.0f};
+    //origin = {frameWidth / 2.0f, frameHeight / 2.0f};
 
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -287,47 +279,14 @@ void Character::Update(float deltaTime) {
     destRect.y = position.y;
     // std::cout << position.x << " " << position.y << std::endl;
     // std::cout << previousImage << " " << currentImage << std::endl;
-
-
-    texture = textures[currentImage];
-    // if (currentImage == WALK) {
-    //     currentImage = IDLE;
-    // }
-    //cout << currentImage << " " << previousImage << endl;
+    cout << currentImage << endl;
+    curAnim = animations[currentImage];
+    curAnim.Update(deltaTime);
+    texture = curAnim.GetFrame();
 }
 
 void Character::Render() {
     Renderer::DrawPro(texture, sourceRect, {destRect.x - destRect.width/2, destRect.y - destRect.height/2}, {destRect.width, destRect.height}, faceLeft);
-}
-
-void Character::HandleInput() {
-    if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
-        // cout << "Call this one" << endl;
-        // cout << isOnGround << endl;
-        // cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
-        jump();
-    }
-
-    // Handle character input
-    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
-        if (currentImage == WALK) {
-            currentImage = WALK2;
-        }
-        else currentImage = WALK;
-        faceLeft = false;
-    } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-        body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
-        if (currentImage == WALK) {
-            currentImage = WALK2;
-        }
-        else currentImage = WALK;
-        faceLeft = true;
-    }
-    else {
-        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
-        currentImage = IDLE;
-    }
 }
 
 void Character::SetOnGround(bool isOnGround) {
@@ -403,7 +362,10 @@ void Player::move() {
 }
 
 void Player::jump() {
-    // jump the player
+    if (!isOnGround) return;
+    body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
+    //isOnGround = false; // Prevent jumping again until grounded
+    currentImage = JUMP;
 }
 
 void Player::rotate() {
@@ -412,6 +374,35 @@ void Player::rotate() {
 
 void Player::shoot() {
     // shoot the player
+}
+
+void Player::HandleInput() {
+    if (isOnGround && currentImage == JUMP) {
+        currentImage = IDLE;
+    }
+
+    if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
+        // cout << "Call this one" << endl;
+        // cout << isOnGround << endl;
+        // cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
+        jump();
+    }
+
+    // Handle character input
+    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
+        body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
+        if (currentImage != JUMP) currentImage = WALK;   
+        faceLeft = false;
+    } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
+        body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
+        if (currentImage != JUMP) currentImage = WALK;
+        faceLeft = true;
+    }
+    else {
+        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
+        if (currentImage != JUMP) currentImage = IDLE;
+    }
+
 }
 
 MovingObject* Player::copy() const {
@@ -600,6 +591,19 @@ void Coin::jump() {
 void Coin::rotate() {
     // rotate the coin
 }
+
+
+
+
+// coin 
+// contact w/ enemies
+//  + horizontally
+//  + vertically
+// flower....
+// grow-up mushroom -> grow-down
+// DangerItem
+// pipe
+// 
 
 
 

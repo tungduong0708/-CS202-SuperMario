@@ -92,12 +92,14 @@ vector<Image>& ImageHandler::setImages(string path) {
         images.push_back(LoadImage("resources/images/koopa/rot2.png"));
         images.push_back(LoadImage("resources/images/koopa/rot1.png"));
         images.push_back(LoadImage("resources/images/koopa/rot4.png"));
+        images.push_back(LoadImage("resources/images/koopa/rot3.png")); // dead
     }
     else if (path == "flykoopa") {
         images.push_back(LoadImage("resources/images/koopa/fly1.png"));
         images.push_back(LoadImage("resources/images/koopa/fly2.png"));
         images.push_back(LoadImage("resources/images/koopa/rotfly1.png")); 
         images.push_back(LoadImage("resources/images/koopa/rotfly2.png"));
+        images.push_back(LoadImage("resources/images/koopa/rot3.png")); // dead
     }
     else if (path == "beetle") {
         images.push_back(LoadImage("resources/images/beetle/idle.png"));
@@ -107,6 +109,7 @@ vector<Image>& ImageHandler::setImages(string path) {
         images.push_back(LoadImage("resources/images/beetle/rot2.png"));
         images.push_back(LoadImage("resources/images/beetle/rot3.png"));
         images.push_back(LoadImage("resources/images/beetle/rot4.png"));
+        images.push_back(LoadImage("resources/images/beetle/rot1.png")); // dead
     }
     else if (path == "bullet") {
         images.push_back(LoadImage("resources/images/object/bullet.png"));
@@ -175,4 +178,105 @@ vector<Texture>& ImageHandler::setTextures(string path) {
         textures.push_back(texture);
     }
     return textures;
+}
+
+/////////////////////////////////////
+// Animation Handler
+
+vector<Animation> AnimationHandler::animations;
+
+
+void AnimationHandler::setAnimations(const vector<Animation> &anim) {
+    for (auto a : anim) {
+        animations.push_back(a);
+    }
+}
+
+// set the animations from the character type
+vector<Animation>& AnimationHandler::setAnimations(string path) {
+    animations.clear();
+    vector<Texture> textures = ImageHandler::setTextures(path);
+    if (path == "smallmario" or path == "bigmario" or path == "smallluigi" or path=="bigluigi") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}), // idle
+            Animation({Frame(0.1f, textures[1])}), // duck
+            Animation({Frame(0.1f, textures[2]), Frame(0.1f, textures[3])}), // walk & walk2
+            Animation({Frame(0.1f, textures[4])}), // jump
+            Animation({Frame(0.1f, textures[5])}), // fall
+            Animation({Frame(0.1f, textures[6])}), // pipe
+            Animation({Frame(0.1f, textures[7])}), // dead
+            Animation({Frame(0.1f, textures[8])}), // hold
+            Animation({Frame(0.1f, textures[9])}) // victory
+        };
+    }
+    if (path == "princess") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}), // free
+            Animation({Frame(0.1f, textures[1])}), // scream
+            Animation({Frame(0.1f, textures[2])}) // kiss
+        };
+    }
+    if (path == "goomba") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}), // idle
+            Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk & walk2
+            Animation({Frame(0.1f, textures[3])}) // dead
+        };
+    }
+    if (path == "koopa") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}), // idle
+            Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk1 & walk2
+            Animation({Frame(0.1f, textures[3]), Frame(0.1f, textures[4]), Frame(0.1f, textures[5]), Frame(0.1f, textures[6])}), // rotate
+            Animation({Frame(0.1f, textures[7])}) // dead
+        };
+    }
+    if (path == "flykoopa") {
+        animations = {
+            Animation({Frame(0.1f, textures[0]), Frame(0.1f, textures[1])}), // fly1 & fly2
+            Animation({Frame(0.1f, textures[2]), Frame(0.1f, textures[3])}), // rotfly1 & rotfly2
+            Animation({Frame(0.1f, textures[4])}) // dead
+        };
+    }
+    if (path == "beetle") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}), // idle
+            Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk & walk2
+            Animation({Frame(0.1f, textures[3]), Frame(0.1f, textures[4]), Frame(0.1f, textures[5]), Frame(0.1f, textures[6])}), // rotate
+            Animation({Frame(0.1f, textures[7])}) // dead
+        };
+    }
+    if (path == "bullet") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) // bullet
+        };
+    }
+    if (path == "castroll") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) // castroll
+        };
+    }
+    if (path == "fireball") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) // fireball
+        };
+    }
+    if (path == "spike1") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) // spike1
+        };
+    }
+    if (path == "spike2") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) // spike2
+        };
+    }
+
+    return animations;
+}
+
+void AnimationHandler::AnimationVectorCopy(const vector<Animation> &src, vector<Animation> &dest) {
+    for (auto a : src) {
+        dest.push_back(a);
+    }
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "include.h"
+#include "imagehandler.h"
 
 #define IMAGE_WIDTH 16 
 
@@ -14,7 +15,7 @@ protected:
     float angle;  // initial angle of the object when moving
     float density; // density of the object, can determine the mass of the object
     vector<Image> images;
-    vector<Texture> textures;
+    vector<Animation> animations;
     float elapsedTime;
     float frameTime;
     b2Body* body; 
@@ -64,7 +65,8 @@ protected:
     int strength;
     string type;
 
-    Texture2D texture;          // Character sprite sheet              
+    Texture texture;            // Character texture
+    Animation curAnim;          // Character sprite sheet              
     Rectangle sourceRect;       // Sprite frame to draw
     Rectangle destRect;         // Scaled drawing rectangle
     Vector2 origin;             // Sprite origin
@@ -96,13 +98,13 @@ public:
     void jump();
     void rotate();
 
-    MovingObject* copy() const;  // Prototype design pattern
+    //MovingObject* copy() const;  // Prototype design pattern
     // default image = IDLE
     void InitCharacter(b2Vec2 position, ImageSet imageSet = IDLE);  
     void Update(float deltaTime);
     void Render();
-    void HandleInput();
     void SetOnGround(bool onGround); // Setter for ground state
+    virtual void HandleInput() = 0;
 };
 
 class Player : public Character {
@@ -135,6 +137,8 @@ public:
     void jump();
     void rotate();
     void shoot();
+
+    void HandleInput() ;
     MovingObject* copy() const;
 };
 
@@ -163,6 +167,7 @@ public:
     void jump();
     void rotate();
     void shoot();
+    void HandleInput();
 
     MovingObject* copy() const;
 };

@@ -23,7 +23,6 @@ enum ImageSet {
     IDLE,
     DUCK,
     WALK,
-    WALK2,
     JUMP,
     FALL,
     PIPE,
