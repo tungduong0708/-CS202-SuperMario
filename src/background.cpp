@@ -11,6 +11,11 @@ Background::~Background()
 {
 }
 
+Vector2 Background::getPosition()
+{
+    return position;
+}
+
 void Background::Update(Vector2 playerVelocity, float deltaTime)
 {
     scrollingX -= playerVelocity.x * 0.2 * deltaTime;

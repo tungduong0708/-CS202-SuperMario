@@ -42,9 +42,9 @@ void Game::Update(float deltaTime) {
     if (GetMouseWheelMove() > 0) camera.SetZoom(camera.GetZoom() * 1.1f);
     if (GetMouseWheelMove() < 0) camera.SetZoom(camera.GetZoom() / 1.1f);
 
-    b2Vec2 pos = movingObjects[0]->getPosition();
+    Vector2 pos = movingObjects[0]->getPosition();
     b2Vec2 velocity = movingObjects[0]->getVelocity();
-    camera.Update(Vector2{ pos.x, pos.y });
+    camera.Update(pos);
     movingObjects[0]->HandleInput(); 
     movingObjects[0]->Update(Vector2{velocity.x, velocity.y}, deltaTime); 
 
@@ -57,7 +57,6 @@ void Game::Draw() {
     ClearBackground(RAYWHITE);
     BeginMode2D(camera.GetCamera());
 
-    // DrawRectangle(0, 550, 750, 50, GRAY);
     tilemap.Draw();
     movingObjects[0]->Draw(); 
     Physics::world.DebugDraw(); 

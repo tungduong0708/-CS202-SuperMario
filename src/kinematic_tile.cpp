@@ -13,18 +13,22 @@ KinematicTile::KinematicTile(int id, Vector2 pos, std::string tilesetName, const
 {
 }
 
-KinematicTile::KinematicTile(const KinematicTile& other) 
+KinematicTile::KinematicTile(KinematicTile& other) 
     : Tile(other), 
       currentFrameId(other.currentFrameId),
       elapsedTime(other.elapsedTime),
       frames(other.frames) 
 {
     std::vector<b2Vec2> vertices = TilesetHandler::getBoxVertices(Tile::getTilesetPath(), getId());
-    if (!vertices.empty())
-        boundingBox = MyBoundingBox(vertices, Tile::getPosition());
+    if (!vertices.empty()) {
+        b2Body* body = GetBody();
+        MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
+        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+        SetBody(body);
+    }
 }
 
-Tile *KinematicTile::clone() const
+Tile *KinematicTile::clone()
 {
     return new KinematicTile(*this);
 }
@@ -53,10 +57,12 @@ void KinematicTile::Draw()
     int columns = TilesetHandler::getColumns(tilesetPath);
     int spacing = TilesetHandler::getSpacing(tilesetPath);
     int id = frames[currentFrameId].first;
-
-    boundingBox.updateFixture(TilesetHandler::getBoxVertices(tilesetPath, id));
     int src_x = (id % columns) * (TILE_SIZE + spacing);
     int src_y = (id / columns) * (TILE_SIZE + spacing);
+
+    b2Body* body = GetBody();
+    MyBoundingBox::updateFixture(body, TilesetHandler::getBoxVertices(tilesetPath, id));
+    
     
     Rectangle srcRect = { static_cast<float>(src_x), static_cast<float>(src_y), 
                         static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };

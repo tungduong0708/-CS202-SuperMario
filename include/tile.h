@@ -6,11 +6,11 @@
 #include <string>
 #include "my_bounding_box.h"
 #include "renderer.h"
-#include "scene_node.h"
+#include "static_object.h"
 
 const int TILE_SIZE = 16;
 
-class Tile : public SceneNode {
+class Tile : public StaticObject {
 private:
     int id;
     std::string tilesetPath;
@@ -22,12 +22,12 @@ public:
     Tile(int id, Vector2 position, std::string tilesetPath);
     ~Tile() = default;
 
-    virtual Tile* clone() const = 0;
+    virtual Tile* clone() = 0;
     virtual void setPosition(const Vector2& newPos);
 
     virtual int getId() const;
     virtual std::string getTilesetPath() const;
-    virtual Vector2 getPosition() const;
+    Vector2 getPosition();
 
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void Draw();

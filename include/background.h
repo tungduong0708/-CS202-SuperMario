@@ -15,6 +15,7 @@ public:
     Background(const Texture2D& texture, const Vector2& position, int numRepeated);
     ~Background();
 
+    Vector2 getPosition();
     void Update(Vector2 playerPosition, float deltaTime);
     void Draw();
     void OnBeginContact(SceneNode* other);

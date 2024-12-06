@@ -1,6 +1,7 @@
 #include "moving_object.h"
 #include "imagehandler.h"
 #include "physics.h"
+#include "my_bounding_box.h"
 
 
 MovingObject::MovingObject() {
@@ -77,9 +78,10 @@ vector<Image> MovingObject::getImages() {
     return images;
 }
 
-b2Vec2 MovingObject::getPosition()
+Vector2 MovingObject::getPosition()
 {
-    return body->GetPosition();
+    b2Vec2 pos = body->GetPosition();
+    return Vector2{pos.x, pos.y};
 }
 
 b2Vec2 MovingObject::getVelocity()
@@ -215,6 +217,11 @@ bool Character::isLeft() {
     return faceLeft;
 }
 
+bool Character::hitWall()
+{
+    return isHitWall;
+}
+
 void Character::move() {
     // move the character
 }
@@ -237,32 +244,39 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     frameHeight = texture.height;
     sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
 
-    float ratio = (float)frameWidth / (float)frameHeight;
-    if (ratio < 1.0f) 
-        size = {1.0f * ratio, 1.0f};
-    else 
-        size = {1.0f, 1.0f / ratio};
+    // float ratio = (float)frameWidth / (float)frameHeight;
 
+    // if (ratio < 1.0f) 
+    //     size = {1.0f * ratio, 1.0f};
+    // else 
+    //     size = {1.0f, 1.0f / ratio};
+
+    size = {(float)frameWidth / IMAGE_WIDTH, (float)frameHeight / IMAGE_WIDTH};
     destRect = {position.x, position.y, size.x, size.y};
 
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position.Set(position.x, position.y);
-    body = Physics::world.CreateBody(&bodyDef);
+    std::vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{size.x, 0.0f},
+        b2Vec2{size.x, size.y},
+        b2Vec2{0.0f, size.y}
+    };
+    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y});
+    // b2BodyDef bodyDef;
+    // bodyDef.type = b2_dynamicBody;
+    // bodyDef.position.Set(position.x, position.y);
+    // body = Physics::world.CreateBody(&bodyDef);
 
-    b2PolygonShape shape;
-    shape.SetAsBox(destRect.width / 2.0f, destRect.height / 2.0f, b2Vec2(destRect.width / 2.0f, destRect.height / 2.0f), 0.0f);
+    // b2PolygonShape shape;
+    // shape.SetAsBox(destRect.width / 2.0f, destRect.height / 2.0f, b2Vec2(destRect.width / 2.0f, destRect.height / 2.0f), 0.0f);
 
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &shape;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
-    body->CreateFixture(&fixtureDef);
+    // b2FixtureDef fixtureDef;
+    // fixtureDef.shape = &shape;
+    // fixtureDef.density = 1.0f;
+    // fixtureDef.friction = 0.3f;
+    // body->CreateFixture(&fixtureDef);
+    // body->SetFixedRotation(true); 
 
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
-    body->SetFixedRotation(true); 
-
-    cout << "Character: " << fixtureDef.filter.categoryBits << " " << fixtureDef.filter.maskBits << endl;
 }
 
 void Character::Update(Vector2 playerVelocity, float deltaTime) {

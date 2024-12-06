@@ -40,7 +40,7 @@ public:
     float getAngle();
     float getDensity();
     vector<Image> getImages();
-    b2Vec2 getPosition();
+    Vector2 getPosition();
     b2Vec2 getVelocity();
     b2Body* getBody();
 
@@ -76,6 +76,7 @@ protected:
     int currentFrame;
     float frameTime, frameSpeed;
     bool isOnGround;          // Is character on the ground
+    bool isHitWall;
     ImageSet currentImage;
     ImageSet previousImage;
     bool faceLeft;            // Is character facing left
@@ -95,6 +96,7 @@ public:
     int getStrength();
     bool onGround();
     bool isLeft();
+    bool hitWall();
 
     void move();
     void jump();
@@ -120,7 +122,7 @@ private:
     // speed = max speed that the player can move
 public:
     Player();
-    Player(string n = "", float c = 0, float r = 0, bool ia = true, bool s = false, int h = 0, int s1 = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s2 = 0, float a1 = 0, vector<Image> images = {}, string type = "");
+    Player(string n, float c, float r, bool iarue, bool salse, int h, int s1, int l, int st, Vector2 size, float s2, float a1, vector<Image> images, string type);
     Player(const Player &p);
     ~Player();
 

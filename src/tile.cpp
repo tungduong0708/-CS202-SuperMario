@@ -19,7 +19,7 @@ std::string Tile::getTilesetPath() const
     return tilesetPath;
 }
 
-Vector2 Tile::getPosition() const {
+Vector2 Tile::getPosition() {
     return position;
 }
 

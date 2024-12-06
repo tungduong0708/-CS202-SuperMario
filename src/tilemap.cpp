@@ -5,6 +5,7 @@
 #include "kinematic_tile.h"
 #include "scene_node.h"
 #include "background.h"
+#include "static_object.h"
 #include "physics.h"
 #include <fstream>
 #include <iostream>
@@ -119,36 +120,27 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         for (const auto& vertex : object["polygon"]) {
                             vertices.push_back(b2Vec2{vertex["x"].get<float>() / tileSize, vertex["y"].get<float>() / tileSize});
                         }
-                        b2BodyDef bodyDef;
-                        bodyDef.type = b2_staticBody;
-                        bodyDef.position.Set(x, y);
-                        b2Body* body = Physics::world.CreateBody(&bodyDef);
-
-                        b2PolygonShape polygonShape;
-                        polygonShape.Set(vertices.data(), vertices.size());
-
-                        b2FixtureDef fixtureDef;
-                        fixtureDef.shape = &polygonShape;
-                        fixtureDef.density = 0.0f;
-                        body->CreateFixture(&fixtureDef);
+                        b2Body* body;
+                        MyBoundingBox::createBody(body, b2_staticBody, vertices, Vector2{x, y});
+                        StaticObject* obj = new StaticObject(body);
+                        nodes.push_back(obj);
                     }
                     else {
                     // create object with a single point
                     }
                 }
                 else {
-                    b2BodyDef bodyDef;
-                    bodyDef.type = b2_staticBody;
-                    bodyDef.position.Set(x + width / 2.0f, y + height / 2.0f);
-                    b2Body* body = Physics::world.CreateBody(&bodyDef);
-
-                    b2PolygonShape boxShape;
-                    boxShape.SetAsBox(width / 2.0f, height / 2.0f);
-
-                    b2FixtureDef fixtureDef;
-                    fixtureDef.shape = &boxShape;
-                    fixtureDef.density = 0.0f;
-                    body->CreateFixture(&fixtureDef);
+                    std::vector<b2Vec2> vertices = {
+                        b2Vec2{0.0f, 0.0f},
+                        b2Vec2{width, 0.0f},
+                        b2Vec2{width, height},
+                        b2Vec2{0.0f, height}
+                    };
+                    b2Body* body;
+                    MyBoundingBox::createBody(body, b2_staticBody, vertices, Vector2{x, y});
+                    StaticObject* obj = new StaticObject(body);
+                    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(obj);
+                    nodes.push_back(obj);
                 }
             }
         }

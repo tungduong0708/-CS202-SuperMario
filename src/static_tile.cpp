@@ -3,6 +3,7 @@
 #include "renderer.h"
 #include "scene_node.h"
 #include "moving_object.h"
+#include "my_bounding_box.h"
 
 StaticTile::StaticTile(int id, std::string tilesetName) : Tile(id, tilesetName)
 {
@@ -13,14 +14,18 @@ StaticTile::StaticTile(int id, Vector2 pos, std::string tilesetName)
 {
 }
 
-StaticTile::StaticTile(const StaticTile& other) : Tile(other)
+StaticTile::StaticTile(StaticTile& other) : Tile(other)
 {
     std::vector<b2Vec2> vertices = TilesetHandler::getBoxVertices(Tile::getTilesetPath(), getId());
-    if (!vertices.empty()) 
-        boundingBox = MyBoundingBox(TilesetHandler::getBoxVertices(Tile::getTilesetPath(), getId()), Tile::getPosition());
+    if (!vertices.empty()) {
+        b2Body* body = GetBody();
+        MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
+        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+        SetBody(body);
+    }
 }
 
-Tile *StaticTile::clone() const
+Tile *StaticTile::clone()
 {
     return new StaticTile(*this);
 }
@@ -45,18 +50,18 @@ void StaticTile::Draw()
     Rectangle srcRect = { static_cast<float>(src_x), static_cast<float>(src_y), 
                         static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };
     Renderer::DrawPro(TilesetHandler::getTexture(tilesetPath), srcRect, getPosition(), Vector2{ 1, 1 }, true);
-    Physics::DebugDraw();
+    // Physics::DebugDraw();
 }
 
 void StaticTile::OnBeginContact(SceneNode* other)
 {
-    MovingObject* player = dynamic_cast<MovingObject*>(other);
-    if (player != nullptr)
-    {
-        b2Vec2 pos = player->getPosition();
-        Vector2 size = player->getSize();
-        player->getBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -50.0f), true);
-    }
+    // MovingObject* player = dynamic_cast<MovingObject*>(other);
+    // if (player != nullptr)
+    // {
+    //     b2Vec2 pos = player->getPosition();
+    //     Vector2 size = player->getSize();
+    //     player->getBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 50.0f), true);
+    // }
 }
 
 void StaticTile::OnEndContact(SceneNode* other)

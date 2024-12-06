@@ -8,6 +8,7 @@ public:
     SceneNode() = default;
     virtual ~SceneNode() = default;
 
+    virtual Vector2 getPosition() = 0;
     virtual void Update(Vector2 playerVelocity, float deltaTime) = 0;
     virtual void Draw() = 0;
     virtual void OnBeginContact(SceneNode* other) = 0;

@@ -11,13 +11,12 @@
 
 class StaticTile : public Tile {
 private:
-    MyBoundingBox boundingBox;
 public:
     StaticTile() = default;
     StaticTile(int id, std::string tilesetName);
     StaticTile(int id, Vector2 pos, std::string tilesetName);
-    StaticTile(const StaticTile& other);
-    Tile* clone() const;
+    StaticTile(StaticTile& other);
+    Tile* clone();
     ~StaticTile() = default;
 
     void setPosition(const Vector2& position);

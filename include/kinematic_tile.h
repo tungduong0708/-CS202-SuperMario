@@ -14,14 +14,13 @@ class KinematicTile : public Tile {
 private:
     int currentFrameId = 0;
     float elapsedTime = 0.0f;
-    MyBoundingBox boundingBox;
     std::vector<std::pair<int, int>> frames;
 public:
     KinematicTile() = default;
     KinematicTile(int id, std::string tilesetName, const std::vector<std::pair<int, int>>& frames);
     KinematicTile(int id, Vector2 pos, std::string tilesetName, const std::vector<std::pair<int, int>>& frames);
-    KinematicTile(const KinematicTile& other);
-    Tile* clone() const;
+    KinematicTile(KinematicTile& other);
+    Tile* clone();
     ~KinematicTile() = default;
 
     void setPosition(const Vector2& position);
