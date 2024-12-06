@@ -80,6 +80,7 @@ protected:
     ImageSet currentImage;
     ImageSet previousImage;
     bool faceLeft;            // Is character facing left
+    std::unordered_set<SceneNode*> groundContacts;
 public:
     Character(int);
     Character(int h = 0, int s = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s1 = 0, float a1 = 0, vector<Image> images = {}, string type = "");

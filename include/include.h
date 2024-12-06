@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <unordered_set>
 using json = nlohmann::json;
 using namespace std;
 

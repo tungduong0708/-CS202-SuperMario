@@ -395,17 +395,17 @@ void Player::HandleInput() {
         body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) currentImage = WALK;   
         faceLeft = false;
-        cout << "state: " << currentImage << endl;
+        // cout << "state: " << currentImage << endl;
     } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
         body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) currentImage = WALK;
         faceLeft = true;
-        cout << "state: " << currentImage << endl;
+        // cout << "state: " << currentImage << endl;
     }
     else if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) currentImage = DUCK;
-        cout << "state: " << currentImage << endl;
+        // cout << "state: " << currentImage << endl;
     }
     else {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
@@ -431,7 +431,7 @@ void Player::HandleInput() {
         //cout << "state: " << currentImage << endl;
     }
 
-    cout << isOnGround << endl;
+    // cout << isOnGround << endl;
 }
 
 void Player::rotate() {
@@ -444,12 +444,30 @@ void Player::shoot() {
 
 void Player::OnBeginContact(SceneNode *other)
 {
-    isOnGround = true;
+    b2Vec2 pos = body->GetPosition();
+    Vector2 otherPos = other->getPosition();
+    float playBottom = pos.y + size.y;
+    float otherTop = otherPos.y;
+    float diff = playBottom - otherTop;
+
+    std::cout << "diff: " << diff << std::endl;
+    
+    if (abs(diff) < 0.1f) {
+        groundContacts.insert(other);
+        isOnGround = true;
+    }
 }
 
 void Player::OnEndContact(SceneNode *other)
 {
-    isOnGround = false;
+    if (groundContacts.find(other) != groundContacts.end()) {
+        groundContacts.erase(other);
+    }
+
+    // If there are no more ground contacts, set isOnGround to false
+    if (groundContacts.empty()) {
+        isOnGround = false;
+    }
 }
 
 MovingObject* Player::copy() const {

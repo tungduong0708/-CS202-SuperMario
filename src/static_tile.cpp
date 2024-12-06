@@ -55,13 +55,6 @@ void StaticTile::Draw()
 
 void StaticTile::OnBeginContact(SceneNode* other)
 {
-    // MovingObject* player = dynamic_cast<MovingObject*>(other);
-    // if (player != nullptr)
-    // {
-    //     b2Vec2 pos = player->getPosition();
-    //     Vector2 size = player->getSize();
-    //     player->getBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 50.0f), true);
-    // }
 }
 
 void StaticTile::OnEndContact(SceneNode* other)

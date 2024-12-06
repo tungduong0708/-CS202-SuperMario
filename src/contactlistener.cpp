@@ -21,18 +21,3 @@ void ContactListener::EndContact(b2Contact *contact)
     if (nodeA) nodeA->OnEndContact(nodeB);
     if (nodeB) nodeB->OnEndContact(nodeA);
 }
-
-void ContactListener::PreSolve(b2Contact *contact, const b2Manifold *oldManifold)
-{
-
-}
-
-void ContactListener::PostSolve(b2Contact *contact, const b2ContactImpulse *impulse)
-{
-    int pointCount = impulse->count;
-    for (int i = 0; i < pointCount; ++i) {
-        float normalImpulse = impulse->normalImpulses[i];
-        float tangentImpulse = impulse->tangentImpulses[i];
-        // std::cout << "Normal impulse: " << normalImpulse << " Tangent impulse: " << tangentImpulse << std::endl;
-    }
-}
