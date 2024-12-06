@@ -38,6 +38,7 @@ void Game::Init() {
 }
 
 void Game::Update(float deltaTime) {
+    Physics::Update(deltaTime); 
     if (GetMouseWheelMove() > 0) camera.SetZoom(camera.GetZoom() * 1.1f);
     if (GetMouseWheelMove() < 0) camera.SetZoom(camera.GetZoom() / 1.1f);
 
@@ -50,7 +51,6 @@ void Game::Update(float deltaTime) {
 
     tilemap.Update(Vector2{velocity.x, velocity.y}, deltaTime);
 
-    Physics::Update(deltaTime); 
 }
 
 void Game::Draw() {

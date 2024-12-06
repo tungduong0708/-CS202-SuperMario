@@ -123,14 +123,14 @@ void Physics::Init() {
 }
 
 void Physics::Update(float deltaTime) {
-    world.Step(deltaTime, 6, 2);
     world.SetContactListener(new ContactListener());
+    world.Step(deltaTime, 6, 2);
 }
 
 void Physics::DebugDraw() {
     if (!debugDraw) {
         debugDraw = new b2DrawRayLib();
-        debugDraw->SetFlags(b2Draw::e_shapeBit);
+        debugDraw->SetFlags(b2Draw::e_shapeBit | b2Draw::e_aabbBit);
         world.SetDebugDraw(debugDraw);
     }
     world.DebugDraw();

@@ -104,15 +104,14 @@ void MovingObject::rotate() {
     // rotate the object
 }
 
-
-Character::Character(int): MovingObject() {
+Character::Character(int) : MovingObject()
+{
     health = 0;
     score = 0;
     level = 0;
     strength = 0;
     type = "";
 }
-
 
 Character::Character(int health, int score, int level, int strength, 
                      Vector2 size, float speed, float angle, vector<Image> imgs, string type): 
@@ -221,10 +220,6 @@ void Character::move() {
 }
 
 void Character::jump() {
-    if (!isOnGround) return;
-    body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
-    //isOnGround = false; // Prevent jumping again until grounded
-    currentImage = JUMP;
 }
 
 void Character::rotate() {
@@ -266,6 +261,8 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
 
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
     body->SetFixedRotation(true); 
+
+    cout << "Character: " << fixtureDef.filter.categoryBits << " " << fixtureDef.filter.maskBits << endl;
 }
 
 void Character::Update(Vector2 playerVelocity, float deltaTime) {
@@ -284,9 +281,7 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
 
 void Character::Draw() {
     b2Vec2 pos = body->GetPosition();
-    //std::cout << "Character position: " << pos.x << " " << pos.y << std::endl;
-    //std::cout << destRect.x << " " << destRect.y << std::endl;
-    Renderer::DrawPro(texture, sourceRect, Vector2{pos.x, pos.y}, {destRect.width, destRect.height}, faceLeft);
+    Renderer::DrawPro(texture, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, faceLeft);
 }
 
 void Character::HandleInput() {
@@ -294,22 +289,20 @@ void Character::HandleInput() {
 
 void Character::OnBeginContact(SceneNode* other)
 {
-    this->isOnGround = true;
 }
 
 void Character::OnEndContact(SceneNode* other)
 {
-    this->isOnGround = false;
 }
 
-Player::Player() : Character() {
+Player::Player() : Character()
+{
     name = "";
     coins = 0;
     range = 0;
     alive = true;
     sit = false;
 }
-
 
 Player::Player(string name, float coins, float range, bool alive, bool sit, int health, 
                int score, int level, int strength, Vector2 size, float speed, 
@@ -384,24 +377,17 @@ void Player::move() {
 }
 
 void Player::jump() {
-    if (!isOnGround) return;
-    body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
-    //isOnGround = false; // Prevent jumping again until grounded
-    currentImage = JUMP;
 }
-
 
 void Player::HandleInput() {
     if (isOnGround && currentImage == JUMP) {
         currentImage = IDLE;
     }
 
-
-    if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
-        // cout << "Call this one" << endl;
-        // cout << isOnGround << endl;
-        // cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
-        jump();
+    if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
+        if (!isOnGround) return;
+        body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
+        currentImage = JUMP;
     }
 
     // Handle character input
@@ -435,6 +421,16 @@ void Player::rotate() {
 
 void Player::shoot() {
     // shoot the player
+}
+
+void Player::OnBeginContact(SceneNode *other)
+{
+    isOnGround = true;
+}
+
+void Player::OnEndContact(SceneNode *other)
+{
+    isOnGround = false;
 }
 
 MovingObject* Player::copy() const {
