@@ -274,16 +274,18 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
     destRect.y = position.y;
     // std::cout << position.x << " " << position.y << std::endl;
     // std::cout << previousImage << " " << currentImage << std::endl;
-    cout << currentImage << endl;
     curAnim = animations[currentImage];
+    // cout << deltaTime << endl;
+    // cout << curAnim.size() << endl;
+    // cout << curAnim.getCurrentIndex() << endl;
     curAnim.Update(deltaTime);
     texture = curAnim.GetFrame();
 }
 
 void Character::Draw() {
     b2Vec2 pos = body->GetPosition();
-    std::cout << "Character position: " << pos.x << " " << pos.y << std::endl;
-    std::cout << destRect.x << " " << destRect.y << std::endl;
+    //std::cout << "Character position: " << pos.x << " " << pos.y << std::endl;
+    //std::cout << destRect.x << " " << destRect.y << std::endl;
     Renderer::DrawPro(texture, sourceRect, Vector2{pos.x, pos.y}, {destRect.width, destRect.height}, faceLeft);
 }
 
@@ -394,6 +396,7 @@ void Player::HandleInput() {
         currentImage = IDLE;
     }
 
+
     if (isOnGround && (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))) {
         // cout << "Call this one" << endl;
         // cout << isOnGround << endl;
@@ -411,9 +414,17 @@ void Player::HandleInput() {
         if (currentImage != JUMP) currentImage = WALK;
         faceLeft = true;
     }
+    else if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
+        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
+        if (currentImage != JUMP) currentImage = DUCK;
+    }
     else {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) currentImage = IDLE;
+    }
+
+    if (!isOnGround && body->GetPosition().y >= 550) {
+        currentImage = JUMP;
     }
 
 }
