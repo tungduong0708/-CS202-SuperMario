@@ -234,7 +234,7 @@ void Character::rotate() {
 }
 
 void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
-    currentImage = imageSet;
+    currentImage = WALK;
     animations = AnimationHandler::setAnimations(type);
     curAnim = animations[currentImage];
 
@@ -283,19 +283,15 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
     destRect.y = position.y;
-    // std::cout << position.x << " " << position.y << std::endl;
-    // std::cout << previousImage << " " << currentImage << std::endl;
-    curAnim = animations[currentImage];
-    // cout << deltaTime << endl;
-    // cout << curAnim.size() << endl;
-    // cout << curAnim.getCurrentIndex() << endl;
-    curAnim.Update(deltaTime);
-    texture = curAnim.GetFrame();
+    animations[currentImage].Update(deltaTime);
+    texture = animations[currentImage].GetFrame();
 }
 
 void Character::Draw() {
     b2Vec2 pos = body->GetPosition();
+    sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Renderer::DrawPro(texture, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, faceLeft);
+    //Renderer::DrawPro2(texture, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, faceLeft);
 }
 
 void Character::HandleInput() {
@@ -394,39 +390,48 @@ void Player::jump() {
 }
 
 void Player::HandleInput() {
-    if (isOnGround && currentImage == JUMP) {
-        currentImage = IDLE;
-    }
-
-    if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
-        if (!isOnGround) return;
-        body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
-        currentImage = JUMP;
-    }
-
     // Handle character input
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
         body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) currentImage = WALK;   
         faceLeft = false;
+        cout << "state: " << currentImage << endl;
     } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
         body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) currentImage = WALK;
         faceLeft = true;
+        cout << "state: " << currentImage << endl;
     }
     else if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) currentImage = DUCK;
+        cout << "state: " << currentImage << endl;
     }
     else {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) currentImage = IDLE;
+        //cout << "state: " << currentImage << endl;
     }
 
-    if (!isOnGround && body->GetPosition().y >= 550) {
+    if (isOnGround && currentImage == JUMP) {
+        currentImage = IDLE;
+        //cout << "state: " << currentImage << endl;
+    }
+
+    if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
+        if (isOnGround) {
+            body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -24.0f), true);
+            currentImage = JUMP;
+        }
+        cout << "state: " << currentImage << endl;
+    }
+
+    if (!isOnGround) {
         currentImage = JUMP;
+        //cout << "state: " << currentImage << endl;
     }
 
+    cout << isOnGround << endl;
 }
 
 void Player::rotate() {
