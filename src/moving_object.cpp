@@ -285,8 +285,10 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
     destRect.y = position.y;
     // std::cout << position.x << " " << position.y << std::endl;
     // std::cout << previousImage << " " << currentImage << std::endl;
-    // cout << currentImage << endl;
     curAnim = animations[currentImage];
+    // cout << deltaTime << endl;
+    // cout << curAnim.size() << endl;
+    // cout << curAnim.getCurrentIndex() << endl;
     curAnim.Update(deltaTime);
     texture = curAnim.GetFrame();
 }
@@ -412,9 +414,17 @@ void Player::HandleInput() {
         if (currentImage != JUMP) currentImage = WALK;
         faceLeft = true;
     }
+    else if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
+        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
+        if (currentImage != JUMP) currentImage = DUCK;
+    }
     else {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) currentImage = IDLE;
+    }
+
+    if (!isOnGround && body->GetPosition().y >= 550) {
+        currentImage = JUMP;
     }
 
 }
