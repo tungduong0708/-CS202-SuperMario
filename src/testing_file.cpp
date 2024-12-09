@@ -1,81 +1,133 @@
-#include <iostream>
-#include <fstream>
-#include <nlohmann/json.hpp>
-#include <box2d/box2d.h>
-#include <raylib.h>
-#include <filesystem>
-using json = nlohmann::json;
-using namespace std;
+// #include <raylib.h>
+// #include <box2d/box2d.h>
+// #include <iostream>
 
+// // Constants for the simulation
+// const float SCALE = 30.0f; // Pixels per meter
 
-class World {
-private:
-    b2World* world;
-    b2Body* groundBody;
-    b2Body* dynamicBody;
+// // Convert Box2D coordinates to screen coordinates
+// Vector2 B2ToRaylib(const b2Vec2& vec) {
+//     return Vector2{ vec.x * SCALE, GetScreenHeight() - (vec.y * SCALE) };
+// }
 
-    void init() {
-        InitWindow(800, 600, "Raylib test");
-        SetTargetFPS(60);
+// // Custom contact listener
+// class ContactListener : public b2ContactListener {
+// public:
+//     void BeginContact(b2Contact* contact) override {
+//         void* bodyUserDataA = (void*)contact->GetFixtureA()->GetBody()->GetUserData().pointer;
+//         void* bodyUserDataB = (void*)contact->GetFixtureB()->GetBody()->GetUserData().pointer;
 
-        // create world
-        world = new b2World(b2Vec2(0.0f, -10.0f));
+//         if (bodyUserDataA || bodyUserDataB) {
+//             if (bodyUserDataA == (void*)1 || bodyUserDataB == (void*)1) {
+//                 hit = true;
+//             }
+//         }
+//     }
 
-        // create ground body
-        b2BodyDef groundBodyDef;
-        groundBodyDef.position.Set(50.0f, 10.0f);
-        groundBody = world->CreateBody(&groundBodyDef);
+//     bool hit = false; // Flag to check if box is hit
+// };
 
-        // create dynamic body
-        b2BodyDef dBodyDef;
-        dBodyDef.type = b2_dynamicBody; // if u want the body move in response to forces 
-        dBodyDef.position.Set(0.0f, 4.0f);
-        dynamicBody = world->CreateBody(&dBodyDef);
+// int main() {
+//     // Initialize Raylib
+//     InitWindow(800, 600, "Bouncing Box in Mario Style");
+//     SetTargetFPS(60);
 
-        // create a shape and attach it with the dynamic body
-        b2PolygonShape dynamicBox;
-        dynamicBox.SetAsBox(1.0f, 1.0f);
+//     // Box2D world setup
+//     b2Vec2 gravity(0.0f, -9.8f);
+//     b2World world(gravity);
 
-        // fixture def
-        b2FixtureDef fixtureDef;
-        fixtureDef.shape = &dynamicBox;
-        fixtureDef.density = 1.0f;
-        fixtureDef.friction = 0.3f;
-        
-        dynamicBody->CreateFixture(&fixtureDef);
-    }
+//     // Create ground
+//     b2BodyDef groundDef;
+//     groundDef.position.Set(400.0f / SCALE, 50.0f / SCALE);
+//     b2Body* ground = world.CreateBody(&groundDef);
 
-    void physics() {
-        float timeStep = 1.0f/ 60.0f;
-        int velIters = 6; // velocity iteration
-        int posIters = 2; // position iteration
-        world->Step(timeStep, velIters, posIters);
-    }
+//     b2PolygonShape groundShape;
+//     groundShape.SetAsBox(400.0f / SCALE, 10.0f / SCALE);
+//     ground->CreateFixture(&groundShape, 0.0f);
 
-    void draw() {
-        // begin drawing
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
+//     // Create player (e.g., Mario)
+//     b2BodyDef playerDef;
+//     playerDef.type = b2_dynamicBody;
+//     playerDef.position.Set(400.0f / SCALE, 150.0f / SCALE);
+//     b2Body* player = world.CreateBody(&playerDef);
 
-        // draw
-        // dynamic body
-        b2Vec2 pos = dynamicBody->GetPosition();
-        DrawRectangle(pos.x * 100, pos.y * 100, 100, 100, RED);
+//     b2PolygonShape playerShape;
+//     playerShape.SetAsBox(15.0f / SCALE, 15.0f / SCALE);
 
-        EndDrawing();
-    }
+//     b2FixtureDef playerFixture;
+//     playerFixture.shape = &playerShape;
+//     playerFixture.density = 1.0f;
+//     playerFixture.friction = 0.3f;
+//     player->CreateFixture(&playerFixture);
 
-    void cleanup() {
-        delete world;
-        CloseWindow();
-    }
+//     // Create box
+//     b2BodyDef boxDef;
+//     boxDef.type = b2_dynamicBody;
+//     boxDef.position.Set(400.0f / SCALE, 300.0f / SCALE);
+//     b2Body* box = world.CreateBody(&boxDef);
+//     box->GetUserData().pointer = 1;
 
-public:
-    void run() {
-        while (!WindowShouldClose()) {
-            physics();
-            draw();
-        }
-        cleanup();
-    }
-};
+//     b2PolygonShape boxShape;
+//     boxShape.SetAsBox(20.0f / SCALE, 10.0f / SCALE);
+
+//     b2FixtureDef boxFixture;
+//     boxFixture.shape = &boxShape;
+//     boxFixture.density = 1.0f;
+//     boxFixture.friction = 0.3f;
+//     boxFixture.restitution = 0.0f; // No bounce on normal collision
+//     box->CreateFixture(&boxFixture);
+
+//     // Create a prismatic joint to constrain box movement
+//     b2PrismaticJointDef jointDef;
+//     jointDef.bodyA = ground;
+//     jointDef.bodyB = box;
+//     jointDef.collideConnected = false;
+//     jointDef.localAxisA.Set(0.0f, 1.0f); // Constrain movement to vertical
+//     jointDef.localAnchorA.Set(0.0f, 0.0f);
+//     jointDef.localAnchorB.Set(0.0f, 0.0f);
+//     jointDef.enableLimit = true;
+//     jointDef.lowerTranslation = -0.1f; // Allow slight downward movement
+//     jointDef.upperTranslation = 0.2f;  // Allow upward bounce
+//     world.CreateJoint(&jointDef);
+
+//     // Contact listener
+//     ContactListener contactListener;
+//     world.SetContactListener(&contactListener);
+
+//     // Main game loop
+//     while (!WindowShouldClose()) {
+//         // Step the Box2D world
+//         world.Step(1.0f / 60.0f, 8, 3);
+
+//         // Check for box hit
+//         if (contactListener.hit) {
+//             box->ApplyLinearImpulseToCenter(b2Vec2(0.0f, 2.0f), true);
+//             contactListener.hit = false; // Reset hit flag
+//         }
+
+//         // Start drawing
+//         BeginDrawing();
+//         ClearBackground(RAYWHITE);
+
+//         // Draw ground
+//         Vector2 groundPos = B2ToRaylib(ground->GetPosition());
+//         DrawRectangle(groundPos.x - 400, groundPos.y - 10, 800, 20, DARKGRAY);
+
+//         // Draw player
+//         b2Vec2 playerPos = player->GetPosition();
+//         Vector2 playerScreenPos = B2ToRaylib(playerPos);
+//         DrawRectangle(playerScreenPos.x - 15, playerScreenPos.y - 15, 30, 30, RED);
+
+//         // Draw box
+//         b2Vec2 boxPos = box->GetPosition();
+//         Vector2 boxScreenPos = B2ToRaylib(boxPos);
+//         DrawRectangle(boxScreenPos.x - 20, boxScreenPos.y - 10, 40, 20, BLUE);
+
+//         EndDrawing();
+//     }
+
+//     // Cleanup
+//     CloseWindow();
+
+//     return 0;
+// }

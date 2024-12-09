@@ -9,13 +9,16 @@
 
 class Game {
 public:
-    static Game* getInstance() {
-        static Game instance;
-        return &instance;
+    static Game& getInstance() {
+        if (!instance) {
+            instance = new Game();
+        }
+        return *instance;
     }
     void Run();
 
 private:
+    static Game* instance;
     Game();
     void Init();
     void Update(float deltaTime);
@@ -25,5 +28,4 @@ private:
     vector<MovingObject*> movingObjects;    
     vector<FireBall> fireFlowers;  
 };
-
 #endif // GAME_H

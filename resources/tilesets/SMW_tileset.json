@@ -6,7 +6,7 @@
  "name":"SMW_tileset",
  "spacing":1,
  "tilecount":460,
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tiles":[
         {
@@ -265,7 +265,8 @@
              "visible":true,
              "x":0,
              "y":0
-            }
+            },
+         "type":"blind_box"
         }, 
         {
          "id":23,
@@ -290,7 +291,8 @@
              "visible":true,
              "x":0,
              "y":0
-            }
+            },
+         "type":"blind_box"
         }, 
         {
          "id":24,
@@ -315,7 +317,8 @@
              "visible":true,
              "x":0,
              "y":0
-            }
+            },
+         "type":"blind_box"
         }, 
         {
          "id":25
@@ -547,7 +550,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -573,7 +575,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -653,7 +654,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -679,7 +679,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {

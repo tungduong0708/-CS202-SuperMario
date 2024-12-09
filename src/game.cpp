@@ -9,6 +9,7 @@
 #include "camera.h"
 #include <raylib.h>
 #include <box2d/box2d.h>
+Game* Game::instance = nullptr;
 
 const int screenWidth = 800;
 const int screenHeight = 600;

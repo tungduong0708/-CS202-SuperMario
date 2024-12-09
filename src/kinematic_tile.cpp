@@ -3,13 +3,15 @@
 #include "renderer.h"
 #include "scene_node.h"
 
-KinematicTile::KinematicTile(int id, std::string tilesetName, const std::vector<std::pair<int, int>> &frames)
-    : Tile(id, tilesetName), frames(frames)
+const float BOUNCE_HEIGHT = 0.3f;
+
+KinematicTile::KinematicTile(int id, std::string type, std::string tilesetName, const std::vector<std::pair<int, int>> &frames)
+    : Tile(id, type, tilesetName), frames(frames)
 {
 }
 
-KinematicTile::KinematicTile(int id, Vector2 pos, std::string tilesetName, const std::vector<std::pair<int, int>> &frames)
-    : Tile(id, pos, tilesetName), frames(frames)
+KinematicTile::KinematicTile(int id, Vector2 pos, std::string type, std::string tilesetName, const std::vector<std::pair<int, int>> &frames)
+    : Tile(id, pos, type, tilesetName), frames(frames)
 {
 }
 
@@ -21,10 +23,37 @@ KinematicTile::KinematicTile(KinematicTile& other)
 {
     std::vector<b2Vec2> vertices = TilesetHandler::getBoxVertices(Tile::getTilesetPath(), getId());
     if (!vertices.empty()) {
-        b2Body* body = GetBody();
-        MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
-        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
-        SetBody(body);
+        if (getType() == "blind_box") {
+            Vector2 pos = getPosition();
+            b2Body* solidBody = GetBody();
+
+            b2BodyDef bodyDef;
+            bodyDef.type = b2_dynamicBody;
+            bodyDef.position.Set(pos.x, pos.y - BOUNCE_HEIGHT);
+            bodyDef.fixedRotation = true;
+            invisibleBody = Physics::world.CreateBody(&bodyDef);
+
+            MyBoundingBox::createBody(solidBody, b2_dynamicBody, vertices, pos);
+            solidBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+            SetBody(solidBody);
+
+            b2PrismaticJointDef jointDef;
+            jointDef.bodyB = solidBody;
+            jointDef.bodyA = invisibleBody;
+            jointDef.collideConnected = false;  
+            jointDef.localAxisA = b2Vec2(0.0f, -1.0f);
+            jointDef.localAnchorA = b2Vec2(0.5f, 0.5f);
+            jointDef.localAnchorB = b2Vec2(0.5f, 0.5f);
+            jointDef.enableLimit = true;
+            jointDef.lowerTranslation = -BOUNCE_HEIGHT;
+            jointDef.upperTranslation = 0.0f;
+            joint = (b2PrismaticJoint*)Physics::world.CreateJoint(&jointDef);
+        } else {
+            b2Body* body = GetBody();
+            MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
+            body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+            SetBody(body);
+        }
     }
 }
 
@@ -60,9 +89,10 @@ void KinematicTile::Draw()
     int src_x = (id % columns) * (TILE_SIZE + spacing);
     int src_y = (id / columns) * (TILE_SIZE + spacing);
 
-    b2Body* body = GetBody();
-    MyBoundingBox::updateFixture(body, TilesetHandler::getBoxVertices(tilesetPath, id));
-    
+    if (getType() != "blind_box") {
+        b2Body* body = GetBody();
+        MyBoundingBox::updateFixture(body, TilesetHandler::getBoxVertices(tilesetPath, id));
+    }
     
     Rectangle srcRect = { static_cast<float>(src_x), static_cast<float>(src_y), 
                         static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };

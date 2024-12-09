@@ -40,6 +40,10 @@ void Tileset::load(const std::string& tilesetPath, const std::string& tilesetIma
     if (data.contains("tiles")) {
         for (const auto& tileData : data["tiles"]) {
             int tileId = tileData["id"].get<int>();
+            std::string type;
+            if (tileData.contains("type")) {
+                type = tileData["type"].get<std::string>();
+            }
 
             if (tileData.contains("animation")) {
                 std::vector<std::pair<int, int>> frames;
@@ -48,7 +52,10 @@ void Tileset::load(const std::string& tilesetPath, const std::string& tilesetIma
                     int duration = frame["duration"].get<int>();
                     frames.push_back({frameId, duration});
                 }
-                tiles[tileId] = new KinematicTile(tileId, tilesetPath, frames);
+                tiles[tileId] = new KinematicTile(tileId, type, tilesetPath, frames);
+            }
+            else {
+                tiles[tileId] = new StaticTile(tileId, type, tilesetPath);
             }
 
             if (tileData.contains("objectgroup")) {
@@ -80,7 +87,7 @@ void Tileset::load(const std::string& tilesetPath, const std::string& tilesetIma
 
     for (int i = 0; i < tileCount; i++) {
         if (tiles[i] == nullptr) {
-            tiles[i] = new StaticTile(i, tilesetPath);
+            tiles[i] = new StaticTile(i, "", tilesetPath);
         }
     }
 }
