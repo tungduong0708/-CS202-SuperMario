@@ -1,6 +1,6 @@
 #include "my_bounding_box.h"
 
-void MyBoundingBox::createBody(b2Body*& body, b2BodyType type, const std::vector<b2Vec2> &vertices, const Vector2 &position)
+void MyBoundingBox::createBody(b2Body*& body, b2BodyType type, const std::vector<b2Vec2> &vertices, const Vector2 &position, float restitution)
 {
     b2BodyDef bodyDef;
     bodyDef.type = type;
@@ -16,9 +16,9 @@ void MyBoundingBox::createBody(b2Body*& body, b2BodyType type, const std::vector
     fixtureDef.shape = &polygonShape;
     fixtureDef.density = 1.0f; 
     fixtureDef.friction = 0.0f;
+    fixtureDef.restitution = restitution;
     body->CreateFixture(&fixtureDef);
 }
-
 
 void MyBoundingBox::copyBody(b2Body*& body, b2Body* otherBody, const Vector2 &position) {
     b2BodyDef bodyDef;

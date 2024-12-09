@@ -13,7 +13,7 @@
 const int screenWidth = 800;
 const int screenHeight = 600;
 
-Player player("Player", 0, 0, true, false, 0, 0, 0, 0, Vector2{0, 0}, 0, 0, {}, "smallmario");
+Player player("Player", 0, 0, true, false, 0, 0, 0, 0, Vector2{0, 0}, 0, 0, {}, "mario");
 MyCamera camera;
 Tilemap tilemap;
 
@@ -30,7 +30,7 @@ void Game::Init() {
     ImageSet idleImageSet = IDLE;
     movingObjects.push_back(player.copy());
 
-    movingObjects[0]->InitCharacter(b2Vec2(10.0f, 12.0f), idleImageSet);
+    movingObjects[0]->Init(b2Vec2(10.0f, 12.0f), idleImageSet);
 
     TilesetHandler::Init();
     tilemap.LoadMapFromJson("resources/tilemaps/map-1-1.json");
@@ -42,13 +42,33 @@ void Game::Update(float deltaTime) {
     if (GetMouseWheelMove() > 0) camera.SetZoom(camera.GetZoom() * 1.1f);
     if (GetMouseWheelMove() < 0) camera.SetZoom(camera.GetZoom() / 1.1f);
 
-    Vector2 pos = movingObjects[0]->getPosition();
-    b2Vec2 velocity = movingObjects[0]->getVelocity();
-    camera.Update(pos);
-    movingObjects[0]->HandleInput(); 
-    movingObjects[0]->Update(Vector2{velocity.x, velocity.y}, deltaTime); 
 
+    for (int i = 0; i < movingObjects.size(); i++) {
+        Vector2 pos = movingObjects[i]->getPosition();
+        b2Vec2 vel = movingObjects[i]->getVelocity();
+        movingObjects[i]->HandleInput(fireFlowers);
+        movingObjects[i]->Update(Vector2{vel.x, vel.y}, deltaTime);
+    }
+
+    b2Vec2 velocity = movingObjects[0]->getVelocity();
+    camera.Update(movingObjects[0]->getPosition());  
     tilemap.Update(Vector2{velocity.x, velocity.y}, deltaTime);
+
+    for (int i = 0; i < fireFlowers.size(); i++) {
+        fireFlowers[i].Update(Vector2{0, 0}, deltaTime);
+        Vector2 pos = fireFlowers[i].getPosition();
+        // if the flower is out of the screen, remove it from the vector
+        if (pos.x < 0 || pos.x > tilemap.GetWidth() || pos.y < 0 || pos.y > tilemap.GetHeight()) {
+            fireFlowers.erase(fireFlowers.begin() + i);
+        }
+    }
+
+    // Vector2 pos = movingObjects[0]->getPosition();
+    // b2Vec2 velocity = movingObjects[0]->getVelocity();
+    // camera.Update(pos);
+    // movingObjects[0]->HandleInput(fireFlowers); 
+    // movingObjects[0]->Update(Vector2{velocity.x, velocity.y}, deltaTime); 
+
 
 }
 
@@ -58,7 +78,12 @@ void Game::Draw() {
     BeginMode2D(camera.GetCamera());
 
     tilemap.Draw();
-    movingObjects[0]->Draw(); 
+    for (int i = 0; i < movingObjects.size(); i++) {
+        movingObjects[i]->Draw();
+    }
+    for (int i = 0; i < fireFlowers.size(); i++) {
+        fireFlowers[i].Draw();
+    }
     Physics::world.DebugDraw(); 
 
     EndMode2D();

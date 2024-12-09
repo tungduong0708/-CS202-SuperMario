@@ -8,6 +8,11 @@
 #ifndef MOVING_OBJECT_H
 #define MOVING_OBJECT_H
 
+// Forward declaration
+class FireBall;
+class Bullet;
+class Coin;
+
 
 class MovingObject : public SceneNode {
 protected:
@@ -52,8 +57,8 @@ public:
     virtual MovingObject* copy() const = 0;  // Prototype design pattern
     virtual void Update(Vector2 playerVelocity, float deltaTime) = 0;
     virtual void Draw() = 0;  
-    virtual void InitCharacter(b2Vec2 position, ImageSet imageSet) = 0;
-    virtual void HandleInput() = 0;
+    virtual void Init(b2Vec2 position, ImageSet imageSet) = 0;
+    virtual void HandleInput(vector<FireBall>& FireBalls) = 0;
     virtual void OnBeginContact(SceneNode* other) = 0;
     virtual void OnEndContact(SceneNode* other) = 0;
 };
@@ -66,6 +71,7 @@ protected:
     int level;
     int strength;
     string type;
+    Mode mode;
 
     Texture texture;            // Character texture
     Animation curAnim;          // Character sprite sheet              
@@ -91,6 +97,7 @@ public:
     void setScore(int s);
     void setLevel(int l);
     void setStrength(int st);
+    void setMode(Mode mode);
     int getHealth();
     int getScore();
     int getLevel();
@@ -98,6 +105,7 @@ public:
     bool onGround();
     bool isLeft();
     bool hitWall();
+    Mode getMode();
 
     void move();
     void jump();
@@ -105,12 +113,13 @@ public:
 
     //MovingObject* copy() const;  // Prototype design pattern
     // default image = IDLE
-    void InitCharacter(b2Vec2 position, ImageSet imageSet = IDLE);  
+    void Init(b2Vec2 position, ImageSet imageSet = IDLE);  
     void Update(Vector2 playerVelocity, float deltaTime);
     void Draw();  
+    void ResizeBody(float newWidth, float newHeight);
     virtual void OnBeginContact(SceneNode* other);
     virtual void OnEndContact(SceneNode* other);
-    virtual void HandleInput();
+    virtual void HandleInput(vector<FireBall>& FireBalls);
 };
 
 class Player : public Character {
@@ -146,7 +155,7 @@ public:
 
     void OnBeginContact(SceneNode* other);
     void OnEndContact(SceneNode* other);
-    void HandleInput() ;
+    void HandleInput(vector<FireBall>& FireBalls) ;
     MovingObject* copy() const;
 };
 
@@ -181,23 +190,31 @@ public:
 };
 
 
-class FireFlower : public MovingObject {
+class FireBall : public MovingObject {
 private:
     float damage;
     // angle = initial angle of the fire flower
     // other attributes are inherited from the moving object class ---
 public:
-    FireFlower();
-    FireFlower(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0, vector<Image> images = {});
-    FireFlower(const FireFlower &ff);
-    ~FireFlower();
+    FireBall();
+    FireBall(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0, vector<Image> images = {});
+    FireBall(const FireBall &ff);
+    ~FireBall();
     void setDamage(float d);
     float getDamage();
     void move();
     void jump();
     void rotate();
 
-    //MovingObject* copy() const;
+
+    void Init(b2Vec2 position, ImageSet imageSet);
+    void Draw();
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void HandleInput(vector<FireBall>& FireBalls);
+    void OnBeginContact(SceneNode* other);  
+    void OnEndContact(SceneNode* other);
+
+    MovingObject* copy() const;
 };
 
 class Bullet : public MovingObject {
