@@ -47,22 +47,16 @@ void Game::Update(float deltaTime) {
     for (int i = 0; i < movingObjects.size(); i++) {
         Vector2 pos = movingObjects[i]->getPosition();
         b2Vec2 vel = movingObjects[i]->getVelocity();
-        movingObjects[i]->HandleInput(fireFlowers);
+        movingObjects[i]->HandleInput();
         movingObjects[i]->Update(Vector2{vel.x, vel.y}, deltaTime);
     }
 
     b2Vec2 velocity = movingObjects[0]->getVelocity();
+    Vector2 position = movingObjects[0]->getPosition();
+    //cout << "player position: " << position.x << " " << position.y << endl;
     camera.Update(movingObjects[0]->getPosition());  
     tilemap.Update(Vector2{velocity.x, velocity.y}, deltaTime);
 
-    for (int i = 0; i < fireFlowers.size(); i++) {
-        fireFlowers[i].Update(Vector2{0, 0}, deltaTime);
-        Vector2 pos = fireFlowers[i].getPosition();
-        // if the flower is out of the screen, remove it from the vector
-        if (pos.x < 0 || pos.x > tilemap.GetWidth() || pos.y < 0 || pos.y > tilemap.GetHeight()) {
-            fireFlowers.erase(fireFlowers.begin() + i);
-        }
-    }
 
     // Vector2 pos = movingObjects[0]->getPosition();
     // b2Vec2 velocity = movingObjects[0]->getVelocity();
@@ -82,9 +76,7 @@ void Game::Draw() {
     for (int i = 0; i < movingObjects.size(); i++) {
         movingObjects[i]->Draw();
     }
-    for (int i = 0; i < fireFlowers.size(); i++) {
-        fireFlowers[i].Draw();
-    }
+    
     Physics::world.DebugDraw(); 
 
     EndMode2D();
@@ -94,7 +86,11 @@ void Game::Draw() {
 void Game::Cleanup() {
     // Physics::world.DestroyBody(groundBody); 
     TilesetHandler::Clear();
-    CloseWindow(); 
+    CloseWindow();
+
+    for (int i = 0; i < movingObjects.size(); i++) {
+        delete movingObjects[i];
+    } 
 }
 
 void Game::Run() {

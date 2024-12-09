@@ -13,6 +13,7 @@ struct Frame {
 class Animation {
 private:
     float curTime;
+    float timer;
     vector<Frame> frames;
     int curIndex;
     // curTime = current time of the animation
@@ -31,9 +32,13 @@ public:
     void AddFrame(float time, Texture texture);
     void AddFrame(const Frame &frame);
     void Update(float deltaTime);
+    void setTimer(float timer = 0.0f);
     Texture GetFrame();
     int size();
     int getCurrentIndex();
+    float getTimer();
+    float getCurrentTime();
+    float getFrameTime(int index); // get the time of the frame at index
     float getWidth();
     float getHeight();
 };

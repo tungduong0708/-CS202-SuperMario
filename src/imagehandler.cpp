@@ -205,7 +205,7 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
             Animation({Frame(0.1f, textures[5])}), // fall
             Animation({Frame(0.1f, textures[6])}), // pipe
             Animation({Frame(0.1f, textures[7])}), // dead
-            Animation({Frame(0.1f, textures[8])}), // hold
+            Animation({Frame(0.25f, textures[8])}), // hold
             Animation({Frame(0.1f, textures[9])}) // victory
         };
     }
