@@ -244,13 +244,6 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
     frameHeight = texture.height;
     sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
 
-    // float ratio = (float)frameWidth / (float)frameHeight;
-
-    // if (ratio < 1.0f) 
-    //     size = {1.0f * ratio, 1.0f};
-    // else 
-    //     size = {1.0f, 1.0f / ratio};
-
     size = {(float)frameWidth / IMAGE_WIDTH, (float)frameHeight / IMAGE_WIDTH};
     destRect = {position.x, position.y, size.x, size.y};
 
@@ -261,20 +254,6 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
         b2Vec2{0.0f, size.y}
     };
     MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y});
-    // b2BodyDef bodyDef;
-    // bodyDef.type = b2_dynamicBody;
-    // bodyDef.position.Set(position.x, position.y);
-    // body = Physics::world.CreateBody(&bodyDef);
-
-    // b2PolygonShape shape;
-    // shape.SetAsBox(destRect.width / 2.0f, destRect.height / 2.0f, b2Vec2(destRect.width / 2.0f, destRect.height / 2.0f), 0.0f);
-
-    // b2FixtureDef fixtureDef;
-    // fixtureDef.shape = &shape;
-    // fixtureDef.density = 1.0f;
-    // fixtureDef.friction = 0.3f;
-    // body->CreateFixture(&fixtureDef);
-    // body->SetFixedRotation(true); 
 
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
@@ -444,6 +423,7 @@ void Player::shoot() {
 
 void Player::OnBeginContact(SceneNode *other)
 {
+    if (!other) return;
     b2Vec2 pos = body->GetPosition();
     Vector2 otherPos = other->getPosition();
     float playBottom = pos.y + size.y;
@@ -460,6 +440,8 @@ void Player::OnBeginContact(SceneNode *other)
 
 void Player::OnEndContact(SceneNode *other)
 {
+    if (!other) return;
+
     if (groundContacts.find(other) != groundContacts.end()) {
         groundContacts.erase(other);
     }

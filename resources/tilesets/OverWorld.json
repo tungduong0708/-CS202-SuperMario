@@ -6,7 +6,7 @@
  "name":"OverWorld",
  "spacing":0,
  "tilecount":64,
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tiles":[
         {
@@ -14,7 +14,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -40,7 +39,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":5,
              "name":"",
              "objects":[
                     {
@@ -59,7 +57,8 @@
              "visible":true,
              "x":0,
              "y":0
-            }
+            },
+         "type":"brick"
         }],
  "tilewidth":16,
  "type":"tileset",
