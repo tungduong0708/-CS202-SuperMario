@@ -12,9 +12,12 @@ MyCamera::MyCamera(float initialZoom, Vector2 mapSize, int screenWidth, int scre
 void MyCamera::Update(Vector2 targetPosition) {
     float halfScreenWidth = (screenWidth / 2.0f) / camera.zoom;
     float halfScreenHeight = (screenHeight / 2.0f) / camera.zoom;
+
+    float targetX = Clamp(targetPosition.x, halfScreenWidth, mapSize.x - halfScreenWidth);
+    float targetY = Clamp(targetPosition.y, halfScreenHeight, mapSize.y - halfScreenHeight);
     
-    camera.target.x = Clamp(targetPosition.x, halfScreenWidth, mapSize.x - halfScreenWidth);
-    camera.target.y = Clamp(targetPosition.y, halfScreenHeight, mapSize.y - halfScreenHeight);
+    camera.target.x = targetX;
+    camera.target.y += (targetY - camera.target.y) * 0.2f; 
 }
 
 void MyCamera::SetZoom(float zoom) {
@@ -30,3 +33,7 @@ Camera2D MyCamera::GetCamera() const {
     return camera;
 }
 
+Vector2 MyCamera::GetCameraTarget() const
+{
+    return camera.target;
+}

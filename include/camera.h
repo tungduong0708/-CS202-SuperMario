@@ -23,6 +23,7 @@ public:
     void SetZoom(float zoom);
     float GetZoom() const;
     Camera2D GetCamera() const;
+    Vector2 GetCameraTarget() const;
     ~MyCamera() = default;
 };
 
