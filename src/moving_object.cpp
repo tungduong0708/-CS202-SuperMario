@@ -409,6 +409,10 @@ void Player::setSit(bool s) {
     sit = s;
 }
 
+void Player::updateScore(int s) {
+    score += s;
+}
+
 string Player::getName() {
     return name;
 }
@@ -547,6 +551,9 @@ void Player::Draw() {
     for (auto &fireBall : fireBalls) {
         fireBall.Draw();
     }
+    Vector2 pos = getPosition();
+    TextHelper::Draw(name, Vector2{pos.x - 9.0f, pos.y - 10.0f}, 10, WHITE);
+    TextHelper::Draw(to_string(score), Vector2{pos.x - 9.0f, pos.y - 10.0f}, 10, WHITE);
 }
 
 void Player::rotate() {

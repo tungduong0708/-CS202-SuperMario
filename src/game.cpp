@@ -8,6 +8,7 @@
 #include "animation_effect_creator.h"
 #include "tilemap.h"
 #include "camera.h"
+#include "text_helper.h"
 #include <raylib.h>
 #include <box2d/box2d.h>
 Game* Game::instance = nullptr;
@@ -29,6 +30,7 @@ void Game::Init() {
 
     Physics::Init(); 
     AnimationEffectCreator::InitEffects();
+    TextHelper::loadFont("highway_gothic", "");
 
 
     ImageSet idleImageSet = IDLE;

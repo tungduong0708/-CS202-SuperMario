@@ -156,6 +156,7 @@ void KinematicTile::OnBeginContact(SceneNode* other)
             if (fixture->IsSensor()) {
                 animation = false;
                 Physics::bodiesToDestroy.push_back(GetBody());
+                playerPtr->updateScore(100);
             }
         }
     }

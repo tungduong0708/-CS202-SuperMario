@@ -19,6 +19,8 @@ using namespace std;
 
 
 #include "renderer.h"
+#include "scene_node.h"
+#include "text_helper.h"
 
 #define IMAGE_WIDTH 16
 

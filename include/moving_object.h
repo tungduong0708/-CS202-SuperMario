@@ -142,6 +142,7 @@ public:
     void setRange(float r);
     void setIsAlive(bool ia);
     void setSit(bool s);
+    void updateScore(int s);
     string getName();
     float getCoins();
     float getRange();
