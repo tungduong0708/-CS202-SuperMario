@@ -551,9 +551,10 @@ void Player::Draw() {
     for (auto &fireBall : fireBalls) {
         fireBall.Draw();
     }
-    Vector2 pos = getPosition();
-    TextHelper::Draw(name, Vector2{pos.x - 9.0f, pos.y - 10.0f}, 10, WHITE);
-    TextHelper::Draw(to_string(score), Vector2{pos.x - 9.0f, pos.y - 10.0f}, 10, WHITE);
+}
+
+void Player::Draw(Vector2 position, float angle) {
+    TextHelper::DrawPackage(name, score, coins, position, 12, WHITE);
 }
 
 void Player::rotate() {
@@ -684,6 +685,10 @@ void Enemy::HandleInput()
 {
 }
 
+void Enemy::Draw(Vector2 position, float angle)
+{
+}
+
 MovingObject* Enemy::copy() const {
     return new Enemy(*this);
 }
@@ -734,6 +739,7 @@ void FireBall::rotate() {
     // rotate the fire flower
     angle += 90.0f;
 }
+
 
 MovingObject* FireBall::copy() const {
     return new FireBall(*this);
@@ -800,6 +806,9 @@ void FireBall::Draw() {
     Texture texture = animations[0].GetFrame();
     Rectangle sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Renderer::DrawPro(texture, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, angle);
+}
+
+void FireBall::Draw(Vector2 position, float angle) {
 }
 
 Bullet::Bullet() : MovingObject() {

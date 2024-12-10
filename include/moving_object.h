@@ -9,8 +9,6 @@
 // Forward declaration
 class FireBall;
 class Bullet;
-class Coin;
-
 
 class MovingObject : public SceneNode {
 protected:
@@ -56,6 +54,7 @@ public:
     virtual MovingObject* copy() const = 0;  // Prototype design pattern
     virtual void Update(Vector2 playerVelocity, float deltaTime) = 0;
     virtual void Draw() = 0;  
+    virtual void Draw(Vector2 position, float angle = 0.0f) = 0;
     virtual void Init(b2Vec2 position, ImageSet imageSet) = 0;
     virtual void HandleInput() = 0;
     virtual void OnBeginContact(SceneNode* other) = 0;
@@ -115,6 +114,7 @@ public:
     void Init(b2Vec2 position, ImageSet imageSet = IDLE);  
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void Draw();  
+    virtual void Draw(Vector2 position, float angle = 0.0f) = 0;
     void ResizeBody(float newWidth, float newHeight);
     virtual void OnBeginContact(SceneNode* other);
     virtual void OnEndContact(SceneNode* other);
@@ -160,6 +160,7 @@ public:
     void HandleInput();
     void Update(Vector2 playerVelocity, float deltaTime);
     void Draw();
+    void Draw(Vector2 position, float angle = 0.0f);
     MovingObject* copy() const;
 };
 
@@ -189,6 +190,7 @@ public:
     void rotate();
     void shoot();
     void HandleInput();
+    void Draw(Vector2 position, float angle = 0.0f);
 
     MovingObject* copy() const;
 };
@@ -216,6 +218,7 @@ public:
 
     void Init(b2Vec2 position, ImageSet imageSet);
     void Draw();
+    void Draw(Vector2 position, float angle = 0.0f);
     void Update(Vector2 playerVelocity, float deltaTime);
     void HandleInput();
     void ReloadAnimation();

@@ -148,6 +148,9 @@ void KinematicTile::OnBeginContact(SceneNode* other)
                 frames.clear();
                 frames.push_back({2, 0});
                 animation = false;
+
+                playerPtr->updateScore(200);
+                playerPtr->setCoins(playerPtr->getCoins() + 1);
             }
         }
         else if (getType() == "coin") {
@@ -157,6 +160,7 @@ void KinematicTile::OnBeginContact(SceneNode* other)
                 animation = false;
                 Physics::bodiesToDestroy.push_back(GetBody());
                 playerPtr->updateScore(100);
+                playerPtr->setCoins(playerPtr->getCoins() + 1);
             }
         }
     }

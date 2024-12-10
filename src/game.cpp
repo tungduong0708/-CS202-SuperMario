@@ -31,6 +31,7 @@ void Game::Init() {
     Physics::Init(); 
     AnimationEffectCreator::InitEffects();
     TextHelper::loadFont("highway_gothic", "");
+    TextHelper::loadTexture("coin");
 
 
     ImageSet idleImageSet = IDLE;
@@ -81,6 +82,9 @@ void Game::Draw() {
     for (int i = 0; i < movingObjects.size(); i++) {
         movingObjects[i]->Draw();
     }
+
+    Vector2 cameraTarget = camera.GetCameraTarget();
+    movingObjects[0]->Draw(Vector2(cameraTarget.x - 9.0f, cameraTarget.y - 7.0f), 0.0f);
     
     Physics::world.DebugDraw(); 
 
