@@ -40,7 +40,7 @@ void Game::Init() {
 
     TilesetHandler::Init();
     tilemap.LoadMapFromJson("resources/tilemaps/map-1-1.json");
-    camera = MyCamera(40.0f, Vector2{ (float)tilemap.GetWidth(), (float)tilemap.GetHeight() }, screenWidth, screenHeight);
+    camera = MyCamera(38.0f, Vector2{ (float)tilemap.GetWidth(), (float)tilemap.GetHeight() }, screenWidth, screenHeight);
 }
 
 void Game::Update(float deltaTime) {

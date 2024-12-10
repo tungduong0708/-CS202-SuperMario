@@ -24,8 +24,8 @@ void CoinEffect::Update(float deltaTime)
     position.y -= deltaTime / 50;
     animation.Update(deltaTime);
     texture = animation.GetFrame();
-    texture.width /= TILE_SIZE;
-    texture.height /= TILE_SIZE;
+    texture.width /= texture.height - 6;
+    texture.height /= texture.height;
     
 }
 

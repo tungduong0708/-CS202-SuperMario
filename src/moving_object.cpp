@@ -490,7 +490,7 @@ void Player::HandleInput() {
             previousImage = currentImage;
             currentImage = JUMP;
         }
-        cout << "state: " << currentImage << endl;
+        // cout << "state: " << currentImage << endl;
     }
 
     if (IsKeyPressed(KEY_E) || IsKeyPressed(KEY_ENTER)) {
@@ -573,9 +573,9 @@ void Player::OnBeginContact(SceneNode *other)
     float otherTop = otherPos.y;
     float diff = playBottom - otherTop;
 
-    // std::cout << "diff: " << diff << std::endl;
+    std::cout << "diff: " << diff << std::endl;
     
-    if (abs(diff) < 0.1f) {
+    if (abs(diff) < 0.4f) {
         groundContacts.insert(other);
         isOnGround = true;
     }
