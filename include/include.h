@@ -40,7 +40,8 @@ enum ImageSet {
 enum Mode {
     SMALL,
     BIG,
-    FIRE
+    FIRE,
+    IMMORTAL
 };
 
 
