@@ -24,7 +24,9 @@ public:
     ~Tile() = default;
 
     virtual Tile* clone() = 0;
+    virtual void setId(int id);
     virtual void setPosition(const Vector2& newPos);
+    virtual void setTilesetPath(const std::string& path);
 
     virtual std::string getType();
     virtual int getId() const;

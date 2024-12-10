@@ -17,6 +17,7 @@ private:
     std::vector<std::pair<int, int>> frames;
     b2Body* invisibleBody;
     b2PrismaticJoint* joint;
+    bool animation = true;
 public:
     KinematicTile() = default;
     KinematicTile(int id, std::string type, std::string tilesetName, const std::vector<std::pair<int, int>>& frames);

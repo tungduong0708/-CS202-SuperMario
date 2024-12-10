@@ -6,8 +6,19 @@ Tile::Tile(int id, std::string type, std::string tilesetPath) : id(id), position
 
 Tile::Tile(int id, Vector2 position, std::string type, std::string tilesetPath) : id(id), position(position), type(type), tilesetPath(tilesetPath) {}
 
-void Tile::setPosition(const Vector2& newPos) {
+void Tile::setId(int id)
+{
+    this->id = id;
+}
+
+void Tile::setPosition(const Vector2 &newPos)
+{
     position = newPos;
+}
+
+void Tile::setTilesetPath(const std::string &path)
+{
+    tilesetPath = path;
 }
 
 std::string Tile::getType()

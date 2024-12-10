@@ -81,6 +81,12 @@ void KinematicTile::Update(Vector2 playerVelocity, float deltaTime)
         elapsedTime = 0.0f;
         currentFrameId = (currentFrameId + 1) % frames.size(); // Loop back to start
     }
+
+    b2Body* body = GetBody();
+    Vector2 pos = getPosition();
+    if (frames.size() == 1 && body->GetType() == b2_dynamicBody && std::fmod(pos.y, 1.0f) == 0.0f) {
+        body->SetType(b2_staticBody);
+    }
 }
 
 void KinematicTile::Draw()
@@ -108,22 +114,22 @@ void KinematicTile::OnBeginContact(SceneNode* other)
     Vector2 playerPos = other->getPosition();
     Vector2 pos = getPosition();
     Player* playerPtr = dynamic_cast<Player*>(other); 
-    if (getType() == "blind_box" && playerPtr) {
+    if (getType() == "blind_box" && playerPtr != nullptr && animation) {
         float boxBottom = pos.y + 1.0f;
         float playerTop = playerPos.y;
         float diff = boxBottom - playerTop;
-        // std::cout << pos.y << " " << playerPos.y << " " << diff << std::endl;
         if (abs(diff) < 0.15f) {
             Vector2 pos = getPosition();
             pos.y--;
             std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
-            // std::cout << effectName << std::endl;
             EffectManager::AddEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+
+            Tile::setTilesetPath("resources/tilesets/OverWorld.json");
+            Tile::setId(2);
+            frames.clear();
+            frames.push_back({2, 0});
+            animation = false;
         }
-        // std::cout << "Blind box collision " << pos.x << " " << pos.y << std::endl;
-        // for (auto it = EffectManager::effectMap.begin(); it != EffectManager::effectMap.end(); ++it) {
-        //     std::cout << "(" << it->first.first << ", " << it->first.second << ") -> " << it->second << std::endl;
-        // }
     }
 }
 
