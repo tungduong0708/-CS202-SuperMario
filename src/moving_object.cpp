@@ -566,7 +566,7 @@ void Player::OnBeginContact(SceneNode *other)
     float otherTop = otherPos.y;
     float diff = playBottom - otherTop;
 
-    std::cout << "diff: " << diff << std::endl;
+    // std::cout << "diff: " << diff << std::endl;
     
     if (abs(diff) < 0.1f) {
         groundContacts.insert(other);
@@ -777,7 +777,7 @@ void FireBall::OnBeginContact(SceneNode *other) {
     // }
     // if hit vertical wall, destroy the fireball
     Vector2 otherPos = other->getPosition();
-    Vector2 posLeft = Vector2(size.x/2 + getPosition().x, size.y/2 + getPosition().y);
+    Vector2 posLeft = Vector2{size.x/2 + getPosition().x, size.y/2 + getPosition().y};
     cout << posLeft.x - otherPos.x << " " << size.x/2 + 0.1f << endl;
     if (abs(posLeft.x - otherPos.x) < size.x/2 + 0.1f) {
         flag = true;
@@ -830,42 +830,4 @@ void Bullet::jump() {
 void Bullet::rotate() {
     // rotate the bullet
 }
-
-
-Coin::Coin() : MovingObject() {
-    value = 0;
-}
-
-
-Coin::Coin(float value, Vector2 size, float speed, float angle, vector<Image> imgs): 
-    MovingObject(size, speed, angle, imgs), value(value) {}
-
-
-Coin::Coin(const Coin &c): MovingObject(c) {
-    value = c.value;
-}
-
-Coin::~Coin() {
-    value = 0;
-}
-
-void Coin::setValue(float v) {
-    value = v;
-}
-
-float Coin::getValue() {
-    return value;
-}
-
-void Coin::jump() {
-    // jump the coin
-}
-
-void Coin::rotate() {
-    // rotate the coin
-}
-
-
-
-
 

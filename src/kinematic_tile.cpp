@@ -112,12 +112,18 @@ void KinematicTile::OnBeginContact(SceneNode* other)
         float boxBottom = pos.y + 1.0f;
         float playerTop = playerPos.y;
         float diff = boxBottom - playerTop;
-        if (abs(diff) < 0.1f) {
+        // std::cout << pos.y << " " << playerPos.y << " " << diff << std::endl;
+        if (abs(diff) < 0.15f) {
             Vector2 pos = getPosition();
             pos.y--;
             std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
+            // std::cout << effectName << std::endl;
             EffectManager::AddEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
         }
+        // std::cout << "Blind box collision " << pos.x << " " << pos.y << std::endl;
+        // for (auto it = EffectManager::effectMap.begin(); it != EffectManager::effectMap.end(); ++it) {
+        //     std::cout << "(" << it->first.first << ", " << it->first.second << ") -> " << it->second << std::endl;
+        // }
     }
 }
 
