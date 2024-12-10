@@ -282,8 +282,10 @@ void Character::Init(b2Vec2 position, ImageSet imageSet) {
     std::vector<b2Vec2> vertices = {
         b2Vec2{0.0f, 0.0f},
         b2Vec2{size.x, 0.0f},
-        b2Vec2{size.x, size.y},
-        b2Vec2{0.0f, size.y}
+        b2Vec2{size.x - 0.2f, size.y},
+        b2Vec2{size.x, size.y - 0.05f},
+        b2Vec2{0.0f, size.y - 0.05f},
+        b2Vec2{0.0f + 0.2f, size.y}
     };
     MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y});
 
