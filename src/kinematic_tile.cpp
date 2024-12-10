@@ -1,10 +1,5 @@
-#include "kinematic_tile.h"
-#include "tileset_handler.h"
-#include "renderer.h"
-#include "scene_node.h"
-#include "animation_effect_creator.h"
-#include "effect_manager.h"
-#include "moving_object.h"
+#include "include.h"
+#include "object.h"
 
 const float BOUNCE_HEIGHT = 0.3f;
 

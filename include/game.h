@@ -2,10 +2,9 @@
 #define GAME_H
 
 #include "include.h"
-#include "moving_object.h"
+#include "object.h"
 #include "physics.h"
 #include "contactlistener.h"
-#include "imagehandler.h"
 
 class Game {
 public:

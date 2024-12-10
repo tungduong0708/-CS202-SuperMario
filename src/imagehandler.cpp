@@ -132,6 +132,19 @@ vector<Image>& ImageHandler::setImages(string path) {
         images.push_back(LoadImage("resources/images/coin/coin3.png"));
         images.push_back(LoadImage("resources/images/coin/coin4.png"));
     }
+    else if (path == "mushroom") {
+        images.push_back(LoadImage("resources/images/mushroom/mushroom.png"));
+    }
+    else if (path == "star") {
+        images.push_back(LoadImage("resources/images/star/star1.png"));
+        images.push_back(LoadImage("resources/images/star/star2.png"));
+        images.push_back(LoadImage("resources/images/star/star3.png"));
+        images.push_back(LoadImage("resources/images/star/star4.png"));
+    }
+    else if (path == "fireflower") {
+        images.push_back(LoadImage("resources/images/fireflower/fireflower1.png"));
+        images.push_back(LoadImage("resources/images/fireflower/fireflower2.png"));
+    }
     
     // copy vector
     return images;
@@ -294,6 +307,21 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
     else if (path == "coin") {
         animations = {
             Animation({Frame(0.1f, textures[0]), Frame(0.1f, textures[1]), Frame(0.1f, textures[2]), Frame(0.1f, textures[3])}) // coin
+        };
+    }
+    else if (path == "mushroom") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) // mushroom
+        };
+    }
+    else if (path == "star") {
+        animations = {
+            Animation({Frame(0.15f, textures[0]), Frame(0.15f, textures[1]), Frame(0.15f, textures[2]), Frame(0.15f, textures[3])}) // star
+        };
+    }
+    else if (path == "fireflower") {
+        animations = {
+            Animation({Frame(0.1f, textures[0]), Frame(0.1f, textures[1])}) // fireflower
         };
     }
 

@@ -1,16 +1,7 @@
 #include "game.h"
 #include "include.h"
-#include "physics.h"
-#include "contactlistener.h"
-#include "moving_object.h"
-#include "imagehandler.h"
-#include "tileset_handler.h"
-#include "animation_effect_creator.h"
-#include "tilemap.h"
-#include "camera.h"
-#include "text_helper.h"
-#include <raylib.h>
-#include <box2d/box2d.h>
+#include "object.h"
+
 Game* Game::instance = nullptr;
 
 const int screenWidth = 800;
