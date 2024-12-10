@@ -5,6 +5,7 @@
 #include "moving_object.h"
 #include "imagehandler.h"
 #include "tileset_handler.h"
+#include "animation_effect_creator.h"
 #include "tilemap.h"
 #include "camera.h"
 #include <raylib.h>
@@ -27,6 +28,8 @@ void Game::Init() {
     SetTargetFPS(60);
 
     Physics::Init(); 
+    AnimationEffectCreator::InitEffects();
+
 
     ImageSet idleImageSet = IDLE;
     movingObjects.push_back(player.copy());

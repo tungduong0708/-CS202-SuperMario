@@ -2,6 +2,9 @@
 #include "tileset_handler.h"
 #include "renderer.h"
 #include "scene_node.h"
+#include "animation_effect_creator.h"
+#include "effect_manager.h"
+#include "moving_object.h"
 
 const float BOUNCE_HEIGHT = 0.3f;
 
@@ -102,6 +105,20 @@ void KinematicTile::Draw()
 
 void KinematicTile::OnBeginContact(SceneNode* other)
 {
+    Vector2 playerPos = other->getPosition();
+    Vector2 pos = getPosition();
+    Player* playerPtr = dynamic_cast<Player*>(other); 
+    if (getType() == "blind_box" && playerPtr) {
+        float boxBottom = pos.y + 1.0f;
+        float playerTop = playerPos.y;
+        float diff = boxBottom - playerTop;
+        if (abs(diff) < 0.1f) {
+            Vector2 pos = getPosition();
+            pos.y--;
+            std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
+            EffectManager::AddEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+        }
+    }
 }
 
 void KinematicTile::OnEndContact(SceneNode* other)

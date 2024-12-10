@@ -72,3 +72,8 @@ float Animation::getWidth() {
 float Animation::getHeight() {
     return height;
 }
+
+float Animation::getCurTime()
+{
+    return curTime;
+}

@@ -20,6 +20,8 @@ using namespace std;
 
 #include "renderer.h"
 
+const int IMAGE_WIDTH = 16;
+
 enum ImageSet {
     IDLE,
     DUCK,

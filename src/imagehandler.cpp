@@ -126,6 +126,12 @@ vector<Image>& ImageHandler::setImages(string path) {
     else if (path == "spike2") {
         images.push_back(LoadImage("resources/images/object/spike2.png"));
     }
+    else if (path == "coin") {
+        images.push_back(LoadImage("resources/images/coin/coin1.png"));
+        images.push_back(LoadImage("resources/images/coin/coin2.png"));
+        images.push_back(LoadImage("resources/images/coin/coin3.png"));
+        images.push_back(LoadImage("resources/images/coin/coin4.png"));
+    }
     
     // copy vector
     return images;
@@ -160,6 +166,20 @@ void ImageHandler::TextureCopy(const vector<Texture> &src, vector<Texture> &dest
 
 void ImageHandler::setTextures(const vector<Texture> &img) {
     TextureCopy(img);
+}
+
+vector<Texture>& ImageHandler::setTexturesDirect(const std::string &path)
+{
+    textures.clear();
+    std::string imgPath = "resources/images/" + path + "/" + path + ".png";
+    Image image = LoadImage(imgPath.c_str());
+    Rectangle srcRect = {0, 0, (float)IMAGE_WIDTH, (float)IMAGE_WIDTH};
+    for (int i = 0; i < image.width / IMAGE_WIDTH; i++) {
+        srcRect.x = i * IMAGE_WIDTH;
+        Texture texture = LoadTextureFromImage(ImageFromImage(image, srcRect));
+        textures.push_back(texture);
+    }
+    return textures;
 }
 
 vector<Texture> ImageHandler::getTextures() {
@@ -209,21 +229,21 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
             Animation({Frame(0.1f, textures[9])}) // victory
         };
     }
-    if (path == "princess") {
+    else if (path == "princess") {
         animations = {
             Animation({Frame(0.1f, textures[0])}), // free
             Animation({Frame(0.1f, textures[1])}), // scream
             Animation({Frame(0.1f, textures[2])}) // kiss
         };
     }
-    if (path == "goomba") {
+    else if (path == "goomba") {
         animations = {
             Animation({Frame(0.1f, textures[0])}), // idle
             Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk & walk2
             Animation({Frame(0.1f, textures[3])}) // dead
         };
     }
-    if (path == "koopa") {
+    else if (path == "koopa") {
         animations = {
             Animation({Frame(0.1f, textures[0])}), // idle
             Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk1 & walk2
@@ -231,14 +251,14 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
             Animation({Frame(0.1f, textures[7])}) // dead
         };
     }
-    if (path == "flykoopa") {
+    else if (path == "flykoopa") {
         animations = {
             Animation({Frame(0.1f, textures[0]), Frame(0.1f, textures[1])}), // fly1 & fly2
             Animation({Frame(0.1f, textures[2]), Frame(0.1f, textures[3])}), // rotfly1 & rotfly2
             Animation({Frame(0.1f, textures[4])}) // dead
         };
     }
-    if (path == "beetle") {
+    else if (path == "beetle") {
         animations = {
             Animation({Frame(0.1f, textures[0])}), // idle
             Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk & walk2
@@ -246,29 +266,34 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
             Animation({Frame(0.1f, textures[7])}) // dead
         };
     }
-    if (path == "bullet") {
+    else if (path == "bullet") {
         animations = {
             Animation({Frame(0.1f, textures[0])}) // bullet
         };
     }
-    if (path == "castroll") {
+    else if (path == "castroll") {
         animations = {
             Animation({Frame(0.1f, textures[0])}) // castroll
         };
     }
-    if (path == "fireball") {
+    else if (path == "fireball") {
         animations = {
             Animation({Frame(0.1f, textures[0])}) // fireball
         };
     }
-    if (path == "spike1") {
+    else if (path == "spike1") {
         animations = {
             Animation({Frame(0.1f, textures[0])}) // spike1
         };
     }
-    if (path == "spike2") {
+    else if (path == "spike2") {
         animations = {
             Animation({Frame(0.1f, textures[0])}) // spike2
+        };
+    }
+    else if (path == "coin") {
+        animations = {
+            Animation({Frame(0.1f, textures[0]), Frame(0.1f, textures[1]), Frame(0.1f, textures[2]), Frame(0.1f, textures[3])}) // coin
         };
     }
 

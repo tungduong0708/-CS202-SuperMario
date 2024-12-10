@@ -24,6 +24,7 @@ public:
     static vector<Texture>& TextureCopy(const vector<Texture> &imgs);
     static void TextureCopy(const vector<Texture> &src, vector<Texture> &dest);
     static void setTextures(const vector<Texture> &img);
+    static vector<Texture>& setTexturesDirect(const std::string& path);
     vector<Texture> getTextures();
     static void addTexture(const Texture &img);
     static vector<Texture>& setTextures(string path = "smallmario");

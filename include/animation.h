@@ -36,6 +36,7 @@ public:
     int getCurrentIndex();
     float getWidth();
     float getHeight();
+    float getCurTime();
 };
 
 #endif // ANIMATION_H

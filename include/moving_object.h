@@ -237,24 +237,5 @@ public:
     //MovingObject* copy() const;
 };
 
-class Coin : public MovingObject {
-private:
-    // coin attributes
-    float value;
-    // angle = initial angle of the coin
-    // other attributes are inherited from the moving object class ---
-public:
-    Coin();
-    Coin(float v = 0, Vector2 size = {0, 0}, float s = 0, float a = 0, vector<Image> images = {});
-    Coin(const Coin &c);
-    ~Coin();
-    void setValue(float v);
-    float getValue();
-    void jump();
-    void rotate();
-
-    //MovingObject* copy() const;
-};
-
 #endif
 
