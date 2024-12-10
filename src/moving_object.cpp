@@ -35,6 +35,7 @@ void MovingObject::setSize(Vector2 size)
 
 void MovingObject::setSpeed(float speed) {
     this->speed = speed;
+    body->SetLinearVelocity(b2Vec2(speed, 0.0f));
 }
 
 void MovingObject::setAngle(float angle) {
@@ -107,6 +108,11 @@ void MovingObject::jump() {
 
 void MovingObject::rotate() {
     // rotate the object
+}
+
+vector<Animation> MovingObject::getAnimations() {
+    // get the animation of the object
+    return animations;
 }
 
 Character::Character(int) : MovingObject()
@@ -312,18 +318,30 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
     destRect.y = position.y;
+
+    curAnim = animations[currentImage];
+    Animation prevAnim = animations[previousImage];
+    //cout << prevAnim.getTimer() << " " << prevAnim.getFrameTime(0) << endl;
+    if (previousImage == HOLD && prevAnim.getTimer() <= prevAnim.getFrameTime(0)) {
+        currentImage = HOLD; // delay the hold animation 
+    }
+
+    //cout << previousImage << " " << currentImage << endl;
     animations[currentImage].Update(deltaTime);
     texture = animations[currentImage].GetFrame();
+    //size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
 }
 
 void Character::Draw() {
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
-    Renderer::DrawPro(texture, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, faceLeft);
-    //Renderer::DrawPro2(texture, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, faceLeft);
+    //cout << pos.x << " " << pos.y << endl;
+    Vector2 drawPosition = { pos.x, pos.y };
+
+    Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft);
 }
 
-void Character::HandleInput(vector<FireBall>& ff) {
+void Character::HandleInput() {
 }
 
 void Character::OnBeginContact(SceneNode* other)
@@ -418,23 +436,30 @@ void Player::move() {
 void Player::jump() {
 }
 
-void Player::HandleInput(vector<FireBall>& FireBalls) {
+void Player::HandleInput() {
     //ResizeBody(size.x, size.y);
     // Handle character input
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
         body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
-        if (currentImage != JUMP) currentImage = WALK;   
+        if (currentImage != JUMP) {
+            previousImage = currentImage;
+            currentImage = WALK;   
+        }
         faceLeft = false;
         // cout << "state: " << currentImage << endl;
     } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
         body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
-        if (currentImage != JUMP) currentImage = WALK;
+        if (currentImage != JUMP) {
+            previousImage = currentImage;
+            currentImage = WALK;
+        }
         faceLeft = true;
         // cout << "state: " << currentImage << endl;
     }
     else if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
+            previousImage = currentImage;
             currentImage = DUCK;
             //ResizeBody(size.x, size.y / 2.0f);
         }
@@ -442,11 +467,15 @@ void Player::HandleInput(vector<FireBall>& FireBalls) {
     }
     else {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
-        if (currentImage != JUMP) currentImage = IDLE;
+        if (currentImage != JUMP) {
+            previousImage = currentImage;
+            currentImage = IDLE;
+        }
         //cout << "state: " << currentImage << endl;
     }
 
     if (isOnGround && currentImage == JUMP) {
+        previousImage = currentImage;
         currentImage = IDLE;
         //cout << "state: " << currentImage << endl;
     }
@@ -454,6 +483,7 @@ void Player::HandleInput(vector<FireBall>& FireBalls) {
     if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
         if (isOnGround) {
             body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -24.0f), true);
+            previousImage = currentImage;
             currentImage = JUMP;
         }
         cout << "state: " << currentImage << endl;
@@ -461,22 +491,62 @@ void Player::HandleInput(vector<FireBall>& FireBalls) {
 
     if (IsKeyPressed(KEY_E) || IsKeyPressed(KEY_ENTER)) {
         // shoot
-        // freq = 1.0 second
+        // freq = 0.75 second
+        previousImage = currentImage;
         currentImage = HOLD;
-        if (elapsedTime >= 1.0f) {
+        animations[currentImage].setTimer();
+        if (elapsedTime >= 0.75f) {
             // shoot the bullet
-            FireBalls.push_back(FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f, ImageHandler::setImages("FireBall")));
-            FireBalls.back().Init(body->GetPosition() + b2Vec2(texture.width + 0.1f, texture.height/2), IDLE);
+            fireBalls.push_back(FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f, ImageHandler::setImages("fireball")));
+            for (int i = 0; i < fireBalls.size()-1; i++) {
+                fireBalls[i].ReloadAnimation();
+            }
+            fireBalls.back().Init(body->GetPosition() + b2Vec2(!faceLeft * (texture.width + 0.1f)/16, texture.height/32), IDLE);
+            fireBalls.back().setSpeed(9.0f * (faceLeft ? -1 : 1));
             elapsedTime = 0.0f;
         }
     }
 
     if (!isOnGround) {
+        previousImage = currentImage;
         currentImage = JUMP;
         //cout << "state: " << currentImage << endl;
     }
 
     // cout << isOnGround << endl;
+}
+
+void Player::Update(Vector2 playerVelocity, float deltaTime) {
+    Character::Update(playerVelocity, deltaTime);
+    vector<int> posFireBalls;
+
+    Vector2 position = getPosition();
+
+    //cout << tilemap.GetWidth() << " " << tilemap.GetHeight() << endl;
+    for (int i = 0; i < fireBalls.size(); i++) {
+        fireBalls[i].Update(Vector2{0, 0}, deltaTime);
+        Vector2 pos = fireBalls[i].getPosition();
+        // if the flower is out of the screen, remove it from the vector
+        if (pos.x < position.x - GetScreenWidth()/IMAGE_WIDTH || pos.x > position.x + GetScreenWidth()/IMAGE_WIDTH  
+            || pos.y < position.y - GetScreenHeight()/IMAGE_WIDTH || pos.y > position.y + GetScreenHeight()/IMAGE_WIDTH) {
+            posFireBalls.push_back(i);
+        }
+        if (fireBalls[i].isActive()) {
+            posFireBalls.push_back(i);
+        }
+    }
+
+
+    for (int i = posFireBalls.size() - 1; i >= 0; i--) {
+        fireBalls.erase(fireBalls.begin() + posFireBalls[i]);
+    }
+}
+
+void Player::Draw() {
+    Character::Draw();
+    for (auto &fireBall : fireBalls) {
+        fireBall.Draw();
+    }
 }
 
 void Player::rotate() {
@@ -616,18 +686,21 @@ MovingObject* Enemy::copy() const {
 
 FireBall::FireBall() : MovingObject() {
     damage = 0;
+    flag = false;
 }
 
 FireBall::FireBall(float d, Vector2 size, float speed, float angle, vector<Image> imgs): 
-    MovingObject(size, speed, angle, imgs), damage(d) {}
+    MovingObject(size, speed, angle, imgs), damage(d), flag(false) {}
 
 
 FireBall::FireBall(const FireBall &ff): MovingObject(ff) {
     damage = ff.damage;
+    flag = ff.flag;
 }
 
 FireBall::~FireBall() {
     damage = 0;
+    flag = false;
 }
 
 void FireBall::setDamage(float damage) {
@@ -636,6 +709,10 @@ void FireBall::setDamage(float damage) {
 
 float FireBall::getDamage() {
     return damage;
+}
+
+bool FireBall::isActive() {
+    return flag;
 }
 
 void FireBall::move() {
@@ -656,6 +733,7 @@ MovingObject* FireBall::copy() const {
 }
 
 void FireBall::Init(b2Vec2 position, ImageSet imageSet) {
+    span = 0.0f;
     animations = AnimationHandler::setAnimations("fireball");
     Texture texture = animations[0].GetFrame();
     size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
@@ -667,26 +745,47 @@ void FireBall::Init(b2Vec2 position, ImageSet imageSet) {
         b2Vec2{0.0f, size.y}
     };
     MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, 1.0f);
-    
-    // apply force to the body
-    body->SetLinearVelocity(b2Vec2(5.0f, 0.0f));
 }
 
 void FireBall::Update(Vector2 playerVelocity, float deltaTime) {
     elapsedTime += deltaTime;
+    span += deltaTime;
+    if (span >= 1.5f) {
+        flag = true;
+    }
     angle += 5.0f;
+
+    b2Vec2 position = body->GetPosition();
+    //cout << "fireball position: " << position.x << " " << position.y << endl;
 }
 
-void FireBall::HandleInput(vector<FireBall> &FireBalls) {
+void FireBall::HandleInput() {
 
+}
+
+void FireBall::ReloadAnimation() {
+    animations = AnimationHandler::setAnimations("fireball");
 }
 
 void FireBall::OnBeginContact(SceneNode *other) {
+    if (!other) return;
 
+    // if (dynamic_cast<Enemy*>(other)) {
+    //     // if the fireball hits the enemy, destroy the fireball
+    //     flag = true;
+    //     //other->setHealth(other->getHealth() - damage);
+    // }
+    // if hit vertical wall, destroy the fireball
+    Vector2 otherPos = other->getPosition();
+    Vector2 posLeft = Vector2(size.x/2 + getPosition().x, size.y/2 + getPosition().y);
+    cout << posLeft.x - otherPos.x << " " << size.x/2 + 0.1f << endl;
+    if (abs(posLeft.x - otherPos.x) < size.x/2 + 0.1f) {
+        flag = true;
+    }
 }
 
 void FireBall::OnEndContact(SceneNode *other) {
-
+    if (!other) return;
 }
 
 void FireBall::Draw() {

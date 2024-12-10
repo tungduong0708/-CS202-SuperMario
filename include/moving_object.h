@@ -3,8 +3,6 @@
 #include "scene_node.h"
 #include "imagehandler.h"
 
-#define IMAGE_WIDTH 16 
-
 #ifndef MOVING_OBJECT_H
 #define MOVING_OBJECT_H
 
@@ -48,6 +46,7 @@ public:
     Vector2 getPosition();
     b2Vec2 getVelocity();
     b2Body* getBody();
+    vector<Animation> getAnimations();
 
     void move();
     void jump();
@@ -58,7 +57,7 @@ public:
     virtual void Update(Vector2 playerVelocity, float deltaTime) = 0;
     virtual void Draw() = 0;  
     virtual void Init(b2Vec2 position, ImageSet imageSet) = 0;
-    virtual void HandleInput(vector<FireBall>& FireBalls) = 0;
+    virtual void HandleInput() = 0;
     virtual void OnBeginContact(SceneNode* other) = 0;
     virtual void OnEndContact(SceneNode* other) = 0;
 };
@@ -114,12 +113,13 @@ public:
     //MovingObject* copy() const;  // Prototype design pattern
     // default image = IDLE
     void Init(b2Vec2 position, ImageSet imageSet = IDLE);  
-    void Update(Vector2 playerVelocity, float deltaTime);
-    void Draw();  
+    virtual void Update(Vector2 playerVelocity, float deltaTime);
+    virtual void Draw();  
     void ResizeBody(float newWidth, float newHeight);
     virtual void OnBeginContact(SceneNode* other);
     virtual void OnEndContact(SceneNode* other);
-    virtual void HandleInput(vector<FireBall>& FireBalls);
+    virtual void HandleInput();
+    virtual MovingObject* copy() const = 0;
 };
 
 class Player : public Character {
@@ -129,6 +129,7 @@ private:
     float range; // max range if the player can shoot
     bool alive;
     bool sit;
+    vector<FireBall> fireBalls;  
     // speed = max speed that the player can move
 public:
     Player();
@@ -155,7 +156,9 @@ public:
 
     void OnBeginContact(SceneNode* other);
     void OnEndContact(SceneNode* other);
-    void HandleInput(vector<FireBall>& FireBalls) ;
+    void HandleInput();
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void Draw();
     MovingObject* copy() const;
 };
 
@@ -193,6 +196,8 @@ public:
 class FireBall : public MovingObject {
 private:
     float damage;
+    float span; // time span of the fireball
+    bool flag; // indicate that the fireball is active or not
     // angle = initial angle of the fire flower
     // other attributes are inherited from the moving object class ---
 public:
@@ -202,6 +207,7 @@ public:
     ~FireBall();
     void setDamage(float d);
     float getDamage();
+    bool isActive();
     void move();
     void jump();
     void rotate();
@@ -210,7 +216,8 @@ public:
     void Init(b2Vec2 position, ImageSet imageSet);
     void Draw();
     void Update(Vector2 playerVelocity, float deltaTime);
-    void HandleInput(vector<FireBall>& FireBalls);
+    void HandleInput();
+    void ReloadAnimation();
     void OnBeginContact(SceneNode* other);  
     void OnEndContact(SceneNode* other);
 
@@ -238,4 +245,3 @@ public:
 };
 
 #endif
-

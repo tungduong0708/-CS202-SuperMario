@@ -25,7 +25,6 @@ private:
     void Draw();
     void Cleanup();
 
-    vector<MovingObject*> movingObjects;    
-    vector<FireBall> fireFlowers;  
+    vector<MovingObject*> movingObjects;  
 };
 #endif // GAME_H
