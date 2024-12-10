@@ -84,7 +84,7 @@ void Game::Draw() {
     }
 
     Vector2 cameraTarget = camera.GetCameraTarget();
-    movingObjects[0]->Draw(Vector2(cameraTarget.x - 9.0f, cameraTarget.y - 7.0f), 0.0f);
+    movingObjects[0]->Draw(Vector2{cameraTarget.x - 9.0f, cameraTarget.y - 7.0f}, 0.0f);
     
     Physics::world.DebugDraw(); 
 

@@ -90,14 +90,14 @@ void KinematicTile::Update(Vector2 playerVelocity, float deltaTime)
 
     b2Body* body = GetBody();
     Vector2 pos = getPosition();
+    std::string type = getType();
     if (!animation) {
-        if (frames.size() == 1) {
-            if (std::fmod(pos.y, 1.0f) == 0.0f && body->GetType() == b2_dynamicBody)  {
+        if (type == "blind_box") {
+            if (std::fmod(pos.y, 1.0f) == 0.0f && frames.size() == 1 && body->GetType() == b2_dynamicBody)  {
                 body->SetType(b2_staticBody);
             }
-        } else {
+        } else if (type == "coin") {
             frames.clear();
-            // Physics::world.DestroyBody(body);
         }
     }
 }
@@ -142,7 +142,6 @@ void KinematicTile::OnBeginContact(SceneNode* other)
                 pos.y--;
                 std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
                 EffectManager::AddEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
-                playerPtr->updateScore(100);
 
                 Tile::setTilesetPath("resources/tilesets/OverWorld.json");
                 Tile::setId(2);

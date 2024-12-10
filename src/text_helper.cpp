@@ -42,6 +42,6 @@ void TextHelper::DrawPackage(string name, int score, int coins, Vector2 position
     Draw(to_string(score), Vector2{position.x, position.y + 1.0f}, fontSize, color);
     Rectangle destRect = {position.x + 8.25f, position.y, 5.0f, 4.5f};
     Rectangle sourceRect = {0, 0, (float)coin.width, (float)coin.height};
-    Renderer::DrawPro(coin, sourceRect, Vector2(position.x + 8.25f, position.y), Vector2{1.0f, 1.0f}, false);
+    Renderer::DrawPro(coin, sourceRect, Vector2{position.x + 8.25f, position.y}, Vector2{1.0f, 1.0f}, false);
     DrawTextEx(font, ("x " + to_string(coins)).c_str(), {position.x + 9.2f, position.y + 0.15f}, (float)fontSize/16, 0, color);
 }
