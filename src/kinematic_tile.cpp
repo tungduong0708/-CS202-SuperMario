@@ -142,16 +142,14 @@ void KinematicTile::OnBeginContact(SceneNode* other)
                 pos.y--;
                 std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
                 EffectManager::AddEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
-                playerPtr->updateScore(100);
+                playerPtr->updateScore(200);
+                playerPtr->setCoins(playerPtr->getCoins() + 1);
 
                 Tile::setTilesetPath("resources/tilesets/OverWorld.json");
                 Tile::setId(2);
                 frames.clear();
                 frames.push_back({2, 0});
                 animation = false;
-
-                playerPtr->updateScore(200);
-                playerPtr->setCoins(playerPtr->getCoins() + 1);
             }
         }
         else if (getType() == "coin") {
