@@ -54,6 +54,12 @@ KinematicTile::KinematicTile(KinematicTile& other)
         } else {
             b2Body* body = GetBody();
             MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
+
+            if (getType() == "coin") {
+                b2Fixture* fixture = body->GetFixtureList();
+                fixture->SetSensor(true);
+            }
+
             body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
             SetBody(body);
         }
@@ -84,13 +90,21 @@ void KinematicTile::Update(Vector2 playerVelocity, float deltaTime)
 
     b2Body* body = GetBody();
     Vector2 pos = getPosition();
-    if (frames.size() == 1 && body->GetType() == b2_dynamicBody && std::fmod(pos.y, 1.0f) == 0.0f) {
-        body->SetType(b2_staticBody);
+    if (!animation) {
+        if (frames.size() == 1) {
+            if (std::fmod(pos.y, 1.0f) == 0.0f && body->GetType() == b2_dynamicBody)  {
+                body->SetType(b2_staticBody);
+            }
+        } else {
+            frames.clear();
+            // Physics::world.DestroyBody(body);
+        }
     }
 }
 
 void KinematicTile::Draw()
 {
+    if (frames.empty()) return;
     std::string tilesetPath = Tile::getTilesetPath();
     int columns = TilesetHandler::getColumns(tilesetPath);
     int spacing = TilesetHandler::getSpacing(tilesetPath);
@@ -100,7 +114,11 @@ void KinematicTile::Draw()
 
     if (getType() != "blind_box") {
         b2Body* body = GetBody();
-        MyBoundingBox::updateFixture(body, TilesetHandler::getBoxVertices(tilesetPath, id));
+        if (getType() == "coin") {
+            MyBoundingBox::updateFixture(body, TilesetHandler::getBoxVertices(tilesetPath, id), true);
+        } else {
+            MyBoundingBox::updateFixture(body, TilesetHandler::getBoxVertices(tilesetPath, id));
+        }
     }
     
     Rectangle srcRect = { static_cast<float>(src_x), static_cast<float>(src_y), 
@@ -114,23 +132,34 @@ void KinematicTile::OnBeginContact(SceneNode* other)
     Vector2 playerPos = other->getPosition();
     Vector2 pos = getPosition();
     Player* playerPtr = dynamic_cast<Player*>(other); 
-    if (getType() == "blind_box" && playerPtr != nullptr && animation) {
-        float boxBottom = pos.y + 1.0f;
-        float playerTop = playerPos.y;
-        float diff = boxBottom - playerTop;
-        if (abs(diff) < 0.15f) {
-            Vector2 pos = getPosition();
-            pos.y--;
-            std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
-            EffectManager::AddEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+    if (playerPtr != nullptr && animation) {
+        if (getType() == "blind_box") {
+            float boxBottom = pos.y + 1.0f;
+            float playerTop = playerPos.y;
+            float diff = boxBottom - playerTop;
+            if (abs(diff) < 0.15f) {
+                Vector2 pos = getPosition();
+                pos.y--;
+                std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
+                EffectManager::AddEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
 
-            Tile::setTilesetPath("resources/tilesets/OverWorld.json");
-            Tile::setId(2);
-            frames.clear();
-            frames.push_back({2, 0});
-            animation = false;
+                Tile::setTilesetPath("resources/tilesets/OverWorld.json");
+                Tile::setId(2);
+                frames.clear();
+                frames.push_back({2, 0});
+                animation = false;
+            }
+        }
+        else if (getType() == "coin") {
+            b2Fixture* fixture = GetBody()->GetFixtureList();
+            std::cout << fixture->IsSensor() << std::endl;
+            if (fixture->IsSensor()) {
+                animation = false;
+                Physics::bodiesToDestroy.push_back(GetBody());
+            }
         }
     }
+    
 }
 
 void KinematicTile::OnEndContact(SceneNode* other)

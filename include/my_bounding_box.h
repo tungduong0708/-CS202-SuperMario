@@ -15,7 +15,7 @@ public:
     static void copyBody(b2Body*& body, b2Body* otherBody, const Vector2 &position);
 
     static void updatePosition(b2Body*& body, const b2Vec2& position);
-    static void updateFixture(b2Body*& body, const std::vector<b2Vec2>& vertices);
+    static void updateFixture(b2Body*& body, const std::vector<b2Vec2>& vertices, bool isSensor = false);
 };
 
 #endif  // BOUNDINGBOX_H

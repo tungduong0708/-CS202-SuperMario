@@ -59,7 +59,7 @@ void MyBoundingBox::updatePosition(b2Body*& body, const b2Vec2 &position)
     body->SetTransform(position, body->GetAngle());
 }
 
-void MyBoundingBox::updateFixture(b2Body*& body, const std::vector<b2Vec2> &vertices)
+void MyBoundingBox::updateFixture(b2Body*& body, const std::vector<b2Vec2> &vertices, bool isSensor)
 {
     b2Fixture* fixture = body->GetFixtureList();
     if (fixture) {
@@ -73,5 +73,6 @@ void MyBoundingBox::updateFixture(b2Body*& body, const std::vector<b2Vec2> &vert
 
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &polygonShape;
+    fixtureDef.isSensor = isSensor;
     body->CreateFixture(&fixtureDef);
 }

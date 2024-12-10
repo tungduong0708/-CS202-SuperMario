@@ -103,7 +103,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         continue;  
                     }
                     tile->setPosition(pos);
-                    nodes.push_back(tile->clone());    
+                    nodes.push_back(tile->clone());
                 }
             }
         }

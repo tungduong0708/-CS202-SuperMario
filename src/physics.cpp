@@ -10,6 +10,7 @@
 #include <iostream>
 
 b2World Physics::world{ b2Vec2(0.0f, 50.0f) };
+std::vector<b2Body*> Physics::bodiesToDestroy;
 b2DrawRayLib* Physics::debugDraw{ nullptr };
 
 b2DrawRayLib::b2DrawRayLib(float scale) noexcept
@@ -124,6 +125,12 @@ void Physics::Init() {
 
 void Physics::Update(float deltaTime) {
     world.SetContactListener(new ContactListener());
+    if (!bodiesToDestroy.empty()) {
+        for (auto body : bodiesToDestroy) {
+            world.DestroyBody(body);
+        }
+        bodiesToDestroy.clear();
+    }
     world.Step(deltaTime, 6, 2);
 }
 

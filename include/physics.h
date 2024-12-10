@@ -2,6 +2,7 @@
 #define PHYSICS_H
 
 #include "renderer.h"
+#include <vector>
 #include <box2d/b2_world.h>
 #include <raylib.h>
 #include <box2d/b2_draw.h>
@@ -37,6 +38,7 @@ class Physics
 {
 public:
     static b2World world;
+    static std::vector<b2Body*> bodiesToDestroy;
     static b2DrawRayLib* debugDraw;
 
     static void Init();
