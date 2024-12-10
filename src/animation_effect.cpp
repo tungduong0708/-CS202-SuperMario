@@ -3,10 +3,10 @@
 
 const int TILE_SIZE = 16;
 
-CoinEffect::CoinEffect(Vector2 position)
+CoinEffect::CoinEffect(Vector2 pos)
 {
-    this->animation = AnimationHandler::setAnimations("coin")[0];
-    this->position = position;
+    animation = AnimationHandler::setAnimations("coin")[0];
+    position = pos;
 }
 
 void CoinEffect::Update(float deltaTime)
@@ -14,18 +14,19 @@ void CoinEffect::Update(float deltaTime)
     if (!active) return;
     fadeTime += deltaTime;
     if (fadeTime > fadeDuration) {
-        float fadeElapsed = fadeTime - fadeDuration;
-        alpha -= 2 * fadeElapsed / fadeDuration;
-        std::cout << fadeTime << " " << fadeDuration << " " << fadeElapsed << std::endl;
-        std::cout << alpha << std::endl;
-        if (fadeElapsed >= 0.2) alpha = 0.0f;
+        float elapsed = fadeTime - fadeDuration;
+        alpha = 1.0f -  10 * elapsed / fadeDuration;
         if (alpha <= 0.0f) active = false;
     }
-    position.y -= deltaTime / 50;
+    if (curHeight < height)
+    {
+        position.y -= deltaTime * 7;
+        curHeight += deltaTime * 7;
+    }    
     animation.Update(deltaTime);
     texture = animation.GetFrame();
-    texture.width /= texture.height - 6;
-    texture.height /= texture.height;
+    size = {(float)texture.width / texture.height, 1.0f};
+
     
 }
 
@@ -33,7 +34,7 @@ void CoinEffect::Draw()
 {
     if (!active) return;
     Color color = { 255, 255, 255, (unsigned char)(alpha * 255) };
-    DrawTexture(texture, position.x, position.y, color);
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{position.x, position.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, color);
 }
 
 bool AnimationEffect::isActive()

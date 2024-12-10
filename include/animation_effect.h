@@ -20,12 +20,15 @@ public:
 
 class CoinEffect : public AnimationEffect {
 private:
+    float height = 1.0f;
+    float curHeight = 0.0f;
     float fadeTime = 0.0f;
-    float fadeDuration = 1.0f;
+    float fadeDuration = 0.6f;
     float alpha = 1.0f;
+    Vector2 size;
     Animation animation;
 public:
-    CoinEffect(Vector2 position);
+    CoinEffect(Vector2 pos);
     ~CoinEffect() = default;
     void Update(float deltaTime);
     void Draw();
