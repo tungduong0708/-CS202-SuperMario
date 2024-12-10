@@ -142,6 +142,7 @@ void KinematicTile::OnBeginContact(SceneNode* other)
                 pos.y--;
                 std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
                 EffectManager::AddEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+                playerPtr->updateScore(100);
 
                 Tile::setTilesetPath("resources/tilesets/OverWorld.json");
                 Tile::setId(2);
@@ -155,7 +156,6 @@ void KinematicTile::OnBeginContact(SceneNode* other)
         }
         else if (getType() == "coin") {
             b2Fixture* fixture = GetBody()->GetFixtureList();
-            std::cout << fixture->IsSensor() << std::endl;
             if (fixture->IsSensor()) {
                 animation = false;
                 Physics::bodiesToDestroy.push_back(GetBody());
