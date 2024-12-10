@@ -33,10 +33,10 @@ MovingObject::~MovingObject() {
     images.clear();
     elapsedTime = 0.0f;
     restitution = 0.0f;
-    if (body) {
-        Physics::world.DestroyBody(body);
-        body = nullptr;
-    }
+    // if (body) {
+    //     Physics::world.DestroyBody(body);
+    //     body = nullptr;
+    // }
 }
 
 void MovingObject::setSize(Vector2 size)

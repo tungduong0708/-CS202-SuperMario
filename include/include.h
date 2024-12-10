@@ -41,7 +41,6 @@ enum Mode {
     SMALL,
     BIG,
     FIRE,
-    IMMORTAL
 };
 
 
