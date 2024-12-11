@@ -33,7 +33,7 @@ void Background::Draw()
 
 }
 
-void Background::OnBeginContact(SceneNode* other)
+void Background::OnBeginContact(SceneNode* other, b2Vec2 normal)
 {
 }
 

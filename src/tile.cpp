@@ -55,7 +55,7 @@ void Tile::print() const {
     std::cout << "Tile ID: " << id << " at Pos " << position.x << ", " << position.y << " in " << tilesetPath << "\n";
 }
 
-void Tile::OnBeginContact(SceneNode *other)
+void Tile::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
 }
 

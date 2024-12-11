@@ -20,7 +20,7 @@ public:
 
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void Draw();
-    virtual void OnBeginContact(SceneNode* other);
+    virtual void OnBeginContact(SceneNode* other, b2Vec2 normal);
     virtual void OnEndContact(SceneNode* other);
 };
 

@@ -34,7 +34,7 @@ void StaticObject::Draw()
 {
 }
 
-void StaticObject::OnBeginContact(SceneNode *other)
+void StaticObject::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
 }
 
