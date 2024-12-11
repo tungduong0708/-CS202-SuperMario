@@ -11,10 +11,12 @@
 
 class StaticTile : public Tile {
 private:
+    b2Body* invisibleBody;
+    b2PrismaticJoint* joint;
 public:
     StaticTile() = default;
-    StaticTile(int id, std::string tilesetName);
-    StaticTile(int id, Vector2 pos, std::string tilesetName);
+    StaticTile(int id, std::string type, std::string tilesetName);
+    StaticTile(int id, Vector2 pos, std::string type, std::string tilesetName);
     StaticTile(StaticTile& other);
     Tile* clone();
     ~StaticTile() = default;

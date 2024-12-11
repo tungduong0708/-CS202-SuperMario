@@ -15,10 +15,13 @@ private:
     int currentFrameId = 0;
     float elapsedTime = 0.0f;
     std::vector<std::pair<int, int>> frames;
+    b2Body* invisibleBody;
+    b2PrismaticJoint* joint;
+    bool animation = true;
 public:
     KinematicTile() = default;
-    KinematicTile(int id, std::string tilesetName, const std::vector<std::pair<int, int>>& frames);
-    KinematicTile(int id, Vector2 pos, std::string tilesetName, const std::vector<std::pair<int, int>>& frames);
+    KinematicTile(int id, std::string type, std::string tilesetName, const std::vector<std::pair<int, int>>& frames);
+    KinematicTile(int id, Vector2 pos, std::string type, std::string tilesetName, const std::vector<std::pair<int, int>>& frames);
     KinematicTile(KinematicTile& other);
     Tile* clone();
     ~KinematicTile() = default;

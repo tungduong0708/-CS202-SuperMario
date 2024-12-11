@@ -5,12 +5,14 @@
 #include "moving_object.h"
 #include "my_bounding_box.h"
 
-StaticTile::StaticTile(int id, std::string tilesetName) : Tile(id, tilesetName)
+const float BOUNCE_HEIGHT = 0.3f;
+
+StaticTile::StaticTile(int id, std::string type, std::string tilesetName) : Tile(id, type, tilesetName)
 {
 }
 
-StaticTile::StaticTile(int id, Vector2 pos, std::string tilesetName)
-    : Tile(id, pos, tilesetName)
+StaticTile::StaticTile(int id, Vector2 pos, std::string type, std::string tilesetName)
+    : Tile(id, pos, type, tilesetName)
 {
 }
 
@@ -18,10 +20,39 @@ StaticTile::StaticTile(StaticTile& other) : Tile(other)
 {
     std::vector<b2Vec2> vertices = TilesetHandler::getBoxVertices(Tile::getTilesetPath(), getId());
     if (!vertices.empty()) {
-        b2Body* body = GetBody();
-        MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
-        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
-        SetBody(body);
+        std::string type = getType();
+        if (type == "brick" || type == "blind_box") {
+            Vector2 pos = getPosition();
+            b2Body* solidBody = GetBody();
+
+            b2BodyDef bodyDef;
+            bodyDef.type = b2_dynamicBody;
+            bodyDef.position.Set(pos.x, pos.y - BOUNCE_HEIGHT);
+            bodyDef.fixedRotation = true;
+            invisibleBody = Physics::world.CreateBody(&bodyDef);
+
+            MyBoundingBox::createBody(solidBody, b2_dynamicBody, vertices, pos);
+            solidBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+            SetBody(solidBody);
+
+            b2PrismaticJointDef jointDef;
+            jointDef.bodyB = solidBody;
+            jointDef.bodyA = invisibleBody;
+            jointDef.collideConnected = false;  
+            jointDef.localAxisA = b2Vec2(0.0f, -1.0f);
+            jointDef.localAnchorA = b2Vec2(0.5f, 0.5f);
+            jointDef.localAnchorB = b2Vec2(0.5f, 0.5f);
+            jointDef.enableLimit = true;
+            jointDef.lowerTranslation = -BOUNCE_HEIGHT;
+            jointDef.upperTranslation = 0.0f;
+            joint = (b2PrismaticJoint*)Physics::world.CreateJoint(&jointDef);
+        }
+        else {
+            b2Body* body = GetBody();
+            MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
+            body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+            SetBody(body);
+        }
     }
 }
 

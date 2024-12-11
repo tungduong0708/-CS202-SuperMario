@@ -7,6 +7,7 @@
 #include "background.h"
 #include "static_object.h"
 #include "physics.h"
+#include "effect_manager.h"
 #include <fstream>
 #include <iostream>
 #include <box2d/box2d.h>
@@ -102,7 +103,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         continue;  
                     }
                     tile->setPosition(pos);
-                    nodes.push_back(tile->clone());    
+                    nodes.push_back(tile->clone());
                 }
             }
         }
@@ -126,7 +127,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         nodes.push_back(obj);
                     }
                     else {
-                    // create object with a single point
+                        EffectManager::effectMap[{(int)x, (int)y}] = object["name"].get<std::string>();
                     }
                 }
                 else {
@@ -152,12 +153,14 @@ void Tilemap::Update(Vector2 playerVelocity, float deltaTime) {
     for (auto& node : nodes) {
         node->Update(playerVelocity, deltaTime);
     }
+    EffectManager::Update(deltaTime);
 }
 
 void Tilemap::Draw() const {
     for (const auto& node : nodes) {
         node->Draw();
     }
+    EffectManager::Draw();
 }
 
 int Tilemap::GetWidth() const {

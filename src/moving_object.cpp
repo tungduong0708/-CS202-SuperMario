@@ -1,7 +1,5 @@
-#include "moving_object.h"
-#include "imagehandler.h"
-#include "physics.h"
-#include "my_bounding_box.h"
+#include "include.h"
+#include "object.h"
 
 
 MovingObject::MovingObject() {
@@ -10,10 +8,11 @@ MovingObject::MovingObject() {
     angle = 0;
     images = {};
     elapsedTime = 0.0f;
+    restitution = 0.0f;
 }
 
 MovingObject::MovingObject(Vector2 size, float speed, float angle, vector<Image> images): 
-    size(size), speed(speed), angle(angle), images(images) {}
+    size(size), speed(speed), angle(angle), images(images), elapsedTime(0), restitution(0) {}
 
 MovingObject::MovingObject(const MovingObject &mo) {
     size = mo.size;
@@ -21,9 +20,24 @@ MovingObject::MovingObject(const MovingObject &mo) {
     angle = mo.angle;
     ImageHandler::ImageVectorCopy(mo.images, images);
     body = mo.body;
+    elapsedTime = mo.elapsedTime;
+    frameTime = mo.frameTime;
+    density = mo.density;
+    restitution = mo.restitution;
 }
 
-MovingObject::~MovingObject() {}
+MovingObject::~MovingObject() {
+    size = {0, 0};
+    speed = 0;
+    angle = 0;
+    images.clear();
+    elapsedTime = 0.0f;
+    restitution = 0.0f;
+    // if (body) {
+    //     Physics::world.DestroyBody(body);
+    //     body = nullptr;
+    // }
+}
 
 void MovingObject::setSize(Vector2 size)
 {
@@ -32,6 +46,7 @@ void MovingObject::setSize(Vector2 size)
 
 void MovingObject::setSpeed(float speed) {
     this->speed = speed;
+    body->SetLinearVelocity(b2Vec2(speed, 0.0f));
 }
 
 void MovingObject::setAngle(float angle) {
@@ -54,6 +69,10 @@ void MovingObject::setFrameTime(float ft) {
     frameTime = ft;
 }
 
+void MovingObject::setRestitution(float r) {
+    restitution = r;
+}
+
 float MovingObject::getElapsedTime() {
     return elapsedTime;
 }
@@ -72,6 +91,10 @@ float MovingObject::getAngle() {
 
 float MovingObject::getDensity() {
     return density;
+}
+
+float MovingObject::getRestitution() {
+    return restitution;
 }
 
 vector<Image> MovingObject::getImages() {
@@ -106,153 +129,67 @@ void MovingObject::rotate() {
     // rotate the object
 }
 
-Character::Character(int) : MovingObject()
-{
-    health = 0;
-    score = 0;
-    level = 0;
-    strength = 0;
-    type = "";
+vector<Animation> MovingObject::getAnimations() {
+    // get the animation of the object
+    return animations;
 }
 
-Character::Character(int health, int score, int level, int strength, 
-                     Vector2 size, float speed, float angle, vector<Image> imgs, string type): 
-    MovingObject(size, speed, angle, imgs), 
-    health(health), 
-    score(score), 
-    level(level), 
-    strength(strength), 
-    type(type) {
-    isOnGround = false;
-    faceLeft = false;
-    currentImage = IDLE;
-    previousImage = IDLE;
-    images = ImageHandler::setImages(type);
-    curAnim = Animation();
+// [-----implementation of moving items, derived from moving object class -------------------]
+
+FireBall::FireBall() : MovingObject() {
+    damage = 0;
+    flag = false;
 }
 
-Character::Character(const Character &c)
-    : MovingObject(c),                
-      health(c.health),
-      score(c.score),
-      level(c.level),
-      strength(c.strength),
-      type(c.type),
+FireBall::FireBall(float d, Vector2 size, float speed, float angle, vector<Image> imgs): 
+    MovingObject(size, speed, angle, imgs), damage(d), flag(false) {}
 
-      sourceRect(c.sourceRect),
-      destRect(c.destRect),
-      origin(c.origin),
-      frameWidth(c.frameWidth),
-      frameHeight(c.frameHeight),
-      currentFrame(c.currentFrame),
-      frameTime(c.frameTime),
-      frameSpeed(c.frameSpeed),
-      isOnGround(c.isOnGround),
-      currentImage(c.currentImage),
-      previousImage(c.previousImage),
-      faceLeft(c.faceLeft)
-{
+
+FireBall::FireBall(const FireBall &ff): MovingObject(ff) {
+    damage = ff.damage;
+    flag = ff.flag;
 }
 
-Character::~Character() {
-    health = 0;
-    score = 0;
-    level = 0;
-    strength = 0;
-    type = "";
-    sourceRect = {};
-    destRect = {};
-    origin = {};
-    frameWidth = 0;
-    frameHeight = 0;
-    currentFrame = 0;
-    frameTime = 0;
-    frameSpeed = 0;
-    isOnGround = false;
-    currentImage = IDLE;
-    previousImage = IDLE;
-    faceLeft = false;
-    for (auto img : images) {
-        UnloadImage(img);
-    }
+FireBall::~FireBall() {
+    damage = 0;
+    flag = false;
 }
 
-void Character::setHealth(int health) {
-    health = health;
+void FireBall::setDamage(float damage) {
+    this->damage = damage;
 }
 
-void Character::setScore(int s) {
-    score = s;
+float FireBall::getDamage() {
+    return damage;
 }
 
-void Character::setLevel(int l) {
-    level = l;
+bool FireBall::isActive() {
+    return flag;
 }
 
-void Character::setStrength(int st) {
-    strength = st;
+void FireBall::move() {
+    // move the fire flower
 }
 
-int Character::getHealth() {
-    return health;
+void FireBall::jump() {
+    // jump the fire flower
 }
 
-int Character::getScore() {
-    return score;
+void FireBall::rotate() {
+    // rotate the fire flower
+    angle += 90.0f;
 }
 
-int Character::getLevel() {
-    return level;
+
+MovingObject* FireBall::copy() const {
+    return new FireBall(*this);
 }
 
-int Character::getStrength() {
-    return strength;
-}
-
-bool Character::onGround() {
-    return isOnGround;
-}
-
-bool Character::isLeft() { 
-    return faceLeft;
-}
-
-bool Character::hitWall()
-{
-    return isHitWall;
-}
-
-void Character::move() {
-    // move the character
-}
-
-void Character::jump() {
-}
-
-void Character::rotate() {
-    // rotate the character
-}
-
-void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
-    currentImage = WALK;
-    animations = AnimationHandler::setAnimations(type);
-    curAnim = animations[currentImage];
-
-    texture = curAnim.GetFrame();
-
-    frameWidth = texture.width;
-    frameHeight = texture.height;
-    sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
-
-    // float ratio = (float)frameWidth / (float)frameHeight;
-
-    // if (ratio < 1.0f) 
-    //     size = {1.0f * ratio, 1.0f};
-    // else 
-    //     size = {1.0f, 1.0f / ratio};
-
-    size = {(float)frameWidth / IMAGE_WIDTH, (float)frameHeight / IMAGE_WIDTH};
-    destRect = {position.x, position.y, size.x, size.y};
+void FireBall::Init(b2Vec2 position, ImageSet imageSet) {
+    span = 0.0f;
+    animations = AnimationHandler::setAnimations("fireball");
+    Texture texture = animations[0].GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
 
     std::vector<b2Vec2> vertices = {
         b2Vec2{0.0f, 0.0f},
@@ -260,420 +197,93 @@ void Character::InitCharacter(b2Vec2 position, ImageSet imageSet) {
         b2Vec2{size.x, size.y},
         b2Vec2{0.0f, size.y}
     };
-    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y});
-    // b2BodyDef bodyDef;
-    // bodyDef.type = b2_dynamicBody;
-    // bodyDef.position.Set(position.x, position.y);
-    // body = Physics::world.CreateBody(&bodyDef);
-
-    // b2PolygonShape shape;
-    // shape.SetAsBox(destRect.width / 2.0f, destRect.height / 2.0f, b2Vec2(destRect.width / 2.0f, destRect.height / 2.0f), 0.0f);
-
-    // b2FixtureDef fixtureDef;
-    // fixtureDef.shape = &shape;
-    // fixtureDef.density = 1.0f;
-    // fixtureDef.friction = 0.3f;
-    // body->CreateFixture(&fixtureDef);
-    // body->SetFixedRotation(true); 
-
-    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, 1.0f);
 }
 
-void Character::Update(Vector2 playerVelocity, float deltaTime) {
+void FireBall::Update(Vector2 playerVelocity, float deltaTime) {
+    elapsedTime += deltaTime;
+    span += deltaTime;
+    if (span >= 1.5f) {
+        flag = true;
+    }
+    angle += 5.0f;
+
     b2Vec2 position = body->GetPosition();
-    destRect.x = position.x;
-    destRect.y = position.y;
-    animations[currentImage].Update(deltaTime);
-    texture = animations[currentImage].GetFrame();
+    //cout << "fireball position: " << position.x << " " << position.y << endl;
 }
 
-void Character::Draw() {
-    b2Vec2 pos = body->GetPosition();
-    sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
-    Renderer::DrawPro(texture, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, faceLeft);
-    //Renderer::DrawPro2(texture, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, faceLeft);
+void FireBall::HandleInput() {
+
 }
 
-void Character::HandleInput() {
+void FireBall::ReloadAnimation() {
+    animations = AnimationHandler::setAnimations("fireball");
 }
 
-void Character::OnBeginContact(SceneNode* other)
-{
-}
+void FireBall::OnBeginContact(SceneNode *other) {
+    if (!other) return;
 
-void Character::OnEndContact(SceneNode* other)
-{
-}
-
-Player::Player() : Character()
-{
-    name = "";
-    coins = 0;
-    range = 0;
-    alive = true;
-    sit = false;
-}
-
-Player::Player(string name, float coins, float range, bool alive, bool sit, int health, 
-               int score, int level, int strength, Vector2 size, float speed, 
-               float angle, vector<Image> imgs, string type): 
-    Character(health, score, level, strength, size, speed, angle, imgs, type), 
-    name(name), 
-    coins(coins), 
-    range(range), 
-    alive(alive), 
-    sit(sit) {}
-
-Player::Player(const Player &p): 
-    Character(p), 
-    name(p.name), 
-    coins(p.coins), 
-    range(p.range), 
-    alive(p.alive), 
-    sit(p.sit) 
-{
-}
-
-Player::~Player() {
-    name = "";
-    coins = 0;
-    range = 0;
-    alive = true;
-    sit = false;
-}
-
-void Player::setName(string n) {
-    name = n;
-}
-
-void Player::setCoins(float c) {
-    coins = c;
-}
-
-void Player::setRange(float r) {
-    range = r;
-}
-
-void Player::setIsAlive(bool ia) {
-    alive = ia;
-}
-
-void Player::setSit(bool s) {
-    sit = s;
-}
-
-string Player::getName() {
-    return name;
-}
-
-float Player::getCoins() {
-    return coins;
-}
-
-float Player::getRange() {
-    return range;
-}
-
-bool Player::isAlive() {
-    return alive;
-}
-
-bool Player::isSitting() {
-    return sit;
-}
-
-void Player::move() {
-    // move the player
-}
-
-void Player::jump() {
-}
-
-void Player::HandleInput() {
-    // Handle character input
-    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
-        if (currentImage != JUMP) currentImage = WALK;   
-        faceLeft = false;
-        // cout << "state: " << currentImage << endl;
-    } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-        body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
-        if (currentImage != JUMP) currentImage = WALK;
-        faceLeft = true;
-        // cout << "state: " << currentImage << endl;
-    }
-    else if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
-        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
-        if (currentImage != JUMP) currentImage = DUCK;
-        // cout << "state: " << currentImage << endl;
-    }
-    else {
-        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
-        if (currentImage != JUMP) currentImage = IDLE;
-        //cout << "state: " << currentImage << endl;
-    }
-
-    if (isOnGround && currentImage == JUMP) {
-        currentImage = IDLE;
-        //cout << "state: " << currentImage << endl;
-    }
-
-    if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
-        if (isOnGround) {
-            body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -24.0f), true);
-            currentImage = JUMP;
-        }
-        cout << "state: " << currentImage << endl;
-    }
-
-    if (!isOnGround) {
-        currentImage = JUMP;
-        //cout << "state: " << currentImage << endl;
-    }
-
-    // cout << isOnGround << endl;
-}
-
-void Player::rotate() {
-    // rotate the player
-}
-
-void Player::shoot() {
-    // shoot the player
-}
-
-void Player::OnBeginContact(SceneNode *other)
-{
-    b2Vec2 pos = body->GetPosition();
+    // if (dynamic_cast<Enemy*>(other)) {
+    //     // if the fireball hits the enemy, destroy the fireball
+    //     flag = true;
+    //     //other->setHealth(other->getHealth() - damage);
+    // }
+    // if hit vertical wall, destroy the fireball
     Vector2 otherPos = other->getPosition();
-    float playBottom = pos.y + size.y;
-    float otherTop = otherPos.y;
-    float diff = playBottom - otherTop;
-
-    std::cout << "diff: " << diff << std::endl;
-    
-    if (abs(diff) < 0.1f) {
-        groundContacts.insert(other);
-        isOnGround = true;
+    Vector2 posLeft = Vector2{size.x/2 + getPosition().x, size.y/2 + getPosition().y};
+    cout << posLeft.x - otherPos.x << " " << size.x/2 + 0.1f << endl;
+    if (abs(posLeft.x - otherPos.x) < size.x/2 + 0.1f) {
+        flag = true;
     }
 }
 
-void Player::OnEndContact(SceneNode *other)
-{
-    if (groundContacts.find(other) != groundContacts.end()) {
-        groundContacts.erase(other);
-    }
-
-    // If there are no more ground contacts, set isOnGround to false
-    if (groundContacts.empty()) {
-        isOnGround = false;
-    }
+void FireBall::OnEndContact(SceneNode *other) {
+    if (!other) return;
 }
 
-MovingObject* Player::copy() const {
-    return new Player(*this);
+void FireBall::Draw() {
+    b2Vec2 pos = body->GetPosition();
+    Texture texture = animations[0].GetFrame();
+    Rectangle sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
+    Renderer::DrawPro(texture, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, angle);
 }
 
-Enemy::Enemy() : Character() {
-    type = "";
-    range = 0;
-    alive = true;
-    sit = false;
+void FireBall::Draw(Vector2 position, float angle) {
 }
 
+// Bullet::Bullet() : MovingObject() {
+//     damage = 0;
+// }
 
-Enemy::Enemy(string type, float range, bool alive, bool sit, int health, int score, int level, 
-             int strength, Vector2 size, float speed, float angle, vector<Image> imgs): 
-    Character(health, score, level, strength, size, speed, angle, imgs, type), 
-    type(type), 
-    range(range), 
-    alive(alive), 
-    sit(sit)
-{
-}
+// Bullet::Bullet(float damage, Vector2 size, float speed, float angle, vector<Image> imgs): 
+//     MovingObject(size, speed, angle, imgs), damage(damage) {}
 
 
-Enemy::Enemy(const Enemy &e): Character(e) {
-    type = e.type;
-    range = e.range;
-    alive = e.alive;
-    sit = e.sit;
-}
+// Bullet::Bullet(const Bullet &b): MovingObject(b) {
+//     damage = b.damage;
+// }
 
-Enemy::~Enemy() {
-    type = "";
-    range = 0;
-    alive = true;
-    sit = false;
-}
+// Bullet::~Bullet() {
+//     damage = 0;
+// }
 
-void Enemy::setType(string t) {
-    type = t;
-}
+// void Bullet::setDamage(float damage) {
+//     this->damage = damage;
+// }
 
-void Enemy::setRange(float r) {
-    range = r;
-}
+// float Bullet::getDamage() {
+//     return damage;
+// }
 
-void Enemy::setIsAlive(bool ia) {
-    alive = ia;
-}
+// void Bullet::move() {
+//     // move the bullet
+// }
 
-void Enemy::setSit(bool s) {
-    sit = s;
-}
+// void Bullet::jump() {
+//     // jump the bullet
+// }
 
-string Enemy::getType() {
-    return type;
-}
-
-float Enemy::getRange() {
-    return range;
-}
-
-bool Enemy::isAlive() {
-    return alive;
-}
-
-bool Enemy::isSitting() {
-    return sit;
-}
-
-void Enemy::move() {
-    // move the enemy
-}
-
-void Enemy::jump() {
-    // jump the enemy
-}
-
-void Enemy::rotate() {
-    // rotate the enemy
-}
-
-void Enemy::shoot() {
-    // shoot the enemy
-}
-
-void Enemy::HandleInput()
-{
-}
-
-MovingObject* Enemy::copy() const {
-    return new Enemy(*this);
-}
-
-
-// [-----implementation of moving items, derived from moving object class -------------------]
-
-FireFlower::FireFlower() : MovingObject() {
-    damage = 0;
-}
-
-FireFlower::FireFlower(float d, Vector2 size, float speed, float angle, vector<Image> imgs): 
-    MovingObject(size, speed, angle, imgs), damage(d) {}
-
-
-FireFlower::FireFlower(const FireFlower &ff): MovingObject(ff) {
-    damage = ff.damage;
-}
-
-FireFlower::~FireFlower() {
-    damage = 0;
-}
-
-void FireFlower::setDamage(float damage) {
-    this->damage = damage;
-}
-
-float FireFlower::getDamage() {
-    return damage;
-}
-
-void FireFlower::move() {
-    // move the fire flower
-}
-
-void FireFlower::jump() {
-    // jump the fire flower
-}
-
-void FireFlower::rotate() {
-    // rotate the fire flower
-}
-
-
-Bullet::Bullet() : MovingObject() {
-    damage = 0;
-}
-
-Bullet::Bullet(float damage, Vector2 size, float speed, float angle, vector<Image> imgs): 
-    MovingObject(size, speed, angle, imgs), damage(damage) {}
-
-
-Bullet::Bullet(const Bullet &b): MovingObject(b) {
-    damage = b.damage;
-}
-
-Bullet::~Bullet() {
-    damage = 0;
-}
-
-void Bullet::setDamage(float damage) {
-    this->damage = damage;
-}
-
-float Bullet::getDamage() {
-    return damage;
-}
-
-void Bullet::move() {
-    // move the bullet
-}
-
-void Bullet::jump() {
-    // jump the bullet
-}
-
-void Bullet::rotate() {
-    // rotate the bullet
-}
-
-
-Coin::Coin() : MovingObject() {
-    value = 0;
-}
-
-
-Coin::Coin(float value, Vector2 size, float speed, float angle, vector<Image> imgs): 
-    MovingObject(size, speed, angle, imgs), value(value) {}
-
-
-Coin::Coin(const Coin &c): MovingObject(c) {
-    value = c.value;
-}
-
-Coin::~Coin() {
-    value = 0;
-}
-
-void Coin::setValue(float v) {
-    value = v;
-}
-
-float Coin::getValue() {
-    return value;
-}
-
-void Coin::jump() {
-    // jump the coin
-}
-
-void Coin::rotate() {
-    // rotate the coin
-}
-
-
-
-
+// void Bullet::rotate() {
+//     // rotate the bullet
+// }
 

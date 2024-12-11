@@ -1,6 +1,6 @@
 #include "my_bounding_box.h"
 
-void MyBoundingBox::createBody(b2Body*& body, b2BodyType type, const std::vector<b2Vec2> &vertices, const Vector2 &position)
+void MyBoundingBox::createBody(b2Body*& body, b2BodyType type, const std::vector<b2Vec2> &vertices, const Vector2 &position, float restitution)
 {
     b2BodyDef bodyDef;
     bodyDef.type = type;
@@ -16,9 +16,9 @@ void MyBoundingBox::createBody(b2Body*& body, b2BodyType type, const std::vector
     fixtureDef.shape = &polygonShape;
     fixtureDef.density = 1.0f; 
     fixtureDef.friction = 0.0f;
+    fixtureDef.restitution = restitution;
     body->CreateFixture(&fixtureDef);
 }
-
 
 void MyBoundingBox::copyBody(b2Body*& body, b2Body* otherBody, const Vector2 &position) {
     b2BodyDef bodyDef;
@@ -59,7 +59,7 @@ void MyBoundingBox::updatePosition(b2Body*& body, const b2Vec2 &position)
     body->SetTransform(position, body->GetAngle());
 }
 
-void MyBoundingBox::updateFixture(b2Body*& body, const std::vector<b2Vec2> &vertices)
+void MyBoundingBox::updateFixture(b2Body*& body, const std::vector<b2Vec2> &vertices, bool isSensor)
 {
     b2Fixture* fixture = body->GetFixtureList();
     if (fixture) {
@@ -73,5 +73,6 @@ void MyBoundingBox::updateFixture(b2Body*& body, const std::vector<b2Vec2> &vert
 
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &polygonShape;
+    fixtureDef.isSensor = isSensor;
     body->CreateFixture(&fixtureDef);
 }

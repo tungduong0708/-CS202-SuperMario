@@ -1,17 +1,34 @@
 #include "tile.h"
 
-Tile::Tile() : position(Vector2({0.0f, 0.0f})), id(0), tilesetPath("") {}
+Tile::Tile() : position(Vector2({0.0f, 0.0f})), id(0), type(""), tilesetPath("") {}
 
-Tile::Tile(int id, std::string tilesetPath) : id(id), position(Vector2{0.0f, 0.0f}), tilesetPath(tilesetPath) {}
+Tile::Tile(int id, std::string type, std::string tilesetPath) : id(id), position(Vector2{0.0f, 0.0f}), type(type), tilesetPath(tilesetPath) {}
 
-Tile::Tile(int id, Vector2 position, std::string tilesetPath) : id(id), position(position), tilesetPath(tilesetPath) {}
+Tile::Tile(int id, Vector2 position, std::string type, std::string tilesetPath) : id(id), position(position), type(type), tilesetPath(tilesetPath) {}
 
-void Tile::setPosition(const Vector2& newPos) {
+void Tile::setId(int id)
+{
+    this->id = id;
+}
+
+void Tile::setPosition(const Vector2 &newPos)
+{
     position = newPos;
 }
 
-int Tile::getId() const { 
-    return id; 
+void Tile::setTilesetPath(const std::string &path)
+{
+    tilesetPath = path;
+}
+
+std::string Tile::getType()
+{
+    return type;
+}
+
+int Tile::getId() const
+{
+    return id;
 }
 
 std::string Tile::getTilesetPath() const
@@ -20,7 +37,10 @@ std::string Tile::getTilesetPath() const
 }
 
 Vector2 Tile::getPosition() {
-    return position;
+    b2Body* body = GetBody();
+    if (body == nullptr) return position;
+    b2Vec2 pos = GetBody()->GetPosition();
+    return Vector2{pos.x, pos.y};
 }
 
 void Tile::Update(Vector2 playerVelocity, float deltaTime) 

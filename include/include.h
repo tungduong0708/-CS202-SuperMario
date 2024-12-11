@@ -19,6 +19,10 @@ using namespace std;
 
 
 #include "renderer.h"
+#include "scene_node.h"
+#include "text_helper.h"
+
+#define IMAGE_WIDTH 16
 
 enum ImageSet {
     IDLE,
@@ -27,7 +31,27 @@ enum ImageSet {
     JUMP,
     FALL,
     PIPE,
-    HOLD,
     DEAD,
+    HOLD,
     VICTORY
 };
+
+
+enum Mode {
+    SMALL,
+    BIG,
+    FIRE,
+};
+
+
+enum CollisionCategory {
+    CATEGORY_PLAYER = 0x0001,
+    CATEGORY_FIREBALL = 0x0001 << 1,
+    CATEGORY_SCENERY = 0x0001 << 2,
+    // Add more categories as needed
+};
+
+
+
+// bool collide = (nodeA.getCategoryBits() & nodeB.getMaskBits()) != 0 &&
+//               (nodeA.getMaskBits() & nodeB.getCategoryBits()) != 0;
