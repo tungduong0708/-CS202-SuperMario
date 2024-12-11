@@ -34,4 +34,43 @@ public:
     void Draw();
 };
 
+class MushroomEffect : public AnimationEffect {
+private:
+    float distance = 1.0f;
+    Vector2 currentPosition;
+    Vector2 size;
+    Animation animation;
+public:
+    MushroomEffect(Vector2 pos);
+    ~MushroomEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
+class StarEffect : public AnimationEffect {
+private:
+    float distance = 1.0f;
+    Vector2 currentPosition;
+    Vector2 size;
+    Animation animation;
+public:
+    StarEffect(Vector2 pos);
+    ~StarEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
+class FireFlowerEffect : public AnimationEffect {
+private:
+    float distance = 1.0f;
+    Vector2 currentPosition;
+    Vector2 size;
+    Animation animation;
+public:
+    FireFlowerEffect(Vector2 pos);
+    ~FireFlowerEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
 #endif // ANIMATION_EFFECT_H

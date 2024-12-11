@@ -18,14 +18,6 @@ void EffectManager::AddEffect(AnimationEffect *effect)
 
 void EffectManager::Update(float deltaTime)
  {
-    // effects.erase(std::remove_if(effects.begin(), effects.end(), [&](AnimationEffect* effect) {
-    //     if (!effect->isActive()) {
-    //         delete effect;  // Delete inactive effect
-    //         return true;    // Mark it for removal
-    //     }
-    //     effect->Update(deltaTime);  // Update active effect
-    //     return false;  // Keep the effect in the vector
-    // }), effects.end());
     for (auto it = effects.begin(); it != effects.end();) {
         if (*it == nullptr) {
             ++it;  // Skip null pointers

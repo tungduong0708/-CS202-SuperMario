@@ -13,6 +13,15 @@ void AnimationEffectCreator::InitEffects()
     RegisterEffect("coin", [](Vector2 position) {
         return new CoinEffect(position);
     });
+    RegisterEffect("mushroom", [](Vector2 position) {
+        return new MushroomEffect(position);
+    });
+    RegisterEffect("star", [](Vector2 position) {
+        return new StarEffect(position);
+    });
+    RegisterEffect("fireflower", [](Vector2 position) {
+        return new FireFlowerEffect(position);
+    });
 }
 
 AnimationEffect *AnimationEffectCreator::CreateAnimationEffect(const std::string& name, Vector2 position)

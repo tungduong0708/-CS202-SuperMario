@@ -143,7 +143,7 @@ public:
 class Mushroom : public ActiveItem {
 public:
     Mushroom();
-    Mushroom(int value = 0, Vector2 size = {0, 0}, float speed = 0, float angle = 0, vector<Image> images = {});
+    Mushroom(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0, vector<Image> images = {});
     Mushroom(const Mushroom &m);
     ~Mushroom();
 

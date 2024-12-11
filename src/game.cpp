@@ -9,7 +9,6 @@ const int screenHeight = 600;
 
 Player player("Player", 0, 0, true, false, 0, 0, 0, 0, Vector2{0, 0}, 0, 0, {}, "mario");
 MyCamera camera;
-Tilemap tilemap;
 
 Game::Game(){
     Init();
@@ -31,8 +30,9 @@ void Game::Init() {
     movingObjects[0]->Init(b2Vec2(10.0f, 12.0f), idleImageSet);
 
     TilesetHandler::Init();
-    tilemap.LoadMapFromJson("resources/tilemaps/map-1-1.json");
-    camera = MyCamera(38.0f, Vector2{ (float)tilemap.GetWidth(), (float)tilemap.GetHeight() }, screenWidth, screenHeight);
+    Tilemap* tilemap = Tilemap::getInstance();
+    tilemap->LoadMapFromJson("resources/tilemaps/map-1-1.json");
+    camera = MyCamera(38.0f, Vector2{ (float)tilemap->GetWidth(), (float)tilemap->GetHeight() }, screenWidth, screenHeight);
 }
 
 void Game::Update(float deltaTime) {
@@ -52,7 +52,8 @@ void Game::Update(float deltaTime) {
     Vector2 position = movingObjects[0]->getPosition();
     //cout << "player position: " << position.x << " " << position.y << endl;
     camera.Update(movingObjects[0]->getPosition());  
-    tilemap.Update(Vector2{velocity.x, velocity.y}, deltaTime);
+    Tilemap* tilemap = Tilemap::getInstance();
+    tilemap->Update(Vector2{velocity.x, velocity.y}, deltaTime);
 
 
     // Vector2 pos = movingObjects[0]->getPosition();
@@ -69,7 +70,8 @@ void Game::Draw() {
     ClearBackground(RAYWHITE);
     BeginMode2D(camera.GetCamera());
 
-    tilemap.Draw();
+    Tilemap* tilemap = Tilemap::getInstance();
+    tilemap->Draw();
     for (int i = 0; i < movingObjects.size(); i++) {
         movingObjects[i]->Draw();
     }

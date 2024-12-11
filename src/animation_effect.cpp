@@ -1,7 +1,13 @@
 #include "animation_effect.h"
 #include "imagehandler.h"
+#include "tilemap.h"
+#include "moving_object.h"
 
-const int TILE_SIZE = 16;
+
+bool AnimationEffect::isActive()
+{
+    return active;
+}
 
 CoinEffect::CoinEffect(Vector2 pos)
 {
@@ -37,7 +43,101 @@ void CoinEffect::Draw()
     DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{position.x, position.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, color);
 }
 
-bool AnimationEffect::isActive()
+MushroomEffect::MushroomEffect(Vector2 pos)
 {
-    return active;
+    animation = AnimationHandler::setAnimations("mushroom")[0];
+    position = pos;
+    currentPosition = pos;
+    currentPosition.y += 1.0f;
+}
+
+void MushroomEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    if (currentPosition.y > position.y)
+    {
+        currentPosition.y -= deltaTime * 2;
+    }
+    else {
+        active = false;
+        Tilemap* tilemap = Tilemap::getInstance();
+        Mushroom* mushroom = new Mushroom();
+        mushroom->Init(b2Vec2{position.x, position.y}, ImageSet{});
+        mushroom->setSpeed(1.0f);
+        tilemap->addNode(mushroom);
+    }
+}
+
+void MushroomEffect::Draw()
+{
+    if (!active) return;
+    texture = animation.GetFrame();
+    size = {(float)texture.width / texture.height, 1.0f};
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{currentPosition.x, currentPosition.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+}
+
+StarEffect::StarEffect(Vector2 pos)
+{
+    animation = AnimationHandler::setAnimations("star")[0];
+    position = pos;
+    currentPosition = pos;
+    currentPosition.y += 1.0f;
+}
+
+void StarEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    if (currentPosition.y > position.y)
+    {
+        currentPosition.y -= deltaTime * 2;
+    }
+    else {
+        active = false;
+        Tilemap* tilemap = Tilemap::getInstance();
+        Star* star = new Star();
+        star->Init(b2Vec2{position.x, position.y}, ImageSet{});
+        star->setSpeed(1.0f);
+        tilemap->addNode(star);
+    }
+}
+
+void StarEffect::Draw() 
+{
+    if (!active) return;
+    texture = animation.GetFrame();
+    size = {(float)texture.width / texture.height, 1.0f};
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{currentPosition.x, currentPosition.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+}
+
+FireFlowerEffect::FireFlowerEffect(Vector2 pos)
+{
+    animation = AnimationHandler::setAnimations("fireflower")[0];
+    position = pos;
+    currentPosition = pos;
+    currentPosition.y += 1.0f;
+}
+
+void FireFlowerEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    if (currentPosition.y > position.y)
+    {
+        currentPosition.y -= deltaTime * 2;
+    }
+    else {
+        active = false;
+        Tilemap* tilemap = Tilemap::getInstance();
+        FireFlower* fireFlower = new FireFlower();
+        fireFlower->Init(b2Vec2{position.x, position.y}, ImageSet{});
+        fireFlower->setSpeed(1.0f);
+        tilemap->addNode(fireFlower);
+    }
+}
+
+void FireFlowerEffect::Draw()
+{
+    if (!active) return;
+    texture = animation.GetFrame();
+    size = {(float)texture.width / texture.height, 1.0f};
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{currentPosition.x, currentPosition.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }
