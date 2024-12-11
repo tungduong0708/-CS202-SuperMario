@@ -18,7 +18,7 @@ public:
     Vector2 getPosition();
     void Update(Vector2 playerPosition, float deltaTime);
     void Draw();
-    void OnBeginContact(SceneNode* other);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
 };
 

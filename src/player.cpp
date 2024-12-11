@@ -1,5 +1,6 @@
 #include "include.h"
 #include "object.h"
+#include "character.h"
 
 Player::Player() : Character()
 {
@@ -138,6 +139,7 @@ void Player::HandleInput() {
             body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -24.0f), true);
             previousImage = currentImage;
             currentImage = JUMP;
+            isOnGround = false;
         }
         // cout << "state: " << currentImage << endl;
     }
@@ -214,35 +216,18 @@ void Player::shoot() {
     // shoot the player
 }
 
-void Player::OnBeginContact(SceneNode *other)
+void Player::OnBeginContact(SceneNode *other, b2Vec2 normal) 
 {
     if (!other) return;
-    b2Vec2 pos = body->GetPosition();
-    Vector2 otherPos = other->getPosition();
-    float playBottom = pos.y + size.y;
-    float otherTop = otherPos.y;
-    float diff = playBottom - otherTop;
 
-    std::cout << "diff: " << diff << std::endl;
-    
-    if (abs(diff) < 0.4f) {
-        groundContacts.insert(other);
+    if (normal.y > 0.5f) {
+        // groundContacts.insert(other);
         isOnGround = true;
     }
 }
 
 void Player::OnEndContact(SceneNode *other)
 {
-    if (!other) return;
-
-    if (groundContacts.find(other) != groundContacts.end()) {
-        groundContacts.erase(other);
-    }
-
-    // If there are no more ground contacts, set isOnGround to false
-    if (groundContacts.empty()) {
-        isOnGround = false;
-    }
 }
 
 MovingObject* Player::copy() const {

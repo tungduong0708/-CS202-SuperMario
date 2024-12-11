@@ -28,7 +28,7 @@ protected:
     int frameWidth, frameHeight;
     int currentFrame;
     float frameTime, frameSpeed;
-    bool isOnGround;          // Is character on the ground
+    bool isOnGround = true;          // Is character on the ground
     bool isHitWall;
     ImageSet currentImage;
     ImageSet previousImage;
@@ -104,7 +104,7 @@ public:
     void rotate();
     void shoot();
 
-    void OnBeginContact(SceneNode* other);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     void HandleInput();
     void Update(Vector2 playerVelocity, float deltaTime);
@@ -138,6 +138,9 @@ public:
     void jump();
     void rotate();
     void shoot();
+
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    void OnEndContact(SceneNode* other);
     void HandleInput();
     void Draw(Vector2 position, float angle = 0.0f);
 

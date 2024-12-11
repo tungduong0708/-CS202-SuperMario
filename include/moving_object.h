@@ -2,6 +2,7 @@
 #include "include.h"
 #include "scene_node.h"
 #include "imagehandler.h"
+#include <box2d/box2d.h>
 
 #ifndef MOVING_OBJECT_H
 #define MOVING_OBJECT_H
@@ -61,7 +62,7 @@ public:
     virtual void Draw(Vector2 position, float angle = 0.0f) = 0;
     virtual void Init(b2Vec2 position, ImageSet imageSet) = 0;
     virtual void HandleInput() = 0;
-    virtual void OnBeginContact(SceneNode* other) = 0;
+    virtual void OnBeginContact(SceneNode* other, b2Vec2 normal) = 0;
     virtual void OnEndContact(SceneNode* other) = 0;
 };
 
@@ -91,7 +92,7 @@ public:
     void Update(Vector2 playerVelocity, float deltaTime);
     void HandleInput();
     void ReloadAnimation();
-    void OnBeginContact(SceneNode* other);  
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);  
     void OnEndContact(SceneNode* other);
 
     MovingObject* copy() const;
@@ -135,7 +136,7 @@ public:
     void Draw(Vector2 position, float angle = 0.0f);
     void Update(Vector2 playerVelocity, float deltaTime);
     void HandleInput();
-    virtual void OnBeginContact(SceneNode* other) = 0;
+    virtual void OnBeginContact(SceneNode* other, b2Vec2 normal) = 0;
     virtual void OnEndContact(SceneNode* other) = 0;
 };
 
@@ -147,7 +148,7 @@ public:
     ~Mushroom();
 
     void Init(b2Vec2 position, ImageSet imageSet);
-    void OnBeginContact(SceneNode* other);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;
 };
@@ -160,7 +161,7 @@ public:
     ~FireFlower();
 
     void Init(b2Vec2 position, ImageSet imageSet);
-    void OnBeginContact(SceneNode* other);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;
 };
@@ -173,7 +174,7 @@ public:
     ~Star();
 
     void Init(b2Vec2 position, ImageSet imageSet);
-    void OnBeginContact(SceneNode* other);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;
 };

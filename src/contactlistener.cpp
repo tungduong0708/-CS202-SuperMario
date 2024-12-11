@@ -3,14 +3,23 @@
 #include "physics.h"
 #include "kinematic_tile.h"
 #include "moving_object.h"
+#include "character.h"
 
 void ContactListener::BeginContact(b2Contact *contact)
 {
+    b2Fixture* fixtureA = contact->GetFixtureA();
+    b2Fixture* fixtureB = contact->GetFixtureB();
+    
     SceneNode* nodeA = reinterpret_cast<SceneNode*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer);
     SceneNode* nodeB = reinterpret_cast<SceneNode*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer);
 
-    if (nodeA) nodeA->OnBeginContact(nodeB);
-    if (nodeB) nodeB->OnBeginContact(nodeA);
+    b2WorldManifold worldManifold;
+    contact->GetWorldManifold(&worldManifold);
+    b2Vec2 normal = worldManifold.normal;
+    // std::cout << "normal: " << normal.x << " " << normal.y << std::endl;
+
+    if (nodeA) nodeA->OnBeginContact(nodeB, normal);
+    if (nodeB) nodeB->OnBeginContact(nodeA, normal);
 }
 
 void ContactListener::EndContact(b2Contact *contact)

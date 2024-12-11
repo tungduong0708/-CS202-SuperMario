@@ -220,7 +220,7 @@ void FireBall::ReloadAnimation() {
     animations = AnimationHandler::setAnimations("fireball");
 }
 
-void FireBall::OnBeginContact(SceneNode *other) {
+void FireBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!other) return;
 
     // if (dynamic_cast<Enemy*>(other)) {

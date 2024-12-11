@@ -84,7 +84,7 @@ void StaticTile::Draw()
     // Physics::DebugDraw();
 }
 
-void StaticTile::OnBeginContact(SceneNode* other)
+void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
 {
 }
 

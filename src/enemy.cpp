@@ -1,5 +1,6 @@
 #include "include.h"
 #include "object.h"
+#include "character.h"
 
 Enemy::Enemy() : Character() {
     type = "";
@@ -82,6 +83,12 @@ void Enemy::shoot() {
     // shoot the enemy
 }
 
+void Enemy::OnBeginContact(SceneNode *other, b2Vec2 normal)
+{
+}
+void Enemy::OnEndContact(SceneNode *other)
+{
+}
 void Enemy::HandleInput()
 {
 }

@@ -1,6 +1,7 @@
 #include "include.h"
 #include "object.h"
 #include "moving_object.h"
+#include <box2d/box2d.h>
 
 ActiveItem::ActiveItem() : MovingObject() {
     value = 0;
@@ -64,7 +65,7 @@ void ActiveItem::Update(Vector2 playerVelocity, float deltaTime) {
 
 void ActiveItem::HandleInput() {}
 
-void ActiveItem::OnBeginContact(SceneNode* other) {
+void ActiveItem::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     // handle the begin contact of the grow item
 }
 
@@ -88,7 +89,7 @@ void Mushroom::Init(b2Vec2 position, ImageSet imageSet) {
     ActiveItem::Init(position, imageSet);
 }
 
-void Mushroom::OnBeginContact(SceneNode* other) {
+void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     // handle the begin contact of the mushroom
 }
 
@@ -116,7 +117,7 @@ void FireFlower::Init(b2Vec2 position, ImageSet imageSet) {
 }
 
 
-void FireFlower::OnBeginContact(SceneNode* other) {
+void FireFlower::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     // handle the begin contact of the fire flower
 }
 
@@ -145,7 +146,7 @@ void Star::Init(b2Vec2 position, ImageSet imageSet) {
     ActiveItem::Init(position, imageSet);
 }
 
-void Star::OnBeginContact(SceneNode* other) {
+void Star::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     // handle the begin contact of the star
 }
 

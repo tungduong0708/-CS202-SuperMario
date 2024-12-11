@@ -122,7 +122,7 @@ void KinematicTile::Draw()
     Renderer::DrawPro(TilesetHandler::getTexture(tilesetPath), srcRect, getPosition(), Vector2{ 1, 1 }, true);
 }
 
-void KinematicTile::OnBeginContact(SceneNode* other)
+void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
 {
     Vector2 playerPos = other->getPosition();
     Vector2 pos = getPosition();
