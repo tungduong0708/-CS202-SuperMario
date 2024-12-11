@@ -124,6 +124,7 @@ void KinematicTile::Draw()
 
 void KinematicTile::OnBeginContact(SceneNode* other)
 {
+    if (!other) return;
     Vector2 playerPos = other->getPosition();
     Vector2 pos = getPosition();
     Player* playerPtr = dynamic_cast<Player*>(other); 
