@@ -1,7 +1,8 @@
 #include "game.h"
 
 int main() {
-    Game game = Game::getInstance();
-    game.Run();
+    Game game;
+    game.run();
+    
     return 0;
 }
