@@ -188,13 +188,14 @@ void Tilemap::Update(Vector2 playerVelocity, float deltaTime) {
 void Tilemap::Draw() const {
     for (const auto& layer : nodes) {
         if (layer.empty()) {
-            EffectManager::Draw();
+            EffectManager::DrawLower();
             continue;
         }
         for (auto& node : layer) {
             node->Draw();
         }
     }
+    EffectManager::DrawUpper();
 }
 
 int Tilemap::GetWidth() const {

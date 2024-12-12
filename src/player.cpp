@@ -185,38 +185,6 @@ void Player::HandleInput() {
 
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
     Character::Update(playerVelocity, deltaTime);
-
-    for (int i = 0; i < fireBalls.size(); i++) {
-        fireBalls[i].Update(Vector2{0, 0}, deltaTime);
-        Vector2 pos = fireBalls[i].getPosition();
-        // if the flower is out of the screen, remove it from the vector
-        if (pos.x < position.x - GetScreenWidth()/IMAGE_WIDTH || pos.x > position.x + GetScreenWidth()/IMAGE_WIDTH  
-            || pos.y < position.y - GetScreenHeight()/IMAGE_WIDTH || pos.y > position.y + GetScreenHeight()/IMAGE_WIDTH) {
-            posFireBalls.push_back(i);
-        }
-        if (fireBalls[i].isActive()) {
-            posFireBalls.push_back(i);
-            Texture txt = ImageHandler::setTextures("active")[0];
-            //delayedTextures.push_back(DelayedTexture(txt, 1.0f, pos));
-        }
-    }
-
-
-    // for (int i = 0; i < delayedTextures.size(); i++) {
-    //     delayedTextures[i].Update(deltaTime);
-    //     if (delayedTextures[i].isActive()) {
-    //         posDelayedTextures.push_back(i);
-    //     }
-    // }
-
-    //cout << delayedTextures.size() << " " << posDelayedTextures.size() << endl;
-
-    for (int i = posFireBalls.size() - 1; i >= 0; i--) {
-        fireBalls.erase(fireBalls.begin() + posFireBalls[i]);
-    }
-    // for (int i = posDelayedTextures.size() - 1; i >= 0; i--) {
-    //     delayedTextures.erase(delayedTextures.begin() + posDelayedTextures[i]);
-    // }
 }
 
 void Player::UpdateAnimation() {
