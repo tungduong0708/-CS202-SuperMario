@@ -144,7 +144,7 @@ void Player::HandleInput() {
         // cout << "state: " << currentImage << endl;
     }
 
-    if (IsKeyPressed(KEY_E) || IsKeyPressed(KEY_ENTER)) {
+    if ((IsKeyPressed(KEY_E) || IsKeyPressed(KEY_ENTER)) && mode == FIRE) {
         // shoot
         // freq = 0.75 second
         previousImage = currentImage;

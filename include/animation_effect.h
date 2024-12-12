@@ -73,6 +73,17 @@ public:
     void Draw();
 };
 
-
+class FireBallEffect : public AnimationEffect {
+private:
+    float distance = 1.0f;
+    Vector2 currentPosition;
+    Vector2 size;
+    Animation animation;
+public:
+    FireBallEffect(Vector2 pos);
+    ~FireBallEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
 
 #endif // ANIMATION_EFFECT_H

@@ -125,7 +125,13 @@ void FireFlower::Init(b2Vec2 position, ImageSet imageSet) {
 
 
 void FireFlower::OnBeginContact(SceneNode* other, b2Vec2 normal) {
-    // handle the begin contact of the fire flower
+    Player* player = dynamic_cast<Player*>(other);
+    if (player != nullptr) {
+        player->changeMode(FIRE);
+        Physics::bodiesToDestroy.push_back(body);
+        animations.clear();
+        images.clear();
+    }
 }
 
 void FireFlower::OnEndContact(SceneNode* other) {
