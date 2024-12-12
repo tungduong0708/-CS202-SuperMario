@@ -34,8 +34,8 @@ protected:
     ImageSet previousImage;
     bool faceLeft;            // Is character facing left
 public:
-    Character(int);
-    Character(int h = 0, int s = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s1 = 0, float a1 = 0, vector<Image> images = {}, string type = "");
+    Character();
+    Character(string type, int h = 0, int s = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s1 = 0, float a1 = 0, vector<Image> images = {});
     Character(const Character &c);
     ~Character();
 
@@ -79,12 +79,10 @@ private:
     bool alive;
     bool sit;
     bool immortal;
-    vector<FireBall> fireBalls;  
-    vector<DelayedTexture> delayedTextures;
-    // speed = max speed that the player can move
+    string currentMap;
 public:
     Player();
-    Player(string n, float c, float r, bool iarue, bool salse, int h, int s1, int l, int st, Vector2 size, float s2, float a1, vector<Image> images, string type);
+    Player(string type, string n, float c, float r, bool iarue, bool salse, int h, int s1, int l, int st, Vector2 size, float s2, float a1, vector<Image> images);
     Player(const Player &p);
     ~Player();
 
@@ -94,19 +92,15 @@ public:
     void setIsAlive(bool ia);
     void setSit(bool s);
     void setImmortal(bool im);
+    void setCurrentMap(string map);
     void updateScore(int s);
     string getName();
     float getCoins();
     float getRange();
+    string getCurrentMap();
     bool isAlive();
     bool isSitting();
     bool isImmortal();
-
-    // Move, jump, rotate and shoot the player methods
-    void move();
-    void jump();
-    void rotate();
-    void shoot();
 
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
@@ -151,5 +145,32 @@ public:
 
     MovingObject* copy() const;
 };
+
+
+class Goomba : public Enemy {
+public:
+    Goomba();
+    Goomba(string type, float range, bool alive, bool sit, int health, int score, int level, int strength, Vector2 size, float speed, float angle, vector<Image> images);
+    Goomba(const Goomba &g);
+    ~Goomba();
+
+    void Init(b2Vec2 position, ImageSet imageSet);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    void OnEndContact(SceneNode* other);
+    MovingObject* copy() const;
+};
+
+class Koopa : public Enemy {
+public:
+    Koopa();
+    Koopa(string type, float range, bool alive, bool sit, int health, int score, int level, int strength, Vector2 size, float speed, float angle, vector<Image> images);
+    Koopa(const Koopa &k);
+    ~Koopa();
+
+    void Init(b2Vec2 position, ImageSet imageSet);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    void OnEndContact(SceneNode* other);
+    MovingObject* copy() const; 
+};  
 
 #endif
