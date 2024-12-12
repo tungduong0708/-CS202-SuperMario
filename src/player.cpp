@@ -165,12 +165,11 @@ void Player::HandleInput() {
         animations[currentImage].setTimer();
         if (elapsedTime >= 0.75f) {
             // shoot the bullet
-            fireBalls.push_back(FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f, ImageHandler::setImages("fireball")));
-            for (int i = 0; i < fireBalls.size()-1; i++) {
-                fireBalls[i].ReloadAnimation();
-            }
-            fireBalls.back().Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width)/16 + 0.1f, (float)texture.height/32), IDLE);
-            fireBalls.back().setSpeed(9.0f * (faceLeft ? -1 : 1));
+            FireBall* fireball = new FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f, ImageHandler::setImages("fireball"));
+            fireball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32), IDLE);
+            fireball->setSpeed(15.0f * (faceLeft ? -1 : 1));
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->addNode(fireball);
             elapsedTime = 0.0f;
         }
     }
@@ -186,12 +185,7 @@ void Player::HandleInput() {
 
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
     Character::Update(playerVelocity, deltaTime);
-    vector<int> posFireBalls;
-    //vector<int> posDelayedTextures;
 
-    Vector2 position = getPosition();
-
-    //cout << tilemap.GetWidth() << " " << tilemap.GetHeight() << endl;
     for (int i = 0; i < fireBalls.size(); i++) {
         fireBalls[i].Update(Vector2{0, 0}, deltaTime);
         Vector2 pos = fireBalls[i].getPosition();

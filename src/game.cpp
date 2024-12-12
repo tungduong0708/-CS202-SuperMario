@@ -15,6 +15,9 @@ Game::Game(){
 }
 
 void Game::Init() {
+    SetTraceLogCallback([](int logLevel, const char* text, va_list args) {
+        return;
+    });
     InitWindow(screenWidth, screenHeight, "Super Mario Bros");
     SetTargetFPS(60);
 
