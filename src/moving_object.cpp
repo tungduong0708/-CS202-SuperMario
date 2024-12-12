@@ -97,6 +97,10 @@ Vector2 MovingObject::getSize() {
     return size;
 }
 
+float MovingObject::getSpeed() {
+    return speed;
+}
+
 float MovingObject::getAngle() {
     return angle;
 }
