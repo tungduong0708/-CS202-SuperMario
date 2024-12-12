@@ -59,6 +59,10 @@ void Player::setSit(bool s) {
     sit = s;
 }
 
+void Player::setImmortal(bool im) {
+    immortal = im;
+}
+
 void Player::updateScore(int s) {
     score += s;
 }
@@ -81,6 +85,10 @@ bool Player::isAlive() {
 
 bool Player::isSitting() {
     return sit;
+}
+
+bool Player::isImmortal() {
+    return immortal;
 }
 
 void Player::move() {

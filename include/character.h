@@ -78,6 +78,7 @@ private:
     float range; // max range if the player can shoot
     bool alive;
     bool sit;
+    bool immortal;
     vector<FireBall> fireBalls;  
     vector<DelayedTexture> delayedTextures;
     // speed = max speed that the player can move
@@ -92,12 +93,14 @@ public:
     void setRange(float r);
     void setIsAlive(bool ia);
     void setSit(bool s);
+    void setImmortal(bool im);
     void updateScore(int s);
     string getName();
     float getCoins();
     float getRange();
     bool isAlive();
     bool isSitting();
+    bool isImmortal();
 
     // Move, jump, rotate and shoot the player methods
     void move();
