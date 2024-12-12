@@ -11,9 +11,9 @@ Player::Player() : Character()
     sit = false;
 }
 
-Player::Player(string type, string name, float coins, float range, bool alive, bool sit, int health, 
+Player::Player(string name, float coins, float range, bool alive, bool sit, int health, 
                int score, int level, int strength, Vector2 size, float speed, 
-               float angle, vector<Image> imgs): 
+               float angle, vector<Image> imgs, string type): 
     Character(health, score, level, strength, size, speed, angle, imgs, type), 
     name(name), 
     coins(coins), 

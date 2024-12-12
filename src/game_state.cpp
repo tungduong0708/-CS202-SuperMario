@@ -1,0 +1,402 @@
+#include "game_state.h"
+#include "game.h"
+#include "drawer.h"
+#include "raylib.h"
+#include <iostream>
+
+GameState::GameState(Game *game)
+{
+    this->game = game;
+}
+
+MainMenuState::MainMenuState(Game* game)
+    : GameState(game), currentFrame(0), frameTimer(0.0f)
+{
+    // Initialize buttons
+    float buttonWidth = static_cast<float>(Game::getScreenWidth()) * 0.4;
+    float buttonHeight = 50;
+    float column1X = static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
+    float column2X = 3 * static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
+    float firstButtonWidth = column2X - column1X + buttonWidth;
+
+    buttons.push_back({{column1X, 300, firstButtonWidth, buttonHeight}, "Start Game", false});
+    buttons.push_back({{column1X, 375, buttonWidth, buttonHeight}, "Settings", false});
+    buttons.push_back({{column2X, 375, buttonWidth, buttonHeight}, "Saved Games", false});
+    buttons.push_back({{column1X, 450, buttonWidth, buttonHeight}, "Map Builder", false});
+    buttons.push_back({{column2X, 450, buttonWidth, buttonHeight}, "Exit", false});
+
+    // Load background images
+    for (int i = 1; i <= 500; ++i) {
+        std::string filePath = "../resources/background/menuBack/" + std::to_string(i) + ".png";
+        Texture2D texture = LoadTextureFromImage(LoadImage(filePath.c_str()));
+        if (texture.id == 0) {
+            std::cout << "Failed to load texture: " << filePath << std::endl;
+        } else {
+            backgroundTextures.push_back(texture);
+        }
+    }
+
+    // Load logo image
+    logoTexture = LoadTexture("../resources/images/logo/mario-logo.png");
+}
+
+void MainMenuState::update() {
+    // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    // Handle button clicks
+    if (IsButtonClicked(buttons[0])) {
+        game->changeState(game->gameplayState.get());
+    }
+    if (IsButtonClicked(buttons[1])) {
+        game->changeState(game->settingsState.get());
+    }
+    if (IsButtonClicked(buttons[2])) {
+        game->changeState(game->savedGameState.get());
+    }
+    if (IsButtonClicked(buttons[3])) {
+        game->changeState(game->mapBuilderState.get());
+    }
+    if (IsButtonClicked(buttons[4])) {
+        game->exitGame(); // Exit the game
+    }
+
+    // Update background frame
+    frameTimer += GetFrameTime();
+    if (frameTimer >= 0.05f) { // 20 FPS
+        frameTimer = 0.0f;
+        currentFrame = (currentFrame + 1) % backgroundTextures.size();
+    }
+}
+
+void MainMenuState::draw() {
+    // Draw the current background frame resized to fit the screen
+    DrawTexturePro(
+        backgroundTextures[currentFrame],
+        {0, 0, static_cast<float>(backgroundTextures[currentFrame].width), static_cast<float>(backgroundTextures[currentFrame].height)},
+        {0, 0, static_cast<float>(game->getScreenWidth()), static_cast<float>(game->getScreenHeight())},
+        {0, 0},
+        0.0f,
+        WHITE
+    );
+
+    // Draw logo inside the rectangle of size 300x(logoHeight * 300 / logoWidth), remove the image's background
+    float logoWidth = logoTexture.width;
+    float logoHeight = logoTexture.height;
+    float logoRectWidth = 400.0f;
+    float logoRectHeight = logoRectWidth * logoHeight / logoWidth;
+    DrawTexturePro(
+        logoTexture,
+        {0, 0, static_cast<float>(logoTexture.width), static_cast<float>(logoTexture.height)},
+        {game->getScreenWidth() / 2 - logoRectWidth / 2, 70, logoRectWidth, logoRectHeight},
+        {0, 0},
+        0.0f,
+        WHITE
+    );
+
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
+}
+
+void MainMenuState::drawBackground()
+{
+    // Draw the current background frame resized to fit the screen
+    DrawTexturePro(
+        backgroundTextures[currentFrame],
+        {0, 0, static_cast<float>(backgroundTextures[currentFrame].width), static_cast<float>(backgroundTextures[currentFrame].height)},
+        {0, 0, static_cast<float>(game->getScreenWidth()), static_cast<float>(game->getScreenHeight())},
+        {0, 0},
+        0.0f,
+        WHITE
+    );
+}
+
+MainMenuState::~MainMenuState() {
+    // Unload background textures
+    for (auto& texture : backgroundTextures) {
+        UnloadTexture(texture);
+    }
+}
+
+SettingsState::SettingsState(Game* game)
+    : GameState(game)
+{
+    // Initialize buttons
+    float buttonWidth = 250;
+    float buttonHeight = 50;
+    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+    buttons.push_back({{centerX, 150, buttonWidth, buttonHeight}, "", false});
+    buttons.push_back({{centerX, 225, buttonWidth, buttonHeight}, "", false});
+    buttons.push_back({{centerX, 300, buttonWidth, buttonHeight}, "Back to Menu", false});
+}
+
+void SettingsState::update() {
+    // Update button texts based on settings
+    buttons[0].text = game->getSettings().music ? "Music: On" : "Music: Off";
+    buttons[1].text = game->getSettings().soundEffects ? "Sound Effects: On" : "Sound Effects: Off";
+
+    // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    // Handle button clicks
+    if (IsButtonClicked(buttons[0])) {
+        game->getSettings().music = !game->getSettings().music;
+    }
+    if (IsButtonClicked(buttons[1])) {
+        game->getSettings().soundEffects = !game->getSettings().soundEffects;
+    }
+    if (IsButtonClicked(buttons[2])) {
+        game->changeState(game->mainMenuState.get());
+    }
+
+    float centerX = (game->getScreenWidth() - 250) / 2;
+    // Update sliders
+    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+}
+
+void SettingsState::draw() {
+    // Draw the underlying GameplayState
+    game->mainMenuState->drawBackground();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
+
+    float centerX = (game->getScreenWidth() - 250) / 2;
+    // Draw sliders
+    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+}
+
+SavedGameState::SavedGameState(Game* game)
+    : GameState(game)
+{
+    // Initialize buttons for saved game slots
+    float buttonWidth = 250;
+    float buttonHeight = 50;
+    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+    for (int i = 0; i < 5; ++i) {
+        buttons.push_back(Button{{centerX, static_cast<float>(100 + i * 75), buttonWidth, buttonHeight}, "Slot " + std::to_string(i + 1), false});
+    }
+    // Initialize back to menu button
+    buttons.push_back({{centerX, 475, buttonWidth, buttonHeight}, "Back to Menu", false});
+}
+
+void SavedGameState::update() {
+    // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    // Handle button clicks
+    for (int i = 0; i < 5; ++i) {
+        if (IsButtonClicked(buttons[i])) {
+            // Handle saved game slot click (currently does nothing)
+        }
+    }
+    if (IsButtonClicked(buttons[5])) {
+        game->changeState(game->mainMenuState.get());
+    }
+}
+
+void SavedGameState::draw() {
+    // Draw the underlying GameplayState
+    game->mainMenuState->drawBackground();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
+}
+
+MapBuilderState::MapBuilderState(Game* game)
+    : GameState(game)
+{
+    backgroundTexture = LoadTexture("../resources/background/menuBack/1.png");
+    float buttonWidth = 35;
+    float buttonHeight = 35;
+    pauseButton = {{755, 10, buttonWidth, buttonHeight}, "II", false};
+}
+
+void MapBuilderState::update() {
+    // Update pause button hover state
+    pauseButton.isHovered = CheckCollisionPointRec(GetMousePosition(), pauseButton.rect);
+
+    // Handle pause button click
+    if (IsButtonClicked(pauseButton)) {
+        game->changeState(game->pauseGameState.get());
+    }
+}
+
+void MapBuilderState::draw() {
+    DrawTexturePro(
+        backgroundTexture,
+        {0, 0, static_cast<float>(backgroundTexture.width), static_cast<float>(backgroundTexture.height)},
+        {0, 0, static_cast<float>(game->getScreenWidth()), static_cast<float>(game->getScreenHeight())},
+        {0, 0},
+        0.0f,
+        WHITE
+    );
+    DrawButton(pauseButton, *game);
+}
+
+Player player("Player", 0, 0, true, false, 0, 0, 0, 0, Vector2{0, 0}, 0, 0, {}, "mario");
+MyCamera camera;
+
+GameplayState::GameplayState(Game* game)
+    : GameState(game)
+{
+    SetTraceLogCallback([](int logLevel, const char* text, va_list args) {
+        return;
+    });
+
+    Physics::Init(); 
+    AnimationEffectCreator::InitEffects();
+    TextHelper::loadFont("highway_gothic", "");
+    TextHelper::loadTexture("coin");
+
+
+    ImageSet idleImageSet = IDLE;
+    movingObjects.push_back(player.copy());
+
+    movingObjects[0]->Init(b2Vec2(10.0f, 12.0f), idleImageSet);
+
+    TilesetHandler::Init();
+    Tilemap* tilemap = Tilemap::getInstance();
+    tilemap->LoadMapFromJson("resources/tilemaps/map-1-1.json");
+    camera = MyCamera(38.0f, Vector2{ (float)tilemap->GetWidth(), (float)tilemap->GetHeight() }, game->getScreenWidth(), game->getScreenHeight());
+    
+    float buttonWidth = 35;
+    float buttonHeight = 35;
+    pauseButton = {{755, 10, buttonWidth, buttonHeight}, "II", false};
+}
+
+
+void GameplayState::update() {
+    float deltaTime = GetFrameTime();
+    Physics::Update(deltaTime); 
+    if (GetMouseWheelMove() > 0) camera.SetZoom(camera.GetZoom() * 1.1f);
+    if (GetMouseWheelMove() < 0) camera.SetZoom(camera.GetZoom() / 1.1f);
+
+
+    for (int i = 0; i < movingObjects.size(); i++) {
+        Vector2 pos = movingObjects[i]->getPosition();
+        b2Vec2 vel = movingObjects[i]->getVelocity();
+        movingObjects[i]->HandleInput();
+        movingObjects[i]->Update(Vector2{vel.x, vel.y}, deltaTime);
+    }
+
+    b2Vec2 velocity = movingObjects[0]->getVelocity();
+    Vector2 position = movingObjects[0]->getPosition();
+    //cout << "player position: " << position.x << " " << position.y << endl;
+    camera.Update(movingObjects[0]->getPosition());  
+    Tilemap* tilemap = Tilemap::getInstance();
+    tilemap->Update(Vector2{velocity.x, velocity.y}, deltaTime);
+
+    // Update pause button hover state
+    pauseButton.isHovered = CheckCollisionPointRec(GetMousePosition(), pauseButton.rect);
+
+    // Handle pause button click
+    if (IsButtonClicked(pauseButton)) {
+        game->changeState(game->pauseGameState.get());
+    }
+}
+
+void GameplayState::draw() {
+    BeginMode2D(camera.GetCamera());
+
+    Tilemap* tilemap = Tilemap::getInstance();
+    tilemap->Draw();
+    for (int i = 0; i < movingObjects.size(); i++) {
+        movingObjects[i]->Draw();
+    }
+
+    Vector2 cameraTarget = camera.GetCameraTarget();
+    movingObjects[0]->Draw(Vector2{cameraTarget.x - 9.0f, cameraTarget.y - 7.0f}, 0.0f);
+    
+    Physics::world.DebugDraw(); 
+
+    EndMode2D();
+    DrawButton(pauseButton, *game);
+}
+
+void GameplayState::cleanup() {
+    TilesetHandler::Clear();
+
+    for (int i = 0; i < movingObjects.size(); i++) {
+        delete movingObjects[i];
+    } 
+}
+
+PauseGameState::PauseGameState(Game* game)
+    : GameState(game)
+{
+    // Initialize buttons
+    float buttonWidth = 250;
+    float buttonHeight = 50;
+    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+    buttons.push_back({{centerX, 100, buttonWidth, buttonHeight}, "", false});
+    buttons.push_back({{centerX, 175, buttonWidth, buttonHeight}, "", false});
+    buttons.push_back({{centerX, 250, buttonWidth, buttonHeight}, "Resume", false});
+    buttons.push_back({{centerX, 325, buttonWidth, buttonHeight}, "Back to Menu", false});
+}
+
+void PauseGameState::update() {
+    // Update button texts based on settings
+    buttons[0].text = game->getSettings().music ? "Music: On" : "Music: Off";
+    buttons[1].text = game->getSettings().soundEffects ? "Sound Effects: On" : "Sound Effects: Off";
+
+    // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    // Handle button clicks
+    if (IsButtonClicked(buttons[0])) {
+        game->getSettings().music = !game->getSettings().music;
+    }
+    if (IsButtonClicked(buttons[1])) {
+        game->getSettings().soundEffects = !game->getSettings().soundEffects;
+    }
+    if (IsButtonClicked(buttons[2])) {
+        game->changeState(game->gameplayState.get());
+    }
+    if (IsButtonClicked(buttons[3])) {
+        game->changeState(game->mainMenuState.get());
+    }
+
+    float centerX = (game->getScreenWidth() - 250) / 2;
+    // Update sliders
+    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+}
+
+void PauseGameState::draw() {
+    // Draw the underlying GameplayState
+    game->gameplayState->draw();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
+
+    float centerX = (game->getScreenWidth() - 250) / 2;
+    // Draw sliders
+    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+}
