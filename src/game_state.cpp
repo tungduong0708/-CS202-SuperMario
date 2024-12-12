@@ -9,8 +9,7 @@ GameState::GameState(Game *game)
     this->game = game;
 }
 
-MainMenuState::MainMenuState(Game* game)
-    : GameState(game), currentFrame(0), frameTimer(0.0f)
+MainMenuState::MainMenuState(Game* game): GameState(game)
 {
     // Initialize buttons
     float buttonWidth = static_cast<float>(Game::getScreenWidth()) * 0.4;
@@ -25,16 +24,8 @@ MainMenuState::MainMenuState(Game* game)
     buttons.push_back({{column1X, 450, buttonWidth, buttonHeight}, "Map Builder", false});
     buttons.push_back({{column2X, 450, buttonWidth, buttonHeight}, "Exit", false});
 
-    // Load background images
-    for (int i = 1; i <= 500; ++i) {
-        std::string filePath = "../resources/background/menuBack/" + std::to_string(i) + ".png";
-        Texture2D texture = LoadTextureFromImage(LoadImage(filePath.c_str()));
-        if (texture.id == 0) {
-            std::cout << "Failed to load texture: " << filePath << std::endl;
-        } else {
-            backgroundTextures.push_back(texture);
-        }
-    }
+    // Load background image
+    backgroundTexture = LoadTexture("../resources/background/menuBackground.png");
 
     // Load logo image
     logoTexture = LoadTexture("../resources/images/logo/mario-logo.png");
@@ -62,20 +53,13 @@ void MainMenuState::update() {
     if (IsButtonClicked(buttons[4])) {
         game->exitGame(); // Exit the game
     }
-
-    // Update background frame
-    frameTimer += GetFrameTime();
-    if (frameTimer >= 0.05f) { // 20 FPS
-        frameTimer = 0.0f;
-        currentFrame = (currentFrame + 1) % backgroundTextures.size();
-    }
 }
 
 void MainMenuState::draw() {
     // Draw the current background frame resized to fit the screen
     DrawTexturePro(
-        backgroundTextures[currentFrame],
-        {0, 0, static_cast<float>(backgroundTextures[currentFrame].width), static_cast<float>(backgroundTextures[currentFrame].height)},
+        backgroundTexture,
+        {0, 0, static_cast<float>(backgroundTexture.width), static_cast<float>(backgroundTexture.height)},
         {0, 0, static_cast<float>(game->getScreenWidth()), static_cast<float>(game->getScreenHeight())},
         {0, 0},
         0.0f,
@@ -106,8 +90,8 @@ void MainMenuState::drawBackground()
 {
     // Draw the current background frame resized to fit the screen
     DrawTexturePro(
-        backgroundTextures[currentFrame],
-        {0, 0, static_cast<float>(backgroundTextures[currentFrame].width), static_cast<float>(backgroundTextures[currentFrame].height)},
+        backgroundTexture,
+        {0, 0, static_cast<float>(backgroundTexture.width), static_cast<float>(backgroundTexture.height)},
         {0, 0, static_cast<float>(game->getScreenWidth()), static_cast<float>(game->getScreenHeight())},
         {0, 0},
         0.0f,
@@ -116,10 +100,10 @@ void MainMenuState::drawBackground()
 }
 
 MainMenuState::~MainMenuState() {
-    // Unload background textures
-    for (auto& texture : backgroundTextures) {
-        UnloadTexture(texture);
-    }
+    // Unload background texture
+    UnloadTexture(backgroundTexture);
+    // Unload logo texture
+    UnloadTexture(logoTexture);
 }
 
 SettingsState::SettingsState(Game* game)
@@ -224,7 +208,7 @@ void SavedGameState::draw() {
 MapBuilderState::MapBuilderState(Game* game)
     : GameState(game)
 {
-    backgroundTexture = LoadTexture("../resources/background/menuBack/1.png");
+    backgroundTexture = LoadTexture("../resources/background/menuBackground.png");
     float buttonWidth = 35;
     float buttonHeight = 35;
     pauseButton = {{755, 10, buttonWidth, buttonHeight}, "II", false};
@@ -250,6 +234,10 @@ void MapBuilderState::draw() {
         WHITE
     );
     DrawButton(pauseButton, *game);
+}
+
+MapBuilderState::~MapBuilderState() {
+    UnloadTexture(backgroundTexture);
 }
 
 GameplayState::GameplayState(Game* game)

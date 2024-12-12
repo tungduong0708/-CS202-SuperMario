@@ -41,9 +41,7 @@ public:
 
 private:
     std::vector<Button> buttons;
-    std::vector<Texture2D> backgroundTextures;
-    int currentFrame;
-    float frameTimer;
+    Texture2D backgroundTexture{};
     Texture2D logoTexture{};
 };
 
@@ -75,6 +73,7 @@ public:
     explicit MapBuilderState(Game* game);
     void update() override;
     void draw() override;
+    ~MapBuilderState() override;
 
 private:
     Texture2D backgroundTexture{};
