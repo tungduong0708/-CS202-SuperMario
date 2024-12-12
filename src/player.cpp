@@ -207,6 +207,9 @@ void Player::Draw() {
     for (auto &fireBall : fireBalls) {
         fireBall.Draw();
     }
+    for (auto &delayedTexture : delayedTextures) {
+        delayedTexture.Draw();
+    }
 }
 
 void Player::Draw(Vector2 position, float angle) {

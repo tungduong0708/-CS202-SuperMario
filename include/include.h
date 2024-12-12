@@ -21,6 +21,7 @@ using namespace std;
 #include "renderer.h"
 #include "scene_node.h"
 #include "text_helper.h"
+#include "delayed_texture.h"
 
 #define IMAGE_WIDTH 16
 
