@@ -91,6 +91,13 @@ void Mushroom::Init(b2Vec2 position, ImageSet imageSet) {
 
 void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     // handle the begin contact of the mushroom
+    Player* player = dynamic_cast<Player*>(other);
+    if (player != nullptr) {
+        player->changeMode(BIG);
+        Physics::bodiesToDestroy.push_back(body);
+        animations.clear();
+        images.clear();
+    }
 }
 
 void Mushroom::OnEndContact(SceneNode* other) {

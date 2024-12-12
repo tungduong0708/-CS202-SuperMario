@@ -138,16 +138,6 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                     playerPtr->updateScore(200);
                     playerPtr->setCoins(playerPtr->getCoins() + 1);
                 }
-                else if (effectName == "mushroom") {
-                    playerPtr->updateScore(1000);
-                    playerPtr->setMode(BIG);
-                } else if (effectName == "star") {
-                    playerPtr->updateScore(1000);
-                    playerPtr->setMode(FIRE);
-                } else if (effectName == "fireflower") {
-                    playerPtr->updateScore(1500);
-                    playerPtr->setMode(FIRE);
-                }
 
                 Tile::setTilesetPath("resources/tilesets/OverWorld.json");
                 Tile::setId(2);

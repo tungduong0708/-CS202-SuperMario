@@ -28,12 +28,11 @@ protected:
     int frameWidth, frameHeight;
     int currentFrame;
     float frameTime, frameSpeed;
-    bool isOnGround = true;          // Is character on the ground
-    bool isHitWall;
+    bool isOnGround;          // Is character on the ground
+    bool modeChanged;
     ImageSet currentImage;
     ImageSet previousImage;
     bool faceLeft;            // Is character facing left
-    std::unordered_set<SceneNode*> groundContacts;
 public:
     Character(int);
     Character(int h = 0, int s = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s1 = 0, float a1 = 0, vector<Image> images = {}, string type = "");
@@ -51,7 +50,7 @@ public:
     int getStrength();
     bool onGround();
     bool isLeft();
-    bool hitWall();
+    void changeMode(Mode mode);
     Mode getMode();
 
     void move();
@@ -61,6 +60,7 @@ public:
     //MovingObject* copy() const;  // Prototype design pattern
     // default image = IDLE
     void Init(b2Vec2 position, ImageSet imageSet = IDLE);  
+    virtual void UpdateMode(Mode mode);
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void Draw();  
     virtual void Draw(Vector2 position, float angle = 0.0f) = 0;

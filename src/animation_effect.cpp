@@ -64,6 +64,8 @@ void MushroomEffect::Update(float deltaTime)
         Mushroom* mushroom = new Mushroom();
         mushroom->Init(b2Vec2{position.x, position.y}, ImageSet{});
         mushroom->setSpeed(1.0f);
+        b2Body* body = mushroom->getBody();
+        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(mushroom);
         tilemap->addNode(mushroom);
     }
 }
@@ -96,7 +98,11 @@ void StarEffect::Update(float deltaTime)
         Tilemap* tilemap = Tilemap::getInstance();
         Star* star = new Star();
         star->Init(b2Vec2{position.x, position.y}, ImageSet{});
-        star->setSpeed(1.0f);
+        b2Body* body = star->getBody();
+        body->SetType(b2_staticBody);
+        b2Fixture* fixture = body->GetFixtureList();
+        fixture->SetSensor(true);
+        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(star);
         tilemap->addNode(star);
     }
 }
@@ -129,7 +135,11 @@ void FireFlowerEffect::Update(float deltaTime)
         Tilemap* tilemap = Tilemap::getInstance();
         FireFlower* fireFlower = new FireFlower();
         fireFlower->Init(b2Vec2{position.x, position.y}, ImageSet{});
-        fireFlower->setSpeed(1.0f);
+        b2Body* body = fireFlower->getBody();
+        body->SetType(b2_staticBody);
+        b2Fixture* fixture = body->GetFixtureList();
+        fixture->SetSensor(true);
+        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(fireFlower);
         tilemap->addNode(fireFlower);
     }
 }
