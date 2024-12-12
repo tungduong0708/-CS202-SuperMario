@@ -8,6 +8,7 @@
 #include "static_object.h"
 #include "physics.h"
 #include "effect_manager.h"
+#include "camera.h"
 #include <fstream>
 #include <iostream>
 #include <box2d/box2d.h>
@@ -76,6 +77,8 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     width = j["width"];
     height = j["height"];
     tileSize = j["tilewidth"];
+
+    camera = MyCamera(38.0f, Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
 
     for (const auto& tileset : j["tilesets"]) {
         std::string tilesetPath = tileset["source"].get<std::string>();
@@ -150,7 +153,14 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         nodeLayer.push_back(obj);
                     }
                     else {
-                        EffectManager::effectMap[{(int)x, (int)y}] = object["name"].get<std::string>();
+                        if (object.contains("type") && object["type"] == "player") {
+                            std::cout << "marioaaa" << " " << x << " " << y << std::endl;
+                            std::string name = object["name"].get<std::string>();
+                            player = new Player(name);
+                            player->Init(b2Vec2{x, y});
+                            player->setName(name);
+                        }
+                        else EffectManager::effectMap[{(int)x, (int)y}] = object["name"].get<std::string>();
                     }
                 }
                 else {
@@ -173,19 +183,25 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     file.close();
 }
 
-void Tilemap::Update(Vector2 playerVelocity, float deltaTime) {
+void Tilemap::Update(float deltaTime) {
+    b2Vec2 playerVelocity = player->getVelocity();
+    player->HandleInput();
+    player->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
     for (auto& layer : nodes) {
         if (layer.empty()) {
             EffectManager::Update(deltaTime);
             continue;
         }
         for (auto& node : layer) {
-            node->Update(playerVelocity, deltaTime);
+            node->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
         }
     }
+    camera.Update(player->getPosition());  
+
 }
 
 void Tilemap::Draw() const {
+    BeginMode2D(camera.GetCamera());
     for (const auto& layer : nodes) {
         if (layer.empty()) {
             EffectManager::DrawLower();
@@ -196,9 +212,20 @@ void Tilemap::Draw() const {
         }
     }
     EffectManager::DrawUpper();
+    player->Draw();
+    Vector2 cameraTarget = camera.GetCameraTarget();
+    player->Draw(Vector2{cameraTarget.x - 9.0f, cameraTarget.y - 7.0f}, 0.0f);
+    EndMode2D();
+
 }
 
-int Tilemap::GetWidth() const {
+Vector2 Tilemap::GetPlayerPosition() const
+{
+    return player->getPosition();
+}
+
+int Tilemap::GetWidth() const
+{
     return width;
 }
 

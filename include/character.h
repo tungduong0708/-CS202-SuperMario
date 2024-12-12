@@ -82,7 +82,8 @@ private:
     string currentMap;
 public:
     Player();
-    Player(string type, string n, float c, float r, bool iarue, bool salse, int h, int s1, int l, int st, Vector2 size, float s2, float a1, vector<Image> images);
+    Player(string type, string name = "", float coins = 0.0f, float range = 0.0f, bool alive = true, bool sit = false, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, 
+               float angle = 0.0f, vector<Image> imgs = {});
     Player(const Player &p);
     ~Player();
 

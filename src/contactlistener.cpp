@@ -16,7 +16,7 @@ void ContactListener::BeginContact(b2Contact *contact)
     b2WorldManifold worldManifold;
     contact->GetWorldManifold(&worldManifold);
     b2Vec2 normal = worldManifold.normal;
-    // std::cout << "normal: " << normal.x << " " << normal.y << std::endl;
+    std::cout << "normal: " << normal.x << " " << normal.y << std::endl;
 
     if (nodeA) nodeA->OnBeginContact(nodeB, normal);
     if (nodeB) nodeB->OnBeginContact(nodeA, normal);

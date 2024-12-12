@@ -80,14 +80,14 @@
                 {
                  "height":0,
                  "id":64,
-                 "name":"smallmario",
+                 "name":"mario",
                  "point":true,
                  "rotation":0,
-                 "type":"Player",
+                 "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":129,
-                 "y":191
+                 "x":62.5,
+                 "y":203.583333333333
                 }, 
                 {
                  "height":0,
