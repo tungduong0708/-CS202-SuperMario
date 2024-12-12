@@ -137,7 +137,7 @@ void Physics::Update(float deltaTime) {
 void Physics::DebugDraw() {
     if (!debugDraw) {
         debugDraw = new b2DrawRayLib();
-        debugDraw->SetFlags(b2Draw::e_shapeBit | b2Draw::e_aabbBit);
+        debugDraw->SetFlags(b2Draw::e_aabbBit);
         world.SetDebugDraw(debugDraw);
     }
     world.DebugDraw();

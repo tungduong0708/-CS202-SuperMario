@@ -4,6 +4,9 @@
 #include "scene_node.h"
 #include "moving_object.h"
 #include "my_bounding_box.h"
+#include "animation_effect_creator.h"
+#include "effect_manager.h"
+#include "character.h"
 
 const float BOUNCE_HEIGHT = 0.3f;
 
@@ -72,6 +75,7 @@ void StaticTile::Update(Vector2 playerVelocity, float deltaTime)
 
 void StaticTile::Draw()
 {
+    if (!isActivated) return;
     std::string tilesetPath = Tile::getTilesetPath();
     int columns = TilesetHandler::getColumns(tilesetPath);
     int spacing = TilesetHandler::getSpacing(tilesetPath);
@@ -81,11 +85,24 @@ void StaticTile::Draw()
     Rectangle srcRect = { static_cast<float>(src_x), static_cast<float>(src_y), 
                         static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };
     Renderer::DrawPro(TilesetHandler::getTexture(tilesetPath), srcRect, getPosition(), Vector2{ 1, 1 }, true);
-	//Physics::DebugDraw();
+	// Physics::DebugDraw();
 }
 
 void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
 {
+    if (!other) return;
+    std::cout << "OnBeginContact: " << getType() << std::endl;
+    Player* playerPtr = dynamic_cast<Player*>(other); 
+    if (playerPtr != nullptr) {
+        if (getType() == "brick" && (playerPtr->getMode() == Mode::FIRE || playerPtr->getMode() == Mode::BIG)) {
+            if (normal.y > 0.5f) {
+                std::cout << "Effect: brick_explode" << std::endl;
+                EffectManager::AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("brick_explode", getPosition()));
+                Physics::bodiesToDestroy.push_back(GetBody());
+                isActivated = false;
+            }
+        }
+    }
 }
 
 void StaticTile::OnEndContact(SceneNode* other)

@@ -13,6 +13,7 @@ class StaticTile : public Tile {
 private:
     b2Body* invisibleBody;
     b2PrismaticJoint* joint;
+    bool isActivated = true;
 public:
     StaticTile() = default;
     StaticTile(int id, std::string type, std::string tilesetName);

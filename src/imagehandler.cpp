@@ -129,6 +129,9 @@ vector<Image>& ImageHandler::setImages(string path) {
     else if (path == "spike2") {
         images.push_back(LoadImage("resources/images/object/spike2.png"));
     }
+    else if (path == "piece_brick") {
+        images.push_back(LoadImage("resources/images/object/piece_brick.png"));
+    }
     else if (path == "coin") {
         images.push_back(LoadImage("resources/images/coin/coin1.png"));
         images.push_back(LoadImage("resources/images/coin/coin2.png"));
@@ -310,6 +313,11 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
     else if (path == "spike2") {
         animations = {
             Animation({Frame(0.1f, textures[0])}) // spike2
+        };
+    }
+    else if (path == "piece_brick") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) // piece_brick
         };
     }
     else if (path == "coin") {
