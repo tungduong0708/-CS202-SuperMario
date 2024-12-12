@@ -57,15 +57,6 @@ void Game::Update(float deltaTime) {
     camera.Update(movingObjects[0]->getPosition());  
     Tilemap* tilemap = Tilemap::getInstance();
     tilemap->Update(Vector2{velocity.x, velocity.y}, deltaTime);
-
-
-    // Vector2 pos = movingObjects[0]->getPosition();
-    // b2Vec2 velocity = movingObjects[0]->getVelocity();
-    // camera.Update(pos);
-    // movingObjects[0]->HandleInput(fireFlowers); 
-    // movingObjects[0]->Update(Vector2{velocity.x, velocity.y}, deltaTime); 
-
-
 }
 
 void Game::Draw() {

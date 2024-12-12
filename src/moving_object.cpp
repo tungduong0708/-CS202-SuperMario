@@ -206,6 +206,7 @@ void FireBall::Init(b2Vec2 position, ImageSet imageSet) {
     };
     restitution = 1.0f;
     MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, restitution);
+
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
     b2Fixture* fixture = body->GetFixtureList();
     b2Filter filter = fixture->GetFilterData();
@@ -220,6 +221,7 @@ void FireBall::Update(Vector2 playerVelocity, float deltaTime) {
         flag = true;
     }
     angle += 5.0f;
+
 }
 
 void FireBall::HandleInput() {
@@ -233,28 +235,12 @@ void FireBall::ReloadAnimation() {
 void FireBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!other) return;
 
-    // if (dynamic_cast<Enemy*>(other)) {
-    //     // if the fireball hits the enemy, destroy the fireball
-    //     flag = true;
-    //     //other->setHealth(other->getHealth() - damage);
-    // }
-    // if hit vertical wall, destroy the fireball
-
-    // Vector2 otherPos = other->getPosition();
-    // Vector2 posLeft = Vector2{size.x/2 + getPosition().x, size.y/2 + getPosition().y};
-    // cout << posLeft.x - otherPos.x << " " << size.x/2 + 0.1f << endl;
-    // if (abs(posLeft.x - otherPos.x) < size.x/2 + 0.1f) {
-    //     flag = true;
-    // }
-    // Player* player = dynamic_cast<Player*>(other);
-    // if (player) return;
     Enemy *enemy = dynamic_cast<Enemy*>(other);
     if (enemy || normal.x != 0) {
         if (enemy) enemy->setHealth(enemy->getHealth() - damage);
         Physics::bodiesToDestroy.push_back(body);
         animations.clear();
         images.clear();
-        flag = true;
     }
 }
 

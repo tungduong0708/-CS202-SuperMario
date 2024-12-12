@@ -56,3 +56,4 @@ enum CollisionCategory {
 
 // bool collide = (nodeA.getCategoryBits() & nodeB.getMaskBits()) != 0 &&
 //               (nodeA.getMaskBits() & nodeB.getCategoryBits()) != 0;
+
