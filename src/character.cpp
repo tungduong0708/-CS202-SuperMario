@@ -1,5 +1,6 @@
 #include "include.h"
 #include "object.h"
+#include "character.h"
 
 Character::Character(int) : MovingObject()
 {
@@ -134,9 +135,10 @@ bool Character::isLeft() {
     return faceLeft;
 }
 
-bool Character::hitWall()
+void Character::changeMode(Mode mode)
 {
-    return isHitWall;
+    this->mode = mode;
+    this->modeChanged = true;
 }
 
 void Character::move() {
@@ -178,6 +180,36 @@ void Character::Init(b2Vec2 position, ImageSet imageSet) {
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 
+void Character::UpdateMode(Mode mode)
+{
+    b2Vec2 position = body->GetPosition();
+    this->mode = mode;
+    currentImage = WALK;
+    animations = AnimationHandler::setAnimations(StringMode::getMode(mode) + type);
+    curAnim = animations[currentImage];
+
+    texture = curAnim.GetFrame();
+
+    frameWidth = texture.width;
+    frameHeight = texture.height;
+    sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
+
+    size = {(float)frameWidth / IMAGE_WIDTH, (float)frameHeight / IMAGE_WIDTH};
+    destRect = {position.x, position.y, size.x, size.y};
+
+    std::vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{size.x, 0.0f},
+        b2Vec2{size.x - 0.2f, size.y},
+        b2Vec2{size.x, size.y - 0.05f},
+        b2Vec2{0.0f, size.y - 0.05f},
+        b2Vec2{0.0f + 0.2f, size.y}
+    };
+    Physics::world.DestroyBody(body);
+    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y});
+
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+}
 void Character::ResizeBody(float newWidth, float newHeight) {
     // Destroy the existing fixture
     b2Fixture* fixture = body->GetFixtureList();
@@ -202,6 +234,10 @@ void Character::ResizeBody(float newWidth, float newHeight) {
 }
 
 void Character::Update(Vector2 playerVelocity, float deltaTime) {
+    if (modeChanged) {
+        UpdateMode(mode);
+        modeChanged = false;
+    }
     elapsedTime += deltaTime;
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;

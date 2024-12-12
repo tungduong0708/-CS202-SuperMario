@@ -125,21 +125,19 @@ void KinematicTile::Draw()
 void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
 {
     if (!other) return;
-    Vector2 playerPos = other->getPosition();
-    Vector2 pos = getPosition();
     Player* playerPtr = dynamic_cast<Player*>(other); 
     if (playerPtr != nullptr && animation) {
         if (getType() == "blind_box") {
-            float boxBottom = pos.y + 1.0f;
-            float playerTop = playerPos.y;
-            float diff = boxBottom - playerTop;
-            if (abs(diff) < 0.15f) {
+            if (normal.y < -0.5f) {
                 Vector2 pos = getPosition();
                 pos.y--;
                 std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
+                std::cout << "Effect name: " << effectName << std::endl;
                 EffectManager::AddEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
-                playerPtr->updateScore(200);
-                playerPtr->setCoins(playerPtr->getCoins() + 1);
+                if (effectName == "coin") {
+                    playerPtr->updateScore(200);
+                    playerPtr->setCoins(playerPtr->getCoins() + 1);
+                }
 
                 Tile::setTilesetPath("resources/tilesets/OverWorld.json");
                 Tile::setId(2);

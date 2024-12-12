@@ -14,13 +14,30 @@
 #include "nlohmann/json.hpp" 
 using json = nlohmann::json;
 
+Tilemap* Tilemap::instance;
+
 Tilemap::Tilemap(const std::string& filePath) {
     LoadMapFromJson(filePath);
 }
 
 Tilemap::~Tilemap() {
-    for (auto& node : nodes) {
-        delete node;
+    clearMap();
+}
+
+Tilemap* Tilemap::getInstance()
+ {
+    if (instance == nullptr) {
+        instance = new Tilemap();
+    }
+    return instance;
+}
+
+void Tilemap::clearMap()
+{
+    for (auto& layer : nodes) {
+        for (auto& node : layer) {
+            delete node;
+        }
     }
 }
 
@@ -37,6 +54,11 @@ std::pair<std::string, int> Tilemap::GetTilesetInfo(int tileIdx) const
         }
     }
     return tilesets[r];
+}
+
+void Tilemap::addNode(SceneNode *node)
+{
+    nodes.back().push_back(node);
 }
 
 void Tilemap::LoadMapFromJson(const std::string &filePath)
@@ -64,9 +86,10 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         tilesetPath = "resources/tilesets/" + tilesetPath;
         tilesets.push_back({tilesetPath, tileset["firstgid"].get<int>()});
     }
-
+    
     for (const auto& layer : j["layers"]) {
-        if (layer["type"] == "imagelayer") {
+        std::vector<SceneNode*> nodeLayer;
+        if (layer["type"] == "imagelayer" && layer["name"] != "Effect") {
             std::cout << "Image layer found!" << std::endl;
             std::string imagePath = layer["image"].get<std::string>();
             size_t pos = imagePath.find_last_of('/');
@@ -80,7 +103,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
             const auto& x = layer["x"].get<float>();
             const auto& y = layer["y"].get<float>();
             Background* background = new Background(source, Vector2{x, y}, numRepeated); 
-            nodes.push_back(background);
+            nodeLayer.push_back(background);
         }
         else if (layer["type"] == "tilelayer" && layer.contains("data")) {
             std::cout << "Tile layer found!" << std::endl;
@@ -103,7 +126,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         continue;  
                     }
                     tile->setPosition(pos);
-                    nodes.push_back(tile->clone());
+                    nodeLayer.push_back(tile->clone());
                 }
             }
         }
@@ -124,7 +147,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         b2Body* body;
                         MyBoundingBox::createBody(body, b2_staticBody, vertices, Vector2{x, y});
                         StaticObject* obj = new StaticObject(body);
-                        nodes.push_back(obj);
+                        nodeLayer.push_back(obj);
                     }
                     else {
                         EffectManager::effectMap[{(int)x, (int)y}] = object["name"].get<std::string>();
@@ -141,26 +164,37 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                     MyBoundingBox::createBody(body, b2_staticBody, vertices, Vector2{x, y});
                     StaticObject* obj = new StaticObject(body);
                     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(obj);
-                    nodes.push_back(obj);
+                    nodeLayer.push_back(obj);
                 }
             }
         }
+        nodes.push_back(nodeLayer);
     }
     file.close();
 }
 
 void Tilemap::Update(Vector2 playerVelocity, float deltaTime) {
-    for (auto& node : nodes) {
-        node->Update(playerVelocity, deltaTime);
+    for (auto& layer : nodes) {
+        if (layer.empty()) {
+            EffectManager::Update(deltaTime);
+            continue;
+        }
+        for (auto& node : layer) {
+            node->Update(playerVelocity, deltaTime);
+        }
     }
-    EffectManager::Update(deltaTime);
 }
 
 void Tilemap::Draw() const {
-    for (const auto& node : nodes) {
-        node->Draw();
+    for (const auto& layer : nodes) {
+        if (layer.empty()) {
+            EffectManager::Draw();
+            continue;
+        }
+        for (auto& node : layer) {
+            node->Draw();
+        }
     }
-    EffectManager::Draw();
 }
 
 int Tilemap::GetWidth() const {

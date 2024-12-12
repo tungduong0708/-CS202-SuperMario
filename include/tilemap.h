@@ -12,16 +12,25 @@
 class Tilemap {
 private:
     int width, height, tileSize;
-    std::vector<SceneNode*> nodes;
+    std::vector<std::vector<SceneNode*>> nodes;
     std::vector<std::pair<std::string, int>> tilesets;
-    int tilesetColumns; 
+    int tilesetColumns;
 
-public:
     Tilemap() = default;
     Tilemap(const std::string& filePath);
+    
+    Tilemap(const Tilemap&) = delete;
+    Tilemap& operator=(const Tilemap&) = delete;
+
+    static Tilemap* instance;
+
+public:
     ~Tilemap();
+    static Tilemap* getInstance();
+    void clearMap();
 
     std::pair<std::string, int> GetTilesetInfo(int tileIdx) const;
+    void addNode(SceneNode* node);
     void LoadMapFromJson(const std::string& filePath);
     void Update(Vector2 playerVelocity, float deltaTime);
     void Draw() const;
