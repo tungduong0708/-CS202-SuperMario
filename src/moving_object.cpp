@@ -1,5 +1,6 @@
 #include "include.h"
 #include "object.h"
+#include "moving_object.h"
 
 
 MovingObject::MovingObject() {
@@ -73,6 +74,17 @@ void MovingObject::setRestitution(float r) {
     restitution = r;
 }
 
+void MovingObject::setStable() {
+    float gravityScale = body->GetGravityScale();
+    float mass = body->GetMass();
+    b2Vec2 gravity = Physics::world.GetGravity();
+    b2Vec2 antiGravityForce = -mass * gravityScale * gravity;
+
+    body->ApplyForceToCenter(antiGravityForce, true);
+    
+    elapsedTime = 0.0f;
+}
+
 float MovingObject::getElapsedTime() {
     return elapsedTime;
 }
@@ -142,7 +154,8 @@ FireBall::FireBall() : MovingObject() {
 }
 
 FireBall::FireBall(float d, Vector2 size, float speed, float angle, vector<Image> imgs): 
-    MovingObject(size, speed, angle, imgs), damage(d), flag(false) {}
+    MovingObject(size, speed, angle, imgs), damage(d), flag(false) {
+}
 
 
 FireBall::FireBall(const FireBall &ff): MovingObject(ff) {
@@ -159,6 +172,10 @@ void FireBall::setDamage(float damage) {
     this->damage = damage;
 }
 
+void FireBall::setFlag(bool flag) {
+    this->flag = flag;
+}
+
 float FireBall::getDamage() {
     return damage;
 }
@@ -167,19 +184,9 @@ bool FireBall::isActive() {
     return flag;
 }
 
-void FireBall::move() {
-    // move the fire flower
+Animation FireBall::getAnimation(bool flag) {
+    return animations[flag];
 }
-
-void FireBall::jump() {
-    // jump the fire flower
-}
-
-void FireBall::rotate() {
-    // rotate the fire flower
-    angle += 90.0f;
-}
-
 
 MovingObject* FireBall::copy() const {
     return new FireBall(*this);
@@ -197,7 +204,8 @@ void FireBall::Init(b2Vec2 position, ImageSet imageSet) {
         b2Vec2{size.x, size.y},
         b2Vec2{0.0f, size.y}
     };
-    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, 1.0f);
+    restitution = 1.0f;
+    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, restitution);
 }
 
 void FireBall::Update(Vector2 playerVelocity, float deltaTime) {
@@ -207,9 +215,6 @@ void FireBall::Update(Vector2 playerVelocity, float deltaTime) {
         flag = true;
     }
     angle += 5.0f;
-
-    b2Vec2 position = body->GetPosition();
-    //cout << "fireball position: " << position.x << " " << position.y << endl;
 }
 
 void FireBall::HandleInput() {
@@ -222,12 +227,6 @@ void FireBall::ReloadAnimation() {
 
 void FireBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!other) return;
-
-    // if (dynamic_cast<Enemy*>(other)) {
-    //     // if the fireball hits the enemy, destroy the fireball
-    //     flag = true;
-    //     //other->setHealth(other->getHealth() - damage);
-    // }
     // if hit vertical wall, destroy the fireball
     Vector2 otherPos = other->getPosition();
     Vector2 posLeft = Vector2{size.x/2 + getPosition().x, size.y/2 + getPosition().y};
@@ -243,47 +242,10 @@ void FireBall::OnEndContact(SceneNode *other) {
 
 void FireBall::Draw() {
     b2Vec2 pos = body->GetPosition();
-    Texture texture = animations[0].GetFrame();
-    Rectangle sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
-    Renderer::DrawPro(texture, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, angle);
+    Texture text = animations[0].GetFrame();
+    Rectangle sourceRect = { 0, 0, static_cast<float>(text.width), static_cast<float>(text.height) };
+    Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, angle);
 }
 
 void FireBall::Draw(Vector2 position, float angle) {
 }
-
-// Bullet::Bullet() : MovingObject() {
-//     damage = 0;
-// }
-
-// Bullet::Bullet(float damage, Vector2 size, float speed, float angle, vector<Image> imgs): 
-//     MovingObject(size, speed, angle, imgs), damage(damage) {}
-
-
-// Bullet::Bullet(const Bullet &b): MovingObject(b) {
-//     damage = b.damage;
-// }
-
-// Bullet::~Bullet() {
-//     damage = 0;
-// }
-
-// void Bullet::setDamage(float damage) {
-//     this->damage = damage;
-// }
-
-// float Bullet::getDamage() {
-//     return damage;
-// }
-
-// void Bullet::move() {
-//     // move the bullet
-// }
-
-// void Bullet::jump() {
-//     // jump the bullet
-// }
-
-// void Bullet::rotate() {
-//     // rotate the bullet
-// }
-

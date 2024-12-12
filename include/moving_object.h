@@ -37,6 +37,7 @@ public:
     void setElapsedTime(float et);
     void setFrameTime(float ft);
     void setRestitution(float r);
+    void setStable();
 
     float getElapsedTime();
     float getFrameTime();   
@@ -71,6 +72,7 @@ private:
     float damage;
     float span; // time span of the fireball
     bool flag; // indicate that the fireball is active or not
+
     // angle = initial angle of the fire flower
     // other attributes are inherited from the moving object class ---
 public:
@@ -79,12 +81,10 @@ public:
     FireBall(const FireBall &ff);
     ~FireBall();
     void setDamage(float d);
+    void setFlag(bool f);
     float getDamage();
     bool isActive();
-    void move();
-    void jump();
-    void rotate();
-
+    Animation getAnimation(bool flag);
 
     void Init(b2Vec2 position, ImageSet imageSet);
     void Draw();
@@ -98,25 +98,6 @@ public:
     MovingObject* copy() const;
 };
 
-// class Bullet : public MovingObject {
-// private:
-//     // bullet attributes
-//     float damage;
-//     // angle = initial angle of the bullet
-//     // other attributes are inherited from the moving object class ---
-// public:
-//     Bullet();
-//     Bullet(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0, vector<Image> images = {});
-//     Bullet(const Bullet &b);
-//     ~Bullet();
-//     void setDamage(float d);
-//     float getDamage();
-//     void move();
-//     void jump();
-//     void rotate();
-
-//     //MovingObject* copy() const;
-// };
 
 class ActiveItem : public MovingObject {
 private:

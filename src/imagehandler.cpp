@@ -120,6 +120,9 @@ vector<Image>& ImageHandler::setImages(string path) {
     else if (path == "fireball") {
         images.push_back(LoadImage("resources/images/object/fireball.png"));
     }
+    else if (path == "active") {
+        images.push_back(LoadImage("resources/images/object/active.png"));
+    }
     else if (path == "spike1") {
         images.push_back(LoadImage("resources/images/object/spike1.png"));
     }
@@ -291,7 +294,7 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
     }
     else if (path == "fireball") {
         animations = {
-            Animation({Frame(0.1f, textures[0])}) // fireball
+            Animation({Frame(0.1f, textures[0])}), // fireball
         };
     }
     else if (path == "spike1") {

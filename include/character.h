@@ -79,6 +79,7 @@ private:
     bool alive;
     bool sit;
     vector<FireBall> fireBalls;  
+    vector<DelayedTexture> delayedTextures;
     // speed = max speed that the player can move
 public:
     Player();
@@ -108,6 +109,7 @@ public:
     void OnEndContact(SceneNode* other);
     void HandleInput();
     void Update(Vector2 playerVelocity, float deltaTime);
+    void UpdateAnimation();
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
     MovingObject* copy() const;

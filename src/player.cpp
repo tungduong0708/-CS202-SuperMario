@@ -174,6 +174,7 @@ void Player::HandleInput() {
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
     Character::Update(playerVelocity, deltaTime);
     vector<int> posFireBalls;
+    vector<int> posDelayedTextures;
 
     Vector2 position = getPosition();
 
@@ -188,12 +189,38 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
         }
         if (fireBalls[i].isActive()) {
             posFireBalls.push_back(i);
+            Texture txt = ImageHandler::setTextures("active")[0];
+            delayedTextures.push_back(DelayedTexture(txt, 1.0f, pos));
         }
     }
 
 
+    for (int i = 0; i < delayedTextures.size(); i++) {
+        delayedTextures[i].Update(deltaTime);
+        if (delayedTextures[i].isActive()) {
+            posDelayedTextures.push_back(i);
+        }
+    }
+
+    //cout << delayedTextures.size() << " " << posDelayedTextures.size() << endl;
+
     for (int i = posFireBalls.size() - 1; i >= 0; i--) {
         fireBalls.erase(fireBalls.begin() + posFireBalls[i]);
+    }
+    for (int i = posDelayedTextures.size() - 1; i >= 0; i--) {
+        delayedTextures.erase(delayedTextures.begin() + posDelayedTextures[i]);
+    }
+}
+
+void Player::UpdateAnimation() {
+    if (mode == SMALL) {
+        animations = AnimationHandler::setAnimations("small" + name);
+    }
+    else if (mode == BIG) {
+        animations = AnimationHandler::setAnimations("big" + name);
+    }
+    else if (mode == FIRE) {
+        animations = AnimationHandler::setAnimations("fire" + name);
     }
 }
 
@@ -201,6 +228,9 @@ void Player::Draw() {
     Character::Draw();
     for (auto &fireBall : fireBalls) {
         fireBall.Draw();
+    }
+    for (auto &delayedTexture : delayedTextures) {
+        delayedTexture.Draw();
     }
 }
 
