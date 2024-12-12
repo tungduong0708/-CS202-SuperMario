@@ -133,7 +133,7 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 pos.y--;
                 std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
                 std::cout << "Effect name: " << effectName << std::endl;
-                EffectManager::AddEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+                EffectManager::AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
                 if (effectName == "coin") {
                     playerPtr->updateScore(200);
                     playerPtr->setCoins(playerPtr->getCoins() + 1);

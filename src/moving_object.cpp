@@ -1,6 +1,7 @@
 #include "include.h"
 #include "object.h"
 #include "moving_object.h"
+#include "effect_manager.h"
 
 
 MovingObject::MovingObject() {
@@ -245,6 +246,9 @@ void FireBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
         Physics::bodiesToDestroy.push_back(body);
         animations.clear();
         images.clear();
+
+        AnimationEffect* effect = AnimationEffectCreator::CreateAnimationEffect("fireball_explode", Vector2{body->GetPosition().x, body->GetPosition().y});
+        EffectManager::AddUpperEffect(effect);
     }
 }
 

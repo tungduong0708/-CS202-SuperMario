@@ -151,3 +151,31 @@ void FireFlowerEffect::Draw()
     size = {(float)texture.width / texture.height, 1.0f};
     DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{currentPosition.x, currentPosition.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }
+
+FireballExplodeEffect::FireballExplodeEffect(Vector2 pos)
+{
+    position = pos;
+    animation = AnimationHandler::setAnimations("fireball_explode")[0];
+}
+
+void FireballExplodeEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    fadeTime += deltaTime;
+    if (fadeTime > fadeDuration) {
+        float elapsed = fadeTime - fadeDuration;
+        alpha = 1.0f - 2 * elapsed / fadeDuration;
+        if (alpha <= 0.0f) active = false;
+    }
+    scale += deltaTime * 0.25f; // Increase the scale over time
+    animation.Update(deltaTime);
+    texture = animation.GetFrame();
+    size = {(float)texture.width / texture.height * scale, scale};
+}
+
+void FireballExplodeEffect::Draw()
+{
+    if (!active) return;
+    Color color = { 255, 255, 255, (unsigned char)(alpha * 255) };
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{position.x, position.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, color);
+}

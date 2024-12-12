@@ -73,6 +73,20 @@ public:
     void Draw();
 };
 
-
+class FireballExplodeEffect : public AnimationEffect {
+private:
+    float alpha = 1.0f;
+    float fadeTime = 0.0f;
+    float fadeDuration = 0.1f;
+    float scale = 0.5f;
+    Vector2 currentPosition;
+    Vector2 size;
+    Animation animation;
+public:
+    FireballExplodeEffect(Vector2 pos);
+    ~FireballExplodeEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
 
 #endif // ANIMATION_EFFECT_H
