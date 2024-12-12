@@ -1,6 +1,7 @@
 #include "effect_manager.h"
 
 std::map<std::pair<int, int>, std::string> EffectManager::effectMap;
+std::map<std::pair<int, int>, int> EffectManager::effectCount;
 std::vector<AnimationEffect*> EffectManager::lowerEffects;
 std::vector<AnimationEffect*> EffectManager::upperEffects;
 

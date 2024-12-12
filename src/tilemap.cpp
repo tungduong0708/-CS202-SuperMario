@@ -160,7 +160,13 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                             player->Init(b2Vec2{x, y});
                             player->setName(name);
                         }
-                        else EffectManager::effectMap[{(int)x, (int)y}] = object["name"].get<std::string>();
+                        else {
+                            EffectManager::effectMap[{(int)x, (int)y}] = object["name"].get<std::string>();
+                            if (object.contains("type") && object["type"] != "") {
+                                EffectManager::effectCount[{(int)x, (int)y}] = std::stoi(object["type"].get<std::string>());
+                            }
+                            else EffectManager::effectCount[{(int)x, (int)y}] = 1;
+                        }
                     }
                 }
                 else {

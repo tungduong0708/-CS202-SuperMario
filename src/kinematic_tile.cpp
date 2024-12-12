@@ -138,12 +138,14 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                     playerPtr->updateScore(200);
                     playerPtr->setCoins(playerPtr->getCoins() + 1);
                 }
-
-                Tile::setTilesetPath("resources/tilesets/OverWorld.json");
-                Tile::setId(2);
-                frames.clear();
-                frames.push_back({2, 0});
-                animation = false;
+                EffectManager::effectCount[{pos.x, pos.y}]--;
+                if (EffectManager::effectCount[{pos.x, pos.y}] == 0) {
+                    Tile::setTilesetPath("resources/tilesets/OverWorld.json");
+                    Tile::setId(2);
+                    frames.clear();
+                    frames.push_back({2, 0});
+                    animation = false;
+                }
             }
         }
         else if (getType() == "coin") {
