@@ -14,7 +14,7 @@ Player::Player() : Character()
 Player::Player(string type, string name, float coins, float range, bool alive, bool sit, int health, 
                int score, int level, int strength, Vector2 size, float speed, 
                float angle, vector<Image> imgs): 
-    Character(health, score, level, strength, size, speed, angle, imgs, type), 
+    Character(type, health, score, level, strength, size, speed, angle, imgs), 
     name(name), 
     coins(coins), 
     range(range), 
@@ -63,6 +63,10 @@ void Player::setImmortal(bool im) {
     immortal = im;
 }
 
+void Player::setCurrentMap(string map) {
+    currentMap = map;
+}
+
 void Player::updateScore(int s) {
     score += s;
 }
@@ -79,6 +83,10 @@ float Player::getRange() {
     return range;
 }
 
+string Player::getCurrentMap() {
+    return currentMap;
+}
+
 bool Player::isAlive() {
     return alive;
 }
@@ -89,13 +97,6 @@ bool Player::isSitting() {
 
 bool Player::isImmortal() {
     return immortal;
-}
-
-void Player::move() {
-    // move the player
-}
-
-void Player::jump() {
 }
 
 void Player::HandleInput() {
@@ -201,24 +202,10 @@ void Player::UpdateAnimation() {
 
 void Player::Draw() {
     Character::Draw();
-    for (auto &fireBall : fireBalls) {
-        fireBall.Draw();
-    }
-    for (auto &delayedTexture : delayedTextures) {
-        delayedTexture.Draw();
-    }
 }
 
 void Player::Draw(Vector2 position, float angle) {
     TextHelper::DrawPackage(name, score, coins, position, 12, WHITE);
-}
-
-void Player::rotate() {
-    // rotate the player
-}
-
-void Player::shoot() {
-    // shoot the player
 }
 
 void Player::OnBeginContact(SceneNode *other, b2Vec2 normal) 

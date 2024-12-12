@@ -40,8 +40,8 @@ vector<Image>& ImageHandler::setImages(string path) {
     else if (path == "bigmario") {
         images.push_back(LoadImage("resources/images/bigmario/idle.png"));
         images.push_back(LoadImage("resources/images/bigmario/duck.png"));
-        images.push_back(LoadImage("resources/images/bigmario/walk.png"));
-        images.push_back(LoadImage("resources/images/bigmario/walk2.png")); // walk2
+        images.push_back(LoadImage("resources/images/bigmario/idle.png"));
+        images.push_back(LoadImage("resources/images/bigmario/walk.png")); // walk2
         images.push_back(LoadImage("resources/images/bigmario/jump.png"));
         images.push_back(LoadImage("resources/images/bigmario/fall.png"));
         images.push_back(LoadImage("resources/images/bigmario/pipe.png"));
@@ -64,8 +64,8 @@ vector<Image>& ImageHandler::setImages(string path) {
     else if (path == "bigluigi") {
         images.push_back(LoadImage("resources/images/bigluigi/idle.png"));
         images.push_back(LoadImage("resources/images/bigluigi/duck.png"));
-        images.push_back(LoadImage("resources/images/bigluigi/walk.png"));
-        images.push_back(LoadImage("resources/images/bigluigi/walk2.png"));
+        images.push_back(LoadImage("resources/images/bigluigi/idle.png"));
+        images.push_back(LoadImage("resources/images/bigluigi/walk.png")); // walk2
         images.push_back(LoadImage("resources/images/bigluigi/jump.png"));
         images.push_back(LoadImage("resources/images/bigluigi/fall.png"));
         images.push_back(LoadImage("resources/images/bigluigi/pipe.png"));

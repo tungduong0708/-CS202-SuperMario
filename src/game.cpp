@@ -7,7 +7,7 @@ Game* Game::instance = nullptr;
 const int screenWidth = 800;
 const int screenHeight = 600;
 
-Player player("Player", 0, 0, true, false, 0, 0, 0, 0, Vector2{0, 0}, 0, 0, {}, "mario");
+Player player("mario", "Player", 0, 0, true, false, 0, 0, 0, 0, Vector2{0, 0}, 0, 0, {});
 MyCamera camera;
 
 Game::Game(){
