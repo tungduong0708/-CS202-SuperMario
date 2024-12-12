@@ -73,4 +73,6 @@ public:
     void Draw();
 };
 
+
+
 #endif // ANIMATION_EFFECT_H

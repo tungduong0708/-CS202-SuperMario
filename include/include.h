@@ -45,9 +45,9 @@ enum Mode {
 
 
 enum CollisionCategory {
-    CATEGORY_PLAYER = 0x0001,
-    CATEGORY_FIREBALL = 0x0001 << 1,
-    CATEGORY_SCENERY = 0x0001 << 2,
+    CATEGORY_PLAYER = 0x0001 << 1,
+    CATEGORY_FIREBALL = 0x0001 << 2,
+    CATEGORY_SCENERY = 0x0001 << 3,
     // Add more categories as needed
 };
 

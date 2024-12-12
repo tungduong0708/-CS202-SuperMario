@@ -152,12 +152,17 @@ void Player::HandleInput() {
         animations[currentImage].setTimer();
         if (elapsedTime >= 0.75f) {
             // shoot the bullet
-            fireBalls.push_back(FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f, ImageHandler::setImages("fireball")));
-            for (int i = 0; i < fireBalls.size()-1; i++) {
-                fireBalls[i].ReloadAnimation();
-            }
-            fireBalls.back().Init(body->GetPosition() + b2Vec2(!faceLeft * (texture.width + 0.1f)/16, texture.height/32), IDLE);
-            fireBalls.back().setSpeed(9.0f * (faceLeft ? -1 : 1));
+            // fireBalls.push_back(FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f, ImageHandler::setImages("fireball")));
+            // for (int i = 0; i < fireBalls.size()-1; i++) {
+            //     fireBalls[i].ReloadAnimation();
+            // }
+            // fireBalls.back().Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32), IDLE);
+            // fireBalls.back().setSpeed(9.0f * (faceLeft ? -1 : 1));
+            FireBall* fireball = new FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f, ImageHandler::setImages("fireball"));
+            fireball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32), IDLE);
+            fireball->setSpeed(15.0f * (faceLeft ? -1 : 1));
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->addNode(fireball);
             elapsedTime = 0.0f;
         }
     }
@@ -173,28 +178,28 @@ void Player::HandleInput() {
 
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
     Character::Update(playerVelocity, deltaTime);
-    vector<int> posFireBalls;
+    // vector<int> posFireBalls;
 
-    Vector2 position = getPosition();
+    // Vector2 position = getPosition();
 
     //cout << tilemap.GetWidth() << " " << tilemap.GetHeight() << endl;
-    for (int i = 0; i < fireBalls.size(); i++) {
-        fireBalls[i].Update(Vector2{0, 0}, deltaTime);
-        Vector2 pos = fireBalls[i].getPosition();
-        // if the flower is out of the screen, remove it from the vector
-        if (pos.x < position.x - GetScreenWidth()/IMAGE_WIDTH || pos.x > position.x + GetScreenWidth()/IMAGE_WIDTH  
-            || pos.y < position.y - GetScreenHeight()/IMAGE_WIDTH || pos.y > position.y + GetScreenHeight()/IMAGE_WIDTH) {
-            posFireBalls.push_back(i);
-        }
-        if (fireBalls[i].isActive()) {
-            posFireBalls.push_back(i);
-        }
-    }
+    // for (int i = 0; i < fireBalls.size(); i++) {
+    //     fireBalls[i].Update(Vector2{0, 0}, deltaTime);
+    //     Vector2 pos = fireBalls[i].getPosition();
+    //     // if the flower is out of the screen, remove it from the vector
+    //     if (pos.x < position.x - GetScreenWidth()/IMAGE_WIDTH || pos.x > position.x + GetScreenWidth()/IMAGE_WIDTH  
+    //         || pos.y < position.y - GetScreenHeight()/IMAGE_WIDTH || pos.y > position.y + GetScreenHeight()/IMAGE_WIDTH) {
+    //         posFireBalls.push_back(i);
+    //     }
+    //     if (fireBalls[i].isActive()) {
+    //         posFireBalls.push_back(i);
+    //     }
+    // }
 
 
-    for (int i = posFireBalls.size() - 1; i >= 0; i--) {
-        fireBalls.erase(fireBalls.begin() + posFireBalls[i]);
-    }
+    // for (int i = posFireBalls.size() - 1; i >= 0; i--) {
+    //     fireBalls.erase(fireBalls.begin() + posFireBalls[i]);
+    // }
 }
 
 void Player::Draw() {

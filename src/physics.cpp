@@ -125,13 +125,13 @@ void Physics::Init() {
 
 void Physics::Update(float deltaTime) {
     world.SetContactListener(new ContactListener());
+    world.Step(deltaTime, 6, 2);
     if (!bodiesToDestroy.empty()) {
         for (auto body : bodiesToDestroy) {
             world.DestroyBody(body);
         }
         bodiesToDestroy.clear();
     }
-    world.Step(deltaTime, 6, 2);
 }
 
 void Physics::DebugDraw() {
