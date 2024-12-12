@@ -206,6 +206,8 @@ void FireBall::Init(b2Vec2 position, ImageSet imageSet) {
     };
     restitution = 1.0f;
     MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, restitution);
+
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 
 void FireBall::Update(Vector2 playerVelocity, float deltaTime) {
@@ -215,6 +217,7 @@ void FireBall::Update(Vector2 playerVelocity, float deltaTime) {
         flag = true;
     }
     angle += 5.0f;
+
 }
 
 void FireBall::HandleInput() {
@@ -228,10 +231,14 @@ void FireBall::ReloadAnimation() {
 void FireBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!other) return;
     // if hit vertical wall, destroy the fireball
-    Vector2 otherPos = other->getPosition();
-    Vector2 posLeft = Vector2{size.x/2 + getPosition().x, size.y/2 + getPosition().y};
-    cout << posLeft.x - otherPos.x << " " << size.x/2 + 0.1f << endl;
-    if (abs(posLeft.x - otherPos.x) < size.x/2 + 0.1f) {
+    // Vector2 otherPos = other->getPosition();
+    // Vector2 posLeft = Vector2{size.x/2 + getPosition().x, size.y/2 + getPosition().y};
+    // cout << posLeft.x - otherPos.x << " " << size.x/2 + 0.1f << endl;
+    // if (abs(posLeft.x - otherPos.x) < size.x/2 + 0.1f) {
+    //     flag = true;
+    // }
+
+    if (abs(normal.x) > 0.2) { // hit vertical wall
         flag = true;
     }
 }

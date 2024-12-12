@@ -83,9 +83,20 @@ void Enemy::shoot() {
     // shoot the enemy
 }
 
-void Enemy::OnBeginContact(SceneNode *other, b2Vec2 normal)
-{
+void Enemy::OnBeginContact(SceneNode *other, b2Vec2 normal) {
+    if (!other) return;
+    if (normal.x > 0.5f) {
+        setSpeed(-getSpeed());
+        Player* player = dynamic_cast<Player*>(other);
+        if (player) {
+            player->setHealth(player->getHealth() - getStrength());
+        }
+    }
+    else {
+        setHealth(getHealth() - 50);
+    }
 }
+
 void Enemy::OnEndContact(SceneNode *other)
 {
 }

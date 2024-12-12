@@ -136,7 +136,12 @@ void Player::HandleInput() {
 
     if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
         if (isOnGround) {
-            body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -24.0f), true);
+            if (mode == SMALL) {
+                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -24.0f), true);
+            }
+            else if (mode == BIG or mode == FIRE) {
+                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -36.0f), true);
+            }
             previousImage = currentImage;
             currentImage = JUMP;
             isOnGround = false;
@@ -156,7 +161,7 @@ void Player::HandleInput() {
             for (int i = 0; i < fireBalls.size()-1; i++) {
                 fireBalls[i].ReloadAnimation();
             }
-            fireBalls.back().Init(body->GetPosition() + b2Vec2(!faceLeft * (texture.width + 0.1f)/16, texture.height/32), IDLE);
+            fireBalls.back().Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width)/16 + 0.1f, (float)texture.height/32), IDLE);
             fireBalls.back().setSpeed(9.0f * (faceLeft ? -1 : 1));
             elapsedTime = 0.0f;
         }
@@ -174,7 +179,7 @@ void Player::HandleInput() {
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
     Character::Update(playerVelocity, deltaTime);
     vector<int> posFireBalls;
-    vector<int> posDelayedTextures;
+    //vector<int> posDelayedTextures;
 
     Vector2 position = getPosition();
 
@@ -190,26 +195,26 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
         if (fireBalls[i].isActive()) {
             posFireBalls.push_back(i);
             Texture txt = ImageHandler::setTextures("active")[0];
-            delayedTextures.push_back(DelayedTexture(txt, 1.0f, pos));
+            //delayedTextures.push_back(DelayedTexture(txt, 1.0f, pos));
         }
     }
 
 
-    for (int i = 0; i < delayedTextures.size(); i++) {
-        delayedTextures[i].Update(deltaTime);
-        if (delayedTextures[i].isActive()) {
-            posDelayedTextures.push_back(i);
-        }
-    }
+    // for (int i = 0; i < delayedTextures.size(); i++) {
+    //     delayedTextures[i].Update(deltaTime);
+    //     if (delayedTextures[i].isActive()) {
+    //         posDelayedTextures.push_back(i);
+    //     }
+    // }
 
     //cout << delayedTextures.size() << " " << posDelayedTextures.size() << endl;
 
     for (int i = posFireBalls.size() - 1; i >= 0; i--) {
         fireBalls.erase(fireBalls.begin() + posFireBalls[i]);
     }
-    for (int i = posDelayedTextures.size() - 1; i >= 0; i--) {
-        delayedTextures.erase(delayedTextures.begin() + posDelayedTextures[i]);
-    }
+    // for (int i = posDelayedTextures.size() - 1; i >= 0; i--) {
+    //     delayedTextures.erase(delayedTextures.begin() + posDelayedTextures[i]);
+    // }
 }
 
 void Player::UpdateAnimation() {
