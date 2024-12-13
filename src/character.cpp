@@ -2,7 +2,7 @@
 #include "object.h"
 #include "character.h"
 
-Character::Character(int) : MovingObject()
+Character::Character() : MovingObject()
 {
     health = 0;
     score = 0;
@@ -23,8 +23,8 @@ Character::Character(int) : MovingObject()
     mode = Mode::SMALL;
 }
 
-Character::Character(int health, int score, int level, int strength, 
-                     Vector2 size, float speed, float angle, vector<Image> imgs, string type): 
+Character::Character(string type, int health, int score, int level, int strength, 
+                     Vector2 size, float speed, float angle, vector<Image> imgs): 
     MovingObject(size, speed, angle, imgs), 
     health(health), 
     score(score), 

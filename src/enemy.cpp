@@ -12,7 +12,7 @@ Enemy::Enemy() : Character() {
 
 Enemy::Enemy(string type, float range, bool alive, bool sit, int health, int score, int level, 
              int strength, Vector2 size, float speed, float angle, vector<Image> imgs): 
-    Character(health, score, level, strength, size, speed, angle, imgs, type), 
+    Character(type, health, score, level, strength, size, speed, angle, imgs), 
     type(type), 
     range(range), 
     alive(alive), 
@@ -97,15 +97,13 @@ void Enemy::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     }
 }
 
-void Enemy::OnEndContact(SceneNode *other)
-{
-}
-void Enemy::HandleInput()
-{
+void Enemy::OnEndContact(SceneNode *other) {
 }
 
-void Enemy::Draw(Vector2 position, float angle)
-{
+void Enemy::HandleInput() {
+}
+
+void Enemy::Draw(Vector2 position, float angle) {
 }
 
 MovingObject* Enemy::copy() const {

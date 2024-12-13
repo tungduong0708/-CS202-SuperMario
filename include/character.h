@@ -34,8 +34,8 @@ protected:
     ImageSet previousImage;
     bool faceLeft;            // Is character facing left
 public:
-    Character(int);
-    Character(int h = 0, int s = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s1 = 0, float a1 = 0, vector<Image> images = {}, string type = "");
+    Character();
+    Character(string type, int h = 0, int s = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s1 = 0, float a1 = 0, vector<Image> images = {});
     Character(const Character &c);
     ~Character();
 
@@ -76,37 +76,36 @@ private:
     string name;
     float coins;
     float range; // max range if the player can shoot
-    bool alive;
+    int lives;
     bool sit;
     bool immortal;
-    vector<FireBall> fireBalls;  
-    vector<DelayedTexture> delayedTextures;
-    // speed = max speed that the player can move
+    string currentMap;
+    float time; // time allotted for the player to complete the map
 public:
     Player();
-    Player(string n, float c, float r, bool iarue, bool salse, int h, int s1, int l, int st, Vector2 size, float s2, float a1, vector<Image> images, string type);
+    Player(string type, string name = "", float coins = 0.0f, float range = 0.0f, int lives = 0, bool sit = false, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, 
+               float angle = 0.0f, vector<Image> imgs = {});
     Player(const Player &p);
     ~Player();
 
     void setName(string n);
     void setCoins(float c);
     void setRange(float r);
-    void setIsAlive(bool ia);
+    void setLives(int lives);
     void setSit(bool s);
     void setImmortal(bool im);
+    void setCurrentMap(string map);
+    void setTime(float t);
     void updateScore(int s);
+
     string getName();
     float getCoins();
     float getRange();
+    string getCurrentMap();
+    float getTime();
     bool isAlive();
     bool isSitting();
     bool isImmortal();
-
-    // Move, jump, rotate and shoot the player methods
-    void move();
-    void jump();
-    void rotate();
-    void shoot();
 
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
@@ -151,5 +150,32 @@ public:
 
     MovingObject* copy() const;
 };
+
+
+class Goomba : public Enemy {
+public:
+    Goomba();
+    Goomba(string type, float range, bool alive, bool sit, int health, int score, int level, int strength, Vector2 size, float speed, float angle, vector<Image> images);
+    Goomba(const Goomba &g);
+    ~Goomba();
+
+    void Init(b2Vec2 position, ImageSet imageSet);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    void OnEndContact(SceneNode* other);
+    MovingObject* copy() const;
+};
+
+class Koopa : public Enemy {
+public:
+    Koopa();
+    Koopa(string type, float range, bool alive, bool sit, int health, int score, int level, int strength, Vector2 size, float speed, float angle, vector<Image> images);
+    Koopa(const Koopa &k);
+    ~Koopa();
+
+    void Init(b2Vec2 position, ImageSet imageSet);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    void OnEndContact(SceneNode* other);
+    MovingObject* copy() const; 
+};  
 
 #endif

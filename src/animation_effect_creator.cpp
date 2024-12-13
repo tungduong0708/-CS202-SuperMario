@@ -25,6 +25,9 @@ void AnimationEffectCreator::InitEffects()
     RegisterEffect("fireball_explode", [](Vector2 position) {
         return new FireballExplodeEffect(position);
     });
+    RegisterEffect("brick_explode", [](Vector2 position) {
+        return new BrickExplodeEffect(position);
+    });
 }
 
 AnimationEffect *AnimationEffectCreator::CreateAnimationEffect(const std::string& name, Vector2 position)

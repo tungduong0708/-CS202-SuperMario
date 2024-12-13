@@ -11,7 +11,7 @@ using namespace std;
 
 class TextHelper {
 public:
-    static void loadTexture(string texturePath);
+    static void loadTexture(string texturePath, string playerPath = "");
 
     static void loadFont(string fontPath, string mode = "");
 
@@ -19,10 +19,11 @@ public:
 
     static void Draw(const string &text, Vector2 position, int fontSize, Color color, string fontPath);
 
-    static void DrawPackage(string name, int score, int coins, Vector2 position, int fontSize, Color color);
+    static void DrawPackage(int lives, int score, int coins, string currentMap, float timeLeft, Vector2 position, int fontSize, Color color);
 private:
     static Font font;
     static Texture coin;
+    static Texture player;
 };
 
 #endif // TEXT_HELPER_H

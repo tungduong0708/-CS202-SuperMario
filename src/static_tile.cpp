@@ -4,6 +4,9 @@
 #include "scene_node.h"
 #include "moving_object.h"
 #include "my_bounding_box.h"
+#include "animation_effect_creator.h"
+#include "effect_manager.h"
+#include "character.h"
 
 const float BOUNCE_HEIGHT = 0.3f;
 
@@ -46,6 +49,7 @@ StaticTile::StaticTile(StaticTile& other) : Tile(other)
             jointDef.lowerTranslation = -BOUNCE_HEIGHT;
             jointDef.upperTranslation = 0.0f;
             joint = (b2PrismaticJoint*)Physics::world.CreateJoint(&jointDef);
+            isActivated = false;
         }
         else {
             b2Body* body = GetBody();
@@ -68,10 +72,18 @@ void StaticTile::setPosition(const Vector2& position)
 
 void StaticTile::Update(Vector2 playerVelocity, float deltaTime)
 {
+    if (isActivated && getType() == "brick") {
+        b2Body* body = GetBody();
+        Vector2 pos = getPosition();
+        if (std::fmod(pos.y, 1.0f) == 0.0f && body->GetType() == b2_dynamicBody)  {
+            body->SetType(b2_staticBody);
+        }
+    }
 }
 
 void StaticTile::Draw()
 {
+    if (!isDestroyed) return;
     std::string tilesetPath = Tile::getTilesetPath();
     int columns = TilesetHandler::getColumns(tilesetPath);
     int spacing = TilesetHandler::getSpacing(tilesetPath);
@@ -81,11 +93,45 @@ void StaticTile::Draw()
     Rectangle srcRect = { static_cast<float>(src_x), static_cast<float>(src_y), 
                         static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };
     Renderer::DrawPro(TilesetHandler::getTexture(tilesetPath), srcRect, getPosition(), Vector2{ 1, 1 }, true);
-	//Physics::DebugDraw();
+	// Physics::DebugDraw();
 }
 
 void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
 {
+    if (!other) return;
+    std::cout << "OnBeginContact: " << getType() << std::endl;
+    Player* playerPtr = dynamic_cast<Player*>(other); 
+    if (playerPtr != nullptr) {
+        if (getType() == "brick") {
+            if (playerPtr->getMode() == Mode::FIRE || playerPtr->getMode() == Mode::BIG) {
+                if (normal.y > 0.5f) {
+                    std::cout << "Effect: brick_explode" << std::endl;
+                    EffectManager::AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("brick_explode", getPosition()));
+                    Physics::bodiesToDestroy.push_back(GetBody());
+                    isDestroyed = false;
+                }
+            }
+            else {
+                if (normal.y > 0.5f && !isActivated) {
+                    Vector2 pos = getPosition();
+                    pos.y--;
+                    std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
+                    std::cout << "Effect name: " << effectName << std::endl;
+                    EffectManager::AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+                    if (effectName == "coin") {
+                        playerPtr->updateScore(200);
+                        playerPtr->setCoins(playerPtr->getCoins() + 1);
+                        EffectManager::effectCount[{pos.x, pos.y}]--;
+                        if (EffectManager::effectCount[{pos.x, pos.y}] == 0) {
+                            Tile::setTilesetPath("resources/tilesets/OverWorld.json");
+                            Tile::setId(2);
+                            isActivated = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 void StaticTile::OnEndContact(SceneNode* other)
