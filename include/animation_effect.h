@@ -89,4 +89,19 @@ public:
     void Draw();
 };
 
+class BrickExplodeEffect : public AnimationEffect {
+private:
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+    bool isCreated = false;
+    bool isApplyingForce = false;
+    b2Body* pieces[4];
+public:
+    BrickExplodeEffect(Vector2 pos);
+    ~BrickExplodeEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
 #endif // ANIMATION_EFFECT_H

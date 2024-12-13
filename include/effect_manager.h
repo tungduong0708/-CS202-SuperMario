@@ -12,7 +12,8 @@
 class EffectManager {
 private:
 public:
-    static std::map<std::pair<int, int>, std::string> effectMap; // Map effect id to effect name
+    static std::map<std::pair<int, int>, std::string> effectMap; // Map effect position
+    static std::map<std::pair<int, int>, int> effectCount;
     static std::vector<AnimationEffect*> lowerEffects; // Manage all effects
     static std::vector<AnimationEffect*> upperEffects; // Manage all effects
 

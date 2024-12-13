@@ -80,14 +80,14 @@
                 {
                  "height":0,
                  "id":64,
-                 "name":"smallmario",
+                 "name":"mario",
                  "point":true,
                  "rotation":0,
-                 "type":"Player",
+                 "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":129,
-                 "y":191
+                 "x":62.5,
+                 "y":203.583333333333
                 }, 
                 {
                  "height":0,
@@ -95,7 +95,7 @@
                  "name":"coin",
                  "point":true,
                  "rotation":0,
-                 "type":"",
+                 "type":"3",
                  "visible":true,
                  "width":0,
                  "x":328.75,
@@ -268,6 +268,18 @@
                  "width":0,
                  "x":246.666666666667,
                  "y":149.666666666667
+                }, 
+                {
+                 "height":0,
+                 "id":82,
+                 "name":"coin",
+                 "point":true,
+                 "rotation":0,
+                 "type":"2",
+                 "visible":true,
+                 "width":0,
+                 "x":379.75,
+                 "y":155
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -276,7 +288,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":82,
+ "nextobjectid":83,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

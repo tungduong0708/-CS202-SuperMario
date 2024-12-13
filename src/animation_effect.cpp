@@ -2,7 +2,7 @@
 #include "imagehandler.h"
 #include "tilemap.h"
 #include "moving_object.h"
-
+#include "physics.h"
 
 bool AnimationEffect::isActive()
 {
@@ -178,4 +178,70 @@ void FireballExplodeEffect::Draw()
     if (!active) return;
     Color color = { 255, 255, 255, (unsigned char)(alpha * 255) };
     DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{position.x, position.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, color);
+}
+
+BrickExplodeEffect::BrickExplodeEffect(Vector2 pos)
+{
+    position = pos;
+    animation = AnimationHandler::setAnimations("piece_brick")[0];
+    texture = animation.GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+}
+
+void BrickExplodeEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    if (!isCreated) {
+        std::vector<b2Vec2> vertices = {
+            b2Vec2{0.0f, 0.0f},
+            b2Vec2{size.x, 0.0f},
+            b2Vec2{0.0f, size.y},
+            b2Vec2{size.x, size.y}
+        };
+        for (int i = 0; i < 4; i++)
+        {
+            MyBoundingBox::createBody(pieces[i], b2_dynamicBody, vertices, position);
+            b2Fixture* fixture = pieces[i]->GetFixtureList();
+            fixture->SetSensor(true);
+        }
+        pieces[0]->ApplyLinearImpulseToCenter(b2Vec2{-3.0f, -15.0f}, true);
+        pieces[1]->ApplyLinearImpulseToCenter(b2Vec2{3.0f, -15.0f}, true);
+        pieces[2]->ApplyLinearImpulseToCenter(b2Vec2{-3.0f, -10.0f}, true);
+        pieces[3]->ApplyLinearImpulseToCenter(b2Vec2{3.0f, -10.0f}, true);
+        isCreated = true;
+    }
+    
+    int cnt = 0;
+    Tilemap* tilemap = Tilemap::getInstance();
+    int heightMap  = tilemap->GetHeight();
+    for (int i = 0; i < 4; i++)
+    {
+        if (pieces[i] != nullptr)
+        {
+            b2Vec2 pos = pieces[i]->GetPosition();
+            if (pos.y > heightMap)
+            {
+                Physics::world.DestroyBody(pieces[i]);
+                pieces[i] = nullptr;
+            }
+            cnt++;
+        }
+    }
+    if (cnt == 0) active = false;
+}
+
+void BrickExplodeEffect::Draw()
+{
+    if (!active) return;
+    int cnt = 0;
+    for (int i = 0; i < 4; i++)
+    {
+        if (pieces[i] != nullptr)
+        {
+            b2Vec2 pos = pieces[i]->GetPosition();
+            DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+            cnt++;
+        }
+    }
+    if (cnt == 0) active = false;
 }
