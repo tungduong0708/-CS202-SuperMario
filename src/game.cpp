@@ -8,6 +8,7 @@ const int screenWidth = 800;
 const int screenHeight = 600;
 
 Player player("mario", "Player", 0, 0, true, false, 0, 0, 0, 0, Vector2{0, 0}, 0, 0, {});
+
 MyCamera camera;
 
 Game::Game(){
@@ -23,11 +24,15 @@ void Game::Init() {
 
     Physics::Init(); 
     AnimationEffectCreator::InitEffects();
-    TextHelper::loadFont("highway_gothic", "");
-    TextHelper::loadTexture("coin");
+    TextHelper::loadFont("Mario256", "");
+    TextHelper::loadTexture("coin", "smallmario");
 
 
     ImageSet idleImageSet = IDLE;
+    player.setTime(30.0f);
+    player.setCoins(0);
+    player.setLives(3);
+    player.setCurrentMap("1-1");
     movingObjects.push_back(player.copy());
 
     movingObjects[0]->Init(b2Vec2(10.0f, 12.0f), idleImageSet);
@@ -71,7 +76,7 @@ void Game::Draw() {
     }
 
     Vector2 cameraTarget = camera.GetCameraTarget();
-    movingObjects[0]->Draw(Vector2{cameraTarget.x - 9.0f, cameraTarget.y - 7.0f}, 0.0f);
+    movingObjects[0]->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
     
     Physics::world.DebugDraw(); 
 

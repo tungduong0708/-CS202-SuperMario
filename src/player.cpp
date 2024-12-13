@@ -7,18 +7,18 @@ Player::Player() : Character()
     name = "";
     coins = 0;
     range = 0;
-    alive = true;
+    lives = 0;
     sit = false;
 }
 
-Player::Player(string type, string name, float coins, float range, bool alive, bool sit, int health, 
+Player::Player(string type, string name, float coins, float range, int lives, bool sit, int health, 
                int score, int level, int strength, Vector2 size, float speed, 
                float angle, vector<Image> imgs): 
     Character(type, health, score, level, strength, size, speed, angle, imgs), 
     name(name), 
     coins(coins), 
     range(range), 
-    alive(alive), 
+    lives(lives),
     sit(sit) {}
 
 Player::Player(const Player &p): 
@@ -26,8 +26,11 @@ Player::Player(const Player &p):
     name(p.name), 
     coins(p.coins), 
     range(p.range), 
-    alive(p.alive), 
-    sit(p.sit) 
+    lives(p.lives),
+    sit(p.sit),
+    immortal(p.immortal),
+    currentMap(p.currentMap),
+    time(p.time)
 {
 }
 
@@ -35,7 +38,7 @@ Player::~Player() {
     name = "";
     coins = 0;
     range = 0;
-    alive = true;
+    lives = 0;
     sit = false;
 }
 
@@ -51,8 +54,8 @@ void Player::setRange(float r) {
     range = r;
 }
 
-void Player::setIsAlive(bool ia) {
-    alive = ia;
+void Player::setLives(int lives) {
+    this->lives = lives;
 }
 
 void Player::setSit(bool s) {
@@ -65,6 +68,10 @@ void Player::setImmortal(bool im) {
 
 void Player::setCurrentMap(string map) {
     currentMap = map;
+}
+
+void Player::setTime(float t) {
+    time = t;
 }
 
 void Player::updateScore(int s) {
@@ -87,8 +94,12 @@ string Player::getCurrentMap() {
     return currentMap;
 }
 
+float Player::getTime() {
+    return time;
+}
+
 bool Player::isAlive() {
-    return alive;
+    return (lives > 0);
 }
 
 bool Player::isSitting() {
@@ -186,6 +197,11 @@ void Player::HandleInput() {
 
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
     Character::Update(playerVelocity, deltaTime);
+    time -= deltaTime;
+    if (time <= 0) {
+        lives--;
+        time = 300.0f;
+    }
 }
 
 void Player::UpdateAnimation() {
@@ -205,7 +221,7 @@ void Player::Draw() {
 }
 
 void Player::Draw(Vector2 position, float angle) {
-    TextHelper::DrawPackage(name, score, coins, position, 12, WHITE);
+    TextHelper::DrawPackage(lives, score, coins, currentMap, time, position, 12, WHITE);
 }
 
 void Player::OnBeginContact(SceneNode *other, b2Vec2 normal) 

@@ -76,28 +76,32 @@ private:
     string name;
     float coins;
     float range; // max range if the player can shoot
-    bool alive;
+    int lives;
     bool sit;
     bool immortal;
     string currentMap;
+    float time; // time allotted for the player to complete the map
 public:
     Player();
-    Player(string type, string n, float c, float r, bool iarue, bool salse, int h, int s1, int l, int st, Vector2 size, float s2, float a1, vector<Image> images);
+    Player(string type, string n, float c, float r, int lives, bool salse, int h, int s1, int l, int st, Vector2 size, float s2, float a1, vector<Image> images);
     Player(const Player &p);
     ~Player();
 
     void setName(string n);
     void setCoins(float c);
     void setRange(float r);
-    void setIsAlive(bool ia);
+    void setLives(int lives);
     void setSit(bool s);
     void setImmortal(bool im);
     void setCurrentMap(string map);
+    void setTime(float t);
     void updateScore(int s);
+
     string getName();
     float getCoins();
     float getRange();
     string getCurrentMap();
+    float getTime();
     bool isAlive();
     bool isSitting();
     bool isImmortal();
