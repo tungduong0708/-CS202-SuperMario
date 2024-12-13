@@ -14,7 +14,7 @@
         }, 
         {
          "id":5,
-         "image":"..\/background\/b1-1-1.png",
+         "image":"..\/background\/b1-1-1-1.png",
          "name":"Background",
          "opacity":1,
          "type":"imagelayer",
@@ -279,7 +279,7 @@
  "nextobjectid":82,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tilesets":[
         {
