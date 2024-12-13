@@ -127,8 +127,9 @@ void Physics::Update(float deltaTime) {
     world.SetContactListener(new ContactListener());
     world.Step(deltaTime, 6, 2);
     if (!bodiesToDestroy.empty()) {
-        for (auto body : bodiesToDestroy) {
+        for (auto& body : bodiesToDestroy) {
             world.DestroyBody(body);
+            body = nullptr;
         }
         bodiesToDestroy.clear();
     }

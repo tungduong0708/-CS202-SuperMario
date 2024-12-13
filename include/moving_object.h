@@ -17,7 +17,6 @@ protected:
     float speed;  // max speed that the object can move
     float angle;  // initial angle of the object when moving
     float density; // density of the object, can determine the mass of the object
-    vector<Image> images;
     vector<Animation> animations;
     float elapsedTime;
     float frameTime;
@@ -25,7 +24,7 @@ protected:
     float restitution;
 public:
     MovingObject();
-    MovingObject(Vector2 size, float speed, float angle, vector<Image> images = {});
+    MovingObject(Vector2 size, float speed, float angle);
     MovingObject(const MovingObject &mo);
     ~MovingObject();
     
@@ -33,7 +32,6 @@ public:
     void setSpeed(float speed);
     void setAngle(float angle);
     void setDensity(float density);
-    void setImage(const Image &img);
     void setElapsedTime(float et);
     void setFrameTime(float ft);
     void setRestitution(float r);
@@ -46,22 +44,17 @@ public:
     float getAngle();
     float getDensity();
     float getRestitution();
-    vector<Image> getImages();
     Vector2 getPosition();
     b2Vec2 getVelocity();
     b2Body* getBody();
     vector<Animation> getAnimations();
-
-    void move();
-    void jump();
-    void rotate();
     
     // virtual functions
     virtual MovingObject* copy() const = 0;  // Prototype design pattern
     virtual void Update(Vector2 playerVelocity, float deltaTime) = 0;
     virtual void Draw() = 0;  
     virtual void Draw(Vector2 position, float angle = 0.0f) = 0;
-    virtual void Init(b2Vec2 position, ImageSet imageSet) = 0;
+    virtual void Init(b2Vec2 position) = 0;
     virtual void HandleInput() = 0;
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal) = 0;
     virtual void OnEndContact(SceneNode* other) = 0;
@@ -77,7 +70,7 @@ private:
     // other attributes are inherited from the moving object class ---
 public:
     FireBall();
-    FireBall(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0, vector<Image> images = {});
+    FireBall(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0);
     FireBall(const FireBall &ff);
     ~FireBall();
     void setDamage(float d);
@@ -86,7 +79,7 @@ public:
     bool isActive();
     Animation getAnimation(bool flag);
 
-    void Init(b2Vec2 position, ImageSet imageSet);
+    void Init(b2Vec2 position);
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
     void Update(Vector2 playerVelocity, float deltaTime);
@@ -105,14 +98,14 @@ private:
     bool flag; // indicate that the grow item is disappear or not
 public:
     ActiveItem();
-    ActiveItem(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0, vector<Image> images = {});
+    ActiveItem(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0);
     ActiveItem(const ActiveItem &gi);
     ~ActiveItem();
     void setValue(int v);
     bool isAvailable();
     int getValue();
 
-    virtual void Init(b2Vec2 position, ImageSet imageSet);
+    virtual void Init(b2Vec2 position);
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
     void Update(Vector2 playerVelocity, float deltaTime);
@@ -124,11 +117,11 @@ public:
 class Mushroom : public ActiveItem {
 public:
     Mushroom();
-    Mushroom(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0, vector<Image> images = {});
+    Mushroom(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0);
     Mushroom(const Mushroom &m);
     ~Mushroom();
 
-    void Init(b2Vec2 position, ImageSet imageSet);
+    void Init(b2Vec2 position);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;
@@ -137,11 +130,11 @@ public:
 class FireFlower : public ActiveItem {
 public:
     FireFlower();
-    FireFlower(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0, vector<Image> images = {});
+    FireFlower(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0);
     FireFlower(const FireFlower &ff);
     ~FireFlower();
 
-    void Init(b2Vec2 position, ImageSet imageSet);
+    void Init(b2Vec2 position);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;
@@ -150,11 +143,11 @@ public:
 class Star : public ActiveItem {
 public:
     Star();
-    Star(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0, vector<Image> images = {});
+    Star(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0);
     Star(const Star &s);
     ~Star();
 
-    void Init(b2Vec2 position, ImageSet imageSet);
+    void Init(b2Vec2 position);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;
