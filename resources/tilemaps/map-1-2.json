@@ -831,6 +831,17 @@
                  "width":2,
                  "x":2871,
                  "y":48.3333333333333
+                }, 
+                {
+                 "height":31.3333333333333,
+                 "id":115,
+                 "name":"gate",
+                 "rotation":0,
+                 "type":"map-1-3.json",
+                 "visible":true,
+                 "width":10.6666666666667,
+                 "x":-3.33333333333333,
+                 "y":176.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -839,10 +850,10 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":115,
+ "nextobjectid":116,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tilesets":[
         {

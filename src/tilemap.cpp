@@ -182,6 +182,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 std::string name = object["name"].get<std::string>();
                                 player = new Player(name);
                                 player->Init(b2Vec2{x, y});
+                                player->setInitialPosition(Vector2{x, y});
                                 player->setName(name);
                                 player->setHealth(100);
                                 player->setLives(3);
@@ -192,6 +193,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 player->setPositon(b2Vec2{x, y});
                                 player->setCurrentMap(filePath);
                                 player->setElapsedTime(0.0f);
+                                player->setInitialPosition(Vector2{x, y});
                             }
                         }
                         else if (object.contains("type") && object["type"] == "enemy") {
@@ -278,7 +280,8 @@ void Tilemap::Update(float deltaTime) {
                 node->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
             }
         }
-        camera.Update(player->getPosition());  
+        Vector2 pos = player->getPosition();
+        if (pos.x != -1.0f && pos.y != -1.0f) camera.Update(pos);  
     }
 }
 

@@ -104,4 +104,43 @@ public:
     void Draw();
 };
 
+class DeadMarioEffect : public AnimationEffect {
+private:
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+    b2Body* body;
+public:
+    DeadMarioEffect(Vector2 pos);
+    ~DeadMarioEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
+class DeadKoopaEffect : public AnimationEffect {
+private:
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+    b2Body* body;
+public:
+    DeadKoopaEffect(Vector2 pos);
+    ~DeadKoopaEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
+class DeadGoombaEffect : public AnimationEffect {
+private:
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+    b2Body* body;
+public:
+    DeadGoombaEffect(Vector2 pos);
+    ~DeadGoombaEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
 #endif // ANIMATION_EFFECT_H

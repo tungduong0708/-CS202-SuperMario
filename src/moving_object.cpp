@@ -108,12 +108,14 @@ float MovingObject::getRestitution() {
 
 Vector2 MovingObject::getPosition()
 {
+    if (body == nullptr) return Vector2{-1.0f, -1.0f};
     b2Vec2 pos = body->GetPosition();
     return Vector2{pos.x, pos.y};
 }
 
 b2Vec2 MovingObject::getVelocity()
 {
+    if (body == nullptr) return b2Vec2{0, 0};
     return body->GetLinearVelocity();
 }
 

@@ -81,6 +81,7 @@ private:
     bool immortal;
     string currentMap;
     float time; // time allotted for the player to complete the map
+    Vector2 initialPosition;
 public:
     Player();
     Player(string type, string name = "", float coins = 0.0f, float range = 0.0f, int lives = 0, bool sit = false, 
@@ -97,6 +98,7 @@ public:
     void setImmortal(bool im);
     void setCurrentMap(string map);
     void setTime(float t);
+    void setInitialPosition(Vector2 pos);
     void updateScore(int s);
 
     string getName();

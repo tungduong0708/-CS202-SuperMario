@@ -88,6 +88,11 @@ void Player::setTime(float t) {
     time = t;
 }
 
+void Player::setInitialPosition(Vector2 pos)
+{
+    initialPosition = pos;
+}
+
 void Player::updateScore(int s) {
     score += s;
 }
@@ -202,7 +207,7 @@ void Player::HandleInput() {
 }
 
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
-    Character::Update(playerVelocity, deltaTime);
+    if (body) Character::Update(playerVelocity, deltaTime);
     if (time <= 0) {
         alive = false;
         time = 300.0f;
@@ -220,7 +225,30 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
 }
 
 void Player::Dead() {
-    // dead....
+    EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+    if (effectManager->isActiveDeadPlayer()) {
+        return;
+    }
+    if (!effectManager->isActiveDeadPlayer()) {
+        if (body) {
+            b2Vec2 pos = body->GetPosition();
+            Physics::world.DestroyBody(body);
+            body = nullptr;
+            alive = false;
+            lives--;
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_mario", Vector2{pos.x, pos.y}));
+            effectManager->setActiveDeadPlayer(true);
+        }
+        else {
+            if (lives == 0) {
+                // game over
+            }
+            else {
+                // reset the player
+                Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
+            }
+        }
+    }
 }
 
 void Player::UpdateAnimation() {
@@ -236,7 +264,7 @@ void Player::UpdateAnimation() {
 }
 
 void Player::Draw() {
-    Character::Draw();
+    if (body) Character::Draw();
 }
 
 void Player::Draw(Vector2 position, float angle) {

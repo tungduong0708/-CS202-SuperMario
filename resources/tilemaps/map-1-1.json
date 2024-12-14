@@ -67,17 +67,6 @@
          "name":"Object Layer 1",
          "objects":[
                 {
-                 "height":31.9646739130435,
-                 "id":46,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":976.016304347826,
-                 "x":0.608695652173913,
-                 "y":223.347826086957
-                }, 
-                {
                  "height":0,
                  "id":64,
                  "name":"mario",
@@ -326,6 +315,17 @@
                  "width":0,
                  "x":597.333333333333,
                  "y":188
+                }, 
+                {
+                 "height":51,
+                 "id":95,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":42.5,
+                 "x":62,
+                 "y":67.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -334,7 +334,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":91,
+ "nextobjectid":96,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",
