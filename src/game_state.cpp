@@ -419,3 +419,34 @@ void SelectPlayerState::draw() {
     DrawImageButton(player1Button, *game);
     DrawImageButton(player2Button, *game);
 }
+
+SelectPlayerState::~SelectPlayerState() {
+    UnloadTexture(player1Button.texture);
+    UnloadTexture(player1Button.hoverTexture);
+    UnloadTexture(player2Button.texture);
+    UnloadTexture(player2Button.hoverTexture);
+}
+
+DeathState::DeathState(Game* game) : GameState(game), lifeRemaining(0), buttons() {}
+
+void DeathState::update() {}
+
+void DeathState::draw() {}
+
+ChangeStageState::ChangeStageState(Game* game) : DeathState(game) {}
+
+void ChangeStageState::update() {}
+
+void ChangeStageState::draw() {}
+
+GameOverState::GameOverState(Game* game) : GameState(game), score(0), highScore(0), timeRemaining(0), buttons() {}
+
+void GameOverState::update() {}
+
+void GameOverState::draw() {}
+
+VictoryState::VictoryState(Game* game) : GameOverState(game) {}
+
+void VictoryState::update() {}
+
+void VictoryState::draw() {}

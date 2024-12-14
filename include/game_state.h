@@ -130,6 +130,7 @@ public:
     explicit SelectPlayerState(Game* game);
     void update() override;
     void draw() override;
+    ~SelectPlayerState() override;
 private:
     ImageButton player1Button;
     ImageButton player2Button;
