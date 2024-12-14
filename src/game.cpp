@@ -12,6 +12,11 @@ Game::Game()
       pauseGameState(nullptr),
       mapPauseState(nullptr),
       selectPlayerState(nullptr),
+      deathState(nullptr),
+      changeStageState(nullptr),
+      gameOverState(nullptr),
+      victoryState(nullptr),
+      shouldExit(false),
       currentState(nullptr)
 {
     InitWindow(screenWidth, screenHeight, "Game");
@@ -23,7 +28,6 @@ Game::Game()
     settings = { true, true, 100, 50 };
     std::cout << "Initializing Game" << std::endl;
     mainMenuState = std::make_unique<MainMenuState>(this);
-    std::cout << "MainMenuState initialized" << std::endl;
     settingsState = std::make_unique<SettingsState>(this);
     savedGameState = std::make_unique<SavedGameState>(this);
     mapBuilderState = std::make_unique<MapBuilderState>(this);
@@ -31,6 +35,10 @@ Game::Game()
     pauseGameState = std::make_unique<PauseGameState>(this);
     mapPauseState = std::make_unique<MapPauseState>(this);
     selectPlayerState = std::make_unique<SelectPlayerState>(this);
+    deathState = std::make_unique<DeathState>(this);
+    changeStageState = std::make_unique<ChangeStageState>(this);
+    gameOverState = std::make_unique<GameOverState>(this);
+    victoryState = std::make_unique<VictoryState>(this);
     currentState = mainMenuState.get();
     std::cout << "All states initialized" << std::endl;
 }
