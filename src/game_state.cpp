@@ -249,8 +249,8 @@ GameplayState::GameplayState(Game* game)
 
     Physics::Init(); 
     AnimationEffectCreator::InitEffects();
-    TextHelper::loadFont("highway_gothic", "");
-    TextHelper::loadTexture("coin");
+    TextHelper::loadFont("Mario256", "");
+    TextHelper::loadTexture("coin", "smallmario");
 
     TilesetHandler::Init();
     Tilemap* tilemap = Tilemap::getInstance();

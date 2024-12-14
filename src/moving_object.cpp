@@ -8,19 +8,17 @@ MovingObject::MovingObject() {
     size = {0, 0};
     speed = 0;
     angle = 0;
-    images = {};
     elapsedTime = 0.0f;
     restitution = 0.0f;
 }
 
-MovingObject::MovingObject(Vector2 size, float speed, float angle, vector<Image> images): 
-    size(size), speed(speed), angle(angle), images(images), elapsedTime(0), restitution(0) {}
+MovingObject::MovingObject(Vector2 size, float speed, float angle): 
+    size(size), speed(speed), angle(angle), elapsedTime(0), restitution(0) {}
 
 MovingObject::MovingObject(const MovingObject &mo) {
     size = mo.size;
     speed = mo.speed;
     angle = mo.angle;
-    ImageHandler::ImageVectorCopy(mo.images, images);
     body = mo.body;
     elapsedTime = mo.elapsedTime;
     frameTime = mo.frameTime;
@@ -32,7 +30,6 @@ MovingObject::~MovingObject() {
     size = {0, 0};
     speed = 0;
     angle = 0;
-    images.clear();
     elapsedTime = 0.0f;
     restitution = 0.0f;
     if (body) {
@@ -41,8 +38,7 @@ MovingObject::~MovingObject() {
     }
 }
 
-void MovingObject::setSize(Vector2 size)
-{
+void MovingObject::setSize(Vector2 size) {
     this->size = size;
 }
 
@@ -53,10 +49,6 @@ void MovingObject::setSpeed(float speed) {
 
 void MovingObject::setAngle(float angle) {
     this->angle = angle;
-}
-
-void MovingObject::setImage(const Image &img) {
-    images.push_back(img);
 }
 
 void MovingObject::setDensity(float density) {
@@ -114,10 +106,6 @@ float MovingObject::getRestitution() {
     return restitution;
 }
 
-vector<Image> MovingObject::getImages() {
-    return images;
-}
-
 Vector2 MovingObject::getPosition()
 {
     b2Vec2 pos = body->GetPosition();
@@ -134,32 +122,18 @@ b2Body *MovingObject::getBody()
     return body;
 }
 
-void MovingObject::move() {
-    // move the object
-}
-
-void MovingObject::jump() {
-    // jump the object
-}
-
-void MovingObject::rotate() {
-    // rotate the object
-}
-
 vector<Animation> MovingObject::getAnimations() {
-    // get the animation of the object
     return animations;
 }
 
-// [-----implementation of moving items, derived from moving object class -------------------]
 
 FireBall::FireBall() : MovingObject() {
     damage = 0;
     flag = false;
 }
 
-FireBall::FireBall(float d, Vector2 size, float speed, float angle, vector<Image> imgs): 
-    MovingObject(size, speed, angle, imgs), damage(d), flag(false) {
+FireBall::FireBall(float d, Vector2 size, float speed, float angle): 
+    MovingObject(size, speed, angle), damage(d), flag(false) {
 }
 
 
@@ -197,7 +171,7 @@ MovingObject* FireBall::copy() const {
     return new FireBall(*this);
 }
 
-void FireBall::Init(b2Vec2 position, ImageSet imageSet) {
+void FireBall::Init(b2Vec2 position) {
     span = 0.0f;
     animations = AnimationHandler::setAnimations("fireball");
     Texture texture = animations[0].GetFrame();
@@ -245,7 +219,6 @@ void FireBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
         if (enemy) enemy->setHealth(enemy->getHealth() - damage);
         Physics::bodiesToDestroy.push_back(body);
         animations.clear();
-        images.clear();
 
         AnimationEffect* effect = AnimationEffectCreator::CreateAnimationEffect("fireball_explode", Vector2{body->GetPosition().x, body->GetPosition().y});
 

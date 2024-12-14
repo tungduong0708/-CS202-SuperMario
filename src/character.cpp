@@ -20,12 +20,13 @@ Character::Character() : MovingObject()
     isOnGround = false;
     currentImage = IDLE;
     faceLeft = false;
+    alive = true;
     mode = Mode::SMALL;
 }
 
 Character::Character(string type, int health, int score, int level, int strength, 
-                     Vector2 size, float speed, float angle, vector<Image> imgs): 
-    MovingObject(size, speed, angle, imgs), 
+                     Vector2 size, float speed, float angle): 
+    MovingObject(size, speed, angle), 
     health(health), 
     score(score), 
     level(level), 
@@ -35,8 +36,9 @@ Character::Character(string type, int health, int score, int level, int strength
     faceLeft = false;
     currentImage = IDLE;
     previousImage = IDLE;
-    images = ImageHandler::setImages(type);
     curAnim = Animation();
+    mode = Mode::SMALL;
+    alive = true;
 }
 
 Character::Character(const Character &c)
@@ -46,7 +48,6 @@ Character::Character(const Character &c)
       level(c.level),
       strength(c.strength),
       type(c.type),
-
       sourceRect(c.sourceRect),
       destRect(c.destRect),
       origin(c.origin),
@@ -81,14 +82,15 @@ Character::~Character() {
     currentImage = IDLE;
     previousImage = IDLE;
     faceLeft = false;
-    for (auto img : images) {
-        UnloadImage(img);
-    }
     mode = SMALL;
+    alive = false;
 }
 
 void Character::setHealth(int health) {
-    health = health;
+    this->health = health;
+    if (health <= 0) {
+        alive = false;
+    }
 }
 
 void Character::setScore(int s) {
@@ -135,25 +137,19 @@ bool Character::isLeft() {
     return faceLeft;
 }
 
+bool Character::isAlive() {
+    return alive;
+}
+
 void Character::changeMode(Mode mode)
 {
     this->mode = mode;
     this->modeChanged = true;
 }
 
-void Character::move() {
-    // move the character
-}
-
-void Character::jump() {
-}
-
-void Character::rotate() {
-    // rotate the character
-}
-
-void Character::Init(b2Vec2 position, ImageSet imageSet) {
-    currentImage = WALK;
+void Character::Init(b2Vec2 position) {
+    alive = true;
+    currentImage = ImageSet::WALK;
     mode = SMALL;
     animations = AnimationHandler::setAnimations(StringMode::getMode(mode) + type);
     curAnim = animations[currentImage];
@@ -178,13 +174,14 @@ void Character::Init(b2Vec2 position, ImageSet imageSet) {
     MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y});
 
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+    currentImage = IDLE;
 }
 
 void Character::UpdateMode(Mode mode)
 {
     b2Vec2 position = body->GetPosition();
     this->mode = mode;
-    currentImage = WALK;
+    currentImage = ImageSet::WALK;
     animations = AnimationHandler::setAnimations(StringMode::getMode(mode) + type);
     curAnim = animations[currentImage];
 
@@ -245,23 +242,18 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
 
     curAnim = animations[currentImage];
     Animation prevAnim = animations[previousImage];
-    //cout << prevAnim.getTimer() << " " << prevAnim.getFrameTime(0) << endl;
     if (previousImage == HOLD && prevAnim.getTimer() <= prevAnim.getFrameTime(0)) {
         currentImage = HOLD; // delay the hold animation 
     }
 
-    //cout << previousImage << " " << currentImage << endl;
     animations[currentImage].Update(deltaTime);
     texture = animations[currentImage].GetFrame();
-    //size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
 }
 
 void Character::Draw() {
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
-    //cout << pos.x << " " << pos.y << endl;
     Vector2 drawPosition = { pos.x, pos.y };
-
     Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft);
 }
 

@@ -17,6 +17,7 @@ protected:
     int score;
     int level;
     int strength;
+    bool alive;
     string type;
     Mode mode;
 
@@ -35,7 +36,8 @@ protected:
     bool faceLeft;            // Is character facing left
 public:
     Character();
-    Character(string type, int h = 0, int s = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s1 = 0, float a1 = 0, vector<Image> images = {});
+    Character(string type, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, 
+              float spêed = 0, float angle = 0);
     Character(const Character &c);
     ~Character();
 
@@ -44,26 +46,24 @@ public:
     void setLevel(int l);
     void setStrength(int st);
     void setMode(Mode mode);
+
     int getHealth();
     int getScore();
     int getLevel();
     int getStrength();
     bool onGround();
     bool isLeft();
+    bool isAlive();
     void changeMode(Mode mode);
     Mode getMode();
 
-    void move();
-    void jump();
-    void rotate();
-
-    //MovingObject* copy() const;  // Prototype design pattern
     // default image = IDLE
-    void Init(b2Vec2 position, ImageSet imageSet = IDLE);  
+    virtual void Init(b2Vec2 position);  
     virtual void UpdateMode(Mode mode);
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void Draw();  
     virtual void Draw(Vector2 position, float angle = 0.0f) = 0;
+    virtual void Dead();
     void ResizeBody(float newWidth, float newHeight);
     virtual void OnBeginContact(SceneNode* other);
     virtual void OnEndContact(SceneNode* other);
@@ -76,14 +76,15 @@ private:
     string name;
     float coins;
     float range; // max range if the player can shoot
-    bool alive;
+    int lives;
     bool sit;
     bool immortal;
     string currentMap;
+    float time; // time allotted for the player to complete the map
 public:
     Player();
-    Player(string type, string name = "", float coins = 0.0f, float range = 0.0f, bool alive = true, bool sit = false, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, 
-               float angle = 0.0f, vector<Image> imgs = {});
+    Player(string type, string name = "", float coins = 0.0f, float range = 0.0f, int lives = 0, bool sit = false, 
+            int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Player(const Player &p);
     ~Player();
 
@@ -91,23 +92,27 @@ public:
     void setName(string n);
     void setCoins(float c);
     void setRange(float r);
-    void setIsAlive(bool ia);
+    void setLives(int lives);
     void setSit(bool s);
     void setImmortal(bool im);
     void setCurrentMap(string map);
+    void setTime(float t);
     void updateScore(int s);
+
     string getName();
     float getCoins();
     float getRange();
     string getCurrentMap();
-    bool isAlive();
+    float getTime();
     bool isSitting();
     bool isImmortal();
 
+    void Init(b2Vec2 position);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     void HandleInput();
     void Update(Vector2 playerVelocity, float deltaTime);
+    void Dead();
     void UpdateAnimation();
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
@@ -116,33 +121,30 @@ public:
 
 
 class Enemy : public Character {
-private:
+protected:
     string type;
-    float range; // max range if the enemy can shoot
-    bool alive;
-    bool sit;
-    // speed = max speed that the enemy can move
+    float range;
+    EnemyState state;
 public:
     Enemy();
-    Enemy(string t = "", float r = 0, bool ia = true, bool s = false, int h = 0, int s1 = 0, int l = 0, int st = 0, Vector2 size = {0, 0}, float s2 = 0, float a1 = 0, vector<Image> images = {});
+    Enemy(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, int strength = 0, 
+          Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Enemy(const Enemy &e);
     ~Enemy();
     void setType(string t);
     void setRange(float r);
     void setIsAlive(bool ia);
-    void setSit(bool s);
+
     string getType();
     float getRange();
-    bool isAlive();
-    bool isSitting();
-    void move();
-    void jump();
-    void rotate();
-    void shoot();
 
-    void OnBeginContact(SceneNode* other, b2Vec2 normal);
-    void OnEndContact(SceneNode* other);
+    void Init(b2Vec2 position);  
+    virtual void Update(Vector2 playerVelocity, float deltaTime);
+    virtual void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    virtual void OnEndContact(SceneNode* other);
     void HandleInput();
+    void Dead();
+    void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
 
     MovingObject* copy() const;
@@ -152,11 +154,11 @@ public:
 class Goomba : public Enemy {
 public:
     Goomba();
-    Goomba(string type, float range, bool alive, bool sit, int health, int score, int level, int strength, Vector2 size, float speed, float angle, vector<Image> images);
+    Goomba(string type, float range, bool alive, bool sit, int health, int score, int level, int strength, Vector2 size,
+           float speed, float angle);
     Goomba(const Goomba &g);
     ~Goomba();
 
-    void Init(b2Vec2 position, ImageSet imageSet);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;
@@ -165,11 +167,11 @@ public:
 class Koopa : public Enemy {
 public:
     Koopa();
-    Koopa(string type, float range, bool alive, bool sit, int health, int score, int level, int strength, Vector2 size, float speed, float angle, vector<Image> images);
+    Koopa(string type, float range, bool alive, bool sit, int health, int score, int level, int strength, Vector2 size, 
+          float speed, float angle);
     Koopa(const Koopa &k);
     ~Koopa();
 
-    void Init(b2Vec2 position, ImageSet imageSet);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const; 

@@ -1,20 +1,5 @@
-#include "tilemap.h"
-#include "tileset.h"
-#include "tile.h"
-#include "static_tile.h"
-#include "kinematic_tile.h"
-#include "scene_node.h"
-#include "background.h"
-#include "static_object.h"
-#include "physics.h"
-#include "effect_manager.h"
-#include "camera.h"
-#include <string>
-#include <fstream>
-#include <iostream>
-#include <box2d/box2d.h>
-#include "nlohmann/json.hpp" 
-using json = nlohmann::json;
+#include "include.h"
+#include "object.h"
 
 Tilemap* Tilemap::instance = nullptr;
 
@@ -193,21 +178,16 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                     }
                     else {
                         if (object.contains("type") && object["type"] == "player") {
-                            if (!player) {
-                                std::string name = object["name"].get<std::string>();
-                                player = new Player(name);
-                                player->Init(b2Vec2{x, y});
-                                player->setName(name);
-                            }
-                            else {
-                                player->setPositon(b2Vec2{x, y});
-                                player->setCurrentMap(filePath);
-                                player->setElapsedTime(0.0f);
-                            }
+                            std::cout << "marioaaa" << " " << x << " " << y << std::endl;
+                            std::string name = object["name"].get<std::string>();
+                            player = new Player(name);
+                            player->Init(b2Vec2{x, y});
+                            player->setName(name);
+                            player->setLives(3);
+                            player->setTime(30.0f);
                         }
-                        else if (object.contains("name") && object["name"].is_string()) {
-                            std::string effectName = object["name"].get<std::string>();
-                            effectManager->AddEffectPosition(std::make_pair((int)x, (int)y), effectName);
+                        else {
+                            EffectManager::effectMap[{(int)x, (int)y}] = object["name"].get<std::string>();
                             if (object.contains("type") && object["type"] != "") {
                                 effectManager->AddEffectCount({(int)x, (int)y}, std::stoi(object["type"].get<std::string>()));
                             }
@@ -306,7 +286,7 @@ void Tilemap::Draw() const {
     }
 
     Vector2 cameraTarget = camera.GetCameraTarget();
-    player->Draw(Vector2{cameraTarget.x - 9.0f, cameraTarget.y - 7.0f}, 0.0f);
+    player->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
     EndMode2D();
 
 }

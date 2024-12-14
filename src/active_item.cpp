@@ -8,8 +8,8 @@ ActiveItem::ActiveItem() : MovingObject() {
     flag = false;
 }  
 
-ActiveItem::ActiveItem(int value, Vector2 size, float speed, float angle, vector<Image> images): 
-    MovingObject(size, speed, angle, images), value(value), flag(false) {}
+ActiveItem::ActiveItem(int value, Vector2 size, float speed, float angle): 
+    MovingObject(size, speed, angle), value(value), flag(false) {}
 
 ActiveItem::ActiveItem(const ActiveItem &gi): MovingObject(gi) {
     value = gi.value;
@@ -31,7 +31,7 @@ int ActiveItem::getValue() {
     return value;
 }
 
-void ActiveItem::Init(b2Vec2 position, ImageSet imageSet) {
+void ActiveItem::Init(b2Vec2 position) {
     // initialize the grow item
     // animations initialization....
     Texture texture = animations[0].GetFrame();
@@ -76,17 +76,17 @@ void ActiveItem::OnEndContact(SceneNode* other) {
 
 Mushroom::Mushroom() : ActiveItem() {}
 
-Mushroom::Mushroom(int value, Vector2 size, float speed, float angle, vector<Image> images): 
-    ActiveItem(value, size, speed, angle, images) {}
+Mushroom::Mushroom(int value, Vector2 size, float speed, float angle): 
+    ActiveItem(value, size, speed, angle) {}
 
 Mushroom::Mushroom(const Mushroom &m): ActiveItem(m) {}
 
 Mushroom::~Mushroom() {}
 
-void Mushroom::Init(b2Vec2 position, ImageSet imageSet) {
+void Mushroom::Init(b2Vec2 position) {
     // initialize the mushroom
     animations = AnimationHandler::setAnimations("mushroom");
-    ActiveItem::Init(position, imageSet);
+    ActiveItem::Init(position);
 }
 
 void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
@@ -97,7 +97,6 @@ void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
-        images.clear();
     }
 }
 
@@ -111,17 +110,17 @@ MovingObject* Mushroom::copy() const {
 
 FireFlower::FireFlower() : ActiveItem() {}
 
-FireFlower::FireFlower(int value, Vector2 size, float speed, float angle, vector<Image> images): 
-    ActiveItem(value, size, speed, angle, images) {}
+FireFlower::FireFlower(int value, Vector2 size, float speed, float angle): 
+    ActiveItem(value, size, speed, angle) {}
 
 FireFlower::FireFlower(const FireFlower &ff): ActiveItem(ff) {}
 
 FireFlower::~FireFlower() {}
 
-void FireFlower::Init(b2Vec2 position, ImageSet imageSet) {
+void FireFlower::Init(b2Vec2 position) {
     // initialize the fire flower
     animations = AnimationHandler::setAnimations("fireflower");
-    ActiveItem::Init(position, imageSet);
+    ActiveItem::Init(position);
 }
 
 
@@ -132,7 +131,6 @@ void FireFlower::OnBeginContact(SceneNode* other, b2Vec2 normal) {
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
-        images.clear();
     }
 }
 
@@ -146,8 +144,8 @@ MovingObject* FireFlower::copy() const {
 
 Star::Star() : ActiveItem() {}
 
-Star::Star(int value, Vector2 size, float speed, float angle, vector<Image> images): 
-    ActiveItem(value, size, speed, angle, images) {
+Star::Star(int value, Vector2 size, float speed, float angle): 
+    ActiveItem(value, size, speed, angle) {
         restitution = 1.0f;
     }
 
@@ -155,10 +153,10 @@ Star::Star(const Star &s): ActiveItem(s) {}
 
 Star::~Star() {}
 
-void Star::Init(b2Vec2 position, ImageSet imageSet) {
+void Star::Init(b2Vec2 position) {
     // initialize the star
     animations = AnimationHandler::setAnimations("star");
-    ActiveItem::Init(position, imageSet);
+    ActiveItem::Init(position);
 }
 
 void Star::OnBeginContact(SceneNode* other, b2Vec2 normal) {
