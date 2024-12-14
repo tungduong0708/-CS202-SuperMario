@@ -11,8 +11,8 @@
 
 class StaticTile : public Tile {
 private:
-    b2Body* invisibleBody;
-    b2PrismaticJoint* joint;
+    b2Body* invisibleBody = nullptr;
+    b2PrismaticJoint* joint = nullptr;
     bool isDestroyed = true;
     bool isActivated = false;
 public:
@@ -20,8 +20,8 @@ public:
     StaticTile(int id, std::string type, std::string tilesetName);
     StaticTile(int id, Vector2 pos, std::string type, std::string tilesetName);
     StaticTile(StaticTile& other);
-    Tile* clone();
-    ~StaticTile() = default;
+    StaticObject* clone();
+    virtual ~StaticTile();
 
     void setPosition(const Vector2& position);
     void Update(Vector2 playerVelocity ,float deltaTime);

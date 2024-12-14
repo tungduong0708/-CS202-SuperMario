@@ -27,7 +27,7 @@ public:
     MovingObject();
     MovingObject(Vector2 size, float speed, float angle, vector<Image> images = {});
     MovingObject(const MovingObject &mo);
-    ~MovingObject();
+    virtual ~MovingObject();
     
     void setSize(Vector2 size);
     void setSpeed(float speed);
@@ -79,7 +79,7 @@ public:
     FireBall();
     FireBall(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0, vector<Image> images = {});
     FireBall(const FireBall &ff);
-    ~FireBall();
+    virtual ~FireBall();
     void setDamage(float d);
     void setFlag(bool f);
     float getDamage();
@@ -107,7 +107,7 @@ public:
     ActiveItem();
     ActiveItem(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0, vector<Image> images = {});
     ActiveItem(const ActiveItem &gi);
-    ~ActiveItem();
+    virtual ~ActiveItem();
     void setValue(int v);
     bool isAvailable();
     int getValue();
@@ -126,7 +126,7 @@ public:
     Mushroom();
     Mushroom(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0, vector<Image> images = {});
     Mushroom(const Mushroom &m);
-    ~Mushroom();
+    virtual ~Mushroom();
 
     void Init(b2Vec2 position, ImageSet imageSet);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
@@ -139,7 +139,7 @@ public:
     FireFlower();
     FireFlower(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0, vector<Image> images = {});
     FireFlower(const FireFlower &ff);
-    ~FireFlower();
+    virtual ~FireFlower();
 
     void Init(b2Vec2 position, ImageSet imageSet);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
@@ -152,7 +152,7 @@ public:
     Star();
     Star(int value, Vector2 size = {0, 0}, float speed = 0, float angle = 0, vector<Image> images = {});
     Star(const Star &s);
-    ~Star();
+    virtual ~Star();
 
     void Init(b2Vec2 position, ImageSet imageSet);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);

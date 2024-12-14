@@ -47,7 +47,7 @@ void ActiveItem::Init(b2Vec2 position, ImageSet imageSet) {
 }
 
 void ActiveItem::Draw() {
-    // draw the grow item
+    if (body == nullptr) return;
     b2Vec2 pos = body->GetPosition();
     Texture texture = animations[0].GetFrame();
     Rectangle sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
@@ -95,6 +95,7 @@ void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     if (player != nullptr) {
         player->changeMode(BIG);
         Physics::bodiesToDestroy.push_back(body);
+        body = nullptr;
         animations.clear();
         images.clear();
     }
@@ -129,6 +130,7 @@ void FireFlower::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     if (player != nullptr) {
         player->changeMode(FIRE);
         Physics::bodiesToDestroy.push_back(body);
+        body = nullptr;
         animations.clear();
         images.clear();
     }

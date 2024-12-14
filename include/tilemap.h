@@ -6,6 +6,7 @@
 #include "renderer.h"
 #include "character.h"
 #include "camera.h"
+#include "effect_manager.h"
 #include <vector>
 #include <string>
 #include <raylib.h> 
@@ -16,14 +17,16 @@ const int screenHeight = 600;
 
 class Tilemap {
 private:
+    bool isChangingMap = false;
+    std::string newMapPath;
+    int width, height, tileSize, tilesetColumns;
     MyCamera camera;
-    int width, height, tileSize;
     Player* player;
+    EffectManager* effectManager;
     std::vector<std::vector<SceneNode*>> nodes;
     std::vector<std::pair<std::string, int>> tilesets;
-    int tilesetColumns;
-
-    Tilemap() = default;
+    
+    Tilemap();
     Tilemap(const std::string& filePath);
     
     Tilemap(const Tilemap&) = delete;
@@ -35,6 +38,7 @@ public:
     ~Tilemap();
     static Tilemap* getInstance();
     void clearMap();
+    void changeMap(const std::string& filePath);
 
     std::pair<std::string, int> GetTilesetInfo(int tileIdx) const;
     void addNode(SceneNode* node);
@@ -42,6 +46,8 @@ public:
     void Update(float deltaTime);
     void Draw() const;
 
+    void SetNewMapPath(const std::string& path);
+    EffectManager* GetEffectManager();
     Vector2 GetPlayerPosition() const;
     int GetWidth() const;
     int GetHeight() const;

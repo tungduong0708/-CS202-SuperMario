@@ -39,6 +39,11 @@ Player::~Player() {
     sit = false;
 }
 
+void Player::setPositon(b2Vec2 pos)
+{
+    body->SetTransform(pos, body->GetAngle());
+}
+
 void Player::setName(string n) {
     name = n;
 }
@@ -208,7 +213,7 @@ void Player::Draw(Vector2 position, float angle) {
     TextHelper::DrawPackage(name, score, coins, position, 12, WHITE);
 }
 
-void Player::OnBeginContact(SceneNode *other, b2Vec2 normal) 
+void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
     if (!other) return;
 

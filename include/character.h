@@ -87,6 +87,7 @@ public:
     Player(const Player &p);
     ~Player();
 
+    void setPositon(b2Vec2 pos);
     void setName(string n);
     void setCoins(float c);
     void setRange(float r);

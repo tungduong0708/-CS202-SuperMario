@@ -1,5 +1,6 @@
 #include "include.h"
 #include "object.h"
+#include "kinematic_tile.h"
 
 const float BOUNCE_HEIGHT = 0.3f;
 
@@ -61,9 +62,20 @@ KinematicTile::KinematicTile(KinematicTile& other)
     }
 }
 
-Tile *KinematicTile::clone()
+StaticObject *KinematicTile::clone()
 {
     return new KinematicTile(*this);
+}
+
+KinematicTile::~KinematicTile()
+{
+    if (invisibleBody) {
+        Physics::world.DestroyBody(invisibleBody);
+        invisibleBody = nullptr;
+    }
+    if (getType() == "coin") {
+        std::cout << "Coin deleted\n";
+    }
 }
 
 void KinematicTile::setPosition(const Vector2& position)
@@ -131,15 +143,17 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
             if (normal.y > 0.5f) {
                 Vector2 pos = getPosition();
                 pos.y--;
-                std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
-                std::cout << "Effect name: " << effectName << std::endl;
-                EffectManager::AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+                EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+
+                std::string effectName = effectManager->GetEffectName({pos.x, pos.y});
+                // std::cout << "Effect name: " << effectName << std::endl;
+                effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
                 if (effectName == "coin") {
                     playerPtr->updateScore(200);
                     playerPtr->setCoins(playerPtr->getCoins() + 1);
                 }
-                EffectManager::effectCount[{pos.x, pos.y}]--;
-                if (EffectManager::effectCount[{pos.x, pos.y}] == 0) {
+                
+                if (effectManager->UpdateEffectCount({pos.x, pos.y})) {
                     Tile::setTilesetPath("resources/tilesets/OverWorld.json");
                     Tile::setId(2);
                     frames.clear();
@@ -153,6 +167,7 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
             if (fixture->IsSensor()) {
                 animation = false;
                 Physics::bodiesToDestroy.push_back(GetBody());
+                SetBody(nullptr);
                 playerPtr->updateScore(100);
                 playerPtr->setCoins(playerPtr->getCoins() + 1);
             }

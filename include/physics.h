@@ -6,6 +6,7 @@
 #include <box2d/b2_world.h>
 #include <raylib.h>
 #include <box2d/b2_draw.h>
+#include <box2d/b2_prismatic_joint.h>
 
 class b2DrawRayLib : public b2Draw
 {
