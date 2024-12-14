@@ -148,7 +148,7 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     else {
         setHealth(getHealth() - 100);
         if (!alive) {
-            state = EnemyState::DEAD;
+            state = EnemyState::ENEMY_DEAD;
             size = Vector2{size.x, size.y/4};
         }
     }
