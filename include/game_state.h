@@ -113,8 +113,15 @@ public:
     void update() override;
     void draw() override;
 
-private:
+protected:
     std::vector<Button> buttons;
+};
+
+class MapPauseState : public PauseGameState
+{
+public:
+    explicit MapPauseState(Game* game);
+    void draw() override;
 };
 
 class SelectPlayerState : public GameState

@@ -220,7 +220,7 @@ void MapBuilderState::update() {
 
     // Handle pause button click
     if (IsButtonClicked(pauseButton)) {
-        game->changeState(game->pauseGameState.get());
+        game->changeState(game->mapPauseState.get());
     }
 }
 
@@ -351,6 +351,29 @@ void PauseGameState::draw() {
     DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
+MapPauseState::MapPauseState(Game *game) : PauseGameState(game)
+{   
+}
+
+void MapPauseState::draw()
+{
+    // Draw the underlying MapBuiderState
+    game->mapBuilderState->draw();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
+
+    float centerX = (game->getScreenWidth() - 250) / 2;
+    // Draw sliders
+    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+}
+
 SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
     // Initialize buttons
     float buttonWidth = 250;
@@ -375,10 +398,12 @@ void SelectPlayerState::update() {
     // Handle button clicks
     if (IsButtonClicked(player1Button)) {
         // Set player to Mario
+
         game->changeState(game->gameplayState.get());
     }
     if (IsButtonClicked(player2Button)) {
         // Set player to Luigi
+        
         game->changeState(game->gameplayState.get());
     }
 }
@@ -386,6 +411,10 @@ void SelectPlayerState::update() {
 void SelectPlayerState::draw() {
     // Draw the underlying MainMenuState
     game->mainMenuState->drawBackground();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    
     // Draw buttons
     DrawImageButton(player1Button, *game);
     DrawImageButton(player2Button, *game);

@@ -38,6 +38,7 @@ public:
     std::unique_ptr<GameState> mapBuilderState;
     std::unique_ptr<GameState> gameplayState;
     std::unique_ptr<GameState> pauseGameState;
+    std::unique_ptr<GameState> mapPauseState;
     std::unique_ptr<GameState> selectPlayerState;
 
 private:
