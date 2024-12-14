@@ -205,6 +205,10 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!alive) {
         player->updateScore(100);
     }
+
+    if (!alive) {
+        player->updateScore(100);
+    }
 }
 
 void Goomba::OnEndContact(SceneNode *other) {

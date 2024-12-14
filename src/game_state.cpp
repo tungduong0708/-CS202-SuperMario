@@ -18,7 +18,7 @@ MainMenuState::MainMenuState(Game* game): GameState(game)
     float column2X = 3 * static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
     float firstButtonWidth = column2X - column1X + buttonWidth;
 
-    buttons.push_back({{column1X, 300, firstButtonWidth, buttonHeight}, "Start Game", false});
+    buttons.push_back({{column1X, 300, firstButtonWidth, buttonHeight}, "New Game", false});
     buttons.push_back({{column1X, 375, buttonWidth, buttonHeight}, "Settings", false});
     buttons.push_back({{column2X, 375, buttonWidth, buttonHeight}, "Saved Games", false});
     buttons.push_back({{column1X, 450, buttonWidth, buttonHeight}, "Map Builder", false});
@@ -39,7 +39,7 @@ void MainMenuState::update() {
 
     // Handle button clicks
     if (IsButtonClicked(buttons[0])) {
-        game->changeState(game->gameplayState.get());
+        game->changeState(game->selectPlayerState.get());
     }
     if (IsButtonClicked(buttons[1])) {
         game->changeState(game->settingsState.get());
@@ -220,7 +220,7 @@ void MapBuilderState::update() {
 
     // Handle pause button click
     if (IsButtonClicked(pauseButton)) {
-        game->changeState(game->pauseGameState.get());
+        game->changeState(game->mapPauseState.get());
     }
 }
 
@@ -350,3 +350,103 @@ void PauseGameState::draw() {
     DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
     DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
+
+MapPauseState::MapPauseState(Game *game) : PauseGameState(game)
+{   
+}
+
+void MapPauseState::draw()
+{
+    // Draw the underlying MapBuiderState
+    game->mapBuilderState->draw();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
+
+    float centerX = (game->getScreenWidth() - 250) / 2;
+    // Draw sliders
+    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+}
+
+SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
+    // Initialize buttons
+    float buttonWidth = 250;
+    float buttonHeight = 400;
+    float column1X = static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
+    float column2X = 3 * static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
+
+    Texture2D player1Texture = LoadTexture("../resources/images/smallmario/idle.png");
+    Texture2D player1HoverTexture = LoadTexture("../resources/images/smallmario/victory.png");
+    player1Button = {{column1X, 100, buttonWidth, buttonHeight}, player1Texture, player1HoverTexture, "Mario", false};
+
+    Texture2D player2Texture = LoadTexture("../resources/images/smallluigi/idle.png");
+    Texture2D player2HoverTexture = LoadTexture("../resources/images/smallluigi/victory.png");
+    player2Button = {{column2X, 100, buttonWidth, buttonHeight}, player2Texture, player2HoverTexture, "Luigi", false};
+}
+
+void SelectPlayerState::update() {
+    // Update button hover states
+    player1Button.isHovered = CheckCollisionPointRec(GetMousePosition(), player1Button.rect);
+    player2Button.isHovered = CheckCollisionPointRec(GetMousePosition(), player2Button.rect);
+
+    // Handle button clicks
+    if (IsButtonClicked(player1Button)) {
+        // Set player to Mario
+
+        game->changeState(game->gameplayState.get());
+    }
+    if (IsButtonClicked(player2Button)) {
+        // Set player to Luigi
+        
+        game->changeState(game->gameplayState.get());
+    }
+}
+
+void SelectPlayerState::draw() {
+    // Draw the underlying MainMenuState
+    game->mainMenuState->drawBackground();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    
+    // Draw buttons
+    DrawImageButton(player1Button, *game);
+    DrawImageButton(player2Button, *game);
+}
+
+SelectPlayerState::~SelectPlayerState() {
+    UnloadTexture(player1Button.texture);
+    UnloadTexture(player1Button.hoverTexture);
+    UnloadTexture(player2Button.texture);
+    UnloadTexture(player2Button.hoverTexture);
+}
+
+DeathState::DeathState(Game* game) : GameState(game), lifeRemaining(0), buttons() {}
+
+void DeathState::update() {}
+
+void DeathState::draw() {}
+
+ChangeStageState::ChangeStageState(Game* game) : DeathState(game) {}
+
+void ChangeStageState::update() {}
+
+void ChangeStageState::draw() {}
+
+GameOverState::GameOverState(Game* game) : GameState(game), score(0), highScore(0), timeRemaining(0), buttons() {}
+
+void GameOverState::update() {}
+
+void GameOverState::draw() {}
+
+VictoryState::VictoryState(Game* game) : GameOverState(game) {}
+
+void VictoryState::update() {}
+
+void VictoryState::draw() {}
