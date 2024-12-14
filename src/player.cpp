@@ -93,6 +93,10 @@ void Player::setInitialPosition(Vector2 pos)
     initialPosition = pos;
 }
 
+void Player::impulseForce(Vector2 force) { 
+    body->ApplyLinearImpulseToCenter(b2Vec2(force.x, force.y), true);
+}
+
 void Player::updateScore(int s) {
     score += s;
 }

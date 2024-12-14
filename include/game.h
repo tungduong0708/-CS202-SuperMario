@@ -38,6 +38,12 @@ public:
     std::unique_ptr<GameState> mapBuilderState;
     std::unique_ptr<GameState> gameplayState;
     std::unique_ptr<GameState> pauseGameState;
+    std::unique_ptr<GameState> mapPauseState;
+    std::unique_ptr<GameState> selectPlayerState;
+    std::unique_ptr<GameState> deathState;
+    std::unique_ptr<GameState> changeStageState;
+    std::unique_ptr<GameState> gameOverState;
+    std::unique_ptr<GameState> victoryState;
 
 private:
     static constexpr int screenWidth = 800;

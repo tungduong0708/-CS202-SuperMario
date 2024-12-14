@@ -3,8 +3,18 @@
  "infinite":false,
  "layers":[
         {
+         "id":5,
+         "image":"..\/background\/b1-3-color.png",
+         "name":"Background Color",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "id":3,
-         "image":"..\/background\/b3.png",
+         "image":"..\/background\/b1-3.png",
          "name":"Background",
          "opacity":1,
          "type":"imagelayer",
@@ -293,8 +303,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":27,
+ "nextlayerid":6,
+ "nextobjectid":26,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

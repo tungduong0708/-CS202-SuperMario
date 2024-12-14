@@ -99,6 +99,7 @@ public:
     void setCurrentMap(string map);
     void setTime(float t);
     void setInitialPosition(Vector2 pos);
+    void impulseForce(Vector2 force);
     void updateScore(int s);
 
     string getName();
@@ -127,9 +128,13 @@ protected:
     string type;
     float range;
     EnemyState state;
+    bool fixtureChange;
+    bool deadByPlayer;
+    bool deadByFireball;
 public:
     Enemy();
-    Enemy(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Enemy(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, int strength = 0, 
+          Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Enemy(const Enemy &e);
     virtual ~Enemy();
     void setType(string t);
@@ -155,7 +160,8 @@ public:
 class Goomba : public Enemy {
 public:
     Goomba();
-    Goomba(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Goomba(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, 
+           int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Goomba(const Goomba &g);
     virtual ~Goomba();
 
@@ -167,7 +173,8 @@ public:
 class Koopa : public Enemy {
 public:
     Koopa();
-    Koopa(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Koopa(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, 
+          int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Koopa(const Koopa &k);
     virtual ~Koopa();
 

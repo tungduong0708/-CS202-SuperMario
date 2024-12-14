@@ -1,7 +1,5 @@
 #include "include.h"
 #include "object.h"
-#include "moving_object.h"
-#include "effect_manager.h"
 
 
 MovingObject::MovingObject() {
