@@ -40,14 +40,16 @@ void ActiveItem::Init(b2Vec2 position) {
     std::vector<b2Vec2> vertices = {
         b2Vec2{0.0f, 0.0f},
         b2Vec2{size.x, 0.0f},
-        b2Vec2{size.x, size.y},
-        b2Vec2{0.0f, size.y}
+        b2Vec2{size.x - 0.2f, size.y},
+        b2Vec2{size.x, size.y - 0.05f},
+        b2Vec2{0.0f, size.y - 0.05f},
+        b2Vec2{0.0f + 0.2f, size.y}
     };
     MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, restitution);
 }
 
 void ActiveItem::Draw() {
-    // draw the grow item
+    if (body == nullptr) return;
     b2Vec2 pos = body->GetPosition();
     Texture texture = animations[0].GetFrame();
     Rectangle sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
@@ -95,6 +97,7 @@ void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     if (player != nullptr) {
         player->changeMode(BIG);
         Physics::bodiesToDestroy.push_back(body);
+        body = nullptr;
         animations.clear();
     }
 }
@@ -128,6 +131,7 @@ void FireFlower::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     if (player != nullptr) {
         player->changeMode(FIRE);
         Physics::bodiesToDestroy.push_back(body);
+        body = nullptr;
         animations.clear();
     }
 }

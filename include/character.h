@@ -39,7 +39,7 @@ public:
     Character(string type, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, 
               float spêed = 0, float angle = 0);
     Character(const Character &c);
-    ~Character();
+    virtual ~Character();
 
     void setHealth(int h);
     void setScore(int s);
@@ -86,8 +86,9 @@ public:
     Player(string type, string name = "", float coins = 0.0f, float range = 0.0f, int lives = 0, bool sit = false, 
             int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Player(const Player &p);
-    ~Player();
+    virtual ~Player();
 
+    void setPositon(b2Vec2 pos);
     void setName(string n);
     void setCoins(float c);
     void setRange(float r);
@@ -126,10 +127,9 @@ protected:
     EnemyState state;
 public:
     Enemy();
-    Enemy(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, int strength = 0, 
-          Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Enemy(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Enemy(const Enemy &e);
-    ~Enemy();
+    virtual ~Enemy();
     void setType(string t);
     void setRange(float r);
     void setIsAlive(bool ia);
@@ -153,10 +153,9 @@ public:
 class Goomba : public Enemy {
 public:
     Goomba();
-    Goomba(string type, float range, bool alive, bool sit, int health, int score, int level, int strength, Vector2 size,
-           float speed, float angle);
+    Goomba(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Goomba(const Goomba &g);
-    ~Goomba();
+    virtual ~Goomba();
 
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
@@ -166,10 +165,9 @@ public:
 class Koopa : public Enemy {
 public:
     Koopa();
-    Koopa(string type, float range, bool alive, bool sit, int health, int score, int level, int strength, Vector2 size, 
-          float speed, float angle);
+    Koopa(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Koopa(const Koopa &k);
-    ~Koopa();
+    virtual ~Koopa();
 
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);

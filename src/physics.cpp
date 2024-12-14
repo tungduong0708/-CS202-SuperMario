@@ -5,6 +5,7 @@
 #include <box2d/b2_draw.h>
 #include <box2d/b2_world_callbacks.h>
 #include <box2d/b2_contact.h>
+#include <box2d/box2d.h>
 #include <raylib.h>
 #include <vector>
 #include <iostream>

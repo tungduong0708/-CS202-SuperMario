@@ -249,12 +249,13 @@ GameplayState::GameplayState(Game* game)
 
     Physics::Init(); 
     AnimationEffectCreator::InitEffects();
+    EnemyCreator::InitEnemies();
     TextHelper::loadFont("Mario256", "");
     TextHelper::loadTexture("coin", "smallmario");
 
     TilesetHandler::Init();
     Tilemap* tilemap = Tilemap::getInstance();
-    tilemap->LoadMapFromJson("resources/tilemaps/map-1-1.json");
+    tilemap->LoadMapFromJson("map-1-1.json");
     
     float buttonWidth = 35;
     float buttonHeight = 35;

@@ -1,10 +1,23 @@
 #include "tile.h"
+#include "static_object.h"
 
-Tile::Tile() : position(Vector2({0.0f, 0.0f})), id(0), type(""), tilesetPath("") {}
+Tile::Tile() : position(Vector2({0.0f, 0.0f})), id(0), tilesetPath("") {}
 
-Tile::Tile(int id, std::string type, std::string tilesetPath) : id(id), position(Vector2{0.0f, 0.0f}), type(type), tilesetPath(tilesetPath) {}
+Tile::Tile(int id, std::string type, std::string tilesetPath) : StaticObject(type), id(id), position(Vector2{0.0f, 0.0f}), tilesetPath(tilesetPath) {}
 
-Tile::Tile(int id, Vector2 position, std::string type, std::string tilesetPath) : id(id), position(position), type(type), tilesetPath(tilesetPath) {}
+Tile::Tile(int id, Vector2 position, std::string type, std::string tilesetPath) : StaticObject(type), id(id), position(position), tilesetPath(tilesetPath) {}
+
+Tile::Tile(const Tile &other) : StaticObject(other)
+{
+    id = other.id;
+    position = other.position;
+    tilesetPath = other.tilesetPath;
+}
+
+StaticObject *Tile::clone()
+{
+    return new Tile(*this);
+}
 
 void Tile::setId(int id)
 {
@@ -19,11 +32,6 @@ void Tile::setPosition(const Vector2 &newPos)
 void Tile::setTilesetPath(const std::string &path)
 {
     tilesetPath = path;
-}
-
-std::string Tile::getType()
-{
-    return type;
 }
 
 int Tile::getId() const

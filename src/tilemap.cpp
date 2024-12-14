@@ -1,14 +1,24 @@
 #include "include.h"
 #include "object.h"
 
-Tilemap* Tilemap::instance;
+Tilemap* Tilemap::instance = nullptr;
+
+Tilemap::Tilemap() {
+    effectManager = new EffectManager();
+    player = nullptr;
+}
 
 Tilemap::Tilemap(const std::string& filePath) {
+    effectManager = new EffectManager();
+    player = nullptr;
     LoadMapFromJson(filePath);
+    
 }
 
 Tilemap::~Tilemap() {
     clearMap();
+    delete effectManager;
+    delete player;
 }
 
 Tilemap* Tilemap::getInstance()
@@ -21,10 +31,37 @@ Tilemap* Tilemap::getInstance()
 
 void Tilemap::clearMap()
 {
+    int bodyCount = 0;
+    for (b2Body* body = Physics::world.GetBodyList(); body; body = body->GetNext()) {
+        bodyCount++;
+    }
+    std::cout << bodyCount << " bodies in the world before clear.\n";
+    std::cout << Physics::world.GetBodyCount() << " bodies in the world before clear.\n";
     for (auto& layer : nodes) {
         for (auto& node : layer) {
             delete node;
         }
+    }
+    nodes.clear();
+    tilesets.clear();
+    effectManager->clearEffects();
+    bodyCount = 0;
+    for (b2Body* body = Physics::world.GetBodyList(); body; body = body->GetNext()) {
+        bodyCount++;
+    }
+    std::cout << bodyCount << " bodies in the world after clear.\n";
+    std::cout << Physics::world.GetBodyCount() << " bodies in the world after clear.\n";
+}
+
+void Tilemap::changeMap(const std::string &filePath)
+{
+    if (!isChangingMap) {
+        clearMap();
+        isChangingMap = true;
+    }
+    else {
+        LoadMapFromJson(filePath);
+        isChangingMap = false;
     }
 }
 
@@ -50,8 +87,9 @@ void Tilemap::addNode(SceneNode *node)
 
 void Tilemap::LoadMapFromJson(const std::string &filePath)
 {
-    std::cout << "Loading map " << filePath << std::endl;
-    std::ifstream file(filePath);
+    std::string mapPath = "resources/tilemaps/" + filePath;
+    std::cout << "Loading map " << mapPath << std::endl;
+    std::ifstream file(mapPath);
     if (!file.is_open()) {
         std::cerr << "Failed to open map file!" << std::endl;
         return;
@@ -140,20 +178,41 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                     }
                     else {
                         if (object.contains("type") && object["type"] == "player") {
-                            std::cout << "marioaaa" << " " << x << " " << y << std::endl;
-                            std::string name = object["name"].get<std::string>();
-                            player = new Player(name);
-                            player->Init(b2Vec2{x, y});
-                            player->setName(name);
-                            player->setLives(3);
-                            player->setTime(30.0f);
-                        }
-                        else {
-                            EffectManager::effectMap[{(int)x, (int)y}] = object["name"].get<std::string>();
-                            if (object.contains("type") && object["type"] != "") {
-                                EffectManager::effectCount[{(int)x, (int)y}] = std::stoi(object["type"].get<std::string>());
+                            if (!player) {
+                                std::string name = object["name"].get<std::string>();
+                                player = new Player(name);
+                                player->Init(b2Vec2{x, y});
+                                player->setName(name);
+                                player->setHealth(100);
+                                player->setLives(3);
+                                player->setTime(300.0f);
+                                player->setCurrentMap(filePath);
                             }
-                            else EffectManager::effectCount[{(int)x, (int)y}] = 1;
+                            else {
+                                player->setPositon(b2Vec2{x, y});
+                                player->setCurrentMap(filePath);
+                                player->setElapsedTime(0.0f);
+                            }
+                        }
+                        else if (object.contains("type") && object["type"] == "enemy") {
+                            std::string enemyName = object["name"].get<std::string>();
+                            Enemy* enemy = EnemyCreator::CreateEnemy(enemyName, Vector2{x, y});
+                            if (enemy != nullptr) {
+                                nodeLayer.push_back(enemy);
+                            }
+
+                        }
+                        else if (object.contains("name") && object["name"].is_string()) {
+                            std::string effectName = object["name"].get<std::string>();
+                            effectManager->AddEffectPosition(std::make_pair((int)x, (int)y), effectName);
+                            if (object.contains("type") && object["type"] != "") {
+                                effectManager->AddEffectCount({(int)x, (int)y}, std::stoi(object["type"].get<std::string>()));
+                            }
+                            else {
+                                effectManager->AddEffectCount({(int)x, (int)y}, 1);
+                            }
+                        } else {
+                            std::cerr << "Error: Invalid 'name' key in object\n";
                         }
                     }
                 }
@@ -164,53 +223,99 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         b2Vec2{width, height},
                         b2Vec2{0.0f, height}
                     };
-                    b2Body* body;
-                    MyBoundingBox::createBody(body, b2_staticBody, vertices, Vector2{x, y});
-                    StaticObject* obj = new StaticObject(body);
-                    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(obj);
-                    nodeLayer.push_back(obj);
+                    
+                    if (object.contains("name") && object["name"] == "gate") {
+                        b2Body* body;
+                        MyBoundingBox::createBody(body, b2_staticBody, vertices, Vector2{x, y});
+                        b2Fixture* fixture = body->GetFixtureList();
+                        fixture->SetSensor(true);
+
+                        std::string addressNext = object["type"].get<std::string>();
+                        Gate* gate = new Gate(body, addressNext);
+                        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(gate);
+                        nodeLayer.push_back(gate);
+                    }
+                    else {
+                        b2Body* body;
+                        MyBoundingBox::createBody(body, b2_staticBody, vertices, Vector2{x, y});
+                        StaticObject* obj = new StaticObject(body);
+                        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(obj);
+                        nodeLayer.push_back(obj);
+                    }
                 }
             }
         }
         nodes.push_back(nodeLayer);
     }
     file.close();
+    int bodyCount = 0;
+    for (b2Body* body = Physics::world.GetBodyList(); body != nullptr; body = body->GetNext()) {
+        bodyCount++;
+    }
+
+    if (bodyCount > 0) {
+        std::cout << "There are " << bodyCount << " bodies remaining in the world.\n";
+    } else {
+        std::cout << "All bodies have been destroyed.\n";
+    }
 }
 
 void Tilemap::Update(float deltaTime) {
-    b2Vec2 playerVelocity = player->getVelocity();
-    player->HandleInput();
-    player->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
-    for (auto& layer : nodes) {
-        if (layer.empty()) {
-            EffectManager::Update(deltaTime);
-            continue;
-        }
-        for (auto& node : layer) {
-            node->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
-        }
+    if (newMapPath != "") {
+        changeMap(newMapPath);
+        if (!isChangingMap) newMapPath = "";
     }
-    camera.Update(player->getPosition());  
-
+    else {
+        b2Vec2 playerVelocity = player->getVelocity();
+        player->HandleInput();
+        player->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
+        for (auto& layer : nodes) {
+            if (layer.empty()) {
+                effectManager->Update(deltaTime);
+                continue;
+            }
+            for (auto& node : layer) {
+                node->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
+            }
+        }
+        camera.Update(player->getPosition());  
+    }
 }
 
 void Tilemap::Draw() const {
+    if (isChangingMap) {
+        return;
+    }
     BeginMode2D(camera.GetCamera());
-    for (const auto& layer : nodes) {
-        if (layer.empty()) {
-            EffectManager::DrawLower();
+    for (int i = 0; i < nodes.size() - 1; ++i) {
+        if (nodes[i].empty()) {
+            effectManager->DrawLower();
             continue;
         }
-        for (auto& node : layer) {
+        for (auto& node : nodes[i]) {
             node->Draw();
         }
     }
-    EffectManager::DrawUpper();
+    effectManager->DrawUpper();
     player->Draw();
+    for (auto& node : nodes.back()) {
+        node->Draw();
+    }
+
     Vector2 cameraTarget = camera.GetCameraTarget();
     player->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
     EndMode2D();
 
+}
+
+void Tilemap::SetNewMapPath(const std::string &path)
+{
+    newMapPath = path;
+}
+
+EffectManager* Tilemap::GetEffectManager()
+{
+    return effectManager;
 }
 
 Vector2 Tilemap::GetPlayerPosition() const

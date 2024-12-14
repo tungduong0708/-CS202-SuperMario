@@ -50,3 +50,4 @@
 #include "static_object.h"
 #include "moving_object.h"
 #include "character.h"
+#include "enemy_creator.h"

@@ -207,7 +207,12 @@ void Character::UpdateMode(Mode mode)
 
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
-void Character::ResizeBody(float newWidth, float newHeight) {
+void Character::Dead()
+{
+}
+
+void Character::ResizeBody(float newWidth, float newHeight)
+{
     // Destroy the existing fixture
     b2Fixture* fixture = body->GetFixtureList();
     while (fixture != nullptr) {

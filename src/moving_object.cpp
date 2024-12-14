@@ -219,7 +219,9 @@ void FireBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
         animations.clear();
 
         AnimationEffect* effect = AnimationEffectCreator::CreateAnimationEffect("fireball_explode", Vector2{body->GetPosition().x, body->GetPosition().y});
-        EffectManager::AddUpperEffect(effect);
+
+        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+        effectManager->AddUpperEffect(effect);
     }
 }
 

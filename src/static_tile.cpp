@@ -1,3 +1,4 @@
+#include "tilemap.h"
 #include "static_tile.h"
 #include "tileset_handler.h"
 #include "renderer.h"
@@ -60,9 +61,18 @@ StaticTile::StaticTile(StaticTile& other) : Tile(other)
     }
 }
 
-Tile *StaticTile::clone()
+StaticObject *StaticTile::clone()
 {
     return new StaticTile(*this);
+}
+
+StaticTile::~StaticTile()
+{
+    if (invisibleBody) {
+        Physics::world.DestroyBody(invisibleBody);
+        invisibleBody = nullptr;
+    }
+    
 }
 
 void StaticTile::setPosition(const Vector2& position)
@@ -99,15 +109,15 @@ void StaticTile::Draw()
 void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
 {
     if (!other) return;
-    std::cout << "OnBeginContact: " << getType() << std::endl;
     Player* playerPtr = dynamic_cast<Player*>(other); 
     if (playerPtr != nullptr) {
         if (getType() == "brick") {
             if (playerPtr->getMode() == Mode::FIRE || playerPtr->getMode() == Mode::BIG) {
                 if (normal.y > 0.5f) {
-                    std::cout << "Effect: brick_explode" << std::endl;
-                    EffectManager::AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("brick_explode", getPosition()));
+                    EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+                    effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("brick_explode", getPosition()));
                     Physics::bodiesToDestroy.push_back(GetBody());
+                    SetBody(nullptr);
                     isDestroyed = false;
                 }
             }
@@ -115,14 +125,14 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 if (normal.y > 0.5f && !isActivated) {
                     Vector2 pos = getPosition();
                     pos.y--;
-                    std::string effectName = EffectManager::effectMap[{pos.x, pos.y}];
-                    std::cout << "Effect name: " << effectName << std::endl;
-                    EffectManager::AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+                    EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+                    std::string effectName = effectManager->GetEffectName({pos.x, pos.y});
+                    effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
                     if (effectName == "coin") {
                         playerPtr->updateScore(200);
                         playerPtr->setCoins(playerPtr->getCoins() + 1);
-                        EffectManager::effectCount[{pos.x, pos.y}]--;
-                        if (EffectManager::effectCount[{pos.x, pos.y}] == 0) {
+                        
+                        if (effectManager->UpdateEffectCount({pos.x, pos.y})) {
                             Tile::setTilesetPath("resources/tilesets/OverWorld.json");
                             Tile::setId(2);
                             isActivated = true;
