@@ -178,16 +178,25 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                     }
                     else {
                         if (object.contains("type") && object["type"] == "player") {
-                            std::cout << "marioaaa" << " " << x << " " << y << std::endl;
-                            std::string name = object["name"].get<std::string>();
-                            player = new Player(name);
-                            player->Init(b2Vec2{x, y});
-                            player->setName(name);
-                            player->setLives(3);
-                            player->setTime(30.0f);
+                            if (!player) {
+                                std::string name = object["name"].get<std::string>();
+                                player = new Player(name);
+                                player->Init(b2Vec2{x, y});
+                                player->setName(name);
+                                player->setHealth(100);
+                                player->setLives(3);
+                                player->setTime(30.0f);
+                                player->setCurrentMap(filePath);
+                            }
+                            else {
+                                player->setPositon(b2Vec2{x, y});
+                                player->setCurrentMap(filePath);
+                                player->setElapsedTime(0.0f);
+                            }
                         }
-                        else {
-                            EffectManager::effectMap[{(int)x, (int)y}] = object["name"].get<std::string>();
+                        else if (object.contains("name") && object["name"].is_string()) {
+                            std::string effectName = object["name"].get<std::string>();
+                            effectManager->AddEffectPosition(std::make_pair((int)x, (int)y), effectName);
                             if (object.contains("type") && object["type"] != "") {
                                 effectManager->AddEffectCount({(int)x, (int)y}, std::stoi(object["type"].get<std::string>()));
                             }

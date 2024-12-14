@@ -5,7 +5,7 @@
 Enemy::Enemy() : Character() {
     type = "";
     range = 0;
-    state = EnemyState::WALK;
+    state = EnemyState::ENEMY_WALK;
 }
 
 
@@ -50,7 +50,7 @@ float Enemy::getRange() {
 
 void Enemy::Init(b2Vec2 position) {
     // define the texture
-    state = EnemyState::WALK;
+    state = EnemyState::ENEMY_WALK;
     animations = AnimationHandler::setAnimations(type);
     texture = animations[state].GetFrame();
 
@@ -84,7 +84,7 @@ void Enemy::Update(Vector2 playerVelocity, float deltaTime) {
     texture = animations[state].GetFrame();
 
     if (!alive) {
-        state = EnemyState::DEAD;
+        state = EnemyState::ENEMY_DEAD;
         Dead();
     }
 }
@@ -187,16 +187,16 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal) {
         }
     }
     else {
-        if (state == EnemyState::WALK) {
-            state = EnemyState::SHELL;
+        if (state == EnemyState::ENEMY_WALK) {
+            state = EnemyState::ENEMY_SHELL;
             setSpeed(0);
         }
-        else if (state == EnemyState::SHELL) {
-            state = EnemyState::SPIN;
+        else if (state == EnemyState::ENEMY_SHELL) {
+            state = EnemyState::ENEMY_SPIN;
             setSpeed(20.0f);
         }
-        else if (state == EnemyState::SPIN) {
-            state = EnemyState::SHELL;
+        else if (state == EnemyState::ENEMY_SPIN) {
+            state = EnemyState::ENEMY_SHELL;
             setSpeed(0);
         }
     }
