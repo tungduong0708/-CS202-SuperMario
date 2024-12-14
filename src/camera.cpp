@@ -17,7 +17,8 @@ void MyCamera::Update(Vector2 targetPosition) {
     float targetY = Clamp(targetPosition.y, halfScreenHeight, mapSize.y - halfScreenHeight);
     
     camera.target.x = targetX;
-    camera.target.y += (targetY - camera.target.y) * 0.2f; 
+    camera.target.y = targetY;
+    // camera.target.y += (targetY - camera.target.y) * 0.2f; 
 }
 
 void MyCamera::SetZoom(float zoom) {

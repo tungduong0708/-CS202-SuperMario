@@ -39,9 +39,9 @@ enum ImageSet {
 
 enum EnemyState {
     ENEMY_WALK,
+    ENEMY_DEAD,
     ENEMY_SHELL,
-    ENEMY_SPIN,
-    ENEMY_DEAD
+    ENEMY_SPIN
 };
 
 

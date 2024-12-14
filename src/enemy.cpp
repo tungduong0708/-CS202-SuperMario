@@ -164,6 +164,7 @@ Koopa::Koopa(string type, float range, bool alive, bool sit, int health, int sco
              int strength, Vector2 size, float speed, float angle): 
     Enemy(type, range, alive, health, score, level, strength, size, speed, angle)
 {
+    faceLeft = true;
 }
 
 Koopa::Koopa(const Koopa &k): Enemy(k) {
@@ -176,28 +177,30 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!other) return;
     Player* player = dynamic_cast<Player*>(other);
     Enemy* enemy = dynamic_cast<Enemy*>(other);
-    if (normal.x > 0.5f) {
-        setSpeed(-getSpeed());
-        faceLeft = !faceLeft;
-        if (player) {
-            player->setHealth(player->getHealth() - getStrength());
+    if (player || enemy) {
+        if (normal.x > 0.5f) {
+            setSpeed(-getSpeed());
+            faceLeft = !faceLeft;
+            if (player) {
+                player->setHealth(player->getHealth() - getStrength());
+            }
+            else if (enemy) {
+                return;
+            }
         }
-        else if (enemy) {
-            return;
-        }
-    }
-    else {
-        if (state == EnemyState::ENEMY_WALK) {
-            state = EnemyState::ENEMY_SHELL;
-            setSpeed(0);
-        }
-        else if (state == EnemyState::ENEMY_SHELL) {
-            state = EnemyState::ENEMY_SPIN;
-            setSpeed(20.0f);
-        }
-        else if (state == EnemyState::ENEMY_SPIN) {
-            state = EnemyState::ENEMY_SHELL;
-            setSpeed(0);
+        else {
+            if (state == EnemyState::ENEMY_WALK) {
+                state = EnemyState::ENEMY_SHELL;
+                setSpeed(0);
+            }
+            else if (state == EnemyState::ENEMY_SHELL) {
+                state = EnemyState::ENEMY_SPIN;
+                setSpeed(20.0f);
+            }
+            else if (state == EnemyState::ENEMY_SPIN) {
+                state = EnemyState::ENEMY_SHELL;
+                setSpeed(0);
+            }
         }
     }
 }
