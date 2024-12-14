@@ -1,10 +1,5 @@
 #include "effect_manager.h"
 
-std::map<std::pair<int, int>, std::string> EffectManager::effectMap;
-std::map<std::pair<int, int>, int> EffectManager::effectCount;
-std::vector<AnimationEffect*> EffectManager::lowerEffects;
-std::vector<AnimationEffect*> EffectManager::upperEffects;
-
 EffectManager::~EffectManager()
  {
     for (auto* effect : lowerEffects) {
@@ -17,6 +12,16 @@ EffectManager::~EffectManager()
     upperEffects.clear();
 }
 
+void EffectManager::AddEffectPosition(std::pair<int, int> pos, std::string name)
+{
+    effectMap[pos] = name;
+}
+
+void EffectManager::AddEffectCount(std::pair<int, int> pos, int count)
+{
+    effectCount[pos] = count;
+}
+
 void EffectManager::AddLowerEffect(AnimationEffect *effect)
 {
     lowerEffects.push_back(effect);
@@ -25,6 +30,22 @@ void EffectManager::AddLowerEffect(AnimationEffect *effect)
 void EffectManager::AddUpperEffect(AnimationEffect *effect)
 {
     upperEffects.push_back(effect);
+}
+
+std::string EffectManager::GetEffectName(std::pair<int, int> pos)
+{
+    return effectMap[pos];
+}
+
+int EffectManager::GetEffectCount(std::pair<int, int> pos)
+{
+    return effectCount[pos];
+}
+
+bool EffectManager::UpdateEffectCount(std::pair<int, int> pos)
+{
+    effectCount[pos]--;
+    return effectCount[pos] == 0;
 }
 
 void EffectManager::Update(float deltaTime)
@@ -60,7 +81,7 @@ void EffectManager::Update(float deltaTime)
 
 }
 
-void EffectManager::DrawLower()
+void EffectManager::DrawLower() const
 {
     for (auto* effect : lowerEffects) {
         if (effect == nullptr) continue;
@@ -68,10 +89,24 @@ void EffectManager::DrawLower()
     }
 }
 
-void EffectManager::DrawUpper()
+void EffectManager::DrawUpper() const
 {
     for (auto* effect : upperEffects) {
         if (effect == nullptr) continue;
         effect->Draw();
     }
+}
+
+void EffectManager::clearEffects()
+{
+    for (auto* effect : lowerEffects) {
+        delete effect;
+    }
+    lowerEffects.clear();
+    for (auto* effect : upperEffects) {
+        delete effect;
+    }
+    upperEffects.clear();
+    effectCount.clear();
+    effectMap.clear();
 }

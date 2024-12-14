@@ -8,18 +8,26 @@ Player::Player() : Character()
     coins = 0;
     range = 0;
     lives = 0;
+    time = 0;
     sit = false;
+    immortal = false;
+    currentMap = "";
 }
 
 Player::Player(string type, string name, float coins, float range, int lives, bool sit, int health, 
                int score, int level, int strength, Vector2 size, float speed, 
-               float angle, vector<Image> imgs): 
-    Character(type, health, score, level, strength, size, speed, angle, imgs), 
+               float angle): 
+    Character(type, health, score, level, strength, size, speed, angle), 
     name(name), 
     coins(coins), 
     range(range), 
     lives(lives),
-    sit(sit) {}
+    sit(sit) {
+    time = 0;
+    immortal = false;
+    currentMap = "";
+    alive = true;
+}
 
 Player::Player(const Player &p): 
     Character(p), 
@@ -39,7 +47,13 @@ Player::~Player() {
     coins = 0;
     range = 0;
     lives = 0;
+    time = 0;
     sit = false;
+}
+
+void Player::setPositon(b2Vec2 pos)
+{
+    body->SetTransform(pos, body->GetAngle());
 }
 
 void Player::setName(string n) {
@@ -98,10 +112,6 @@ float Player::getTime() {
     return time;
 }
 
-bool Player::isAlive() {
-    return (lives > 0);
-}
-
 bool Player::isSitting() {
     return sit;
 }
@@ -111,33 +121,35 @@ bool Player::isImmortal() {
 }
 
 void Player::HandleInput() {
-    //ResizeBody(size.x, size.y);
-    // Handle character input
+    if (isAlive() == false) {
+        return;
+    }
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
         body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
-            currentImage = WALK;   
+            currentImage = ImageSet::WALK;   
         }
         faceLeft = false;
-        // cout << "state: " << currentImage << endl;
-    } else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
+
+    } else 
+    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
         body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
-            currentImage = WALK;
+            currentImage = ImageSet::WALK;
         }
         faceLeft = true;
-        // cout << "state: " << currentImage << endl;
+
     }
-    else if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
+    else 
+    if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
             currentImage = DUCK;
-            //ResizeBody(size.x, size.y / 2.0f);
         }
-        // cout << "state: " << currentImage << endl;
+
     }
     else {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
@@ -145,13 +157,11 @@ void Player::HandleInput() {
             previousImage = currentImage;
             currentImage = IDLE;
         }
-        //cout << "state: " << currentImage << endl;
     }
 
     if (isOnGround && currentImage == JUMP) {
         previousImage = currentImage;
         currentImage = IDLE;
-        //cout << "state: " << currentImage << endl;
     }
 
     if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
@@ -166,20 +176,19 @@ void Player::HandleInput() {
             currentImage = JUMP;
             isOnGround = false;
         }
-        // cout << "state: " << currentImage << endl;
     }
 
+    // frequency of the bullet: 0.75 seconds
     if ((IsKeyPressed(KEY_E) || IsKeyPressed(KEY_ENTER)) && mode == FIRE) {
-        // shoot
-        // freq = 0.75 second
         previousImage = currentImage;
         currentImage = HOLD;
         animations[currentImage].setTimer();
         if (elapsedTime >= 0.75f) {
-            // shoot the bullet
-            FireBall* fireball = new FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f, ImageHandler::setImages("fireball"));
-            fireball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32), IDLE);
+            // create a fireball
+            FireBall* fireball = new FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
+            fireball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32));
             fireball->setSpeed(15.0f * (faceLeft ? -1 : 1));
+
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->addNode(fireball);
             elapsedTime = 0.0f;
@@ -189,19 +198,29 @@ void Player::HandleInput() {
     if (!isOnGround) {
         previousImage = currentImage;
         currentImage = JUMP;
-        //cout << "state: " << currentImage << endl;
     }
-
-    // cout << isOnGround << endl;
 }
 
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
     Character::Update(playerVelocity, deltaTime);
-    time -= deltaTime;
     if (time <= 0) {
-        lives--;
+        alive = false;
         time = 300.0f;
     }
+    if (health <= 0) {
+        alive = false;
+        health = 100;
+    }
+    if (alive) {
+        time -= deltaTime;
+    }
+    else {
+        Dead();
+    }
+}
+
+void Player::Dead() {
+    // dead....
 }
 
 void Player::UpdateAnimation() {
@@ -224,18 +243,21 @@ void Player::Draw(Vector2 position, float angle) {
     TextHelper::DrawPackage(lives, score, coins, currentMap, time, position, 12, WHITE);
 }
 
-void Player::OnBeginContact(SceneNode *other, b2Vec2 normal) 
+void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
     if (!other) return;
 
     if (normal.y < -0.5f) {
-        // groundContacts.insert(other);
         isOnGround = true;
     }
 }
 
-void Player::OnEndContact(SceneNode *other)
-{
+void Player::Init(b2Vec2 position) {
+    Character::Init(position);
+}
+
+void Player::OnEndContact(SceneNode *other) {
+    
 }
 
 MovingObject* Player::copy() const {

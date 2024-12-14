@@ -62,7 +62,7 @@ void MushroomEffect::Update(float deltaTime)
         active = false;
         Tilemap* tilemap = Tilemap::getInstance();
         Mushroom* mushroom = new Mushroom();
-        mushroom->Init(b2Vec2{position.x, position.y}, ImageSet{});
+        mushroom->Init(b2Vec2{position.x, position.y});
         mushroom->setSpeed(1.0f);
         b2Body* body = mushroom->getBody();
         body->GetUserData().pointer = reinterpret_cast<uintptr_t>(mushroom);
@@ -97,7 +97,7 @@ void StarEffect::Update(float deltaTime)
         active = false;
         Tilemap* tilemap = Tilemap::getInstance();
         Star* star = new Star();
-        star->Init(b2Vec2{position.x, position.y}, ImageSet{});
+        star->Init(b2Vec2{position.x, position.y});
         b2Body* body = star->getBody();
         body->SetType(b2_staticBody);
         b2Fixture* fixture = body->GetFixtureList();
@@ -134,7 +134,7 @@ void FireFlowerEffect::Update(float deltaTime)
         active = false;
         Tilemap* tilemap = Tilemap::getInstance();
         FireFlower* fireFlower = new FireFlower();
-        fireFlower->Init(b2Vec2{position.x, position.y}, ImageSet{});
+        fireFlower->Init(b2Vec2{position.x, position.y});
         b2Body* body = fireFlower->getBody();
         body->SetType(b2_staticBody);
         b2Fixture* fixture = body->GetFixtureList();

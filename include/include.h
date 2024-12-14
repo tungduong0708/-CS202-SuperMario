@@ -37,6 +37,13 @@ enum ImageSet {
     VICTORY
 };
 
+enum EnemyState {
+    ENEMY_WALK,
+    ENEMY_SHELL,
+    ENEMY_SPIN,
+    ENEMY_DEAD
+};
+
 
 enum Mode {
     SMALL,

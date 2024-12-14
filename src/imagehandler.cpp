@@ -86,19 +86,17 @@ vector<Image>& ImageHandler::setImages(string path) {
     }
     else if (path == "koopa") {
         images.push_back(LoadImage("resources/images/koopa/idle.png"));
-        images.push_back(LoadImage("resources/images/koopa/walk1.png"));
-        images.push_back(LoadImage("resources/images/koopa/walk2.png"));
-        images.push_back(LoadImage("resources/images/koopa/rot3.png"));
-        images.push_back(LoadImage("resources/images/koopa/rot2.png"));
+        images.push_back(LoadImage("resources/images/koopa/walk.png"));
+        images.push_back(LoadImage("resources/images/koopa/idle.png"));
         images.push_back(LoadImage("resources/images/koopa/rot1.png"));
+        images.push_back(LoadImage("resources/images/koopa/rot2.png"));
+        images.push_back(LoadImage("resources/images/koopa/rot3.png"));
         images.push_back(LoadImage("resources/images/koopa/rot4.png"));
-        images.push_back(LoadImage("resources/images/koopa/rot3.png")); // dead
+        images.push_back(LoadImage("resources/images/koopa/rot1.png")); // dead
     }
     else if (path == "flykoopa") {
         images.push_back(LoadImage("resources/images/koopa/fly1.png"));
         images.push_back(LoadImage("resources/images/koopa/fly2.png"));
-        images.push_back(LoadImage("resources/images/koopa/rotfly1.png")); 
-        images.push_back(LoadImage("resources/images/koopa/rotfly2.png"));
         images.push_back(LoadImage("resources/images/koopa/rot3.png")); // dead
     }
     else if (path == "beetle") {
@@ -257,24 +255,22 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
     }
     else if (path == "goomba") {
         animations = {
-            Animation({Frame(0.1f, textures[0])}), // idle
             Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk & walk2
             Animation({Frame(0.1f, textures[3])}) // dead
         };
     }
     else if (path == "koopa") {
         animations = {
-            Animation({Frame(0.1f, textures[0])}), // idle
-            Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk1 & walk2
-            Animation({Frame(0.1f, textures[3]), Frame(0.1f, textures[4]), Frame(0.1f, textures[5]), Frame(0.1f, textures[6])}), // rotate
+            Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk
+            Animation({Frame(0.1f, textures[3])}), // shell
+            Animation({Frame(0.1f, textures[3]), Frame(0.1f, textures[4]), Frame(0.1f, textures[5]), Frame(0.1f, textures[6])}), // spin
             Animation({Frame(0.1f, textures[7])}) // dead
         };
     }
     else if (path == "flykoopa") {
         animations = {
             Animation({Frame(0.1f, textures[0]), Frame(0.1f, textures[1])}), // fly1 & fly2
-            Animation({Frame(0.1f, textures[2]), Frame(0.1f, textures[3])}), // rotfly1 & rotfly2
-            Animation({Frame(0.1f, textures[4])}) // dead
+            Animation({Frame(0.1f, textures[2])}) // dead
         };
     }
     else if (path == "beetle") {

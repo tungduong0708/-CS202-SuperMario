@@ -14,21 +14,20 @@ class Tile : public StaticObject {
 private:
     int id;
     std::string tilesetPath;
-    std::string type;
     Vector2 position;
 
 public:
     Tile();
     Tile(int id, std::string type, std::string tilesetPath);
     Tile(int id, Vector2 position, std::string type, std::string tilesetPath);
-    ~Tile() = default;
+    Tile(const Tile& other);
+    virtual ~Tile() = default;
 
-    virtual Tile* clone() = 0;
+    virtual StaticObject* clone();
     virtual void setId(int id);
     virtual void setPosition(const Vector2& newPos);
     virtual void setTilesetPath(const std::string& path);
 
-    virtual std::string getType();
     virtual int getId() const;
     virtual std::string getTilesetPath() const;
     Vector2 getPosition();

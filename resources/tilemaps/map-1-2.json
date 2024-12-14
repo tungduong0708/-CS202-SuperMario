@@ -138,6 +138,51 @@
                  "width":127.5,
                  "x":2320.25,
                  "y":448.25
+                }, 
+                {
+                 "height":0,
+                 "id":28,
+                 "name":"mario",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player",
+                 "visible":true,
+                 "width":0,
+                 "x":43,
+                 "y":188
+                }, 
+                {
+                 "height":32.6666666666667,
+                 "id":29,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":256,
+                 "x":0.333333333333333,
+                 "y":207.333333333333
+                }, 
+                {
+                 "height":30.9090909090909,
+                 "id":30,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":34,
+                 "x":160.363636363636,
+                 "y":176.363636363636
+                }, 
+                {
+                 "height":62.5454545454546,
+                 "id":31,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":31.6363636363637,
+                 "x":192,
+                 "y":144.727272727273
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -146,10 +191,10 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":28,
+ "nextobjectid":32,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tilesets":[
         {
