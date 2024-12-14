@@ -86,8 +86,8 @@
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":62.5,
-                 "y":203.583333333333
+                 "x":230.833333333333,
+                 "y":203.25
                 }, 
                 {
                  "height":0,
@@ -302,6 +302,30 @@
                  "width":9.25,
                  "x":-6.29166666666652,
                  "y":195.583333333333
+                }, 
+                {
+                 "height":0,
+                 "id":88,
+                 "name":"koopa",
+                 "point":true,
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":0,
+                 "x":485.416666666667,
+                 "y":199.833333333333
+                }, 
+                {
+                 "height":0,
+                 "id":90,
+                 "name":"goomba",
+                 "point":true,
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":0,
+                 "x":597.333333333333,
+                 "y":188
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -310,7 +334,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":85,
+ "nextobjectid":91,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",
