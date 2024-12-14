@@ -24,7 +24,7 @@ public:
     KinematicTile(int id, Vector2 pos, std::string type, std::string tilesetName, const std::vector<std::pair<int, int>>& frames);
     KinematicTile(KinematicTile& other);
     StaticObject* clone();
-    ~KinematicTile();
+    virtual ~KinematicTile();
 
     void setPosition(const Vector2& position);
     void Update(Vector2 playerVelocity, float deltaTime);
