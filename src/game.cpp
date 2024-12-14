@@ -10,6 +10,7 @@ Game::Game()
       mapBuilderState(nullptr),
       gameplayState(nullptr),
       pauseGameState(nullptr),
+      selectPlayerState(nullptr),
       currentState(nullptr)
 {
     InitWindow(screenWidth, screenHeight, "Game");
@@ -27,6 +28,7 @@ Game::Game()
     mapBuilderState = std::make_unique<MapBuilderState>(this);
     gameplayState = std::make_unique<GameplayState>(this);
     pauseGameState = std::make_unique<PauseGameState>(this);
+    selectPlayerState = std::make_unique<SelectPlayerState>(this);
     currentState = mainMenuState.get();
     std::cout << "All states initialized" << std::endl;
 }

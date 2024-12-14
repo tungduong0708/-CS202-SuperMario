@@ -54,6 +54,11 @@ bool IsButtonClicked(const Button& button)
     return button.isHovered && IsMouseButtonReleased(MOUSE_LEFT_BUTTON);
 }
 
+bool IsButtonClicked(const ImageButton& button)
+{
+    return button.isHovered && IsMouseButtonReleased(MOUSE_LEFT_BUTTON);
+}
+
 // Clamp function
 template <typename T>
 T Clamp(T value, T min, T max)
@@ -123,3 +128,70 @@ void DrawMarioSlider(Rectangle rect, int& value, const float& minValue, const fl
         value = Clamp(value, static_cast<int>(minValue), static_cast<int>(maxValue));
     }
 }
+
+void DrawImageButton(const ImageButton& button, const Game& game)
+{
+    // Define Mario-themed colors
+    Color shadowColor = Fade(BLACK, 0.4f);          // Shadow color
+    Color borderColor = button.isHovered ? Fade(WHITE, 1.0f) : Fade(DARKBLUE, 0.9f); // Border changes color
+    Color highlightColor = Fade(YELLOW, 0.8f);      // Yellow highlight for the button
+    Color baseColor = Fade(YELLOW, 0.9f);        // Default button base color
+    Vector2 mousePos = GetMousePosition();
+
+    // Check hover state
+    bool isHovered = CheckCollisionPointRec(mousePos, button.rect);
+
+    // --- Shadow Effect ---
+    DrawRectangleRounded(
+        {button.rect.x + 4, button.rect.y + 4, button.rect.width, button.rect.height},
+        0.3f, 6, shadowColor);
+
+    // --- Yellow Highlight Background ---
+    DrawRectangleRounded(button.rect, 0.3f, 6, highlightColor);
+
+    // --- Button Body ---
+    DrawRectangleRounded(button.rect, 0.3f, 6, baseColor);
+    DrawRectangleRoundedLines(button.rect, 0.3f, 6, 4, borderColor);
+
+    // --- Scale and Center the Texture ---
+    float scaleFactor = 7.0f; // Scale the texture by 3 times (adjust as needed)
+    float textureWidth = button.texture.width * scaleFactor;
+    float textureHeight = button.texture.height * scaleFactor;
+
+    // Calculate position to center the texture
+    float textureX = button.rect.x + (button.rect.width - textureWidth) / 2;
+    float textureY = button.rect.y + (button.rect.height / 2 - textureHeight / 2) - 10; // Adjust upward slightly
+
+    // Draw the texture
+    DrawTexturePro(
+        isHovered ? button.hoverTexture : button.texture,       // Use hover texture if hovered
+        {0, 0, static_cast<float>(button.texture.width), static_cast<float>(button.texture.height)}, // Source rectangle
+        {textureX, textureY, textureWidth, textureHeight},      // Destination rectangle (scaled size)
+        {0, 0},                                                // Origin point
+        0.0f,                                                  // No rotation
+        WHITE);                                                // Tint color
+
+    // --- Text at the Bottom ---
+    if (!button.text.empty())
+    {
+        const int textSize = 24; // Bigger text size
+        Vector2 textSizeVec = MeasureTextEx(game.getFont(), button.text.c_str(), textSize, 1);
+
+        // Text shadow
+        DrawTextEx(
+            game.getFont(),
+            button.text.c_str(),
+            {button.rect.x + button.rect.width / 2 - textSizeVec.x / 2 + 2,
+             button.rect.y + button.rect.height - textSizeVec.y - 10 + 2},
+            textSize, 1, shadowColor);
+
+        // Main text
+        DrawTextEx(
+            game.getFont(),
+            button.text.c_str(),
+            {button.rect.x + button.rect.width / 2 - textSizeVec.x / 2,
+             button.rect.y + button.rect.height - textSizeVec.y - 10},
+            textSize, 1, WHITE);
+    }
+}
+

@@ -9,9 +9,22 @@
 #include "raylib.h"
 
 class Game;
+class ButtonInterface
+{
+    Rectangle rect;
+};
 struct Button
 {
     Rectangle rect;
+    std::string text;
+    bool isHovered;
+};
+
+struct ImageButton
+{
+    Rectangle rect;
+    Texture2D texture;
+    Texture2D hoverTexture;
     std::string text;
     bool isHovered;
 };
@@ -102,4 +115,15 @@ public:
 
 private:
     std::vector<Button> buttons;
+};
+
+class SelectPlayerState : public GameState
+{
+public:
+    explicit SelectPlayerState(Game* game);
+    void update() override;
+    void draw() override;
+private:
+    ImageButton player1Button;
+    ImageButton player2Button;
 };
