@@ -194,6 +194,14 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 player->setElapsedTime(0.0f);
                             }
                         }
+                        else if (object.contains("type") && object["type"] == "enemy") {
+                            std::string enemyName = object["name"].get<std::string>();
+                            Enemy* enemy = EnemyCreator::CreateEnemy(enemyName, Vector2{x, y});
+                            if (enemy != nullptr) {
+                                nodeLayer.push_back(enemy);
+                            }
+
+                        }
                         else if (object.contains("name") && object["name"].is_string()) {
                             std::string effectName = object["name"].get<std::string>();
                             effectManager->AddEffectPosition(std::make_pair((int)x, (int)y), effectName);

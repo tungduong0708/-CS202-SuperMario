@@ -262,9 +262,9 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
     else if (path == "koopa") {
         animations = {
             Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk
+            Animation({Frame(0.1f, textures[7])}), // dead
             Animation({Frame(0.1f, textures[3])}), // shell
-            Animation({Frame(0.1f, textures[3]), Frame(0.1f, textures[4]), Frame(0.1f, textures[5]), Frame(0.1f, textures[6])}), // spin
-            Animation({Frame(0.1f, textures[7])}) // dead
+            Animation({Frame(0.1f, textures[3]), Frame(0.1f, textures[4]), Frame(0.1f, textures[5]), Frame(0.1f, textures[6])}) // spin
         };
     }
     else if (path == "flykoopa") {
