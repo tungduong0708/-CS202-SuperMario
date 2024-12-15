@@ -37,7 +37,7 @@ protected:
 public:
     Character();
     Character(string type, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, 
-              float spêed = 0, float angle = 0);
+              float speed = 0, float angle = 0);
     Character(const Character &c);
     virtual ~Character();
 
@@ -75,37 +75,41 @@ class Player : public Character {
 private:
     string name;
     float coins;
-    float range; // max range if the player can shoot
     int lives;
-    bool sit;
     bool immortal;
     string currentMap;
     float time; // time allotted for the player to complete the map
+    float force;
+    float bulletSpeed;
+    float bulletFreq;
 public:
     Player();
-    Player(string type, string name = "", float coins = 0.0f, float range = 0.0f, int lives = 0, bool sit = false, 
-            int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Player(string type, string name = "", float coins = 0.0f, int lives = 0, int health = 0, 
+          int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Player(const Player &p);
     virtual ~Player();
 
     void setPositon(b2Vec2 pos);
     void setName(string n);
     void setCoins(float c);
-    void setRange(float r);
     void setLives(int lives);
-    void setSit(bool s);
     void setImmortal(bool im);
     void setCurrentMap(string map);
     void setTime(float t);
+    void setForce(float f);
+    void setBulletSpeed(float bs);
+    void setBulletFreq(float bf);
     void impulseForce(Vector2 force);
     void updateScore(int s);
 
+
     string getName();
     float getCoins();
-    float getRange();
+    float getForce();
+    float getBulletSpeed();
+    float getBulletFreq();
     string getCurrentMap();
     float getTime();
-    bool isSitting();
     bool isImmortal();
 
     void Init(b2Vec2 position);
