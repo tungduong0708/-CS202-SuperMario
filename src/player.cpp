@@ -40,7 +40,6 @@ Player::Player(const Player &p):
     name(p.name), 
     coins(p.coins), 
     lives(p.lives),
-    immortal(p.immortal),
     currentMap(p.currentMap),
     time(p.time)
 {
@@ -295,7 +294,7 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("grow_mario", Vector2{pos.x, pos.y + size.y}));
             effectManager->setActivePlayerEffect(true);
-            setSpeed(0.0f);
+            body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
         }
     }
 
