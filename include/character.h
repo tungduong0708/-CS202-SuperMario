@@ -95,6 +95,7 @@ public:
     virtual ~Player();
 
     void setPositon(b2Vec2 pos);
+    void setPositionBody(b2Vec2 pos);
     void setName(string n);
     void setCoins(float c);
     void setLives(int lives);

@@ -54,6 +54,12 @@ Player::~Player() {
 
 void Player::setPositon(b2Vec2 pos)
 {
+    // if (body) body->SetTransform(pos, body->GetAngle());
+    position = Vector2{pos.x, pos.y};
+}
+
+void Player::setPositionBody(b2Vec2 pos)
+{
     if (body) body->SetTransform(pos, body->GetAngle());
     position = Vector2{pos.x, pos.y};
 }

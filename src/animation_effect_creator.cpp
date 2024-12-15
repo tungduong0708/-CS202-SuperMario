@@ -40,6 +40,9 @@ void AnimationEffectCreator::InitEffects()
     RegisterEffect("grow_mario", [](Vector2 position) {
         return new GrowEffect(position);
     });
+    RegisterEffect("shrink_mario", [](Vector2 position) {
+        return new ShrinkEffect(position);
+    });
 }
 
 AnimationEffect *AnimationEffectCreator::CreateAnimationEffect(const std::string& name, Vector2 position)
