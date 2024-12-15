@@ -29,7 +29,7 @@ Player::Player(string type, string name, float coins, int lives, int health,
     alive = true;
 
     speed = 8.0f;
-    force = -24.0f;
+    force = -26.0f;
     bulletSpeed = 9.0f;
     bulletFreq = 0.75f;
     mode = Mode::SMALL;

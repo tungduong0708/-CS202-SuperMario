@@ -170,6 +170,8 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 std::string name = object["name"].get<std::string>();
                                 player = new Player(name);
                                 player->Init(b2Vec2{x, y});
+                                //cout << player->getSpeed() << endl;
+                                player->setSpeed(8.0f);
                                 player->setInitialPosition(Vector2{x, y});
                                 player->setName(name);
                                 player->setHealth(100);
