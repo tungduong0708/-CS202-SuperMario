@@ -28,6 +28,18 @@ void AnimationEffectCreator::InitEffects()
     RegisterEffect("brick_explode", [](Vector2 position) {
         return new BrickExplodeEffect(position);
     });
+    RegisterEffect("dead_mario", [](Vector2 position) {
+        return new DeadMarioEffect(position);
+    });
+    RegisterEffect("dead_koopa", [](Vector2 position) {
+        return new DeadKoopaEffect(position);
+    });
+    RegisterEffect("dead_goomba", [](Vector2 position) {
+        return new DeadGoombaEffect(position);
+    });
+    RegisterEffect("grow_mario", [](Vector2 position) {
+        return new GrowEffect(position);
+    });
 }
 
 AnimationEffect *AnimationEffectCreator::CreateAnimationEffect(const std::string& name, Vector2 position)

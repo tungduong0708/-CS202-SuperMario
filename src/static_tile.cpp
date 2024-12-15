@@ -112,7 +112,7 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
     Player* playerPtr = dynamic_cast<Player*>(other); 
     if (playerPtr != nullptr) {
         if (getType() == "brick") {
-            if (playerPtr->getMode() == Mode::FIRE || playerPtr->getMode() == Mode::BIG) {
+            if (playerPtr->getMode() == Mode::FIRE || playerPtr->getMode() == Mode::BIG || playerPtr->isImmortal()) {
                 if (normal.y > 0.5f) {
                     EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
                     effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("brick_explode", getPosition()));

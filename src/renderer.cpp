@@ -9,7 +9,7 @@ void Renderer::Draw(Texture2D texture, const Vector2& position, const Vector2& s
 }
 
 void Renderer::DrawPro(Texture2D texture, const Rectangle &srcRect, const Vector2& position, const Vector2 &size, 
-                       bool isLeft, float rotation, Vector2 bodySize) {
+                       bool isLeft, float rotation, Vector2 bodySize, Color color) {
     Rectangle destRect;
     if (bodySize.x <= 0 or bodySize.y <= 0) {
         destRect = { position.x, position.y, size.x, size.y };
@@ -22,5 +22,5 @@ void Renderer::DrawPro(Texture2D texture, const Rectangle &srcRect, const Vector
         sourceRect.width *= -1; // Flip horizontally
         sourceRect.x += srcRect.width; // Adjust the x position to flip correctly
     }
-    DrawTexturePro(texture, sourceRect, destRect, Vector2{0.0f, 0.0f}, rotation, WHITE);
+    DrawTexturePro(texture, sourceRect, destRect, Vector2{0.0f, 0.0f}, rotation, color);
 }

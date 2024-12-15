@@ -26,6 +26,11 @@ protected:
     Rectangle sourceRect;       // Sprite frame to draw
     Rectangle destRect;         // Scaled drawing rectangle
     Vector2 origin;             // Sprite origin
+    Vector2 position;
+    bool immortal;
+    float immortalTime;
+    float colorChangeTimer = 0.0f; 
+    int colorIndex = 0;
     int frameWidth, frameHeight;
     int currentFrame;
     float frameTime, frameSpeed;
@@ -59,7 +64,7 @@ public:
 
     // default image = IDLE
     virtual void Init(b2Vec2 position);  
-    virtual void UpdateMode(Mode mode);
+    virtual void UpdateMode(Mode mode, b2Vec2 position);
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void Draw();  
     virtual void Draw(Vector2 position, float angle = 0.0f) = 0;
@@ -82,6 +87,7 @@ private:
     float force;
     float bulletSpeed;
     float bulletFreq;
+    Vector2 initialPosition;
 public:
     Player();
     Player(string type, string name = "", float coins = 0.0f, int lives = 0, int health = 0, 
@@ -94,11 +100,13 @@ public:
     void setCoins(float c);
     void setLives(int lives);
     void setImmortal(bool im);
+    void setImmortalTime(float it);
     void setCurrentMap(string map);
     void setTime(float t);
     void setForce(float f);
     void setBulletSpeed(float bs);
     void setBulletFreq(float bf);
+    void setInitialPosition(Vector2 pos);
     void impulseForce(Vector2 force);
     void updateScore(int s);
 
@@ -151,7 +159,7 @@ public:
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal);
     virtual void OnEndContact(SceneNode* other);
     void HandleInput();
-    void Dead();
+    virtual void Dead();
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
 
@@ -167,6 +175,7 @@ public:
     Goomba(const Goomba &g);
     virtual ~Goomba();
 
+    void Dead();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;
@@ -180,6 +189,7 @@ public:
     Koopa(const Koopa &k);
     virtual ~Koopa();
 
+    void Dead();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const; 

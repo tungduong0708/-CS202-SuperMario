@@ -2,6 +2,8 @@
 #include "object.h"
 #include "character.h"
 
+std::vector<Color> colors = {LIME, YELLOW, RAYWHITE, GOLD};
+
 Character::Character() : MovingObject()
 {
     health = 0;
@@ -18,6 +20,7 @@ Character::Character() : MovingObject()
     frameTime = 0;
     frameSpeed = 0;
     isOnGround = false;
+    modeChanged = false;
     currentImage = IDLE;
     faceLeft = false;
     alive = true;
@@ -31,14 +34,17 @@ Character::Character(string type, int health, int score, int level, int strength
     score(score), 
     level(level), 
     strength(strength), 
-    type(type) {
+    type(type) 
+{
     isOnGround = false;
+    modeChanged = false;
     faceLeft = false;
     currentImage = IDLE;
     previousImage = IDLE;
     curAnim = Animation();
     mode = Mode::SMALL;
     alive = true;
+    immortal = false;
 }
 
 Character::Character(const Character &c)
@@ -60,8 +66,11 @@ Character::Character(const Character &c)
       currentImage(c.currentImage),
       previousImage(c.previousImage),
       faceLeft(c.faceLeft),
-      mode(c.mode)
+      mode(c.mode),
+      alive(c.alive),
+      immortal(c.immortal)
 {
+    modeChanged = false;
 }
 
 Character::~Character() {
@@ -84,6 +93,7 @@ Character::~Character() {
     faceLeft = false;
     mode = SMALL;
     alive = false;
+    immortal = false;
 }
 
 void Character::setHealth(int health) {
@@ -177,9 +187,8 @@ void Character::Init(b2Vec2 position) {
     currentImage = IDLE;
 }
 
-void Character::UpdateMode(Mode mode)
+void Character::UpdateMode(Mode mode, b2Vec2 position)
 {
-    b2Vec2 position = body->GetPosition();
     this->mode = mode;
     currentImage = ImageSet::WALK;
     animations = AnimationHandler::setAnimations(StringMode::getMode(mode) + type);
@@ -236,10 +245,12 @@ void Character::ResizeBody(float newWidth, float newHeight)
 }
 
 void Character::Update(Vector2 playerVelocity, float deltaTime) {
-    if (modeChanged) {
-        UpdateMode(mode);
+    EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+    if (modeChanged && !effectManager->isActivePlayerEffect()) {
+        UpdateMode(mode, b2Vec2{position.x, position.y});
         modeChanged = false;
     }
+    if (!body) return;
     elapsedTime += deltaTime;
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
@@ -253,13 +264,42 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
 
     animations[currentImage].Update(deltaTime);
     texture = animations[currentImage].GetFrame();
+    if (immortal) {
+        b2Vec2 vel = body->GetLinearVelocity();
+        if (vel.x > 0) {
+            body ->SetLinearVelocity(b2Vec2{vel.x + 3.0f, vel.y});
+        }
+        else if (vel.x < 0) {
+            body ->SetLinearVelocity(b2Vec2{vel.x - 3.0f, vel.y});
+        }
+        immortalTime -= deltaTime;
+        colorChangeTimer += deltaTime;
+
+        // Change color every 1 second
+        if (colorChangeTimer >= 0.05f) {
+            colorIndex = (colorIndex + 1) % colors.size();
+            colorChangeTimer = 0.0f;  // Reset the timer
+        }
+
+        // End immortal state
+        if (immortalTime <= 0) {
+            immortal = false;
+        }
+    }
 }
 
 void Character::Draw() {
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Vector2 drawPosition = { pos.x, pos.y };
-    Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft);
+    SetTextureFilter(texture, TEXTURE_FILTER_POINT);
+    if (immortal) {
+        // colors[colorIndex].a = 50;
+        Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft, 0.0f, Vector2{-1.0f, -1.0f}, colors[colorIndex]);
+    }
+    else {
+        Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft);
+    }
 }
 
 void Character::HandleInput() {

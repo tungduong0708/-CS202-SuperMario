@@ -90,6 +90,7 @@ void Enemy::Init(b2Vec2 position) {
 }
 
 void Enemy::Update(Vector2 playerVelocity, float deltaTime) {
+    if (!body) return;
     elapsedTime += deltaTime;
 
     b2Vec2 position = body->GetPosition();
@@ -123,10 +124,10 @@ void Enemy::HandleInput() {
 }
 
 void Enemy::Dead() {
-    // dead...
 }
 
 void Enemy::Draw() {
+    if (!body) return;
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Vector2 drawPosition = { pos.x, pos.y };
@@ -155,13 +156,39 @@ Goomba::Goomba(const Goomba &g): Enemy(g) {
 Goomba::~Goomba() {
 }
 
-void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal) {
+void Goomba::Dead()
+{
+    if (body) {
+        b2Vec2 pos = body->GetPosition();
+        Physics::world.DestroyBody(body);
+        body = nullptr;
+
+        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+        effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_goomba", Vector2{pos.x, pos.y}));
+    }
+    else {
+        return;
+    }
+}
+
+void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
+{
     if (!other) return;
     if (!alive) return;
     Player* player = dynamic_cast<Player*>(other);
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
-    if (player || enemy) {
+    if (fireball || (player && player->isImmortal())) {
+        setHealth(getHealth() - 100);
+        if (!alive) {
+            state = EnemyState::ENEMY_DEAD;
+            if (!deadByPlayer and !deadByFireball) {
+                Dead();
+                deadByFireball = true;
+            }
+        }
+    }
+    else if (player || enemy) {
         if (abs(normal.x) > 0.5f) {
             if (player) {
                 if (player->isImmortal()) {
@@ -245,14 +272,37 @@ Koopa::Koopa(const Koopa &k): Enemy(k) {
 Koopa::~Koopa() {
 }
 
-void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal) {
+void Koopa::Dead()
+{
+    if (body) {
+        b2Vec2 pos = body->GetPosition();
+        Physics::world.DestroyBody(body);
+        body = nullptr;
+
+        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+        effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_koopa", Vector2{pos.x, pos.y}));
+    }
+    else {
+        return;
+    }
+}
+
+void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
+{
     if (!other) return;
     if (!alive) return;
     Player* player = dynamic_cast<Player*>(other);
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
-    if (player || enemy) {
-        if (abs(normal.x) > 0.9f) {
+    if (fireball || (player && player->isImmortal())) {
+        setHealth(getHealth() - 100);
+        if (!alive) {
+            state = EnemyState::ENEMY_DEAD;
+            Dead();
+        }
+    }
+    else if (player || enemy) {
+        if (abs(normal.x) > 0.5f) {
             if (player) {
                 if (player->getMode() == Mode::SMALL) {
                     player->setHealth(player->getHealth() - getStrength());

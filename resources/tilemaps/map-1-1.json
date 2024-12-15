@@ -67,17 +67,6 @@
          "name":"Object Layer 1",
          "objects":[
                 {
-                 "height":31.9646739130435,
-                 "id":46,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":976.016304347826,
-                 "x":0.608695652173913,
-                 "y":223.347826086957
-                }, 
-                {
                  "height":0,
                  "id":64,
                  "name":"mario",
@@ -86,8 +75,8 @@
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":230.833333333333,
-                 "y":203.25
+                 "x":173.333333333333,
+                 "y":151.25
                 }, 
                 {
                  "height":0,
@@ -286,7 +275,7 @@
                  "id":83,
                  "name":"gate",
                  "rotation":0,
-                 "type":"map-1-2.json",
+                 "type":"map-1-2-1.json",
                  "visible":true,
                  "width":9.25,
                  "x":3302.5,
@@ -297,7 +286,7 @@
                  "id":84,
                  "name":"gate",
                  "rotation":0,
-                 "type":"map-1-2.json",
+                 "type":"map-1-2-1.json",
                  "visible":true,
                  "width":9.25,
                  "x":-6.29166666666652,
@@ -334,7 +323,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":91,
+ "nextobjectid":97,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

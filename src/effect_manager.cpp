@@ -32,6 +32,11 @@ void EffectManager::AddUpperEffect(AnimationEffect *effect)
     upperEffects.push_back(effect);
 }
 
+bool EffectManager::isActivePlayerEffect()
+{
+    return activePlayerEffect;
+}
+
 std::string EffectManager::GetEffectName(std::pair<int, int> pos)
 {
     return effectMap[pos];
@@ -40,6 +45,11 @@ std::string EffectManager::GetEffectName(std::pair<int, int> pos)
 int EffectManager::GetEffectCount(std::pair<int, int> pos)
 {
     return effectCount[pos];
+}
+
+void EffectManager::setActivePlayerEffect(bool active)
+{
+    activePlayerEffect = active;
 }
 
 bool EffectManager::UpdateEffectCount(std::pair<int, int> pos)
@@ -74,6 +84,11 @@ void EffectManager::Update(float deltaTime)
             (*it)->Update(deltaTime);
             ++it;  // Move to the next element
         } else {
+            DeadMarioEffect* deadMario = dynamic_cast<DeadMarioEffect*>(*it);
+            GrowEffect* growEffect = dynamic_cast<GrowEffect*>(*it);
+            if (deadMario || growEffect) {
+                activePlayerEffect = false;
+            }
             delete *it;            // Free memory
             it = upperEffects.erase(it); // Erase element and get a valid iterator to the next element
         }
