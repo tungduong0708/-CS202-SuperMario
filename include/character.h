@@ -81,7 +81,6 @@ private:
     string name;
     float coins;
     int lives;
-    bool immortal;
     string currentMap;
     float time; // time allotted for the player to complete the map
     float force;
