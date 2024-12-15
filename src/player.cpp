@@ -6,34 +6,41 @@ Player::Player() : Character()
 {
     name = "";
     coins = 0;
-    range = 0;
     lives = 0;
     time = 0;
-    sit = false;
+    immortal = false;
     currentMap = "";
+    force = -12.0f;
+    bulletSpeed = 9.0f;
+    bulletFreq = 0.75f;
+    mode = Mode::SMALL;
 }
 
-Player::Player(string type, string name, float coins, float range, int lives, bool sit, int health, 
+Player::Player(string type, string name, float coins, int lives, int health, 
                int score, int level, int strength, Vector2 size, float speed, 
                float angle): 
     Character(type, health, score, level, strength, size, speed, angle), 
     name(name), 
-    coins(coins), 
-    range(range), 
-    lives(lives),
-    sit(sit) {
+    coins(coins),  
+    lives(lives)
+{
     time = 0;
     currentMap = "";
     alive = true;
+
+    speed = 8.0f;
+    force = -24.0f;
+    bulletSpeed = 9.0f;
+    bulletFreq = 0.75f;
+    mode = Mode::SMALL;
 }
 
 Player::Player(const Player &p): 
     Character(p), 
     name(p.name), 
     coins(p.coins), 
-    range(p.range), 
     lives(p.lives),
-    sit(p.sit),
+    immortal(p.immortal),
     currentMap(p.currentMap),
     time(p.time)
 {
@@ -42,10 +49,8 @@ Player::Player(const Player &p):
 Player::~Player() {
     name = "";
     coins = 0;
-    range = 0;
     lives = 0;
     time = 0;
-    sit = false;
 }
 
 void Player::setPositon(b2Vec2 pos)
@@ -62,16 +67,8 @@ void Player::setCoins(float c) {
     coins = c;
 }
 
-void Player::setRange(float r) {
-    range = r;
-}
-
 void Player::setLives(int lives) {
     this->lives = lives;
-}
-
-void Player::setSit(bool s) {
-    sit = s;
 }
 
 void Player::setImmortal(bool im) {
@@ -112,20 +109,12 @@ float Player::getCoins() {
     return coins;
 }
 
-float Player::getRange() {
-    return range;
-}
-
 string Player::getCurrentMap() {
     return currentMap;
 }
 
 float Player::getTime() {
     return time;
-}
-
-bool Player::isSitting() {
-    return sit;
 }
 
 bool Player::isImmortal() {
@@ -137,7 +126,7 @@ void Player::HandleInput() {
         return;
     }
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
             currentImage = ImageSet::WALK;   
@@ -146,7 +135,7 @@ void Player::HandleInput() {
 
     } else 
     if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-        body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(-speed, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
             currentImage = ImageSet::WALK;
@@ -179,10 +168,10 @@ void Player::HandleInput() {
     if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
         if (isOnGround) {
             if (mode == SMALL) {
-                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -26.0f), true);
+                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true);
             }
             else if (mode == BIG or mode == FIRE) {
-                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -40.0f), true);
+                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force * 1.5f), true);
             }
             previousImage = currentImage;
             currentImage = JUMP;
@@ -195,7 +184,7 @@ void Player::HandleInput() {
         previousImage = currentImage;
         currentImage = HOLD;
         animations[currentImage].setTimer();
-        if (elapsedTime >= 0.75f) {
+        if (elapsedTime >= bulletFreq) {
             // create a fireball
             FireBall* fireball = new FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
             fireball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32));

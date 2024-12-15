@@ -175,6 +175,7 @@ void Goomba::Dead()
 void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
     if (!other) return;
+    if (!alive) return;
     Player* player = dynamic_cast<Player*>(other);
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
@@ -191,7 +192,23 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
     else if (player || enemy) {
         if (abs(normal.x) > 0.5f) {
             if (player) {
-                player->setHealth(player->getHealth() - getStrength());
+                if (player->isImmortal()) {
+                    setHealth(getHealth() - 100);
+                    if (!alive) {
+                        state = EnemyState::ENEMY_DEAD;
+                        if (!deadByPlayer and !deadByFireball) {
+                            Dead();
+                            deadByFireball = true;
+                        }
+                        player->updateScore(100);
+                    }
+                }   
+                else if (player->getMode() == Mode::SMALL) {
+                    player->setHealth(player->getHealth() - getStrength());
+                }
+                else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+                    player->setMode(Mode::SMALL);
+                }
             }
             else if (enemy) {
                 return;
@@ -206,7 +223,19 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
                     size = Vector2{size.x, size.y/4};
                     deadByPlayer = true; 
                 }
+                player->updateScore(100);
             }
+        }
+    }
+    else if (fireball) {
+        setHealth(getHealth() - 100);
+        if (!alive) {
+            state = EnemyState::ENEMY_DEAD;
+            if (!deadByPlayer and !deadByFireball) {
+                Dead();
+                deadByFireball = true;
+            }
+            player->updateScore(100);
         }
     }
     else {
@@ -218,14 +247,6 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
             setSpeed(-abs(speed));
             faceLeft = true;
         }
-    }
-
-    if (!alive) {
-        player->updateScore(100);
-    }
-
-    if (!alive) {
-        player->updateScore(100);
     }
 }
 
@@ -271,6 +292,7 @@ void Koopa::Dead()
 void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
     if (!other) return;
+    if (!alive) return;
     Player* player = dynamic_cast<Player*>(other);
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
@@ -284,7 +306,12 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
     else if (player || enemy) {
         if (abs(normal.x) > 0.5f) {
             if (player) {
-                player->setHealth(player->getHealth() - getStrength());
+                if (player->getMode() == Mode::SMALL) {
+                    player->setHealth(player->getHealth() - getStrength());
+                }
+                else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+                    player->setMode(Mode::SMALL);
+                }
             }
             else if (enemy) {
                 return;
@@ -307,7 +334,16 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
             }
         }
     }
+    else if (fireball) {
+        setHealth(getHealth() - 100);
+        if (!alive) {
+            state = EnemyState::ENEMY_DEAD;
+            Dead();
+            player->updateScore(100);
+        }
+    }
     else {
+        cout << normal.x << endl;
         if ((normal.x) > 0.9f) {
             setSpeed(abs(speed));
             faceLeft = false;
@@ -316,10 +352,6 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
             setSpeed(-abs(speed));
             faceLeft = true;
         }
-    }
-
-    if (!alive) {
-        player->updateScore(100);
     }
 }
 
