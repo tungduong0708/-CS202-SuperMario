@@ -179,10 +179,10 @@ void Player::HandleInput() {
     if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
         if (isOnGround) {
             if (mode == SMALL) {
-                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -24.0f), true);
+                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -26.0f), true);
             }
             else if (mode == BIG or mode == FIRE) {
-                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -36.0f), true);
+                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -40.0f), true);
             }
             previousImage = currentImage;
             currentImage = JUMP;

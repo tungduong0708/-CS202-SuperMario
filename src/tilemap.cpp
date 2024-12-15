@@ -31,11 +31,6 @@ Tilemap* Tilemap::getInstance()
 
 void Tilemap::clearMap()
 {
-    int bodyCount = 0;
-    for (b2Body* body = Physics::world.GetBodyList(); body; body = body->GetNext()) {
-        bodyCount++;
-    }
-    std::cout << bodyCount << " bodies in the world before clear.\n";
     std::cout << Physics::world.GetBodyCount() << " bodies in the world before clear.\n";
     for (auto& layer : nodes) {
         for (auto& node : layer) {
@@ -45,11 +40,6 @@ void Tilemap::clearMap()
     nodes.clear();
     tilesets.clear();
     effectManager->clearEffects();
-    bodyCount = 0;
-    for (b2Body* body = Physics::world.GetBodyList(); body; body = body->GetNext()) {
-        bodyCount++;
-    }
-    std::cout << bodyCount << " bodies in the world after clear.\n";
     std::cout << Physics::world.GetBodyCount() << " bodies in the world after clear.\n";
 }
 

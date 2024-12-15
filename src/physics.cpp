@@ -10,7 +10,7 @@
 #include <vector>
 #include <iostream>
 
-b2World Physics::world{ b2Vec2(0.0f, 50.0f) };
+b2World Physics::world{ b2Vec2(0.0f, 60.0f) };
 std::vector<b2Body*> Physics::bodiesToDestroy;
 b2DrawRayLib* Physics::debugDraw{ nullptr };
 

@@ -193,6 +193,7 @@ void FireBall::Init(b2Vec2 position) {
 }
 
 void FireBall::Update(Vector2 playerVelocity, float deltaTime) {
+    if (!body) return;
     elapsedTime += deltaTime;
     span += deltaTime;
     if (span >= 1.5f) {
@@ -216,13 +217,14 @@ void FireBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     Enemy *enemy = dynamic_cast<Enemy*>(other);
     if (enemy || normal.x != 0) {
         if (enemy) enemy->setHealth(enemy->getHealth() - damage);
-        Physics::bodiesToDestroy.push_back(body);
-        animations.clear();
-
         AnimationEffect* effect = AnimationEffectCreator::CreateAnimationEffect("fireball_explode", Vector2{body->GetPosition().x, body->GetPosition().y});
 
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(effect);
+
+        Physics::bodiesToDestroy.push_back(body);
+        body = nullptr;
+        animations.clear();
     }
 }
 
@@ -231,6 +233,7 @@ void FireBall::OnEndContact(SceneNode *other) {
 }
 
 void FireBall::Draw() {
+    if (!body) return;
     b2Vec2 pos = body->GetPosition();
     Texture text = animations[0].GetFrame();
     Rectangle sourceRect = { 0, 0, static_cast<float>(text.width), static_cast<float>(text.height) };

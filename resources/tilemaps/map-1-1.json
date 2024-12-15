@@ -75,8 +75,8 @@
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":230.833333333333,
-                 "y":203.25
+                 "x":173.333333333333,
+                 "y":151.25
                 }, 
                 {
                  "height":0,
@@ -315,17 +315,6 @@
                  "width":0,
                  "x":597.333333333333,
                  "y":188
-                }, 
-                {
-                 "height":51,
-                 "id":95,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":42.5,
-                 "x":62,
-                 "y":67.5
                 }],
          "opacity":1,
          "type":"objectgroup",
