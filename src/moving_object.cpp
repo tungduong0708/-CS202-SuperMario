@@ -106,7 +106,6 @@ float MovingObject::getRestitution() {
 
 Vector2 MovingObject::getPosition()
 {
-    if (body == nullptr) return Vector2{-1.0f, -1.0f};
     b2Vec2 pos = body->GetPosition();
     return Vector2{pos.x, pos.y};
 }

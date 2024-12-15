@@ -10,7 +10,6 @@ Player::Player() : Character()
     lives = 0;
     time = 0;
     sit = false;
-    immortal = false;
     currentMap = "";
 }
 
@@ -24,7 +23,6 @@ Player::Player(string type, string name, float coins, float range, int lives, bo
     lives(lives),
     sit(sit) {
     time = 0;
-    immortal = false;
     currentMap = "";
     alive = true;
 }
@@ -36,7 +34,6 @@ Player::Player(const Player &p):
     range(p.range), 
     lives(p.lives),
     sit(p.sit),
-    immortal(p.immortal),
     currentMap(p.currentMap),
     time(p.time)
 {
@@ -53,7 +50,8 @@ Player::~Player() {
 
 void Player::setPositon(b2Vec2 pos)
 {
-    body->SetTransform(pos, body->GetAngle());
+    if (body) body->SetTransform(pos, body->GetAngle());
+    position = Vector2{pos.x, pos.y};
 }
 
 void Player::setName(string n) {
@@ -78,6 +76,11 @@ void Player::setSit(bool s) {
 
 void Player::setImmortal(bool im) {
     immortal = im;
+}
+
+void Player::setImmortalTime(float it)
+{
+    immortalTime = it;
 }
 
 void Player::setCurrentMap(string map) {
@@ -196,7 +199,9 @@ void Player::HandleInput() {
             // create a fireball
             FireBall* fireball = new FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
             fireball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32));
-            fireball->setSpeed(15.0f * (faceLeft ? -1 : 1));
+            b2Fixture* fixture = fireball->getBody()->GetFixtureList();
+            fixture->SetDensity(2.0f);
+            fireball->setSpeed(20.0f * (faceLeft ? -1 : 1));
 
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->addNode(fireball);
@@ -230,10 +235,10 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
 
 void Player::Dead() {
     EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-    if (effectManager->isActiveDeadPlayer()) {
+    if (effectManager->isActivePlayerEffect()) {
         return;
     }
-    if (!effectManager->isActiveDeadPlayer()) {
+    if (!effectManager->isActivePlayerEffect()) {
         if (body) {
             b2Vec2 pos = body->GetPosition();
             Physics::world.DestroyBody(body);
@@ -241,7 +246,7 @@ void Player::Dead() {
             alive = false;
             lives--;
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_mario", Vector2{pos.x, pos.y}));
-            effectManager->setActiveDeadPlayer(true);
+            effectManager->setActivePlayerEffect(true);
         }
         else {
             if (lives == 0) {
@@ -282,6 +287,28 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
     if (normal.y < -0.5f) {
         isOnGround = true;
     }
+
+    FireFlower* fireFlower = dynamic_cast<FireFlower*>(other);
+    Mushroom* mushroom = dynamic_cast<Mushroom*>(other);
+    if (fireFlower || mushroom) {
+        if (fireFlower) {
+            if (mode == BIG) mode = FIRE;
+            else if (mode == SMALL) changeMode(FIRE);
+        }
+        else if (mushroom) {
+            if (mode == FIRE) mode = BIG;
+            else if (mode == SMALL) changeMode(BIG);
+        }
+        if (modeChanged) {
+            b2Vec2 pos = body->GetPosition();
+            position = Vector2{pos.x, pos.y - 0.5f};
+
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("grow_mario", Vector2{pos.x, pos.y + size.y}));
+            effectManager->setActivePlayerEffect(true);
+        }
+    }
+
 }
 
 void Player::Init(b2Vec2 position) {

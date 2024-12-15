@@ -102,8 +102,6 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     height = j["height"];
     tileSize = j["tilewidth"];
 
-    camera = MyCamera(38.0f, Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
-
     for (const auto& tileset : j["tilesets"]) {
         std::string tilesetPath = tileset["source"].get<std::string>();
         size_t pos = tilesetPath.find_last_of('/');
@@ -250,16 +248,10 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         nodes.push_back(nodeLayer);
     }
     file.close();
-    int bodyCount = 0;
-    for (b2Body* body = Physics::world.GetBodyList(); body != nullptr; body = body->GetNext()) {
-        bodyCount++;
-    }
+    camera = MyCamera(38.0f, player->getPosition(), Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
+    std::cout << "Map loaded successfully!" << std::endl;
+    std::cout << Physics::world.GetBodyCount() << " bodies in the world after loading.\n";
 
-    if (bodyCount > 0) {
-        std::cout << "There are " << bodyCount << " bodies remaining in the world.\n";
-    } else {
-        std::cout << "All bodies have been destroyed.\n";
-    }
 }
 
 void Tilemap::Update(float deltaTime) {
@@ -269,8 +261,6 @@ void Tilemap::Update(float deltaTime) {
     }
     else {
         b2Vec2 playerVelocity = player->getVelocity();
-        player->HandleInput();
-        player->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
         for (auto& layer : nodes) {
             if (layer.empty()) {
                 effectManager->Update(deltaTime);
@@ -280,8 +270,11 @@ void Tilemap::Update(float deltaTime) {
                 node->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
             }
         }
-        Vector2 pos = player->getPosition();
-        if (pos.x != -1.0f && pos.y != -1.0f) camera.Update(pos);  
+        if (!effectManager->isActivePlayerEffect()) {
+            camera.Update(player->getPosition());  
+            player->HandleInput();
+            player->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
+        }
     }
 }
 
@@ -299,14 +292,14 @@ void Tilemap::Draw() const {
             node->Draw();
         }
     }
-    effectManager->DrawUpper();
-    player->Draw();
+    if (!effectManager->isActivePlayerEffect()) player->Draw();
     for (auto& node : nodes.back()) {
         node->Draw();
     }
 
     Vector2 cameraTarget = camera.GetCameraTarget();
     player->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
+    effectManager->DrawUpper();
     EndMode2D();
 
 }

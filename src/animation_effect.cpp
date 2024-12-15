@@ -370,3 +370,38 @@ void DeadGoombaEffect::Draw()
     b2Vec2 pos = body->GetPosition();
     DrawTexturePro(texture, Rectangle{0, 0, -(float)texture.width, (float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }
+
+GrowEffect::GrowEffect(Vector2 pos)
+{
+    // Lower left origin
+    position = pos;
+    currentPostion = pos;
+    animation = AnimationHandler::setAnimations("grow_mario")[0];
+    texture = animation.GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+}
+
+void GrowEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    elapsedTime += deltaTime;
+    totalTime += deltaTime;
+    if (totalTime > effectTime) {
+        active = false;
+        return;
+    }
+    if (elapsedTime > appearTime) {
+        appear = !appear;
+        elapsedTime = 0.0f;
+    }
+    animation.Update(deltaTime);
+    texture = animation.GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+    position.y = currentPostion.y - size.y;
+}
+
+void GrowEffect::Draw()
+{
+    if (!active || !appear) return;
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{position.x, position.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+}

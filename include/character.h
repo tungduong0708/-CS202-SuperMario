@@ -26,6 +26,11 @@ protected:
     Rectangle sourceRect;       // Sprite frame to draw
     Rectangle destRect;         // Scaled drawing rectangle
     Vector2 origin;             // Sprite origin
+    Vector2 position;
+    bool immortal;
+    float immortalTime;
+    float colorChangeTimer = 0.0f; 
+    int colorIndex = 0;
     int frameWidth, frameHeight;
     int currentFrame;
     float frameTime, frameSpeed;
@@ -59,7 +64,7 @@ public:
 
     // default image = IDLE
     virtual void Init(b2Vec2 position);  
-    virtual void UpdateMode(Mode mode);
+    virtual void UpdateMode(Mode mode, b2Vec2 position);
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void Draw();  
     virtual void Draw(Vector2 position, float angle = 0.0f) = 0;
@@ -78,7 +83,6 @@ private:
     float range; // max range if the player can shoot
     int lives;
     bool sit;
-    bool immortal;
     string currentMap;
     float time; // time allotted for the player to complete the map
     Vector2 initialPosition;
@@ -96,6 +100,7 @@ public:
     void setLives(int lives);
     void setSit(bool s);
     void setImmortal(bool im);
+    void setImmortalTime(float it);
     void setCurrentMap(string map);
     void setTime(float t);
     void setInitialPosition(Vector2 pos);
@@ -149,7 +154,7 @@ public:
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal);
     virtual void OnEndContact(SceneNode* other);
     void HandleInput();
-    void Dead();
+    virtual void Dead();
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
 
@@ -165,6 +170,7 @@ public:
     Goomba(const Goomba &g);
     virtual ~Goomba();
 
+    void Dead();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;
@@ -178,6 +184,7 @@ public:
     Koopa(const Koopa &k);
     virtual ~Koopa();
 
+    void Dead();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const; 

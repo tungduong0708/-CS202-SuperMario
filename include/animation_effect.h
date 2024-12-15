@@ -143,4 +143,22 @@ public:
     void Draw();
 };
 
+class GrowEffect : public AnimationEffect {
+private:
+    float effectTime = 1.5f;
+    float totalTime = 0.0f;
+    float appearTime = 0.3f;
+    float elapsedTime = 0.0f;
+    bool appear = true;
+    Vector2 currentPostion;
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+public:
+    GrowEffect(Vector2 pos);
+    ~GrowEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
 #endif // ANIMATION_EFFECT_H
