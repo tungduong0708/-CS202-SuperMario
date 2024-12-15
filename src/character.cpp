@@ -282,7 +282,6 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
         }
 
         // End immortal state
-        std::cout << "immortalTime: " << immortalTime << std::endl;
         if (immortalTime <= 0) {
             immortal = false;
         }

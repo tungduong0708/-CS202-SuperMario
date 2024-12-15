@@ -121,7 +121,6 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                     isDestroyed = false;
 
                     if (tilesContactEnemy.find(this) != tilesContactEnemy.end()) {
-                        std::cout << "Player Found\n";
                         tilesContactEnemy.erase(this);
                     }
                 }
@@ -147,7 +146,6 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
     }
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     if (enemy != nullptr) {
-        std::cout << "Normal: " << normal.x << " " << normal.y << std::endl;
         tilesContactEnemy.insert(this);
     }
 }
@@ -157,13 +155,10 @@ void StaticTile::OnEndContact(SceneNode* other)
     if (!other) return;
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     if (enemy != nullptr) {
-        std::cout << "End contact with enemy\n";
         if (tilesContactEnemy.find(this) != tilesContactEnemy.end()) {
-            std::cout << "Found\n";
             tilesContactEnemy.erase(this);
         }
         else {
-            std::cout << "Not found\n";
             enemy->Dead();
         }
     }

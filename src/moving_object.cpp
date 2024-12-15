@@ -212,7 +212,7 @@ void FireBall::ReloadAnimation() {
 }
 
 void FireBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
-    if (!other) return;
+    if (!other || !body) return;
 
     Enemy *enemy = dynamic_cast<Enemy*>(other);
     if (enemy || normal.x != 0) {

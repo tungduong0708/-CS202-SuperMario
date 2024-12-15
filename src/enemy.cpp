@@ -187,7 +187,7 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
                 Dead();
                 deadByFireball = true;
             }
-            player->updateScore(100);
+            Tilemap::getInstance()->GetPlayer()->updateScore(100);
         }
     }
     else if (player || enemy) {
@@ -213,7 +213,7 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
                     size = Vector2{size.x, size.y/4};
                     deadByPlayer = true; 
                 }
-                player->updateScore(100);
+                Tilemap::getInstance()->GetPlayer()->updateScore(100);
             }
         }
     }
@@ -225,7 +225,7 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
                 Dead();
                 deadByFireball = true;
             }
-            player->updateScore(100);
+            Tilemap::getInstance()->GetPlayer()->updateScore(100);
         }
     }
     else {

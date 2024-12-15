@@ -1,5 +1,6 @@
 #include "include.h"
 #include "object.h"
+#include "tilemap.h"
 
 Tilemap* Tilemap::instance = nullptr;
 
@@ -304,6 +305,11 @@ void Tilemap::SetNewMapPath(const std::string &path)
 EffectManager* Tilemap::GetEffectManager()
 {
     return effectManager;
+}
+
+Player *Tilemap::GetPlayer()
+{
+    return player;
 }
 
 Vector2 Tilemap::GetPlayerPosition() const
