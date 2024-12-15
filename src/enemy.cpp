@@ -187,23 +187,13 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
                 Dead();
                 deadByFireball = true;
             }
+            player->updateScore(100);
         }
     }
     else if (player || enemy) {
-        if (abs(normal.x) > 0.5f) {
+        if (abs(normal.x) > 0.75f) {
             if (player) {
-                if (player->isImmortal()) {
-                    setHealth(getHealth() - 100);
-                    if (!alive) {
-                        state = EnemyState::ENEMY_DEAD;
-                        if (!deadByPlayer and !deadByFireball) {
-                            Dead();
-                            deadByFireball = true;
-                        }
-                        player->updateScore(100);
-                    }
-                }   
-                else if (player->getMode() == Mode::SMALL) {
+                if (player->getMode() == Mode::SMALL) {
                     player->setHealth(player->getHealth() - getStrength());
                 }
                 else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
@@ -304,13 +294,13 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
         }
     }
     else if (player || enemy) {
-        if (abs(normal.x) > 0.5f) {
+        if (abs(normal.x) > 0.75f) {
             if (player) {
                 if (player->getMode() == Mode::SMALL) {
                     player->setHealth(player->getHealth() - getStrength());
                 }
                 else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
-                    player->setMode(Mode::SMALL);
+                    player->changeMode(Mode::SMALL);
                 }
             }
             else if (enemy) {
@@ -318,6 +308,7 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
             }
         }
         else {
+            cout << "call" << endl;
             player->impulseForce(Vector2{0, -10.0f});
             if (state == EnemyState::ENEMY_WALK) {
                 state = EnemyState::ENEMY_SHELL;
@@ -332,14 +323,6 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
                 state = EnemyState::ENEMY_SHELL;
                 setSpeed(0);
             }
-        }
-    }
-    else if (fireball) {
-        setHealth(getHealth() - 100);
-        if (!alive) {
-            state = EnemyState::ENEMY_DEAD;
-            Dead();
-            player->updateScore(100);
         }
     }
     else {

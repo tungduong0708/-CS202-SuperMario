@@ -88,6 +88,18 @@ void Player::setTime(float t) {
     time = t;
 }
 
+void Player::setForce(float f) {
+    force = f;
+}
+
+void Player::setBulletSpeed(float bs) {
+    bulletSpeed = bs;
+}
+
+void Player::setBulletFreq(float bf) {
+    bulletFreq = bf;
+}
+
 void Player::setInitialPosition(Vector2 pos)
 {
     initialPosition = pos;
@@ -115,6 +127,18 @@ string Player::getCurrentMap() {
 
 float Player::getTime() {
     return time;
+}
+
+float Player::getForce() {
+    return force;
+}
+
+float Player::getBulletSpeed() {
+    return bulletSpeed;
+}
+
+float Player::getBulletFreq() {
+    return bulletFreq;
 }
 
 bool Player::isImmortal() {
