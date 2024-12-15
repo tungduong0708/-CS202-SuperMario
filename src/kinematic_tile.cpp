@@ -144,11 +144,16 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 Vector2 pos = getPosition();
                 pos.y--;
                 EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-
                 std::string effectName = effectManager->GetEffectName({pos.x, pos.y});
-                // std::cout << "Effect name: " << effectName << std::endl;
-                effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
-                if (effectName == "coin") {
+                if (effectName == "mushroom_fireflower") {
+                    if (playerPtr->getMode() == Mode::SMALL) {
+                        effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect("mushroom", pos));
+                    } else if (playerPtr->getMode() == Mode::BIG || playerPtr->getMode() == Mode::FIRE) {
+                        effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect("fireflower", pos));
+                    }
+                }
+                else if (effectName == "coin") {
+                    effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
                     playerPtr->updateScore(200);
                     playerPtr->setCoins(playerPtr->getCoins() + 1);
                 }
