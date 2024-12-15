@@ -261,7 +261,7 @@ void Tilemap::Update(float deltaTime) {
             }
         }
         if (!effectManager->isActivePlayerEffect()) {
-            camera.Update(player->getPosition());  
+            if (player->isAlive()) camera.Update(player->getPosition());  
             player->HandleInput();
             player->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
         }

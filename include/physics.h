@@ -41,6 +41,7 @@ public:
     static b2World world;
     static std::vector<b2Body*> bodiesToDestroy;
     static b2DrawRayLib* debugDraw;
+    static std::vector<b2Body*> bodiesToDestroyNextFrame;
 
     static void Init();
     static void Update(float deltaTime);

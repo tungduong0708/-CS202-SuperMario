@@ -12,6 +12,7 @@
 
 b2World Physics::world{ b2Vec2(0.0f, 60.0f) };
 std::vector<b2Body*> Physics::bodiesToDestroy;
+std::vector<b2Body*> Physics::bodiesToDestroyNextFrame;
 b2DrawRayLib* Physics::debugDraw{ nullptr };
 
 b2DrawRayLib::b2DrawRayLib(float scale) noexcept
@@ -127,11 +128,26 @@ void Physics::Init() {
 void Physics::Update(float deltaTime) {
     world.SetContactListener(new ContactListener());
     world.Step(deltaTime, 6, 2);
-    if (!bodiesToDestroy.empty()) {
-        for (auto& body : bodiesToDestroy) {
+    // if (!bodiesToDestroy.empty()) {
+    //     for (auto& body : bodiesToDestroy) {
+    //         world.DestroyBody(body);
+    //         body = nullptr;
+    //     }
+    //     bodiesToDestroy.clear();
+    // }
+
+    // Safely destroy bodies marked for destruction from the previous frame
+    if (!bodiesToDestroyNextFrame.empty()) {
+        for (auto& body : bodiesToDestroyNextFrame) {
             world.DestroyBody(body);
-            body = nullptr;
         }
+        bodiesToDestroyNextFrame.clear();
+    }
+
+    // Move bodies marked for destruction in this frame to the next frame's list
+    if (!bodiesToDestroy.empty()) {
+        bodiesToDestroyNextFrame.insert(bodiesToDestroyNextFrame.end(),
+                                        bodiesToDestroy.begin(), bodiesToDestroy.end());
         bodiesToDestroy.clear();
     }
 }

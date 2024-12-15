@@ -160,8 +160,9 @@ void Goomba::Dead()
 {
     if (body) {
         b2Vec2 pos = body->GetPosition();
-        Physics::world.DestroyBody(body);
+        Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
+        animations.clear();
 
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_goomba", Vector2{pos.x, pos.y}));
@@ -255,8 +256,9 @@ void Koopa::Dead()
 {
     if (body) {
         b2Vec2 pos = body->GetPosition();
-        Physics::world.DestroyBody(body);
+        Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
+        animations.clear();
 
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_koopa", Vector2{pos.x, pos.y}));
