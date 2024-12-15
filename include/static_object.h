@@ -45,4 +45,13 @@ public:
     void OnEndContact(SceneNode* other);
 };
 
+class DeadLine : public StaticObject {
+public:
+    DeadLine(b2Body* body);
+    virtual ~DeadLine() = default;
+
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    void OnEndContact(SceneNode* other);
+};
+
 #endif // STATIC_OBJECT_H

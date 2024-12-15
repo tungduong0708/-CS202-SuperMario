@@ -93,6 +93,35 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     height = j["height"];
     tileSize = j["tilewidth"];
 
+    // Define boundary
+    vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, height},
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{width, 0.0f},
+        b2Vec2{width, height}
+    };
+
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_staticBody;
+    bodyDef.position.Set(0.0f, 0.0f);
+    b2Body* lineBody = Physics::world.CreateBody(&bodyDef);
+
+    for (int i = 0; i < 3; i++) {
+        b2EdgeShape edge;
+        edge.SetTwoSided(vertices[i], vertices[i + 1]);
+        lineBody->CreateFixture(&edge, 1.0f);
+    }
+
+    b2Body* deadLine;
+    b2EdgeShape edge;
+    edge.SetTwoSided(vertices[0], vertices[3]);
+    lineBody->CreateFixture(&edge, 0.0f);
+    DeadLine* deadLineNode = new DeadLine(lineBody);
+    lineBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(deadLineNode);   
+    std::vector<SceneNode*> deadLineLayer;
+    deadLineLayer.push_back(deadLineNode);
+    nodes.push_back(deadLineLayer);
+
     for (const auto& tileset : j["tilesets"]) {
         std::string tilesetPath = tileset["source"].get<std::string>();
         size_t pos = tilesetPath.find_last_of('/');
