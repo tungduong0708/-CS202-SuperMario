@@ -295,6 +295,7 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("grow_mario", Vector2{pos.x, pos.y + size.y}));
             effectManager->setActivePlayerEffect(true);
+            setSpeed(0.0f);
         }
     }
 

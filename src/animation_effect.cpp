@@ -248,7 +248,6 @@ void BrickExplodeEffect::Draw()
 
 DeadMarioEffect::DeadMarioEffect(Vector2 pos)
 {
-    body = nullptr;
     position = pos;
     animation = AnimationHandler::setAnimations("smallmario")[6];
     texture = animation.GetFrame();
@@ -284,7 +283,7 @@ void DeadMarioEffect::Update(float deltaTime)
 
 void DeadMarioEffect::Draw()
 {
-    if (!active) return;
+    if (!active || !body) return;
     b2Vec2 pos = body->GetPosition();
     DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }
@@ -319,15 +318,16 @@ void DeadKoopaEffect::Update(float deltaTime)
         {
             Physics::world.DestroyBody(body);
             body = nullptr;
+            active = false;
         }
     }
 }
 
 void DeadKoopaEffect::Draw()
 {
-    if (!active) return;
+    if (!active || !body) return;
     b2Vec2 pos = body->GetPosition();
-    DrawTexturePro(texture, Rectangle{0, 0, -(float)texture.width, (float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, -(float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }
 
 DeadGoombaEffect::DeadGoombaEffect(Vector2 pos)
@@ -360,15 +360,16 @@ void DeadGoombaEffect::Update(float deltaTime)
         {
             Physics::world.DestroyBody(body);
             body = nullptr;
+            active = false;
         }
     }
 }
 
 void DeadGoombaEffect::Draw()
 {
-    if (!active) return;
+    if (!active || !body) return;
     b2Vec2 pos = body->GetPosition();
-    DrawTexturePro(texture, Rectangle{0, 0, -(float)texture.width, (float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, -(float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }
 
 GrowEffect::GrowEffect(Vector2 pos)

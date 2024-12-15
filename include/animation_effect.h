@@ -109,7 +109,7 @@ private:
     Vector2 position;
     Vector2 size;
     Animation animation;
-    b2Body* body;
+    b2Body* body = nullptr;
 public:
     DeadMarioEffect(Vector2 pos);
     ~DeadMarioEffect() = default;
@@ -122,7 +122,7 @@ private:
     Vector2 position;
     Vector2 size;
     Animation animation;
-    b2Body* body;
+    b2Body* body = nullptr;
 public:
     DeadKoopaEffect(Vector2 pos);
     ~DeadKoopaEffect() = default;
@@ -135,7 +135,7 @@ private:
     Vector2 position;
     Vector2 size;
     Animation animation;
-    b2Body* body;
+    b2Body* body = nullptr;
 public:
     DeadGoombaEffect(Vector2 pos);
     ~DeadGoombaEffect() = default;

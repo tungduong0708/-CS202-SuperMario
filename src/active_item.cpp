@@ -164,7 +164,7 @@ void Star::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     Player* player = dynamic_cast<Player*>(other);
     if (player != nullptr) {
         player->setImmortal(true);
-        player->setImmortalTime(10.0f);
+        player->setImmortalTime(5.0f);
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
