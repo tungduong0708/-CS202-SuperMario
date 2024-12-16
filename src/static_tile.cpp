@@ -115,6 +115,7 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
             if (playerPtr->getMode() == Mode::FIRE || playerPtr->getMode() == Mode::BIG || playerPtr->isImmortal()) {
                 if (normal.y > 0.5f) {
                     EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+                    playSoundEffect(SoundEffect::BRICK_BREAK);
                     effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("brick_explode", getPosition()));
                     Physics::bodiesToDestroy.push_back(GetBody());
                     SetBody(nullptr);
@@ -132,6 +133,7 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 std::string effectName = effectManager->GetEffectName({pos.x, pos.y});
                 effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
                 if (effectName == "coin") {
+                    playSoundEffect(SoundEffect::COIN_GRAB);
                     playerPtr->updateScore(200);
                     playerPtr->setCoins(playerPtr->getCoins() + 1);
                     
