@@ -111,16 +111,20 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         edge.SetTwoSided(vertices[i], vertices[i + 1]);
         lineBody->CreateFixture(&edge, 1.0f);
     }
+    StaticObject* lineNode = new StaticObject(lineBody);
 
     b2Body* deadLine;
+    deadLine = Physics::world.CreateBody(&bodyDef);
     b2EdgeShape edge;
     edge.SetTwoSided(vertices[0], vertices[3]);
-    lineBody->CreateFixture(&edge, 0.0f);
-    DeadLine* deadLineNode = new DeadLine(lineBody);
-    lineBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(deadLineNode);   
-    std::vector<SceneNode*> deadLineLayer;
-    deadLineLayer.push_back(deadLineNode);
-    nodes.push_back(deadLineLayer);
+    deadLine->CreateFixture(&edge, 0.0f);
+    DeadLine* deadLineNode = new DeadLine(deadLine);
+    deadLine->GetUserData().pointer = reinterpret_cast<uintptr_t>(deadLineNode);   
+
+    std::vector<SceneNode*> boundaryLayer;
+    boundaryLayer.push_back(deadLineNode);
+    boundaryLayer.push_back(lineNode);
+    nodes.push_back(boundaryLayer);
 
     for (const auto& tileset : j["tilesets"]) {
         std::string tilesetPath = tileset["source"].get<std::string>();
