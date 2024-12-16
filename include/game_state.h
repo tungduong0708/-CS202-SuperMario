@@ -130,34 +130,38 @@ private:
     ImageButton player2Button;
 };
 
-class DeathState : public GameState
-{
-public:
-    explicit DeathState(Game* game);
-    void update() override;
-    void draw() override;
-    void setLifeRemaining(int life);
-    void reset();
-    ~DeathState() override;
-
-protected:
-    int lifeRemaining;
-    Texture2D characterTexture;
-
-private:
-    float elapsedTime;
-    bool showDeathImage;
-    Texture2D deathTexture;
-};
-
-class ChangeStageState : public DeathState
+class ChangeStageState : public GameState
 {
 public:
     explicit ChangeStageState(Game* game);
     void update() override;
     void draw() override;
-private:
+    void setLifeRemaining(int life);
+    virtual void reset();
+
+    void setStageName(const std::string& name);
+
+    ~ChangeStageState() override;
+
+protected:
+    float elapsedTime;
+    int lifeRemaining;
+    Texture2D characterTexture;
     std::string stageName;
+};
+
+class DeathState : public ChangeStageState
+{
+public:
+    explicit DeathState(Game* game);
+    void update() override;
+    void draw() override;
+    void reset() override;
+    ~DeathState() override;
+
+private:
+    bool showDeathImage;
+    Texture2D deathTexture;
 };
 
 class GameOverState : public GameState

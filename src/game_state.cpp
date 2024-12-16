@@ -427,9 +427,67 @@ SelectPlayerState::~SelectPlayerState()
     UnloadTexture(player2Button.hoverTexture);
 }
 
-DeathState::DeathState(Game* game) : GameState(game), lifeRemaining(3), elapsedTime(0.0f), showDeathImage(false)
+ChangeStageState::ChangeStageState(Game* game) : GameState(game), elapsedTime(0.0f), lifeRemaining(3)
 {
     characterTexture = LoadTexture("../resources/images/smallmario/idle.png");
+}
+
+void ChangeStageState::update()
+{
+    elapsedTime += GetFrameTime();
+
+    if (elapsedTime > 3.0f) {
+        game->changeState(game->gameplayState.get());
+    }
+}
+
+void ChangeStageState::draw()
+{
+    // Draw the underlying GameplayState
+    game->gameplayState->draw();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw the small rectangle with Mario's image and life count
+    float rectWidth = 200.0f;
+    float rectHeight = 100.0f;
+    float rectX = (game->getScreenWidth() - rectWidth) / 2;
+    float rectY = (game->getScreenHeight() - rectHeight) / 2;
+    DrawRectangle(rectX, rectY, rectWidth, rectHeight, Fade(BLACK, 0.7f));
+
+    // Draw Mario's image
+    DrawTexture(characterTexture, rectX + 10, rectY + 10, WHITE);
+
+    // Draw life remaining text
+    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining), {rectX + 60, rectY + 20}, 20, 2, WHITE);
+
+    // Draw stage name
+    DrawTextEx(game->getFont(), stageName.c_str(), {rectX + 60, rectY + 60}, 20, 2, WHITE);
+}
+
+void ChangeStageState::setLifeRemaining(int life)
+{
+    lifeRemaining = life;
+}
+
+void ChangeStageState::reset()
+{
+    elapsedTime = 0.0f; // Reset elapsed time
+}
+
+void ChangeStageState::setStageName(const std::string& name)
+{
+    stageName = name;
+}
+
+ChangeStageState::~ChangeStageState()
+{
+    UnloadTexture(characterTexture);
+}
+
+DeathState::DeathState(Game* game) : ChangeStageState(game), showDeathImage(false)
+{
     deathTexture = LoadTexture("../resources/images/smallmario/dead.png");
 }
 
@@ -441,12 +499,12 @@ void DeathState::update()
         showDeathImage = true;
     }
 
-    if (elapsedTime > 3.0f && showDeathImage) {
+    if (elapsedTime > 2.0f && showDeathImage) {
         showDeathImage = false;
         lifeRemaining--;
     }
 
-    if (elapsedTime > 5.0f) {
+    if (elapsedTime > 4.0f) {
         game->changeState(game->gameplayState.get());
         reset();
     }
@@ -480,28 +538,16 @@ void DeathState::draw()
     }
 }
 
-DeathState::~DeathState()
-{
-    UnloadTexture(characterTexture);
-    UnloadTexture(deathTexture);
-}
-
-void DeathState::setLifeRemaining(int life)
-{
-    lifeRemaining = life;
-}
-
 void DeathState::reset()
 {
     elapsedTime = 0.0f; // Reset elapsed time
     showDeathImage = false; // Reset showDeathImage flag
 }
 
-ChangeStageState::ChangeStageState(Game* game) : DeathState(game) {}
-
-void ChangeStageState::update() {}
-
-void ChangeStageState::draw() {}
+DeathState::~DeathState()
+{
+    UnloadTexture(deathTexture);
+}
 
 GameOverState::GameOverState(Game* game) : GameState(game), buttons(), score(0), highScore(0), timeRemaining(0) {}
 
