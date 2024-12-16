@@ -27,6 +27,16 @@
          "y":0
         }, 
         {
+         "id":5,
+         "image":"",
+         "name":"Effect",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -67,19 +77,19 @@
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":41.2121212121212,
-                 "y":178.393939393939
+                 "x":42.2121212121212,
+                 "y":199.393939393939
                 }, 
                 {
-                 "height":31.2727272727273,
+                 "height":26.3636363636364,
                  "id":2,
                  "name":"gate",
                  "rotation":0,
                  "type":"map-1-2-2.json",
                  "visible":true,
-                 "width":6.54545454545453,
-                 "x":159.454545454545,
-                 "y":176.727272727273
+                 "width":7.45454545454544,
+                 "x":159.515151515151,
+                 "y":195.181818181818
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -87,7 +97,7 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
+ "nextlayerid":6,
  "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-down",
