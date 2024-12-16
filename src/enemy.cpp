@@ -100,10 +100,9 @@ void Enemy::Update(Vector2 playerVelocity, float deltaTime) {
     if (fixtureChange) {
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
-        Init(position);
+        Init(b2Vec2(position.x, position.y + bodySize.y - size.y));
         fixtureChange = false;
     }
-
 
     animations[state].Update(deltaTime);
     texture = animations[state].GetFrame();
@@ -217,7 +216,7 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
         }
         else if (player) {
             setHealth(getHealth() - 100);
-            player->impulseForce(Vector2{0, -10.0f});
+            player->impulseForce(Vector2{0, -20.0f});
             if (!alive) {
                 state = EnemyState::ENEMY_DEAD;
                 if (!deadByPlayer and !deadByFireball) {
@@ -330,28 +329,33 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
             }
         }
         else {
-            cout << "call" << endl;
-            player->impulseForce(Vector2{0, -10.0f});
+            player->impulseForce(Vector2{0, -27.0f});
             if (state == EnemyState::ENEMY_WALK) {
                 state = EnemyState::ENEMY_SHELL;
                 fixtureChange = true;
+                texture = animations[state].GetFrame();
+                size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
                 setSpeed(0);
+                return;
             }
-            else if (state == EnemyState::ENEMY_SHELL) {
+            if (state == EnemyState::ENEMY_SHELL) {
                 state = EnemyState::ENEMY_SPIN;
-                setSpeed(20.0f);
+                setSpeed(15.0f);
+                return;
             }
-            else if (state == EnemyState::ENEMY_SPIN) {
+            if (state == EnemyState::ENEMY_SPIN) {
                 state = EnemyState::ENEMY_SHELL;
                 setSpeed(0);
+                return;
             }
         }
     }
     else {
-        cout << normal.x << endl;
+        if (normal.x != 0) cout << normal.x << endl;
+        cout << speed << endl;
         if ((normal.x) > 0.9f) {
             setSpeed(abs(speed));
-            faceLeft = false;
+            faceLeft = true;
         }
         else if ((normal.x) < -0.9f) {
             setSpeed(-abs(speed));
