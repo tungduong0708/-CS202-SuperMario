@@ -14,6 +14,7 @@ class Bullet;
 class MovingObject : public SceneNode {
 protected:
     Vector2 size; // size of the object
+    Vector2 bodySize;  // size of the body
     float speed;  // max speed that the object can move
     float angle;  // initial angle of the object when moving
     float density; // density of the object, can determine the mass of the object

@@ -1,5 +1,6 @@
 #include "include.h"
 #include "object.h"
+#include "tilemap.h"
 
 Tilemap* Tilemap::instance = nullptr;
 
@@ -31,11 +32,6 @@ Tilemap* Tilemap::getInstance()
 
 void Tilemap::clearMap()
 {
-    int bodyCount = 0;
-    for (b2Body* body = Physics::world.GetBodyList(); body; body = body->GetNext()) {
-        bodyCount++;
-    }
-    std::cout << bodyCount << " bodies in the world before clear.\n";
     std::cout << Physics::world.GetBodyCount() << " bodies in the world before clear.\n";
     for (auto& layer : nodes) {
         for (auto& node : layer) {
@@ -45,11 +41,6 @@ void Tilemap::clearMap()
     nodes.clear();
     tilesets.clear();
     effectManager->clearEffects();
-    bodyCount = 0;
-    for (b2Body* body = Physics::world.GetBodyList(); body; body = body->GetNext()) {
-        bodyCount++;
-    }
-    std::cout << bodyCount << " bodies in the world after clear.\n";
     std::cout << Physics::world.GetBodyCount() << " bodies in the world after clear.\n";
 }
 
@@ -102,7 +93,34 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     height = j["height"];
     tileSize = j["tilewidth"];
 
-    camera = MyCamera(38.0f, Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
+    // Define boundary
+    vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, height},
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{width, 0.0f},
+        b2Vec2{width, height}
+    };
+
+    b2BodyDef bodyDef;
+    bodyDef.type = b2_staticBody;
+    bodyDef.position.Set(0.0f, 0.0f);
+    b2Body* lineBody = Physics::world.CreateBody(&bodyDef);
+
+    for (int i = 0; i < 3; i++) {
+        b2EdgeShape edge;
+        edge.SetTwoSided(vertices[i], vertices[i + 1]);
+        lineBody->CreateFixture(&edge, 1.0f);
+    }
+
+    b2Body* deadLine;
+    b2EdgeShape edge;
+    edge.SetTwoSided(vertices[0], vertices[3]);
+    lineBody->CreateFixture(&edge, 0.0f);
+    DeadLine* deadLineNode = new DeadLine(lineBody);
+    lineBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(deadLineNode);   
+    std::vector<SceneNode*> deadLineLayer;
+    deadLineLayer.push_back(deadLineNode);
+    nodes.push_back(deadLineLayer);
 
     for (const auto& tileset : j["tilesets"]) {
         std::string tilesetPath = tileset["source"].get<std::string>();
@@ -182,6 +200,9 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 std::string name = object["name"].get<std::string>();
                                 player = new Player(name);
                                 player->Init(b2Vec2{x, y});
+                                //cout << player->getSpeed() << endl;
+                                player->setSpeed(8.0f);
+                                player->setInitialPosition(Vector2{x, y});
                                 player->setName(name);
                                 player->setHealth(100);
                                 player->setLives(3);
@@ -192,6 +213,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 player->setPositon(b2Vec2{x, y});
                                 player->setCurrentMap(filePath);
                                 player->setElapsedTime(0.0f);
+                                player->setInitialPosition(Vector2{x, y});
                             }
                         }
                         else if (object.contains("type") && object["type"] == "enemy") {
@@ -255,16 +277,10 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         nodes.push_back(nodeLayer);
     }
     file.close();
-    int bodyCount = 0;
-    for (b2Body* body = Physics::world.GetBodyList(); body != nullptr; body = body->GetNext()) {
-        bodyCount++;
-    }
+    camera = MyCamera(38.0f, player->getPosition(), Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
+    std::cout << "Map loaded successfully!" << std::endl;
+    std::cout << Physics::world.GetBodyCount() << " bodies in the world after loading.\n";
 
-    if (bodyCount > 0) {
-        std::cout << "There are " << bodyCount << " bodies remaining in the world.\n";
-    } else {
-        std::cout << "All bodies have been destroyed.\n";
-    }
 }
 
 void Tilemap::Update(float deltaTime) {
@@ -274,8 +290,6 @@ void Tilemap::Update(float deltaTime) {
     }
     else {
         b2Vec2 playerVelocity = player->getVelocity();
-        player->HandleInput();
-        player->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
         for (auto& layer : nodes) {
             if (layer.empty()) {
                 effectManager->Update(deltaTime);
@@ -285,7 +299,11 @@ void Tilemap::Update(float deltaTime) {
                 node->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
             }
         }
-        camera.Update(player->getPosition());  
+        if (!effectManager->isActivePlayerEffect()) {
+            if (player->isAlive()) camera.Update(player->getPosition());  
+            player->HandleInput();
+            player->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
+        }
     }
 }
 
@@ -303,14 +321,14 @@ void Tilemap::Draw() const {
             node->Draw();
         }
     }
-    effectManager->DrawUpper();
-    player->Draw();
+    if (!effectManager->isActivePlayerEffect()) player->Draw();
     for (auto& node : nodes.back()) {
         node->Draw();
     }
 
     Vector2 cameraTarget = camera.GetCameraTarget();
     player->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
+    effectManager->DrawUpper();
     EndMode2D();
 
 }
@@ -323,6 +341,11 @@ void Tilemap::SetNewMapPath(const std::string &path)
 EffectManager* Tilemap::GetEffectManager()
 {
     return effectManager;
+}
+
+Player *Tilemap::GetPlayer()
+{
+    return player;
 }
 
 Vector2 Tilemap::GetPlayerPosition() const

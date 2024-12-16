@@ -95,7 +95,6 @@ void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     // handle the begin contact of the mushroom
     Player* player = dynamic_cast<Player*>(other);
     if (player != nullptr) {
-        player->changeMode(BIG);
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
@@ -129,7 +128,6 @@ void FireFlower::Init(b2Vec2 position) {
 void FireFlower::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     Player* player = dynamic_cast<Player*>(other);
     if (player != nullptr) {
-        player->changeMode(FIRE);
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
@@ -163,6 +161,14 @@ void Star::Init(b2Vec2 position) {
 
 void Star::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     // handle the begin contact of the star
+    Player* player = dynamic_cast<Player*>(other);
+    if (player != nullptr) {
+        player->setImmortal(true);
+        player->setImmortalTime(5.0f);
+        Physics::bodiesToDestroy.push_back(body);
+        body = nullptr;
+        animations.clear();
+    }
 }
 
 void Star::OnEndContact(SceneNode* other) {

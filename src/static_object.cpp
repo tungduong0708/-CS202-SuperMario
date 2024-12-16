@@ -99,3 +99,20 @@ void Gate::OnBeginContact(SceneNode *other, b2Vec2 normal)
 void Gate::OnEndContact(SceneNode *other)
 {
 }
+
+DeadLine::DeadLine(b2Body *body) : StaticObject(body)
+{
+}
+
+void DeadLine::OnBeginContact(SceneNode *other, b2Vec2 normal)
+{
+    Player *player = dynamic_cast<Player *>(other);
+    if (player != nullptr)
+    {
+        player->setHealth(player->getHealth() - 1000);
+    }
+}
+
+void DeadLine::OnEndContact(SceneNode *other)
+{
+}

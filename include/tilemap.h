@@ -48,6 +48,7 @@ public:
 
     void SetNewMapPath(const std::string& path);
     EffectManager* GetEffectManager();
+    Player* GetPlayer();
     Vector2 GetPlayerPosition() const;
     int GetWidth() const;
     int GetHeight() const;

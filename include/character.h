@@ -26,6 +26,11 @@ protected:
     Rectangle sourceRect;       // Sprite frame to draw
     Rectangle destRect;         // Scaled drawing rectangle
     Vector2 origin;             // Sprite origin
+    Vector2 position;
+    bool immortal;
+    float immortalTime;
+    float colorChangeTimer = 0.0f; 
+    int colorIndex = 0;
     int frameWidth, frameHeight;
     int currentFrame;
     float frameTime, frameSpeed;
@@ -37,7 +42,7 @@ protected:
 public:
     Character();
     Character(string type, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, 
-              float spêed = 0, float angle = 0);
+              float speed = 0, float angle = 0);
     Character(const Character &c);
     virtual ~Character();
 
@@ -59,7 +64,7 @@ public:
 
     // default image = IDLE
     virtual void Init(b2Vec2 position);  
-    virtual void UpdateMode(Mode mode);
+    virtual void UpdateMode(Mode mode, b2Vec2 position);
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void Draw();  
     virtual void Draw(Vector2 position, float angle = 0.0f) = 0;
@@ -75,36 +80,44 @@ class Player : public Character {
 private:
     string name;
     float coins;
-    float range; // max range if the player can shoot
     int lives;
-    bool sit;
-    bool immortal;
     string currentMap;
     float time; // time allotted for the player to complete the map
+    float force;
+    float bulletSpeed;
+    float bulletFreq;
+    Vector2 initialPosition;
 public:
     Player();
-    Player(string type, string name = "", float coins = 0.0f, float range = 0.0f, int lives = 0, bool sit = false, 
-            int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Player(string type, string name = "", float coins = 0.0f, int lives = 0, int health = 0, 
+          int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Player(const Player &p);
     virtual ~Player();
 
     void setPositon(b2Vec2 pos);
+    void setPositionBody(b2Vec2 pos);
     void setName(string n);
     void setCoins(float c);
-    void setRange(float r);
     void setLives(int lives);
-    void setSit(bool s);
     void setImmortal(bool im);
+    void setImmortalTime(float it);
     void setCurrentMap(string map);
     void setTime(float t);
+    void setForce(float f);
+    void setBulletSpeed(float bs);
+    void setBulletFreq(float bf);
+    void setInitialPosition(Vector2 pos);
+    void impulseForce(Vector2 force);
     void updateScore(int s);
+
 
     string getName();
     float getCoins();
-    float getRange();
+    float getForce();
+    float getBulletSpeed();
+    float getBulletFreq();
     string getCurrentMap();
     float getTime();
-    bool isSitting();
     bool isImmortal();
 
     void Init(b2Vec2 position);
@@ -125,9 +138,13 @@ protected:
     string type;
     float range;
     EnemyState state;
+    bool fixtureChange;
+    bool deadByPlayer;
+    bool deadByFireball;
 public:
     Enemy();
-    Enemy(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Enemy(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, int strength = 0, 
+          Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Enemy(const Enemy &e);
     virtual ~Enemy();
     void setType(string t);
@@ -142,7 +159,7 @@ public:
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal);
     virtual void OnEndContact(SceneNode* other);
     void HandleInput();
-    void Dead();
+    virtual void Dead();
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
 
@@ -153,10 +170,12 @@ public:
 class Goomba : public Enemy {
 public:
     Goomba();
-    Goomba(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Goomba(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, 
+           int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Goomba(const Goomba &g);
     virtual ~Goomba();
 
+    void Dead();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;
@@ -165,10 +184,12 @@ public:
 class Koopa : public Enemy {
 public:
     Koopa();
-    Koopa(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Koopa(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, 
+          int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Koopa(const Koopa &k);
     virtual ~Koopa();
 
+    void Dead();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const; 

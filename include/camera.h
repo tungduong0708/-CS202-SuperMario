@@ -18,7 +18,7 @@ private:
 
 public:
     MyCamera() = default;
-    MyCamera(float initialZoom, Vector2 mapSize, int screenWidth, int screenHeight);
+    MyCamera(float initialZoom, Vector2 cameraTarget, Vector2 mapSize, int screenWidth, int screenHeight);
     void Update(Vector2 targetPosition);
     void SetZoom(float zoom);
     float GetZoom() const;

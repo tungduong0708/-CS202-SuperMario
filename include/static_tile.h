@@ -8,6 +8,7 @@
 #include <box2d/box2d.h>
 #include <vector>
 #include <string>
+#include <set>
 
 class StaticTile : public Tile {
 private:
@@ -15,6 +16,7 @@ private:
     b2PrismaticJoint* joint = nullptr;
     bool isDestroyed = true;
     bool isActivated = false;
+    std::set<StaticTile*> tilesContactEnemy;
 public:
     StaticTile() = default;
     StaticTile(int id, std::string type, std::string tilesetName);

@@ -104,4 +104,93 @@ public:
     void Draw();
 };
 
+class DeadMarioEffect : public AnimationEffect {
+private:
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+    b2Body* body = nullptr;
+public:
+    DeadMarioEffect(Vector2 pos);
+    ~DeadMarioEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
+class DeadKoopaEffect : public AnimationEffect {
+private:
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+    b2Body* body = nullptr;
+public:
+    DeadKoopaEffect(Vector2 pos);
+    ~DeadKoopaEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
+class DeadGoombaEffect : public AnimationEffect {
+private:
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+    b2Body* body = nullptr;
+public:
+    DeadGoombaEffect(Vector2 pos);
+    ~DeadGoombaEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
+class SquashDeadGoombaEffect : public AnimationEffect {
+private:
+    float effectTime = 0.5f;
+    float totalTime = 0.0f;
+    Vector2 position; // Lower left origin
+    Vector2 size;
+    Animation animation;
+public:
+    SquashDeadGoombaEffect(Vector2 pos);
+    ~SquashDeadGoombaEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
+class GrowEffect : public AnimationEffect {
+private:
+    float effectTime = 1.5f;
+    float totalTime = 0.0f;
+    float appearTime = 0.3f;
+    float elapsedTime = 0.0f;
+    bool appear = true;
+    Vector2 currentPostion;
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+public:
+    GrowEffect(Vector2 pos);
+    ~GrowEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
+class ShrinkEffect : public AnimationEffect {
+private:
+    float effectTime = 1.5f;
+    float totalTime = 0.0f;
+    float appearTime = 0.3f;
+    float elapsedTime = 0.0f;
+    bool appear = true;
+    Vector2 currentPostion;
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+public:
+    ShrinkEffect(Vector2 pos);
+    ~ShrinkEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
 #endif // ANIMATION_EFFECT_H

@@ -112,38 +112,54 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
     Player* playerPtr = dynamic_cast<Player*>(other); 
     if (playerPtr != nullptr) {
         if (getType() == "brick") {
-            if (playerPtr->getMode() == Mode::FIRE || playerPtr->getMode() == Mode::BIG) {
+            if (playerPtr->getMode() == Mode::FIRE || playerPtr->getMode() == Mode::BIG || playerPtr->isImmortal()) {
                 if (normal.y > 0.5f) {
                     EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
                     effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("brick_explode", getPosition()));
                     Physics::bodiesToDestroy.push_back(GetBody());
                     SetBody(nullptr);
                     isDestroyed = false;
+
+                    if (tilesContactEnemy.find(this) != tilesContactEnemy.end()) {
+                        tilesContactEnemy.erase(this);
+                    }
                 }
             }
-            else {
-                if (normal.y > 0.5f && !isActivated) {
-                    Vector2 pos = getPosition();
-                    pos.y--;
-                    EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-                    std::string effectName = effectManager->GetEffectName({pos.x, pos.y});
-                    effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
-                    if (effectName == "coin") {
-                        playerPtr->updateScore(200);
-                        playerPtr->setCoins(playerPtr->getCoins() + 1);
-                        
-                        if (effectManager->UpdateEffectCount({pos.x, pos.y})) {
-                            Tile::setTilesetPath("resources/tilesets/OverWorld.json");
-                            Tile::setId(2);
-                            isActivated = true;
-                        }
+            else if (normal.y > 0.5f && !isActivated) {
+                Vector2 pos = getPosition();
+                pos.y--;
+                EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+                std::string effectName = effectManager->GetEffectName({pos.x, pos.y});
+                effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+                if (effectName == "coin") {
+                    playerPtr->updateScore(200);
+                    playerPtr->setCoins(playerPtr->getCoins() + 1);
+                    
+                    if (effectManager->UpdateEffectCount({pos.x, pos.y})) {
+                        Tile::setTilesetPath("resources/tilesets/OverWorld.json");
+                        Tile::setId(2);
+                        isActivated = true;
                     }
                 }
             }
         }
     }
+    Enemy* enemy = dynamic_cast<Enemy*>(other);
+    if (enemy != nullptr) {
+        tilesContactEnemy.insert(this);
+    }
 }
 
 void StaticTile::OnEndContact(SceneNode* other)
 {
+    if (!other) return;
+    Enemy* enemy = dynamic_cast<Enemy*>(other);
+    if (enemy != nullptr) {
+        if (tilesContactEnemy.find(this) != tilesContactEnemy.end()) {
+            tilesContactEnemy.erase(this);
+        }
+        else {
+            enemy->Dead();
+        }
+    }
 }

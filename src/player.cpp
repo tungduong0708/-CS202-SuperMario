@@ -6,37 +6,40 @@ Player::Player() : Character()
 {
     name = "";
     coins = 0;
-    range = 0;
     lives = 0;
     time = 0;
-    sit = false;
     immortal = false;
     currentMap = "";
+    force = -12.0f;
+    bulletSpeed = 9.0f;
+    bulletFreq = 0.75f;
+    mode = Mode::SMALL;
 }
 
-Player::Player(string type, string name, float coins, float range, int lives, bool sit, int health, 
+Player::Player(string type, string name, float coins, int lives, int health, 
                int score, int level, int strength, Vector2 size, float speed, 
                float angle): 
     Character(type, health, score, level, strength, size, speed, angle), 
     name(name), 
-    coins(coins), 
-    range(range), 
-    lives(lives),
-    sit(sit) {
+    coins(coins),  
+    lives(lives)
+{
     time = 0;
-    immortal = false;
     currentMap = "";
     alive = true;
+
+    speed = 8.0f;
+    force = -26.0f;
+    bulletSpeed = 9.0f;
+    bulletFreq = 0.75f;
+    mode = Mode::SMALL;
 }
 
 Player::Player(const Player &p): 
     Character(p), 
     name(p.name), 
     coins(p.coins), 
-    range(p.range), 
     lives(p.lives),
-    sit(p.sit),
-    immortal(p.immortal),
     currentMap(p.currentMap),
     time(p.time)
 {
@@ -45,15 +48,20 @@ Player::Player(const Player &p):
 Player::~Player() {
     name = "";
     coins = 0;
-    range = 0;
     lives = 0;
     time = 0;
-    sit = false;
 }
 
 void Player::setPositon(b2Vec2 pos)
 {
-    body->SetTransform(pos, body->GetAngle());
+    // if (body) body->SetTransform(pos, body->GetAngle());
+    position = Vector2{pos.x, pos.y};
+}
+
+void Player::setPositionBody(b2Vec2 pos)
+{
+    if (body) body->SetTransform(pos, body->GetAngle());
+    position = Vector2{pos.x, pos.y};
 }
 
 void Player::setName(string n) {
@@ -64,20 +72,17 @@ void Player::setCoins(float c) {
     coins = c;
 }
 
-void Player::setRange(float r) {
-    range = r;
-}
-
 void Player::setLives(int lives) {
     this->lives = lives;
 }
 
-void Player::setSit(bool s) {
-    sit = s;
-}
-
 void Player::setImmortal(bool im) {
     immortal = im;
+}
+
+void Player::setImmortalTime(float it)
+{
+    immortalTime = it;
 }
 
 void Player::setCurrentMap(string map) {
@@ -86,6 +91,27 @@ void Player::setCurrentMap(string map) {
 
 void Player::setTime(float t) {
     time = t;
+}
+
+void Player::setForce(float f) {
+    force = f;
+}
+
+void Player::setBulletSpeed(float bs) {
+    bulletSpeed = bs;
+}
+
+void Player::setBulletFreq(float bf) {
+    bulletFreq = bf;
+}
+
+void Player::setInitialPosition(Vector2 pos)
+{
+    initialPosition = pos;
+}
+
+void Player::impulseForce(Vector2 force) { 
+    body->ApplyLinearImpulseToCenter(b2Vec2(force.x, force.y), true);
 }
 
 void Player::updateScore(int s) {
@@ -100,10 +126,6 @@ float Player::getCoins() {
     return coins;
 }
 
-float Player::getRange() {
-    return range;
-}
-
 string Player::getCurrentMap() {
     return currentMap;
 }
@@ -112,8 +134,16 @@ float Player::getTime() {
     return time;
 }
 
-bool Player::isSitting() {
-    return sit;
+float Player::getForce() {
+    return force;
+}
+
+float Player::getBulletSpeed() {
+    return bulletSpeed;
+}
+
+float Player::getBulletFreq() {
+    return bulletFreq;
 }
 
 bool Player::isImmortal() {
@@ -125,7 +155,7 @@ void Player::HandleInput() {
         return;
     }
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
-        body->SetLinearVelocity(b2Vec2(8.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
             currentImage = ImageSet::WALK;   
@@ -134,7 +164,7 @@ void Player::HandleInput() {
 
     } else 
     if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
-        body->SetLinearVelocity(b2Vec2(-8.0f, body->GetLinearVelocity().y));
+        body->SetLinearVelocity(b2Vec2(-speed, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
             currentImage = ImageSet::WALK;
@@ -167,10 +197,10 @@ void Player::HandleInput() {
     if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
         if (isOnGround) {
             if (mode == SMALL) {
-                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -24.0f), true);
+                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true);
             }
             else if (mode == BIG or mode == FIRE) {
-                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -36.0f), true);
+                body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force * 1.5f), true);
             }
             previousImage = currentImage;
             currentImage = JUMP;
@@ -183,11 +213,13 @@ void Player::HandleInput() {
         previousImage = currentImage;
         currentImage = HOLD;
         animations[currentImage].setTimer();
-        if (elapsedTime >= 0.75f) {
+        if (elapsedTime >= bulletFreq) {
             // create a fireball
             FireBall* fireball = new FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
             fireball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32));
-            fireball->setSpeed(15.0f * (faceLeft ? -1 : 1));
+            b2Fixture* fixture = fireball->getBody()->GetFixtureList();
+            fixture->SetDensity(2.0f);
+            fireball->setSpeed(20.0f * (faceLeft ? -1 : 1));
 
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->addNode(fireball);
@@ -202,7 +234,7 @@ void Player::HandleInput() {
 }
 
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
-    Character::Update(playerVelocity, deltaTime);
+    if (body) Character::Update(playerVelocity, deltaTime);
     if (time <= 0) {
         alive = false;
         time = 300.0f;
@@ -220,7 +252,30 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
 }
 
 void Player::Dead() {
-    // dead....
+    EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+    if (effectManager->isActivePlayerEffect()) {
+        return;
+    }
+    if (!effectManager->isActivePlayerEffect()) {
+        if (body) {
+            b2Vec2 pos = body->GetPosition();
+            Physics::world.DestroyBody(body);
+            body = nullptr;
+            alive = false;
+            lives--;
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_mario", Vector2{pos.x, pos.y}));
+            effectManager->setActivePlayerEffect(true);
+        }
+        else {
+            if (lives == 0) {
+                // game over
+            }
+            else {
+                // reset the player
+                Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
+            }
+        }
+    }
 }
 
 void Player::UpdateAnimation() {
@@ -236,7 +291,7 @@ void Player::UpdateAnimation() {
 }
 
 void Player::Draw() {
-    Character::Draw();
+    if (body) Character::Draw();
 }
 
 void Player::Draw(Vector2 position, float angle) {
@@ -250,6 +305,29 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
     if (normal.y < -0.5f) {
         isOnGround = true;
     }
+
+    FireFlower* fireFlower = dynamic_cast<FireFlower*>(other);
+    Mushroom* mushroom = dynamic_cast<Mushroom*>(other);
+    if (fireFlower || mushroom) {
+        if (fireFlower) {
+            if (mode == BIG) mode = FIRE;
+            else if (mode == SMALL) changeMode(FIRE);
+        }
+        else if (mushroom) {
+            if (mode == FIRE) mode = BIG;
+            else if (mode == SMALL) changeMode(BIG);
+        }
+        if (modeChanged) {
+            b2Vec2 pos = body->GetPosition();
+            position = Vector2{pos.x, pos.y - 0.5f};
+
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("grow_mario", Vector2{pos.x, pos.y + size.y}));
+            effectManager->setActivePlayerEffect(true);
+            body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+        }
+    }
+
 }
 
 void Player::Init(b2Vec2 position) {
