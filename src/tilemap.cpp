@@ -200,20 +200,19 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 std::string name = object["name"].get<std::string>();
                                 player = new Player(name);
                                 player->Init(b2Vec2{x, y});
-                                //cout << player->getSpeed() << endl;
                                 player->setSpeed(8.0f);
                                 player->setInitialPosition(Vector2{x, y});
-                                player->setName(name);
                                 player->setHealth(100);
                                 player->setLives(3);
                                 player->setTime(300.0f);
                                 player->setCurrentMap(filePath);
                             }
                             else {
-                                player->setPositon(b2Vec2{x, y});
+                                player->setPositionBody(b2Vec2{x, y});
+                                player->setInitialPosition(Vector2{x, y});
                                 player->setCurrentMap(filePath);
                                 player->setElapsedTime(0.0f);
-                                player->setInitialPosition(Vector2{x, y});
+                                player->setTime(300.0f);
                             }
                         }
                         else if (object.contains("type") && object["type"] == "enemy") {
