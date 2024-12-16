@@ -143,6 +143,20 @@ public:
     void Draw();
 };
 
+class SquashDeadGoombaEffect : public AnimationEffect {
+private:
+    float effectTime = 0.5f;
+    float totalTime = 0.0f;
+    Vector2 position; // Lower left origin
+    Vector2 size;
+    Animation animation;
+public:
+    SquashDeadGoombaEffect(Vector2 pos);
+    ~SquashDeadGoombaEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
 class GrowEffect : public AnimationEffect {
 private:
     float effectTime = 1.5f;

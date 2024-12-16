@@ -93,7 +93,7 @@
                 {
                  "height":0,
                  "id":68,
-                 "name":"mushroom",
+                 "name":"mushroom_fireflower",
                  "point":true,
                  "rotation":0,
                  "type":"",
@@ -117,7 +117,7 @@
                 {
                  "height":0,
                  "id":70,
-                 "name":"mushroom",
+                 "name":"mushroom_fireflower",
                  "point":true,
                  "rotation":0,
                  "type":"",
@@ -177,7 +177,7 @@
                 {
                  "height":0,
                  "id":75,
-                 "name":"mushroom",
+                 "name":"mushroom_fireflower",
                  "point":true,
                  "rotation":0,
                  "type":"",
@@ -249,7 +249,7 @@
                 {
                  "height":0,
                  "id":81,
-                 "name":"fireflower",
+                 "name":"mushroom_fireflower",
                  "point":true,
                  "rotation":0,
                  "type":"",
@@ -347,7 +347,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":99,
+ "nextobjectid":101,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

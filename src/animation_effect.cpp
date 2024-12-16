@@ -372,6 +372,32 @@ void DeadGoombaEffect::Draw()
     DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, -(float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }
 
+SquashDeadGoombaEffect::SquashDeadGoombaEffect(Vector2 pos)
+{
+    position = pos;
+    animation = AnimationHandler::setAnimations("goomba")[1];
+    texture = animation.GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / (IMAGE_WIDTH * 2)};
+    position.y -= size.y;
+}
+
+void SquashDeadGoombaEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    totalTime += deltaTime;
+    if (totalTime > effectTime) {
+        active = false;
+        return;
+    }
+}
+
+void SquashDeadGoombaEffect::Draw()
+{
+    if (!active) return;
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{position.x, position.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+}
+
+
 GrowEffect::GrowEffect(Vector2 pos)
 {
     // Lower left origin
