@@ -268,11 +268,11 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
         }
     }
     else {
-        if ((normal.x) > 0.9f) {
+        if ((normal.x) < -0.9f) {
             setSpeed(abs(speed));
             faceLeft = false;
         }
-        else if ((normal.x) < -0.9f) {
+        else if ((normal.x) > 0.9f) {
             setSpeed(-abs(speed));
             faceLeft = true;
         }
@@ -407,25 +407,13 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
         }
     }
     else {
-        if (state != EnemyState::ENEMY_SPIN) {
-            if (normal.x > 0.9f) {
-                setSpeed(abs(speed));
-                faceLeft = false;
-            }
-            if (normal.x < -0.9f) {
-                setSpeed(-abs(speed));
-                faceLeft = true;
-            }
+        if (normal.x > 0.9f) {
+            setSpeed(-abs(speed));
+            faceLeft = true;
         }
-        else {
-            if (normal.x > 0.9f) {
-                setSpeed(-abs(speed));
-                faceLeft = false;
-            }
-            if (normal.x < -0.9f) {
-                setSpeed(+abs(speed));
-                faceLeft = true;
-            }
+        if (normal.x < -0.9f) {
+            setSpeed(+abs(speed));
+            faceLeft = false;
         }
     }
 }
