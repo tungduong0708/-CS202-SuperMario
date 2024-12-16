@@ -149,6 +149,9 @@ vector<Image>& ImageHandler::setImages(string path) {
         images.push_back(LoadImage("resources/images/fireflower/fireflower1.png"));
         images.push_back(LoadImage("resources/images/fireflower/fireflower2.png"));
     }
+    else if (path == "movingplatform"){
+        images.push_back(LoadImage("resources/images/movingplatform/movingplatform.png"));
+    }
     
     // copy vector
     return images;
@@ -334,6 +337,11 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
     else if (path == "fireflower") {
         animations = {
             Animation({Frame(0.1f, textures[0]), Frame(0.1f, textures[1])}) // fireflower
+        };
+    }
+    else if (path == "movingplatform") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) 
         };
     }
 

@@ -238,3 +238,97 @@ void FireBall::Draw() {
 
 void FireBall::Draw(Vector2 position, float angle) {
 }
+
+
+MovingPlatform::MovingPlatform() 
+    : MovingObject(), movementType(MovementType::Horizontal), direction(1.0f),
+      topBoundary(0), bottomBoundary(0), leftBoundary(0), rightBoundary(0) {}
+
+MovingPlatform::MovingPlatform(MovementType type, Vector2 size, float speed, float angle, float boundaries[4]) 
+    : MovingObject(size, speed, angle), movementType(type), direction(1.0f) {
+    topBoundary = boundaries[0];
+    bottomBoundary = boundaries[1];
+    leftBoundary = boundaries[2];
+    rightBoundary = boundaries[3];
+}
+
+MovingPlatform::MovingPlatform(const MovingPlatform &mp)
+    : MovingObject(mp), movementType(mp.movementType), direction(mp.direction),
+      topBoundary(mp.topBoundary), bottomBoundary(mp.bottomBoundary),
+      leftBoundary(mp.leftBoundary), rightBoundary(mp.rightBoundary) {}
+
+MovingPlatform::~MovingPlatform() {}
+
+void MovingPlatform::Init(b2Vec2 position) {
+    animations = AnimationHandler::setAnimations("movingplatform");
+    Texture texture = animations[0].GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+
+    std::vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{size.x, 0.0f},
+        b2Vec2{size.x, size.y},
+        b2Vec2{0.0f, size.y}
+    };
+    restitution = 0.0f;
+    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, restitution);
+
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+    
+}
+
+void MovingPlatform::Update(Vector2 playerVelocity, float deltaTime) {
+    elapsedTime += deltaTime;
+    b2Vec2 velocity = body->GetLinearVelocity();
+
+    if (movementType == MovementType::Vertical) {
+        velocity.y = speed * direction;
+        body->SetLinearVelocity(velocity);
+
+        // Check boundaries for vertical movement
+        float posY = body->GetPosition().y;
+        if (posY <= bottomBoundary || posY >= topBoundary) {
+            direction = -direction; // Reverse direction
+        }
+    } else if (movementType == MovementType::Horizontal) {
+        velocity.x = speed * direction;
+        body->SetLinearVelocity(velocity);
+
+        // Check boundaries for horizontal movement
+        float posX = body->GetPosition().x;
+        if (posX <= leftBoundary || posX >= rightBoundary) {
+            direction = -direction; // Reverse direction
+        }
+    }
+    animations[0].Update(deltaTime);
+}
+
+void MovingPlatform::HandleInput() {
+    // Platforms generally do not require input handling
+}
+
+void MovingPlatform::OnBeginContact(SceneNode *other, b2Vec2 normal) {
+    // Handle collisions if needed, e.g., with the player
+}
+
+void MovingPlatform::OnEndContact(SceneNode *other) {
+    // Handle end of collision logic if needed
+}
+
+void MovingPlatform::Draw() {
+    b2Vec2 pos = body->GetPosition();
+    Texture text = animations[0].GetFrame();
+    Rectangle sourceRect = { 0, 0, static_cast<float>(text.width), static_cast<float>(text.height) };
+    Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, angle);
+}
+
+void MovingPlatform::Draw(Vector2 position, float angle) {
+    Texture text = animations[0].GetFrame();
+    Rectangle sourceRect = { 0, 0, static_cast<float>(text.width), static_cast<float>(text.height) };
+    Renderer::DrawPro(text, sourceRect, position, Vector2{size.x, size.y}, false, angle);
+}
+
+MovingObject* MovingPlatform::copy() const {
+    return new MovingPlatform(*this);
+}
+
