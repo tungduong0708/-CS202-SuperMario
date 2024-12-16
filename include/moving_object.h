@@ -154,4 +154,31 @@ public:
     MovingObject* copy() const;
 };
 
+enum class MovementType {
+    Vertical,   
+    Horizontal  
+};
+class MovingPlatform : public MovingObject {
+private:
+    MovementType movementType; // Direction: Vertical or Horizontal
+    float direction;           // 1.0 for forward, -1.0 for backward
+    float topBoundary, bottomBoundary; // Vertical boundaries
+    float leftBoundary, rightBoundary; // Horizontal boundaries
+
+public:
+    MovingPlatform();
+    MovingPlatform(MovementType type, Vector2 size, float speed, float angle, float boundaries[4]);
+    MovingPlatform(const MovingPlatform &mp);
+    virtual ~MovingPlatform();
+
+    void Init(b2Vec2 position) override;
+    void Update(Vector2 playerVelocity, float deltaTime) override;
+    void HandleInput() override;
+    void OnBeginContact(SceneNode *other, b2Vec2 normal) override;
+    void OnEndContact(SceneNode *other) override;
+    void Draw() override;
+    void Draw(Vector2 position, float angle = 0.0f) override;
+    MovingObject* copy() const override;
+};
+
 #endif
