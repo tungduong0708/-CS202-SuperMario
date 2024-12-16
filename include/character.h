@@ -51,6 +51,7 @@ public:
     void setLevel(int l);
     void setStrength(int st);
     void setMode(Mode mode);
+    void setOnGround(bool og);
 
     int getHealth();
     int getScore();
@@ -141,6 +142,7 @@ protected:
     bool fixtureChange;
     bool deadByPlayer;
     bool deadByFireball;
+    bool isBodyChanged;
 public:
     Enemy();
     Enemy(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, int strength = 0, 
@@ -150,9 +152,11 @@ public:
     void setType(string t);
     void setRange(float r);
     void setIsAlive(bool ia);
+    void setState(EnemyState s);
 
     string getType();
     float getRange();
+    EnemyState getState();
 
     void Init(b2Vec2 position);  
     virtual void Update(Vector2 playerVelocity, float deltaTime);
@@ -182,6 +186,9 @@ public:
 };
 
 class Koopa : public Enemy {
+private:
+    float delay;
+    bool isDelay;
 public:
     Koopa();
     Koopa(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, 
@@ -190,6 +197,7 @@ public:
     virtual ~Koopa();
 
     void Dead();
+    void Update(Vector2 playerVelocity, float deltaTime);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const; 

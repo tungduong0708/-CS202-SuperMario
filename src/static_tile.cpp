@@ -159,7 +159,7 @@ void StaticTile::OnEndContact(SceneNode* other)
             tilesContactEnemy.erase(this);
         }
         else {
-            enemy->Dead();
+            if (!isDestroyed) enemy->Dead();
         }
     }
 }
