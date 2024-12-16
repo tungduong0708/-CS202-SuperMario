@@ -164,8 +164,15 @@ void Goomba::Dead()
         body = nullptr;
         animations.clear();
 
-        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-        effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_goomba", Vector2{pos.x, pos.y}));
+        if (deadByFireball) {
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_goomba", Vector2{pos.x, pos.y}));
+        }
+        else {
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("squash_dead_goomba", Vector2{pos.x, pos.y + bodySize.y}));
+        }
+        
     }
     else {
         return;
