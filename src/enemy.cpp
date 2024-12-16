@@ -191,8 +191,8 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
         if (!alive) {
             state = EnemyState::ENEMY_DEAD;
             if (!deadByPlayer and !deadByFireball) {
-                Dead();
                 deadByFireball = true;
+                Dead();
             }
             Tilemap::getInstance()->GetPlayer()->updateScore(100);
         }
