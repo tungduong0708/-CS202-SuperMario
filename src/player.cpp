@@ -302,7 +302,7 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
     if (!other) return;
 
-    if (normal.y < -0.5f) {
+    if (normal.y > 0.5f) {
         isOnGround = true;
     }
 

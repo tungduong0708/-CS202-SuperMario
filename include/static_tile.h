@@ -14,9 +14,8 @@ class StaticTile : public Tile {
 private:
     b2Body* invisibleBody = nullptr;
     b2PrismaticJoint* joint = nullptr;
-    bool isDestroyed = true;
+    bool isDestroyed = false;
     bool isActivated = false;
-    std::set<StaticTile*> tilesContactEnemy;
 public:
     StaticTile() = default;
     StaticTile(int id, std::string type, std::string tilesetName);

@@ -95,10 +95,10 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
 
     // Define boundary
     vector<b2Vec2> vertices = {
-        b2Vec2{0.0f, height},
+        b2Vec2{0.0f, (float)height},
         b2Vec2{0.0f, 0.0f},
-        b2Vec2{width, 0.0f},
-        b2Vec2{width, height}
+        b2Vec2{(float)width, 0.0f},
+        b2Vec2{(float)width, (float)height}
     };
 
     b2BodyDef bodyDef;

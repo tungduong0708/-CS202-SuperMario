@@ -93,7 +93,7 @@ void StaticTile::Update(Vector2 playerVelocity, float deltaTime)
 
 void StaticTile::Draw()
 {
-    if (!isDestroyed) return;
+    if (isDestroyed) return;
     std::string tilesetPath = Tile::getTilesetPath();
     int columns = TilesetHandler::getColumns(tilesetPath);
     int spacing = TilesetHandler::getSpacing(tilesetPath);
@@ -113,19 +113,15 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
     if (playerPtr != nullptr) {
         if (getType() == "brick") {
             if (playerPtr->getMode() == Mode::FIRE || playerPtr->getMode() == Mode::BIG || playerPtr->isImmortal()) {
-                if (normal.y > 0.5f) {
+                if (normal.y < -0.5f) {
                     EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
                     effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("brick_explode", getPosition()));
                     Physics::bodiesToDestroy.push_back(GetBody());
                     SetBody(nullptr);
-                    isDestroyed = false;
-
-                    if (tilesContactEnemy.find(this) != tilesContactEnemy.end()) {
-                        tilesContactEnemy.erase(this);
-                    }
+                    isDestroyed = true;
                 }
             }
-            else if (normal.y > 0.5f && !isActivated) {
+            else if (normal.y < -0.5f && !isActivated) {
                 Vector2 pos = getPosition();
                 pos.y--;
                 EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
@@ -144,22 +140,13 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
             }
         }
     }
-    Enemy* enemy = dynamic_cast<Enemy*>(other);
-    if (enemy != nullptr) {
-        tilesContactEnemy.insert(this);
-    }
 }
 
 void StaticTile::OnEndContact(SceneNode* other)
 {
     if (!other) return;
     Enemy* enemy = dynamic_cast<Enemy*>(other);
-    if (enemy != nullptr) {
-        if (tilesContactEnemy.find(this) != tilesContactEnemy.end()) {
-            tilesContactEnemy.erase(this);
-        }
-        else {
-            enemy->Dead();
-        }
+    if (enemy != nullptr && getType() == "brick" && isDestroyed) {
+        enemy->Dead();
     }
 }
