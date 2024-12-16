@@ -335,10 +335,10 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":94,
+ "nextobjectid":102,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tilesets":[
         {
