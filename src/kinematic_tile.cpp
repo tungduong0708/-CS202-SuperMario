@@ -152,8 +152,9 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                         effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect("fireflower", pos));
                     }
                 }
-                else if (effectName == "coin") {
-                    effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+                else effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
+
+                if (effectName == "coin") {
                     playerPtr->updateScore(200);
                     playerPtr->setCoins(playerPtr->getCoins() + 1);
                 }
