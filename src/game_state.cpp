@@ -274,7 +274,7 @@ void GameplayState::update() {
 
     // Handle pause button click
     if (IsButtonClicked(pauseButton)) {
-        game->changeState(game->pauseGameState.get());
+        game->changeState(game->deathState.get());
     }
 }
 
@@ -419,18 +419,83 @@ void SelectPlayerState::draw() {
     DrawImageButton(player2Button, *game);
 }
 
-SelectPlayerState::~SelectPlayerState() {
+SelectPlayerState::~SelectPlayerState()
+{
     UnloadTexture(player1Button.texture);
     UnloadTexture(player1Button.hoverTexture);
     UnloadTexture(player2Button.texture);
     UnloadTexture(player2Button.hoverTexture);
 }
 
-DeathState::DeathState(Game* game) : GameState(game), lifeRemaining(0), buttons() {}
+DeathState::DeathState(Game* game) : GameState(game), lifeRemaining(3), elapsedTime(0.0f), showDeathImage(false)
+{
+    characterTexture = LoadTexture("../resources/images/smallmario/idle.png");
+    deathTexture = LoadTexture("../resources/images/smallmario/dead.png");
+}
 
-void DeathState::update() {}
+void DeathState::update()
+{
+    elapsedTime += GetFrameTime();
 
-void DeathState::draw() {}
+    if (elapsedTime > 1.0f && elapsedTime < 2.0f && !showDeathImage) {
+        showDeathImage = true;
+    }
+
+    if (elapsedTime > 3.0f && showDeathImage) {
+        showDeathImage = false;
+        lifeRemaining--;
+    }
+
+    if (elapsedTime > 5.0f) {
+        game->changeState(game->gameplayState.get());
+        reset();
+    }
+}
+
+void DeathState::draw()
+{
+    // Draw the underlying GameplayState
+    game->gameplayState->draw();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw the small rectangle with Mario's image and life count
+    float rectWidth = 200.0f;
+    float rectHeight = 100.0f;
+    float rectX = (game->getScreenWidth() - rectWidth) / 2;
+    float rectY = (game->getScreenHeight() - rectHeight) / 2;
+    DrawRectangle(rectX, rectY, rectWidth, rectHeight, Fade(BLACK, 0.7f));
+
+    // Draw Mario's image
+    DrawTexture(characterTexture, rectX + 10, rectY + 10, WHITE);
+
+    // Draw life remaining text
+    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining), {rectX + 60, rectY + 20}, 20, 2, WHITE);
+
+    if (showDeathImage) {
+        // Draw death image and "life - 1" text
+        DrawTexture(deathTexture, rectX + 10, rectY + 50, WHITE);
+        DrawTextEx(game->getFont(), "life - 1", {rectX + 60, rectY + 60}, 10, 2, WHITE);
+    }
+}
+
+DeathState::~DeathState()
+{
+    UnloadTexture(characterTexture);
+    UnloadTexture(deathTexture);
+}
+
+void DeathState::setLifeRemaining(int life)
+{
+    lifeRemaining = life;
+}
+
+void DeathState::reset()
+{
+    elapsedTime = 0.0f; // Reset elapsed time
+    showDeathImage = false; // Reset showDeathImage flag
+}
 
 ChangeStageState::ChangeStageState(Game* game) : DeathState(game) {}
 

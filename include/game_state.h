@@ -136,9 +136,18 @@ public:
     explicit DeathState(Game* game);
     void update() override;
     void draw() override;
+    void setLifeRemaining(int life);
+    void reset();
+    ~DeathState() override;
+
 protected:
     int lifeRemaining;
-    std::vector<Button> buttons;
+    Texture2D characterTexture;
+
+private:
+    float elapsedTime;
+    bool showDeathImage;
+    Texture2D deathTexture;
 };
 
 class ChangeStageState : public DeathState
@@ -147,6 +156,8 @@ public:
     explicit ChangeStageState(Game* game);
     void update() override;
     void draw() override;
+private:
+    std::string stageName;
 };
 
 class GameOverState : public GameState
@@ -155,6 +166,11 @@ public:
     explicit GameOverState(Game* game);
     void update() override;
     void draw() override;
+
+    // Setters
+    void setScore(int score);
+    void setHighScore(int highScore);
+    void setTimeRemaining(int timeRemaining);
 protected:
     std::vector<Button> buttons;
     int score;
