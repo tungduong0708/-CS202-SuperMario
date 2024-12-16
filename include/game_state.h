@@ -2,17 +2,11 @@
 
 #include <vector>
 #include <string>
-#include "include.h"
 #include "object.h"
-#include "physics.h"
-#include "contactlistener.h"
 #include "raylib.h"
 
 class Game;
-class ButtonInterface
-{
-    Rectangle rect;
-};
+
 struct Button
 {
     Rectangle rect;
@@ -99,7 +93,7 @@ public:
     explicit GameplayState(Game* game);
     void update() override;
     void draw() override;
-    void cleanup();
+    void cleanup() override;
 
 private:
     std::vector<MovingObject*> movingObjects;

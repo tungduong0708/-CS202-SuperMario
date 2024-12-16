@@ -2,7 +2,6 @@
 #include "game.h"
 #include "drawer.h"
 #include "raylib.h"
-#include <iostream>
 
 GameState::GameState(Game *game)
 {
@@ -439,7 +438,7 @@ void ChangeStageState::update() {}
 
 void ChangeStageState::draw() {}
 
-GameOverState::GameOverState(Game* game) : GameState(game), score(0), highScore(0), timeRemaining(0), buttons() {}
+GameOverState::GameOverState(Game* game) : GameState(game), buttons(), score(0), highScore(0), timeRemaining(0) {}
 
 void GameOverState::update() {}
 
