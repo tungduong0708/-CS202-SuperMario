@@ -54,6 +54,10 @@ void Enemy::setIsAlive(bool ia) {
     alive = ia;
 }
 
+void Enemy::setState(EnemyState s) {
+    state = s;
+}
+
 string Enemy::getType() {
     return type;
 }
@@ -62,6 +66,9 @@ float Enemy::getRange() {
     return range;
 }
 
+EnemyState Enemy::getState() {
+    return state;
+}
 
 void Enemy::Init(b2Vec2 position) {
     // define the texture
@@ -85,6 +92,13 @@ void Enemy::Init(b2Vec2 position) {
         b2Vec2{0.0f + 0.2f, size.y}
     };
     MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y});
+    b2Fixture* fixture = body->GetFixtureList();
+    b2Filter filter = fixture->GetFilterData();
+    filter.categoryBits = CATEGORY_ENEMY;
+    filter.maskBits = MASK_ENEMY;
+    fixture->SetFilterData(filter);
+    // set the category bits
+
 
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
@@ -100,9 +114,17 @@ void Enemy::Update(Vector2 playerVelocity, float deltaTime) {
     if (fixtureChange) {
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
-        Init(b2Vec2(position.x, position.y + bodySize.y - size.y));
+        Init(b2Vec2(position.x, position.y));
+
+        b2Fixture* fixture = body->GetFixtureList();
+        b2Filter filter = fixture->GetFilterData();
+        filter.categoryBits = CATEGORY_DEFAULT;
+        filter.maskBits = MASK_DEFAULT;
+        fixture->SetFilterData(filter);
         fixtureChange = false;
     }
+
+    body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
 
     animations[state].Update(deltaTime);
     texture = animations[state].GetFrame();
@@ -163,13 +185,13 @@ void Goomba::Dead()
         body = nullptr;
         animations.clear();
 
-        if (deadByFireball) {
+        if (deadByPlayer) {
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_goomba", Vector2{pos.x, pos.y}));
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("squash_dead_goomba", Vector2{pos.x, pos.y + bodySize.y}));
         }
         else {
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("squash_dead_goomba", Vector2{pos.x, pos.y + bodySize.y}));
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_goomba", Vector2{pos.x, pos.y}));
         }
         
     }
@@ -272,6 +294,8 @@ Koopa::Koopa(string type, float range, bool alive, bool sit, int health, int sco
     Enemy(type, range, alive, health, score, level, strength, size, speed, angle)
 {
     faceLeft = true;
+    delay = 0.2f;
+    isDelay = false;
 }
 
 Koopa::Koopa(const Koopa &k): Enemy(k) {
@@ -296,14 +320,28 @@ void Koopa::Dead()
     }
 }
 
+void Koopa::Update(Vector2 playerVelocity, float deltaTime) {
+    Enemy::Update(playerVelocity, deltaTime);
+    if (isDelay) {
+        delay -= deltaTime;
+        if (delay <= 0) {
+            isDelay = false;
+            delay = 0.2f;
+        }
+    }
+}
+
 void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
+    if (isDelay) return;
     if (!other) return;
     if (!alive) return;
+    if (other == this) return;
     Player* player = dynamic_cast<Player*>(other);
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
     if (fireball || (player && player->isImmortal())) {
+        cout << "Call" << endl;
         setHealth(getHealth() - 100);
         if (!alive) {
             state = EnemyState::ENEMY_DEAD;
@@ -332,17 +370,28 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
                 }
             }
             else if (enemy) {
-                return;
+                if (state == ENEMY_SPIN) {
+                    enemy->setHealth(enemy->getHealth() - 100);
+                    if (!enemy->isAlive()) {
+                        enemy->setState(EnemyState::ENEMY_DEAD);
+                        enemy->Dead();
+                    }
+                }
+                else {
+                    return;
+                }
             }
         }
         else {
-            player->impulseForce(Vector2{0, -27.0f});
+            player->setOnGround(true);
+            // player->impulseForce(Vector2{0, -30.0f});
             if (state == EnemyState::ENEMY_WALK) {
                 state = EnemyState::ENEMY_SHELL;
                 fixtureChange = true;
                 texture = animations[state].GetFrame();
                 size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
                 setSpeed(0);
+                isDelay = true;
                 return;
             }
             if (state == EnemyState::ENEMY_SHELL) {
@@ -358,15 +407,25 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
         }
     }
     else {
-        if (normal.x != 0) cout << normal.x << endl;
-        cout << speed << endl;
-        if ((normal.x) > 0.9f) {
-            setSpeed(abs(speed));
-            faceLeft = true;
+        if (state != EnemyState::ENEMY_SPIN) {
+            if (normal.x > 0.9f) {
+                setSpeed(abs(speed));
+                faceLeft = false;
+            }
+            if (normal.x < -0.9f) {
+                setSpeed(-abs(speed));
+                faceLeft = true;
+            }
         }
-        else if ((normal.x) < -0.9f) {
-            setSpeed(-abs(speed));
-            faceLeft = true;
+        else {
+            if (normal.x > 0.9f) {
+                setSpeed(-abs(speed));
+                faceLeft = false;
+            }
+            if (normal.x < -0.9f) {
+                setSpeed(+abs(speed));
+                faceLeft = true;
+            }
         }
     }
 }
