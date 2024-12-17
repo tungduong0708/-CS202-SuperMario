@@ -175,22 +175,4 @@ public:
     void Draw();
 };
 
-class ShrinkEffect : public AnimationEffect {
-private:
-    float effectTime = 1.5f;
-    float totalTime = 0.0f;
-    float appearTime = 0.3f;
-    float elapsedTime = 0.0f;
-    bool appear = true;
-    Vector2 currentPostion;
-    Vector2 position;
-    Vector2 size;
-    Animation animation;
-public:
-    ShrinkEffect(Vector2 pos);
-    ~ShrinkEffect() = default;
-    void Update(float deltaTime);
-    void Draw();
-};
-
 #endif // ANIMATION_EFFECT_H

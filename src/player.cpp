@@ -1,4 +1,5 @@
 #include "include.h"
+#include "game.h"
 #include "object.h"
 #include "character.h"
 
@@ -288,6 +289,8 @@ void Player::Dead() {
             else {
                 // reset the player
                 playSoundEffect(SoundEffect::PLAYER_DIE);
+                Game* game = Game::getInstance();
+                game->changeState(game->deathState.get());
                 Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
             }
         }

@@ -251,10 +251,7 @@ GameplayState::GameplayState(Game* game)
     EnemyCreator::InitEnemies();
     TextHelper::loadFont("Mario256", "");
     TextHelper::loadTexture("coin", "smallmario");
-
     TilesetHandler::Init();
-    Tilemap* tilemap = Tilemap::getInstance();
-    tilemap->LoadMapFromJson("map-1-1.json");
     
     float buttonWidth = 35;
     float buttonHeight = 35;
@@ -274,7 +271,7 @@ void GameplayState::update() {
 
     // Handle pause button click
     if (IsButtonClicked(pauseButton)) {
-        game->changeState(game->deathState.get());
+        game->changeState(game->pauseGameState.get());
     }
 }
 
@@ -397,11 +394,17 @@ void SelectPlayerState::update() {
     // Handle button clicks
     if (IsButtonClicked(player1Button)) {
         // Set player to Mario
+        Tilemap* tilemap = Tilemap::getInstance();
+        tilemap->LoadMapFromJson("map-1-1.json");
+        tilemap->setPlayer("mario");
 
         game->changeState(game->gameplayState.get());
     }
     if (IsButtonClicked(player2Button)) {
         // Set player to Luigi
+        Tilemap* tilemap = Tilemap::getInstance();
+        tilemap->LoadMapFromJson("map-1-1.json");
+        tilemap->setPlayer("luigi");
         
         game->changeState(game->gameplayState.get());
     }
@@ -438,6 +441,7 @@ void ChangeStageState::update()
 
     if (elapsedTime > 3.0f) {
         game->changeState(game->gameplayState.get());
+        reset();
     }
 }
 
