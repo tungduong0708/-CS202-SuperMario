@@ -25,19 +25,22 @@ Player::Player(string type, string name, float coins, int lives, int health,
     coins(coins),  
     lives(lives)
 {
-    time = 0;
-    currentMap = "";
-    alive = true;
-    mode = Mode::SMALL;
+    this->currentMap = "";
+    this->alive = true;
+    this->mode = Mode::SMALL;
+    this->elapsedTime = 0.0f;
+    this->time = 300.0f;
+    this->lives = 3;
+    this->health = 100;
 
     if (type == "mario") {
-        speed = 8.0f;
+        this->speed = 8.0f;
         force = -26.0f;
         bulletSpeed = 9.0f;
         bulletFreq = 0.40f;
     }
     else {
-        speed = 8.0f;
+        this->speed = 8.0f;
         force = -30.0f;
         bulletSpeed = 11.0f;
         bulletFreq = 0.30f;
