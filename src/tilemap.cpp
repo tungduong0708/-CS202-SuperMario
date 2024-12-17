@@ -336,6 +336,7 @@ void Tilemap::setPlayer(const std::string name)
         player->setInitialPosition(playerPosition);
         string fPath = filePath.substr(4,3);
         player->setCurrentMap(fPath);
+        TextHelper::loadTexture("coin", "small" + name);
     }
     camera = MyCamera(38.0f, player->getPosition(), Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
 }
