@@ -156,7 +156,13 @@ bool Character::isAlive() {
 }
 
 void Character::changeMode(Mode mode)
-{
+{   
+    if (this->mode < mode){
+        playSoundEffect(SoundEffect::POWER_UP);
+    }
+    else if (this->mode > mode){
+        playSoundEffect(SoundEffect::POWER_DOWN);
+    }
     this->mode = mode;
     this->modeChanged = true;
 }

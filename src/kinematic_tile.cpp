@@ -146,6 +146,7 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
                 std::string effectName = effectManager->GetEffectName({pos.x, pos.y});
                 if (effectName == "mushroom_fireflower") {
+                    playSoundEffect(SoundEffect::POWER_UP_APPEAR);
                     if (playerPtr->getMode() == Mode::SMALL) {
                         effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect("mushroom", pos));
                     } else if (playerPtr->getMode() == Mode::BIG || playerPtr->getMode() == Mode::FIRE) {
@@ -155,6 +156,7 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 else effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
 
                 if (effectName == "coin") {
+                    playSoundEffect(SoundEffect::COIN_GRAB);
                     playerPtr->updateScore(200);
                     playerPtr->setCoins(playerPtr->getCoins() + 1);
                 }
@@ -169,6 +171,7 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
             }
         }
         else if (getType() == "coin") {
+            playSoundEffect(SoundEffect::COIN_GRAB);
             b2Fixture* fixture = GetBody()->GetFixtureList();
             if (fixture->IsSensor()) {
                 animation = false;

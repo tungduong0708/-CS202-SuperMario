@@ -32,7 +32,7 @@ int ActiveItem::getValue() {
 }
 
 void ActiveItem::Init(b2Vec2 position) {
-    // initialize the grow item
+    // initialize the growth item
     // animations initialization....
     Texture texture = animations[0].GetFrame();
     size = {static_cast<float>(texture.width) / IMAGE_WIDTH, static_cast<float>(texture.height) / IMAGE_WIDTH};
@@ -87,6 +87,7 @@ Mushroom::~Mushroom() {}
 
 void Mushroom::Init(b2Vec2 position) {
     // initialize the mushroom
+    playSoundEffect(SoundEffect::POWER_UP_APPEAR);
     animations = AnimationHandler::setAnimations("mushroom");
     ActiveItem::Init(position);
 }

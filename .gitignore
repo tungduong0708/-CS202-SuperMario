@@ -4,3 +4,5 @@ build/
 /external
 .git/
 Makefile
+.idea/
+cmake-build-debug/
