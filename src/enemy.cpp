@@ -543,6 +543,14 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     if (bossState == BossState::BOSS_ATTACK) {
         if (elapsedTime >= timer) {
             // assemble the attack ball
+            AttackBall* atkball = new AttackBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
+            atkball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), 0.15f));
+            b2Fixture* fixture = atkball->getBody()->GetFixtureList();
+            fixture->SetDensity(2.0f);
+            atkball->setSpeed(6.0f);
+
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->addNode(atkball);
             elapsedTime = 0.0f;
         }
     }
@@ -565,6 +573,7 @@ void Boss::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     Player* player = dynamic_cast<Player*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
     if (player) {
+        if (player->isImmortal()) return;
         if (player->getMode() == Mode::SMALL) {
             player->setHealth(player->getHealth() - getStrength());
         }

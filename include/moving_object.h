@@ -93,6 +93,36 @@ public:
 };
 
 
+class AttackBall : public MovingObject {
+private:
+    float damage;
+    float span; // time span of the attackball
+    bool flag; // indicate that the attackball is active or not
+
+    // other attributes are inherited from the moving object class ---
+public:
+    AttackBall();
+    AttackBall(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0);
+    AttackBall(const AttackBall &ff);
+    virtual ~AttackBall();
+    void setDamage(float d);
+    void setFlag(bool f);
+    float getDamage();
+    bool isActive();
+    Animation getAnimation(bool flag);
+
+    void Init(b2Vec2 position);
+    void Draw();
+    void Draw(Vector2 position, float angle = 0.0f);
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void HandleInput();
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);  
+    void OnEndContact(SceneNode* other);
+
+    MovingObject* copy() const;
+};
+
+
 class ActiveItem : public MovingObject {
 private:
     int value;

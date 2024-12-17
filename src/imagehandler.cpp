@@ -157,7 +157,7 @@ vector<Image>& ImageHandler::setImages(string path) {
         images.push_back(LoadImage("resources/images/fireflower/fireflower1.png"));
         images.push_back(LoadImage("resources/images/fireflower/fireflower2.png"));
     }
-    else if (path == "fireball") {
+    else if (path == "attackball") {
         images.push_back(LoadImage("resources/images/boss/bullet1.png"));  
         images.push_back(LoadImage("resources/images/boss/bullet2.png"));
     }
