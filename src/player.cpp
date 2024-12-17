@@ -27,12 +27,20 @@ Player::Player(string type, string name, float coins, int lives, int health,
     time = 0;
     currentMap = "";
     alive = true;
-
-    speed = 8.0f;
-    force = -26.0f;
-    bulletSpeed = 9.0f;
-    bulletFreq = 0.40f;
     mode = Mode::SMALL;
+
+    if (type == "mario") {
+        speed = 8.0f;
+        force = -26.0f;
+        bulletSpeed = 9.0f;
+        bulletFreq = 0.40f;
+    }
+    else {
+        speed = 8.0f;
+        force = -30.0f;
+        bulletSpeed = 11.0f;
+        bulletFreq = 0.30f;
+    }
 }
 
 Player::Player(const Player &p): 
@@ -46,10 +54,12 @@ Player::Player(const Player &p):
 }
 
 Player::~Player() {
-    name = "";
-    coins = 0;
-    lives = 0;
-    time = 0;
+    if (this) {
+        name = "";
+        coins = 0;
+        lives = 0;
+        time = 0;
+    }
 }
 
 void Player::setPositon(b2Vec2 pos)

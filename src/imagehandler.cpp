@@ -383,7 +383,8 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
         animations = {
             Animation({Frame(0.1f, textures[0])}), // idle
             Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk1 & walk2
-            Animation({Frame(0.15f, textures[3]), Frame(0.15f, textures[4]), Frame(0.15f, textures[5])}) // blow1 & blow2 & blow3
+            Animation({Frame(0.15f, textures[3]), Frame(0.15f, textures[4]), Frame(0.15f, textures[5])}), // blow1 & blow2 & blow3
+            Animation({Frame(0.1f, textures[0])}) // dead
         };
     }
 

@@ -208,8 +208,10 @@ class Boss: public Enemy {
 private:
     float bulletFreq;
     float bulletSpeed;
-    float timer;
+    bool attackFire;
+    Player* player;
     BossState bossState;
+    float timer; // total time of 3 attack frames
 public:
     Boss();
     Boss(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
@@ -219,11 +221,11 @@ public:
 
     void setBulletFreq(float bf);
     void setBulletSpeed(float bs);
-    void setTimer(float t);
+    void setPlayer(Player* pos);
     void setBossState(BossState bs);
 
-    float getTimer();
     BossState getBossState();
+    Player* getPlayer();
     float getBulletFreq();
     float getBulletSpeed();
 
@@ -232,8 +234,8 @@ public:
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     void Dead();
-    void Draw();
-    void Draw(Vector2 position, float angle = 0.0f);
+    // void Draw();
+    // void Draw(Vector2 position, float angle = 0.0f);
     MovingObject* copy() const;
 };
 

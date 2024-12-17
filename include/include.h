@@ -32,6 +32,7 @@ enum EnemyState {
 
 enum BossState {
     BOSS_IDLE,
+    BOSS_WALK,
     BOSS_ATTACK,
     BOSS_DEAD
 };

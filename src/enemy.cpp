@@ -430,8 +430,10 @@ MovingObject* Koopa::copy() const {
 Boss::Boss() : Enemy() {
     bulletFreq = 0.0f;
     bulletSpeed = 0.0f;
-    timer = 0.0f;
+    player = nullptr;
     bossState = BossState::BOSS_IDLE;
+    attackFire = false;
+    timer = 0.0f;
 }
 
 Boss::Boss(string type, float range, bool alive, int health, int score, int level, 
@@ -440,17 +442,23 @@ Boss::Boss(string type, float range, bool alive, int health, int score, int leve
 {
     bulletFreq = 0.0f;
     bulletSpeed = 0.0f;
-    timer = 0.0f;
+    player = nullptr;
     bossState = BossState::BOSS_IDLE;
+    attackFire = true;
+    timer = 0.0f;
 }
 
 Boss::Boss(const Boss &b): Enemy(b) {
     bulletFreq = b.bulletFreq;
     bulletSpeed = b.bulletSpeed;
     bossState = b.bossState;
+    attackFire = b.attackFire;
+    player = dynamic_cast<Player*>(b.player->copy());
+    timer = b.timer;
 }
 
 Boss::~Boss() {
+    player = nullptr;
 }
 
 void Boss::setBulletFreq(float bf) {
@@ -461,8 +469,8 @@ void Boss::setBulletSpeed(float bs) {
     bulletSpeed = bs;
 }
 
-void Boss::setTimer(float t) {
-    timer = t;
+void Boss::setPlayer(Player* p) {
+    player = p;
 }
 
 void Boss::setBossState(BossState bs) {
@@ -477,8 +485,8 @@ float Boss::getBulletSpeed() {
     return bulletSpeed;
 }
 
-float Boss::getTimer() {
-    return timer;
+Player* Boss::getPlayer() {
+    return player;
 }
 
 BossState Boss::getBossState() {
@@ -488,6 +496,11 @@ BossState Boss::getBossState() {
 void Boss::Init(b2Vec2 position) {
     bossState = BossState::BOSS_IDLE;
     animations = AnimationHandler::setAnimations(type);
+    Animation attack = animations[BossState::BOSS_ATTACK];
+    for (int i = 0; i < 3; i++) {
+        timer += attack.getFrameTime(i);
+    }
+
     texture = animations[bossState].GetFrame();
     frameWidth = texture.width;
     frameHeight = texture.height;
@@ -514,19 +527,105 @@ void Boss::Init(b2Vec2 position) {
 
 void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     if (!body) return;
+    Vector2 playerPos = player->getPosition();
     elapsedTime += deltaTime;
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
     destRect.y = position.y;
 
-    body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
+    if (position.x - playerPos.x > 10.0f) {
+        faceLeft = true;
+        bossState = BossState::BOSS_ATTACK;
+        elapsedTime = 0.0f;
+    }
+    else if (position.x - playerPos.x < 10.0f and position.x - playerPos.x > 0.0f) {
+        faceLeft = true;
+        bossState = BossState::BOSS_WALK;
+        speed = -abs(speed);
+    }
+    else {
+        faceLeft = false;
+        bossState = BossState::BOSS_WALK;
+        speed = abs(speed) + 3.0f;
+    }
+
+    if (bossState == BossState::BOSS_ATTACK) {
+        if (elapsedTime >= timer) {
+            // assemble the fireball
+            elapsedTime = 0.0f;
+        }
+    }
+    else {
+        body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
+    }
 
     animations[bossState].Update(deltaTime);
     texture = animations[bossState].GetFrame();
 
     if (!alive) {
-        state = EnemyState::ENEMY_DEAD;
+        bossState = BossState::BOSS_DEAD;
         Dead();
     }
 }
 
+void Boss::OnBeginContact(SceneNode *other, b2Vec2 normal) {
+    if (!other) return;
+    if (!alive) return;
+    Player* player = dynamic_cast<Player*>(other);
+    FireBall* fireball = dynamic_cast<FireBall*>(other);
+    if (player) {
+        if (player->getMode() == Mode::SMALL) {
+            player->setHealth(player->getHealth() - getStrength());
+        }
+        else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+            b2Body* playerBody = player->getBody();
+            Vector2 playerSize = player->getSize();
+            Vector2 pos = player->getPosition();
+            player->setPositon(b2Vec2{pos.x, pos.y});
+            player->changeMode(Mode::SMALL);
+            player->setImmortal(true);
+            player->setImmortalTime(1.5f);
+
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("shrink_mario", Vector2{pos.x, pos.y + playerSize.y}));
+            effectManager->setActivePlayerEffect(true);
+            playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+        }
+    }
+    else if (fireball) {
+        setHealth(getHealth() - 100);
+        if (!alive) {
+            bossState = BossState::BOSS_DEAD;
+            Dead();
+        }
+    }
+    else {
+        if (normal.x > 0.9f) {
+            setSpeed(-abs(speed));
+            faceLeft = true;
+        }
+        if (normal.x < -0.9f) {
+            setSpeed(+abs(speed));
+            faceLeft = false;
+        }
+    }
+}
+
+void Boss::OnEndContact(SceneNode *other) {
+}
+
+void Boss::Dead() {
+
+}
+
+// void Boss::Draw() {
+
+// }
+
+// void Boss::Draw(Vector2 position, float angle) {
+
+// }
+
+MovingObject *Boss::copy() const {
+    return new Boss(*this);
+}
