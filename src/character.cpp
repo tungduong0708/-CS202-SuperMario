@@ -119,6 +119,10 @@ void Character::setMode(Mode mode) {
     this->mode = mode;
 }
 
+void Character::setOnGround(bool og) {
+    isOnGround = og;
+}
+
 int Character::getHealth() {
     return health;
 }

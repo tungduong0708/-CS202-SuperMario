@@ -140,7 +140,7 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
     Player* playerPtr = dynamic_cast<Player*>(other); 
     if (playerPtr != nullptr && animation) {
         if (getType() == "blind_box") {
-            if (normal.y > 0.5f) {
+            if (normal.y < -0.5f) {
                 Vector2 pos = getPosition();
                 pos.y--;
                 EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();

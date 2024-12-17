@@ -128,14 +128,6 @@ void Physics::Init() {
 void Physics::Update(float deltaTime) {
     world.SetContactListener(new ContactListener());
     world.Step(deltaTime, 6, 2);
-    // if (!bodiesToDestroy.empty()) {
-    //     for (auto& body : bodiesToDestroy) {
-    //         world.DestroyBody(body);
-    //         body = nullptr;
-    //     }
-    //     bodiesToDestroy.clear();
-    // }
-
     // Safely destroy bodies marked for destruction from the previous frame
     if (!bodiesToDestroyNextFrame.empty()) {
         for (auto& body : bodiesToDestroyNextFrame) {

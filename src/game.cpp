@@ -16,8 +16,8 @@ Game::Game()
       changeStageState(nullptr),
       gameOverState(nullptr),
       victoryState(nullptr),
-      shouldExit(false),
-      currentState(nullptr)
+      currentState(nullptr),
+      shouldExit(false)
 {
     InitWindow(screenWidth, screenHeight, "Game");
     InitAudioDevice();

@@ -38,11 +38,22 @@ enum Mode {
 };
 
 
-enum CollisionCategory {
+enum CategoryBits {
+    CATEGORY_DEFAULT = 0x0001 << 0,
     CATEGORY_PLAYER = 0x0001 << 1,
     CATEGORY_FIREBALL = 0x0001 << 2,
     CATEGORY_SCENERY = 0x0001 << 3,
+    CATEGORY_ENEMY = 0x0001 << 4,
     // Add more categories as needed
+};
+
+enum MaskBits {
+    MASK_DEFAULT = ~0,
+    MASK_PLAYER = CATEGORY_SCENERY | CATEGORY_ENEMY,
+    MASK_FIREBALL = CATEGORY_SCENERY | CATEGORY_ENEMY,
+    MASK_SCENERY = CATEGORY_PLAYER | CATEGORY_FIREBALL | CATEGORY_ENEMY,
+    MASK_ENEMY = ~CATEGORY_ENEMY,
+    // Add more masks as needed
 };
 
 
