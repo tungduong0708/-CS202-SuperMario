@@ -274,7 +274,7 @@ void GameplayState::update() {
 
     // Handle pause button click
     if (IsButtonClicked(pauseButton)) {
-        game->changeState(game->deathState.get());
+        game->changeState(game->pauseGameState.get());
     }
 }
 
@@ -438,6 +438,7 @@ void ChangeStageState::update()
 
     if (elapsedTime > 3.0f) {
         game->changeState(game->gameplayState.get());
+        reset();
     }
 }
 

@@ -3,6 +3,8 @@
 #include "object.h"
 #include "game_state.h"
 
+Game* Game::instance = nullptr;
+
 Game::Game()
     : mainMenuState(nullptr),
       settingsState(nullptr),
@@ -41,6 +43,18 @@ Game::Game()
     victoryState = std::make_unique<VictoryState>(this);
     currentState = mainMenuState.get();
     std::cout << "All states initialized" << std::endl;
+}
+
+Game::~Game() {
+    UnloadFont(font);
+    UnloadMusicStream(music);
+}
+
+Game* Game::getInstance() {
+    if (instance == nullptr) {
+        instance = new Game();
+    }
+    return instance;
 }
 
 void Game::run() {
