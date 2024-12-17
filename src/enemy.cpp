@@ -542,7 +542,7 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
 
     if (bossState == BossState::BOSS_ATTACK) {
         if (elapsedTime >= timer) {
-            // assemble the fireball
+            // assemble the attack ball
             elapsedTime = 0.0f;
         }
     }

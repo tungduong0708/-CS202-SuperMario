@@ -374,7 +374,7 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
             Animation({Frame(0.1f, textures[0])}) 
         };
     }
-    else if (path == "fireball") {
+    else if (path == "attackball") {
         animations = {
             Animation({Frame(0.1f, textures[0]), Frame(0.1f, textures[1])}) // fireball
         };

@@ -37,7 +37,7 @@ Player::Player(string type, string name, float coins, int lives, int health,
         bulletFreq = 0.40f;
     }
     else {
-        speed = 8.0f;
+        speed = 7.0f;
         force = -30.0f;
         bulletSpeed = 11.0f;
         bulletFreq = 0.30f;
