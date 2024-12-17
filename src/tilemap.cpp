@@ -202,6 +202,14 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                     else {
                         if (object.contains("type") && object["type"] == "player") {
                             playerPosition = Vector2{x, y};
+                            if (player != nullptr) {
+                                player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
+                                player->setInitialPosition(playerPosition);
+                                string fPath = filePath.substr(4,3);
+                                player->setCurrentMap(fPath);
+                                player->setElapsedTime(0.0f);
+                                player->setTime(300.0f);
+                            }
                         }
                         else if (object.contains("type") && object["type"] == "enemy") {
                             std::string enemyName = object["name"].get<std::string>();
@@ -263,6 +271,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         }
         nodes.push_back(nodeLayer);
     }
+    camera = MyCamera(38.0f, playerPosition, Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
     file.close();
     std::cout << "Map loaded successfully!" << std::endl;
     std::cout << Physics::world.GetBodyCount() << " bodies in the world after loading.\n";
@@ -321,23 +330,12 @@ void Tilemap::Draw() const {
 
 void Tilemap::setPlayer(const std::string name)
 {
-    if (player != nullptr) {
-        player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
-        player->setInitialPosition(playerPosition);
-        string fPath = filePath.substr(4,3);
-        player->setCurrentMap(fPath);
-        player->setElapsedTime(0.0f);
-        player->setTime(300.0f);
-    }
-    else {
-        player = new Player(name);
-        player->Init(b2Vec2{playerPosition.x, playerPosition.y});
-        player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
-        player->setInitialPosition(playerPosition);
-        string fPath = filePath.substr(4,3);
-        player->setCurrentMap(fPath);
-    }
-    camera = MyCamera(38.0f, player->getPosition(), Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
+    player = new Player(name);
+    player->Init(b2Vec2{playerPosition.x, playerPosition.y});
+    player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
+    player->setInitialPosition(playerPosition);
+    string fPath = filePath.substr(4,3);
+    player->setCurrentMap(fPath);
 }
 
 void Tilemap::SetNewMapPath(const std::string &path)
