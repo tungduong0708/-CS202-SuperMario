@@ -86,8 +86,7 @@ void EffectManager::Update(float deltaTime)
         } else {
             DeadMarioEffect* deadMario = dynamic_cast<DeadMarioEffect*>(*it);
             GrowEffect* growEffect = dynamic_cast<GrowEffect*>(*it);
-            ShrinkEffect* shrinkEffect = dynamic_cast<ShrinkEffect*>(*it);
-            if (deadMario || growEffect || shrinkEffect) {
+            if (deadMario || growEffect) {
                 activePlayerEffect = false;
             }
             delete *it;            // Free memory

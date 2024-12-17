@@ -221,21 +221,18 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
     else if (player || enemy) {
         if (abs(normal.x) > 0.75f) {
             if (player) {
-                if (player->getMode() == Mode::SMALL) {
+                if (player->isInvisible()) {
+                    return;
+                }
+                else if (player->getMode() == Mode::SMALL) {
                     player->setHealth(player->getHealth() - getStrength());
                 }
                 else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+                    player->changeMode(Mode::SMALL);
+                    player->setInvisibleTime(1.5f);
                     b2Body* playerBody = player->getBody();
-                    Vector2 playerSize = player->getSize();
                     Vector2 pos = player->getPosition();
                     player->setPositon(b2Vec2{pos.x, pos.y});
-                    player->changeMode(Mode::SMALL);
-                    player->setImmortal(true);
-                    player->setImmortalTime(2.0f);
-
-                    EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-                    effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("shrink_mario", Vector2{pos.x, pos.y + playerSize.y}));
-                    effectManager->setActivePlayerEffect(true);
                     playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
                 }
             }
@@ -351,21 +348,18 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
     else if (player || enemy) {
         if (abs(normal.x) > 0.75f) {
             if (player) {
-                if (player->getMode() == Mode::SMALL) {
+                if (player->isInvisible()) {
+                    return;
+                }
+                else if (player->getMode() == Mode::SMALL) {
                     player->setHealth(player->getHealth() - getStrength());
                 }
                 else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+                    player->changeMode(Mode::SMALL);
+                    player->setInvisibleTime(1.5f);
                     b2Body* playerBody = player->getBody();
-                    Vector2 playerSize = player->getSize();
                     Vector2 pos = player->getPosition();
                     player->setPositon(b2Vec2{pos.x, pos.y});
-                    player->changeMode(Mode::SMALL);
-                    player->setImmortal(true);
-                    player->setImmortalTime(2.0f);
-
-                    EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-                    effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("shrink_mario", Vector2{pos.x, pos.y + playerSize.y}));
-                    effectManager->setActivePlayerEffect(true);
                     playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
                 }
             }

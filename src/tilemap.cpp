@@ -215,7 +215,8 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                             else {
                                 player->setPositionBody(b2Vec2{x, y});
                                 player->setInitialPosition(Vector2{x, y});
-                                player->setCurrentMap(filePath);
+                                string fPath = filePath.substr(4,3);
+                                player->setCurrentMap(fPath);
                                 player->setElapsedTime(0.0f);
                                 player->setTime(300.0f);
                             }

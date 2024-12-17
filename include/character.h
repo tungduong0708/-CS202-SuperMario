@@ -27,8 +27,12 @@ protected:
     Rectangle destRect;         // Scaled drawing rectangle
     Vector2 origin;             // Sprite origin
     Vector2 position;
+    bool appear = true;
+    bool invincible = false;
     bool immortal;
+    float blinkTime;
     float immortalTime;
+    float appearTimer = 0.0f;
     float colorChangeTimer = 0.0f; 
     int colorIndex = 0;
     int frameWidth, frameHeight;
@@ -52,6 +56,7 @@ public:
     void setStrength(int st);
     void setMode(Mode mode);
     void setOnGround(bool og);
+    void setInvisibleTime(float it);
 
     int getHealth();
     int getScore();
@@ -62,6 +67,7 @@ public:
     bool isAlive();
     void changeMode(Mode mode);
     Mode getMode();
+    bool isInvisible();
 
     // default image = IDLE
     virtual void Init(b2Vec2 position);  
