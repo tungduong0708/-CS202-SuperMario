@@ -18,9 +18,11 @@ const int screenHeight = 600;
 class Tilemap {
 private:
     bool isChangingMap = false;
+    std::string filePath;
     std::string newMapPath;
     float width, height, tileSize, tilesetColumns;
     MyCamera camera;
+    Vector2 playerPosition;
     Player* player;
     EffectManager* effectManager;
     std::vector<std::vector<SceneNode*>> nodes;
@@ -45,7 +47,8 @@ public:
     void LoadMapFromJson(const std::string& filePath);
     void Update(float deltaTime);
     void Draw() const;
-
+    
+    void setPlayer(const std::string name);
     void SetNewMapPath(const std::string& path);
     EffectManager* GetEffectManager();
     Player* GetPlayer();
