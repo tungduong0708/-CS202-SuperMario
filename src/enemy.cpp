@@ -332,10 +332,7 @@ void Koopa::Update(Vector2 playerVelocity, float deltaTime) {
 
 void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
-    if (isDelay) return;
-    if (!other) return;
-    if (!alive) return;
-    if (other == this) return;
+    if (isDelay || !other || !alive || other == this) return;
     Player* player = dynamic_cast<Player*>(other);
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
@@ -524,3 +521,27 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     }
 }
 
+void Boss::OnBeginContact(SceneNode *other, b2Vec2 normal)
+{
+}
+
+void Boss::OnEndContact(SceneNode *other)
+{
+}
+
+void Boss::Dead()
+{
+}
+
+void Boss::Draw()
+{
+}
+
+void Boss::Draw(Vector2 position, float angle)
+{
+}
+
+MovingObject *Boss::copy() const
+{
+    return nullptr;
+}
