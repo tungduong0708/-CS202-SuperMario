@@ -316,3 +316,4 @@ void Character::OnBeginContact(SceneNode* other)
 void Character::OnEndContact(SceneNode* other)
 {
 }
+

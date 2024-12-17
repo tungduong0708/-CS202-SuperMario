@@ -107,10 +107,10 @@ public:
     int getValue();
 
     virtual void Init(b2Vec2 position);
-    void Draw();
-    void Draw(Vector2 position, float angle = 0.0f);
-    void Update(Vector2 playerVelocity, float deltaTime);
-    void HandleInput();
+    virtual void Draw();
+    virtual void Draw(Vector2 position, float angle = 0.0f);
+    virtual void Update(Vector2 playerVelocity, float deltaTime);
+    virtual void HandleInput();
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal) = 0;
     virtual void OnEndContact(SceneNode* other) = 0;
 };
@@ -149,6 +149,7 @@ public:
     virtual ~Star();
 
     void Init(b2Vec2 position);
+    void Update(Vector2 playerVelocity, float deltaTime);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const;

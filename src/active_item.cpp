@@ -157,6 +157,23 @@ void Star::Init(b2Vec2 position) {
     // initialize the star
     animations = AnimationHandler::setAnimations("star");
     ActiveItem::Init(position);
+    
+    b2Fixture* fixture = body->GetFixtureList();
+    b2Filter filter = fixture->GetFilterData();
+    filter.categoryBits = CATEGORY_STAR;
+    filter.maskBits = MASK_ENEMY;
+    fixture->SetFilterData(filter);
+
+    body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -8.0f), true);
+    setSpeed(7.0f);
+}
+
+void Star::Update(Vector2 playerVelocity, float deltaTime) {
+    ActiveItem::Update(playerVelocity, deltaTime);
+    if (body == nullptr) return;
+    b2Vec2 pos = body->GetPosition();
+    b2Vec2 vel = body->GetLinearVelocity();
+    setSpeed(speed);
 }
 
 void Star::OnBeginContact(SceneNode* other, b2Vec2 normal) {
@@ -168,6 +185,15 @@ void Star::OnBeginContact(SceneNode* other, b2Vec2 normal) {
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+    }
+    else {
+        if (normal.x > 0.9f) {
+            setSpeed(-abs(speed));
+        }
+        else if (normal.x < -0.9f) {
+            setSpeed(abs(speed));
+        }
+        //body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
     }
 }
 

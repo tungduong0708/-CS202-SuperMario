@@ -31,7 +31,7 @@ Player::Player(string type, string name, float coins, int lives, int health,
     speed = 8.0f;
     force = -26.0f;
     bulletSpeed = 9.0f;
-    bulletFreq = 0.75f;
+    bulletFreq = 0.40f;
     mode = Mode::SMALL;
 }
 
@@ -208,7 +208,7 @@ void Player::HandleInput() {
         }
     }
 
-    // frequency of the bullet: 0.75 seconds
+    // default frequency of the bullet: 0.4 seconds
     if ((IsKeyPressed(KEY_E) || IsKeyPressed(KEY_ENTER)) && mode == FIRE) {
         previousImage = currentImage;
         currentImage = HOLD;
@@ -219,7 +219,7 @@ void Player::HandleInput() {
             fireball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32));
             b2Fixture* fixture = fireball->getBody()->GetFixtureList();
             fixture->SetDensity(2.0f);
-            fireball->setSpeed(20.0f * (faceLeft ? -1 : 1));
+            fireball->setSpeed(10.0f * (faceLeft ? -1 : 1) + body->GetLinearVelocity().x);
 
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->addNode(fireball);

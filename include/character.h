@@ -158,14 +158,14 @@ public:
     float getRange();
     EnemyState getState();
 
-    void Init(b2Vec2 position);  
+    virtual void Init(b2Vec2 position);  
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal);
     virtual void OnEndContact(SceneNode* other);
-    void HandleInput();
+    virtual void HandleInput();
     virtual void Dead();
-    void Draw();
-    void Draw(Vector2 position, float angle = 0.0f);
+    virtual void Draw();
+    virtual void Draw(Vector2 position, float angle = 0.0f);
 
     MovingObject* copy() const;
 };
@@ -201,6 +201,40 @@ public:
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const; 
-};  
+}; 
+
+
+class Boss: public Enemy {
+private:
+    float bulletFreq;
+    float bulletSpeed;
+    float timer;
+    BossState bossState;
+public:
+    Boss();
+    Boss(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
+         int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Boss(const Boss &b);
+    virtual ~Boss();
+
+    void setBulletFreq(float bf);
+    void setBulletSpeed(float bs);
+    void setTimer(float t);
+    void setBossState(BossState bs);
+
+    float getTimer();
+    BossState getBossState();
+    float getBulletFreq();
+    float getBulletSpeed();
+
+    void Init(b2Vec2 position);
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    void OnEndContact(SceneNode* other);
+    void Dead();
+    void Draw();
+    void Draw(Vector2 position, float angle = 0.0f);
+    MovingObject* copy() const;
+};
 
 #endif
