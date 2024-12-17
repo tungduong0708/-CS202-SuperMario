@@ -197,9 +197,11 @@ void Player::HandleInput() {
     if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
         if (isOnGround) {
             if (mode == SMALL) {
+                playSoundEffect(SoundEffect::JUMP);
                 body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true);
             }
             else if (mode == BIG or mode == FIRE) {
+                playSoundEffect(SoundEffect::JUMP_SUPER);
                 body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force * 1.5f), true);
             }
             previousImage = currentImage;
@@ -214,6 +216,8 @@ void Player::HandleInput() {
         currentImage = HOLD;
         animations[currentImage].setTimer();
         if (elapsedTime >= bulletFreq) {
+            // sound effect
+            playSoundEffect(SoundEffect::SHOOT_FIREBALL);
             // create a fireball
             FireBall* fireball = new FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
             fireball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32));
@@ -269,9 +273,11 @@ void Player::Dead() {
         else {
             if (lives == 0) {
                 // game over
+                playSoundEffect(SoundEffect::GAME_OVER);
             }
             else {
                 // reset the player
+                playSoundEffect(SoundEffect::PLAYER_DIE);
                 Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
             }
         }
@@ -317,7 +323,7 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
             if (mode == FIRE) mode = BIG;
             else if (mode == SMALL) changeMode(BIG);
         }
-        if (modeChanged) {
+        if (modeChanged) {            
             b2Vec2 pos = body->GetPosition();
             position = Vector2{pos.x, pos.y - 0.5f};
 

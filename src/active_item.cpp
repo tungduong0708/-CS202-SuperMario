@@ -87,6 +87,7 @@ Mushroom::~Mushroom() {}
 
 void Mushroom::Init(b2Vec2 position) {
     // initialize the mushroom
+    playSoundEffect(SoundEffect::POWER_UP_APPEAR);
     animations = AnimationHandler::setAnimations("mushroom");
     ActiveItem::Init(position);
 }

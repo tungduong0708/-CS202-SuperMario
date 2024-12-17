@@ -144,8 +144,7 @@ void Enemy::OnEndContact(SceneNode *other) {
 void Enemy::HandleInput() {
 }
 
-void Enemy::Dead() {
-}
+void Enemy::Dead() {}
 
 void Enemy::Draw() {
     if (!body) return;
@@ -184,6 +183,7 @@ void Goomba::Dead()
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+
 
         if (deadByPlayer) {
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
@@ -312,6 +312,8 @@ void Koopa::Dead()
         body = nullptr;
         animations.clear();
 
+        playSoundEffect(SoundEffect::HIT_ENEMY);
+
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_koopa", Vector2{pos.x, pos.y}));
     }
@@ -386,6 +388,7 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
             player->setOnGround(true);
             // player->impulseForce(Vector2{0, -30.0f});
             if (state == EnemyState::ENEMY_WALK) {
+                playSoundEffect(SoundEffect::HIT_ENEMY);
                 state = EnemyState::ENEMY_SHELL;
                 fixtureChange = true;
                 texture = animations[state].GetFrame();
