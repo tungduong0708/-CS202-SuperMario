@@ -329,25 +329,11 @@ void Tilemap::setPlayer(const std::string name)
         player->setElapsedTime(0.0f);
         player->setTime(300.0f);
     }
-    else if (name == "mario") {
+    else {
         player = new Player(name);
         player->Init(b2Vec2{playerPosition.x, playerPosition.y});
-        player->setSpeed(8.0f);
+        player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
         player->setInitialPosition(playerPosition);
-        player->setHealth(100);
-        player->setLives(3);
-        player->setTime(300.0f);
-        string fPath = filePath.substr(4,3);
-        player->setCurrentMap(fPath);
-    }
-    else (name == "luigi"); {
-        player = new Player(name);
-        player->Init(b2Vec2{playerPosition.x, playerPosition.y});
-        player->setSpeed(8.0f);
-        player->setInitialPosition(playerPosition);
-        player->setHealth(100);
-        player->setLives(3);
-        player->setTime(300.0f);
         string fPath = filePath.substr(4,3);
         player->setCurrentMap(fPath);
     }
