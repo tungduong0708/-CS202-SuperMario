@@ -144,8 +144,7 @@ void Enemy::OnEndContact(SceneNode *other) {
 void Enemy::HandleInput() {
 }
 
-void Enemy::Dead() {
-}
+void Enemy::Dead() {}
 
 void Enemy::Draw() {
     if (!body) return;
@@ -184,6 +183,7 @@ void Goomba::Dead()
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+
 
         if (deadByPlayer) {
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
@@ -309,6 +309,8 @@ void Koopa::Dead()
         body = nullptr;
         animations.clear();
 
+        playSoundEffect(SoundEffect::HIT_ENEMY);
+
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_koopa", Vector2{pos.x, pos.y}));
     }
@@ -338,7 +340,6 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
     if (fireball || (player && player->isImmortal())) {
-        cout << "Call" << endl;
         setHealth(getHealth() - 100);
         if (!alive) {
             state = EnemyState::ENEMY_DEAD;
@@ -380,6 +381,7 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
             player->setOnGround(true);
             // player->impulseForce(Vector2{0, -30.0f});
             if (state == EnemyState::ENEMY_WALK) {
+                playSoundEffect(SoundEffect::HIT_ENEMY);
                 state = EnemyState::ENEMY_SHELL;
                 fixtureChange = true;
                 texture = animations[state].GetFrame();
@@ -417,5 +419,108 @@ void Koopa::OnEndContact(SceneNode *other) {
 
 MovingObject* Koopa::copy() const {
     return new Koopa(*this);
+}
+
+Boss::Boss() : Enemy() {
+    bulletFreq = 0.0f;
+    bulletSpeed = 0.0f;
+    timer = 0.0f;
+    bossState = BossState::BOSS_IDLE;
+}
+
+Boss::Boss(string type, float range, bool alive, int health, int score, int level, 
+           int strength, Vector2 size, float speed, float angle): 
+    Enemy(type, range, alive, health, score, level, strength, size, speed, angle)
+{
+    bulletFreq = 0.0f;
+    bulletSpeed = 0.0f;
+    timer = 0.0f;
+    bossState = BossState::BOSS_IDLE;
+}
+
+Boss::Boss(const Boss &b): Enemy(b) {
+    bulletFreq = b.bulletFreq;
+    bulletSpeed = b.bulletSpeed;
+    bossState = b.bossState;
+}
+
+Boss::~Boss() {
+}
+
+void Boss::setBulletFreq(float bf) {
+    bulletFreq = bf;
+}
+
+void Boss::setBulletSpeed(float bs) {
+    bulletSpeed = bs;
+}
+
+void Boss::setTimer(float t) {
+    timer = t;
+}
+
+void Boss::setBossState(BossState bs) {
+    bossState = bs;
+}
+
+float Boss::getBulletFreq() {
+    return bulletFreq;
+}
+
+float Boss::getBulletSpeed() {
+    return bulletSpeed;
+}
+
+float Boss::getTimer() {
+    return timer;
+}
+
+BossState Boss::getBossState() {
+    return bossState;
+}
+
+void Boss::Init(b2Vec2 position) {
+    bossState = BossState::BOSS_IDLE;
+    animations = AnimationHandler::setAnimations(type);
+    texture = animations[bossState].GetFrame();
+    frameWidth = texture.width;
+    frameHeight = texture.height;
+    sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
+    size = {(float)frameWidth / IMAGE_WIDTH, (float)frameHeight / IMAGE_WIDTH};
+    bodySize = size;
+    destRect = {position.x, position.y, size.x, size.y};
+
+    std::vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{size.x, 0.0f},
+        b2Vec2{size.x - 0.2f, size.y},
+        b2Vec2{size.x, size.y - 0.05f},
+        b2Vec2{0.0f, size.y - 0.05f},
+        b2Vec2{0.0f + 0.2f, size.y}
+    };
+    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y});
+    b2Fixture* fixture = body->GetFixtureList();
+    b2Filter filter = fixture->GetFilterData();
+    filter.categoryBits = CATEGORY_ENEMY;
+    filter.maskBits = MASK_ENEMY;
+    fixture->SetFilterData(filter);
+}
+
+void Boss::Update(Vector2 playerVelocity, float deltaTime) {
+    if (!body) return;
+    elapsedTime += deltaTime;
+    b2Vec2 position = body->GetPosition();
+    destRect.x = position.x;
+    destRect.y = position.y;
+
+    body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
+
+    animations[bossState].Update(deltaTime);
+    texture = animations[bossState].GetFrame();
+
+    if (!alive) {
+        state = EnemyState::ENEMY_DEAD;
+        Dead();
+    }
 }
 

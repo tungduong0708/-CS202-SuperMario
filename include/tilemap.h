@@ -19,7 +19,7 @@ class Tilemap {
 private:
     bool isChangingMap = false;
     std::string newMapPath;
-    int width, height, tileSize, tilesetColumns;
+    float width, height, tileSize, tilesetColumns;
     MyCamera camera;
     Player* player;
     EffectManager* effectManager;
