@@ -87,6 +87,8 @@ private:
     float bulletSpeed;
     float bulletFreq;
     Vector2 initialPosition;
+    MovingPlatform* currentPlatform;
+    bool isWalkingOnPlatform;
 public:
     Player();
     Player(string type, string name = "", float coins = 0.0f, int lives = 0, int health = 0, 

@@ -24,6 +24,7 @@ void TilesetHandler::Init()
                                               "resources/tilesets/bg-2-2",
                                               "resources/tilesets/bg-2-3",
                                               "resources/tilesets/bg-2-4",
+                                              "resources/tilesets/bg-8-4",
                                               "resources/tilesets/items-objects",
                                               "resources/tilesets/bg-3-1",
                                               "resources/tilesets/bg-3-2",
