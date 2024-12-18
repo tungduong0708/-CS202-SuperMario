@@ -9,13 +9,13 @@ void EnemyCreator::RegisterEnemy(const std::string& name, std::function<Enemy*(V
 
 void EnemyCreator::InitEnemies() {
     RegisterEnemy("goomba", [](Vector2 pos) { 
-        Goomba* goomba = new Goomba("goomba", 0.0f, true, false, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f); 
+        Goomba* goomba = new Goomba("goomba", 0.0f, true, false, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, -2.0f, 0.0f); 
         goomba->Init(b2Vec2{pos.x, pos.y});
         goomba->setSpeed(-2.0f);
         return goomba;
     });
     RegisterEnemy("koopa", [](Vector2 pos) { 
-        Koopa* koopa = new Koopa("koopa", 0.0f, true, false, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f); 
+        Koopa* koopa = new Koopa("koopa", 0.0f, true, false, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, -2.0f, 0.0f); 
         koopa->Init(b2Vec2{pos.x, pos.y});
         koopa->setSpeed(-2.0f);
         return koopa;

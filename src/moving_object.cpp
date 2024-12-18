@@ -404,13 +404,16 @@ void AttackBall::Init(b2Vec2 position) {
     fixture->SetFilterData(filter);
 }
 
-void AttackBall::Draw()
-{
+void AttackBall::Draw() {
+    if (!body) return;
+    b2Vec2 pos = body->GetPosition();
+    Texture text = animations[0].GetFrame();
+    Rectangle sourceRect = { 0, 0, static_cast<float>(text.width), static_cast<float>(text.height) };
+    Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, angle);
 }
 
-void AttackBall::Draw(Vector2 position, float angle)
-{
-}
+void AttackBall::Draw(Vector2 position, float angle) {
+};
 
 void AttackBall::Update(Vector2 playerVelocity, float deltaTime) {
     elapsedTime += deltaTime;

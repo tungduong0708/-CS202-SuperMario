@@ -101,6 +101,7 @@ void Enemy::Init(b2Vec2 position) {
 
 
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+    setSpeed(-2.0f);
 }
 
 void Enemy::Update(Vector2 playerVelocity, float deltaTime) {

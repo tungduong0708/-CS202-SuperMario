@@ -250,7 +250,6 @@ GameplayState::GameplayState(Game* game)
     AnimationEffectCreator::InitEffects();
     EnemyCreator::InitEnemies();
     TextHelper::loadFont("Mario256", "");
-    TextHelper::loadTexture("coin", "smallmario");
     TilesetHandler::Init();
     
     float buttonWidth = 35;
