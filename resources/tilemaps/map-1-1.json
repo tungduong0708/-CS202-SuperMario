@@ -315,18 +315,6 @@
                  "width":0,
                  "x":597.333333333333,
                  "y":188
-                }, 
-                {
-                 "height":0,
-                 "id":91,
-                 "name":"movingplatform",
-                 "point":true,
-                 "rotation":0,
-                 "type":"platform",
-                 "visible":true,
-                 "width":0,
-                 "x":938.25,
-                 "y":174.25
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -335,10 +323,10 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":102,
+ "nextobjectid":106,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tilesets":[
         {

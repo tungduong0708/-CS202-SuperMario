@@ -1,16 +1,16 @@
-{ "columns":160,
- "image":"bg-1-4.png",
- "imageheight":240,
- "imagewidth":2560,
+{ "columns":320,
+ "image":"bg-8-4.png",
+ "imageheight":480,
+ "imagewidth":5120,
  "margin":0,
- "name":"bg-1-4",
+ "name":"bg-8-4",
  "spacing":0,
- "tilecount":2400,
+ "tilecount":9600,
  "tiledversion":"1.10.2",
  "tileheight":16,
  "tiles":[
         {
-         "id":320,
+         "id":640,
          "objectgroup":
             {
              "draworder":"index",
