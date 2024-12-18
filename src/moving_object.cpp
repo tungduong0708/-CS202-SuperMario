@@ -262,7 +262,14 @@ MovingPlatform::MovingPlatform(const MovingPlatform &mp)
       topBoundary(mp.topBoundary), bottomBoundary(mp.bottomBoundary),
       leftBoundary(mp.leftBoundary), rightBoundary(mp.rightBoundary) {}
 
-MovingPlatform::~MovingPlatform() {}
+MovingPlatform::~MovingPlatform() {
+    if (body) {
+        Physics::world.DestroyBody(body);
+        body = nullptr;
+    }
+    animations.clear();
+    std::cout << "MovingPlatform destroyed." << std::endl;
+}
 
 void MovingPlatform::Init(b2Vec2 position) {
     animations = AnimationHandler::setAnimations("movingplatform");
@@ -276,35 +283,75 @@ void MovingPlatform::Init(b2Vec2 position) {
         b2Vec2{0.0f, size.y}
     };
     restitution = 0.0f;
-    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, restitution);
-
+    MyBoundingBox::createBody(body, b2_kinematicBody, vertices, Vector2{position.x, position.y}, restitution);
+    body->SetLinearVelocity(b2Vec2(2.0f, 0.0f));
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
     
 }
 
 void MovingPlatform::Update(Vector2 playerVelocity, float deltaTime) {
+   if (deltaTime > 0.1f) deltaTime = 0.1f;
     elapsedTime += deltaTime;
     b2Vec2 velocity = body->GetLinearVelocity();
 
+    const float tolerance = 0.01f; //error number
+    b2Vec2 position = body->GetPosition();
+
     if (movementType == MovementType::Vertical) {
+        velocity.x = 0.0f; 
         velocity.y = speed * direction;
         body->SetLinearVelocity(velocity);
 
-        // Check boundaries for vertical movement
-        float posY = body->GetPosition().y;
-        if (posY <= bottomBoundary || posY >= topBoundary) {
-            direction = -direction; // Reverse direction
+        // Check boundaries 
+        if (position.y <= bottomBoundary + tolerance) {
+            position.y = bottomBoundary; 
+            direction = 1.0f;            
         }
-    } else if (movementType == MovementType::Horizontal) {
+        else if (position.y >= topBoundary - tolerance) {
+            position.y = topBoundary; 
+            direction = -1.0f;        
+        }
+    } 
+    else if (movementType == MovementType::Horizontal) {
         velocity.x = speed * direction;
         body->SetLinearVelocity(velocity);
 
-        // Check boundaries for horizontal movement
-        float posX = body->GetPosition().x;
-        if (posX <= leftBoundary || posX >= rightBoundary) {
-            direction = -direction; // Reverse direction
+       
+        if (position.x <= leftBoundary + tolerance) {
+            position.x = leftBoundary;  
+            direction = 1.0f;           
+        }
+        else if (position.x >= rightBoundary - tolerance) {
+            position.x = rightBoundary; 
+            direction = -1.0f;          
         }
     }
+    else if (movementType == MovementType::UpVertical) {
+        direction = -1.0f;
+        velocity.x = 0.0f; 
+        //position.y += speed * deltaTime;
+        velocity.y = speed * direction;
+        body->SetLinearVelocity(velocity);
+        // Check boundaries 
+        if (position.y <= bottomBoundary + tolerance) {
+            position.y = topBoundary; 
+        }
+    } 
+    else if (movementType == MovementType::DownVertical) {
+        direction = 1.0f;
+        velocity.x = 0.0f; 
+        //position.y -= speed * deltaTime;
+        velocity.y = speed * direction;
+        body->SetLinearVelocity(velocity);
+        // Check boundaries 
+        if (position.y >= topBoundary - tolerance) {
+            position.y = bottomBoundary; 
+        }
+        //std::cout<<"bottomBoundary:"<<bottomBoundary<<std::endl;
+        //std::cout<<"pos.y:"<<position.y<<std::endl;
+    } 
+
+    body->SetTransform(position, body->GetAngle());
     animations[0].Update(deltaTime);
 }
 
@@ -313,11 +360,8 @@ void MovingPlatform::HandleInput() {
 }
 
 void MovingPlatform::OnBeginContact(SceneNode *other, b2Vec2 normal) {
-    // Handle collisions if needed, e.g., with the player
 }
-
-void MovingPlatform::OnEndContact(SceneNode *other) {
-    // Handle end of collision logic if needed
+void MovingPlatform::OnEndContact(SceneNode *other) { 
 }
 
 void MovingPlatform::Draw() {

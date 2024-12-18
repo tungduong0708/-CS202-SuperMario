@@ -3,7 +3,6 @@
 #include "scene_node.h"
 #include "imagehandler.h"
 #include <box2d/box2d.h>
-
 #ifndef MOVING_OBJECT_H
 #define MOVING_OBJECT_H
 
@@ -187,15 +186,16 @@ public:
 
 enum class MovementType {
     Vertical,   
-    Horizontal  
+    Horizontal,
+    UpVertical,
+    DownVertical  
 };
 class MovingPlatform : public MovingObject {
 private:
-    MovementType movementType; // Direction: Vertical or Horizontal
-    float direction;           // 1.0 for forward, -1.0 for backward
+    MovementType movementType; 
+    float direction;          
     float topBoundary, bottomBoundary; // Vertical boundaries
     float leftBoundary, rightBoundary; // Horizontal boundaries
-
 public:
     MovingPlatform();
     MovingPlatform(MovementType type, Vector2 size, float speed, float angle, float boundaries[4]);

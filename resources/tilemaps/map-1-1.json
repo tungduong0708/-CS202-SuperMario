@@ -307,18 +307,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":91,
-                 "name":"movingplatform",
-                 "point":true,
-                 "rotation":0,
-                 "type":"platform",
-                 "visible":true,
-                 "width":0,
-                 "x":938.25,
-                 "y":174.25
-                }, 
-                {
-                 "height":0,
                  "id":102,
                  "name":"boss",
                  "point":true,
@@ -339,7 +327,7 @@
  "nextobjectid":104,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tilesets":[
         {

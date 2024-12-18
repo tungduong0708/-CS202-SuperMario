@@ -13,6 +13,8 @@ private:
     static std::unordered_map<std::string, std::function<MovingPlatform*(Vector2)>> creators;
 
 public:
+    PlatformCreator() = default;
+    ~PlatformCreator() = default;
     // Registers a platform type with a corresponding creation function
     static void RegisterPlatform(const std::string& name, std::function<MovingPlatform*(Vector2)> creator);
 

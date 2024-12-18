@@ -3,11 +3,9 @@
  "infinite":false,
  "layers":[
         {
-         "id":3,
+         "id":4,
          "image":"..\/background\/b1-2-2-color.png",
          "name":"Background",
-         "offsetx":0,
-         "offsety":16,
          "opacity":1,
          "type":"imagelayer",
          "visible":true,
@@ -78,6 +76,54 @@
                  "width":8.22727272727252,
                  "x":2654.95454545455,
                  "y":144.954545454545
+                }, 
+                {
+                 "height":0,
+                 "id":5,
+                 "name":"downverticalmovingplatform1",
+                 "point":true,
+                 "rotation":0,
+                 "type":"platform",
+                 "visible":true,
+                 "width":0,
+                 "x":2264.33333333333,
+                 "y":131.666666666667
+                }, 
+                {
+                 "height":0,
+                 "id":7,
+                 "name":"downverticalmovingplatform2",
+                 "point":true,
+                 "rotation":0,
+                 "type":"platform",
+                 "visible":true,
+                 "width":0,
+                 "x":2264,
+                 "y":228
+                }, 
+                {
+                 "height":0,
+                 "id":9,
+                 "name":"upverticalmovingplatform2",
+                 "point":true,
+                 "rotation":0,
+                 "type":"platform",
+                 "visible":true,
+                 "width":0,
+                 "x":2504.66666666667,
+                 "y":164.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":10,
+                 "name":"upverticalmovingplatform1",
+                 "point":true,
+                 "rotation":0,
+                 "type":"platform",
+                 "visible":true,
+                 "width":0,
+                 "x":2503.66666666667,
+                 "y":36.3333333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -89,7 +135,7 @@
  "nextobjectid":5,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tilesets":[
         {

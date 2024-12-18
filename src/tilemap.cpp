@@ -221,6 +221,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         }
                         else if (object.contains("type") && object["type"] == "platform") {
                             std::string platformName = object["name"].get<std::string>();
+                            PlatformCreator::InitPlatforms();
                             MovingPlatform* platform = PlatformCreator::CreatePlatform(platformName, Vector2{x, y});
                             if (platform != nullptr) {
                                 nodeLayer.push_back(platform);

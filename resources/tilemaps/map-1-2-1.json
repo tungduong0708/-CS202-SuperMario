@@ -3,11 +3,9 @@
  "infinite":false,
  "layers":[
         {
-         "id":4,
+         "id":5,
          "image":"..\/background\/b1-2-1-color.png",
          "name":"Background Color",
-         "offsetx":0,
-         "offsety":16,
          "opacity":1,
          "type":"imagelayer",
          "visible":true,
@@ -15,11 +13,9 @@
          "y":0
         }, 
         {
-         "id":3,
+         "id":6,
          "image":"..\/background\/b1-2-1.png",
          "name":"Background",
-         "offsetx":0,
-         "offsety":16,
          "opacity":1,
          "type":"imagelayer",
          "visible":true,
@@ -101,7 +97,7 @@
  "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tilesets":[
         {
