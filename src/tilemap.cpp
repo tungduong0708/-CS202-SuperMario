@@ -331,6 +331,7 @@ void Tilemap::Draw() const {
 void Tilemap::setPlayer(const std::string name)
 {
     player = new Player(name);
+    TextHelper::loadTexture("coin", "small" + name);
     player->Init(b2Vec2{playerPosition.x, playerPosition.y});
     player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
     player->setInitialPosition(playerPosition);
