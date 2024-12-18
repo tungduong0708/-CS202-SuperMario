@@ -515,6 +515,7 @@ void Boss::Init(b2Vec2 position) {
     filter.categoryBits = CATEGORY_ENEMY;
     filter.maskBits = MASK_ENEMY;
     fixture->SetFilterData(filter);
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 
 void Boss::Update(Vector2 playerVelocity, float deltaTime) {
@@ -550,7 +551,15 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
         if (elapsedTime >= timer) {
             // assemble the attack ball
             AttackBall* atkball = new AttackBall(100.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
-            atkball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), 0.15f));
+            b2Vec2 pos = body->GetPosition();
+            pos.y += 0.15f;
+            if (faceLeft) {
+                pos.x -= ((float)texture.width/16 + 0.1f);
+            }
+            else {
+                pos.x += ((float)texture.width/16 + 0.1f);
+            }
+            atkball->Init(pos);
             atkball->setSpeed(6.0f * (faceLeft ? -1 : 1));
 
             Tilemap* tilemap = Tilemap::getInstance();
