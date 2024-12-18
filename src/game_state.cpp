@@ -249,7 +249,7 @@ GameplayState::GameplayState(Game* game)
     Physics::Init(); 
     AnimationEffectCreator::InitEffects();
     EnemyCreator::InitEnemies();
-    TextHelper::loadFont("PressStart", "");
+    TextHelper::loadFont("PressStart2P-Regular", "");
     TilesetHandler::Init();
     
     float buttonWidth = 35;

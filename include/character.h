@@ -88,6 +88,7 @@ private:
     string name;
     float coins;
     int lives;
+    int addScore = 0;
     string currentMap;
     float time; // time allotted for the player to complete the map
     float force;
@@ -101,6 +102,7 @@ public:
     Player(const Player &p);
     virtual ~Player();
 
+    void setAddScore(int s);
     void setPositon(b2Vec2 pos);
     void setPositionBody(b2Vec2 pos);
     void setName(string n);
@@ -116,8 +118,10 @@ public:
     void setInitialPosition(Vector2 pos);
     void impulseForce(Vector2 force);
     void updateScore(int s);
+    void updateScore();
 
 
+    int getAddScore();
     string getName();
     float getCoins();
     float getForce();

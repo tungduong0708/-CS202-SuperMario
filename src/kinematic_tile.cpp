@@ -137,11 +137,11 @@ void KinematicTile::Draw()
 void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
 {
     if (!other) return;
+    Vector2 pos = getPosition();
     Player* playerPtr = dynamic_cast<Player*>(other); 
     if (playerPtr != nullptr && animation) {
         if (getType() == "blind_box") {
             if (normal.y < -0.5f) {
-                Vector2 pos = getPosition();
                 pos.y--;
                 EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
                 std::string effectName = effectManager->GetEffectName({pos.x, pos.y});
@@ -157,8 +157,10 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
 
                 if (effectName == "coin") {
                     playSoundEffect(SoundEffect::COIN_GRAB);
-                    playerPtr->updateScore(200);
+                    playerPtr->setAddScore(200);
                     playerPtr->setCoins(playerPtr->getCoins() + 1);
+                    effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", pos));
+                    playerPtr->updateScore();
                 }
                 
                 if (effectManager->UpdateEffectCount({pos.x, pos.y})) {
@@ -177,8 +179,11 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 animation = false;
                 Physics::bodiesToDestroy.push_back(GetBody());
                 SetBody(nullptr);
-                playerPtr->updateScore(100);
+                playerPtr->setAddScore(100);
                 playerPtr->setCoins(playerPtr->getCoins() + 1);
+                EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+                effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", pos));
+                playerPtr->updateScore();
             }
         }
     }

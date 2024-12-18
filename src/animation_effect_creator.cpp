@@ -10,6 +10,9 @@ void AnimationEffectCreator::RegisterEffect(const std::string &name, std::functi
 
 void AnimationEffectCreator::InitEffects()
 {
+    RegisterEffect("score", [](Vector2 position) {
+        return new ScoreEffect(position);
+    });
     RegisterEffect("coin", [](Vector2 position) {
         return new CoinEffect(position);
     });

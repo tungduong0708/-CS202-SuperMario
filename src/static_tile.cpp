@@ -130,8 +130,10 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 effectManager->AddLowerEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, pos));
                 if (effectName == "coin") {
                     playSoundEffect(SoundEffect::COIN_GRAB);
-                    playerPtr->updateScore(200);
+                    playerPtr->setAddScore(200);
                     playerPtr->setCoins(playerPtr->getCoins() + 1);
+                    effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", pos));
+                    playerPtr->updateScore();
                     
                     if (effectManager->UpdateEffectCount({pos.x, pos.y})) {
                         Tile::setTilesetPath("resources/tilesets/OverWorld.json");

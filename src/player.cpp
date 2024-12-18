@@ -66,6 +66,11 @@ Player::~Player() {
     }
 }
 
+void Player::setAddScore(int s)
+{
+    addScore = s;
+}
+
 void Player::setPositon(b2Vec2 pos)
 {
     // if (body) body->SetTransform(pos, body->GetAngle());
@@ -132,7 +137,19 @@ void Player::updateScore(int s) {
     score += s;
 }
 
-string Player::getName() {
+void Player::updateScore()
+{
+    score += addScore;
+    addScore = 0;
+}
+
+int Player::getAddScore()
+{
+    return addScore;
+}
+
+string Player::getName()
+{
     return name;
 }
 
