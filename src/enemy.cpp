@@ -212,15 +212,15 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
         setHealth(getHealth() - 100);
         if (!alive) {
             state = EnemyState::ENEMY_DEAD;
-            if (!deadByPlayer and !deadByFireball) {
-                deadByFireball = true;
-                Dead();
-            }
             Player* player = Tilemap::getInstance()->GetPlayer();
             player->setAddScore(100);
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
             player->updateScore();
+            if (!deadByPlayer and !deadByFireball) {
+                deadByFireball = true;
+                Dead();
+            }
         }
     }
     else if (player || enemy) {
@@ -337,12 +337,12 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
         setHealth(getHealth() - 100);
         if (!alive) {
             state = EnemyState::ENEMY_DEAD;
-            Dead();
             Player* player = Tilemap::getInstance()->GetPlayer();
             player->setAddScore(100);
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
             player->updateScore();
+            Dead();
         }
     }
     else if (player || enemy) {
@@ -368,12 +368,12 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
                     enemy->setHealth(enemy->getHealth() - 100);
                     if (!enemy->isAlive()) {
                         enemy->setState(EnemyState::ENEMY_DEAD);
-                        enemy->Dead();
                         Player* player = Tilemap::getInstance()->GetPlayer();
                         player->setAddScore(100);
                         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
                         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
                         player->updateScore();
+                        enemy->Dead();
                     }
                 }
                 else {
