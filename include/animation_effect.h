@@ -18,6 +18,21 @@ public:
     virtual bool isActive();
 };
 
+class ScoreEffect : public AnimationEffect {
+private:
+    float height = 1.0f;
+    float fadeTime = 0.0f;
+    float fadeDuration = 0.5f;
+    float alpha = 1.0f;
+    Vector2 size;
+    std::string score;
+public:
+    ScoreEffect(Vector2 pos);
+    ~ScoreEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
 class CoinEffect : public AnimationEffect {
 private:
     float height = 1.0f;

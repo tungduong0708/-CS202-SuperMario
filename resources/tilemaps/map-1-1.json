@@ -326,8 +326,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":0,
-                 "x":264,
-                 "y":182.5
+                 "x":597,
+                 "y":189
                 }],
          "opacity":1,
          "type":"objectgroup",

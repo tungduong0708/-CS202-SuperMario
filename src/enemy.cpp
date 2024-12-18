@@ -216,7 +216,11 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
                 deadByFireball = true;
                 Dead();
             }
-            Tilemap::getInstance()->GetPlayer()->updateScore(100);
+            Player* player = Tilemap::getInstance()->GetPlayer();
+            player->setAddScore(100);
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+            player->updateScore();
         }
     }
     else if (player || enemy) {
@@ -250,19 +254,11 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
                     size = Vector2{size.x, size.y/4};
                     deadByPlayer = true; 
                 }
-                Tilemap::getInstance()->GetPlayer()->updateScore(100);
+                player->setAddScore(100);
+                EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+                effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+                player->updateScore();
             }
-        }
-    }
-    else if (fireball) {
-        setHealth(getHealth() - 100);
-        if (!alive) {
-            state = EnemyState::ENEMY_DEAD;
-            if (!deadByPlayer and !deadByFireball) {
-                Dead();
-                deadByFireball = true;
-            }
-            Tilemap::getInstance()->GetPlayer()->updateScore(100);
         }
     }
     else {
@@ -342,6 +338,11 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
         if (!alive) {
             state = EnemyState::ENEMY_DEAD;
             Dead();
+            Player* player = Tilemap::getInstance()->GetPlayer();
+            player->setAddScore(100);
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+            player->updateScore();
         }
     }
     else if (player || enemy) {
@@ -368,6 +369,11 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
                     if (!enemy->isAlive()) {
                         enemy->setState(EnemyState::ENEMY_DEAD);
                         enemy->Dead();
+                        Player* player = Tilemap::getInstance()->GetPlayer();
+                        player->setAddScore(100);
+                        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+                        effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+                        player->updateScore();
                     }
                 }
                 else {
@@ -386,6 +392,10 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
                 size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
                 setSpeed(0);
                 isDelay = true;
+                player->setAddScore(100);
+                EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+                effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+                player->updateScore();
                 return;
             }
             if (state == EnemyState::ENEMY_SHELL) {

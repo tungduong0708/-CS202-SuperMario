@@ -20,12 +20,7 @@ void TextHelper::loadFont(string fontPath, string mode)
     if (fontPath == "highway_gothic") {
         fontPath = "resources/fonts/HWYGWDE.TTF";
     }
-    else if (fontPath == "Mario256") {
-        fontPath = "resources/fonts/SuperMario256.ttf";
-    }
-    else if (fontPath == "MarioKart") {
-        fontPath = "resources/fonts/Mario-Kart-DS.ttf";
-    }
+    else fontPath = "resources/fonts/" + fontPath + ".ttf";
     font = LoadFont(fontPath.c_str());
     if (mode == "default") font = GetFontDefault();
 }

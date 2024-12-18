@@ -9,6 +9,35 @@ bool AnimationEffect::isActive()
     return active;
 }
 
+ScoreEffect::ScoreEffect(Vector2 pos)
+{
+    position = pos;
+    Tilemap* tilemap = Tilemap::getInstance();
+    Player* player = tilemap->GetPlayer();
+    score = std::to_string(player->getAddScore());
+    std::cout << "Score: " << score << std::endl;
+}
+
+void ScoreEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    fadeTime += deltaTime;
+    if (fadeTime > fadeDuration) {
+        float elapsed = fadeTime - fadeDuration;
+        alpha = 1.0f -  2 * elapsed / fadeDuration;
+        if (alpha <= 0.0f) active = false;
+    }
+    position.y -= deltaTime * 2;   
+}
+
+void ScoreEffect::Draw()
+{
+    if (!active) return;
+    Color color = { 255, 255, 255, (unsigned char)(alpha * 255) };
+    TextHelper::Draw(score, position, 6, color);
+}
+
+
 CoinEffect::CoinEffect(Vector2 pos)
 {
     animation = AnimationHandler::setAnimations("coin")[0];
