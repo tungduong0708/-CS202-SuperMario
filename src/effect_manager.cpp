@@ -85,8 +85,10 @@ void EffectManager::Update(float deltaTime)
             ++it;  // Move to the next element
         } else {
             DeadMarioEffect* deadMario = dynamic_cast<DeadMarioEffect*>(*it);
-            GrowEffect* growEffect = dynamic_cast<GrowEffect*>(*it);
-            if (deadMario || growEffect) {
+            DeadLuigiEffect* deadLuigiEffect = dynamic_cast<DeadLuigiEffect*>(*it);
+            GrowMarioEffect* growMarioEffect = dynamic_cast<GrowMarioEffect*>(*it);
+            GrowLuigiEffect* growLuigiEffect = dynamic_cast<GrowLuigiEffect*>(*it);
+            if (deadMario || deadLuigiEffect || growMarioEffect || growLuigiEffect) {
                 activePlayerEffect = false;
             }
             delete *it;            // Free memory

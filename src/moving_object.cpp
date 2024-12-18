@@ -406,6 +406,14 @@ void AttackBall::Init(b2Vec2 position) {
     setSpeed(6.0f);
 }
 
+void AttackBall::Draw()
+{
+}
+
+void AttackBall::Draw(Vector2 position, float angle)
+{
+}
+
 void AttackBall::Update(Vector2 playerVelocity, float deltaTime) {
     elapsedTime += deltaTime;
     span += deltaTime;
