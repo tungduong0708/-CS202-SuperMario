@@ -1,7 +1,11 @@
 #include "effect_manager.h"
 
+EffectManager::EffectManager(std::map<std::pair<int, int>, std::string> effectMap, std::map<std::pair<int, int>, int> effectCount) : effectMap(effectMap), effectCount(effectCount)
+{
+}
+
 EffectManager::~EffectManager()
- {
+{
     for (auto* effect : lowerEffects) {
         delete effect;
     }
@@ -47,6 +51,16 @@ int EffectManager::GetEffectCount(std::pair<int, int> pos)
     return effectCount[pos];
 }
 
+std::map<std::pair<int, int>, std::string> EffectManager::getEffectMap()
+{
+    return effectMap;
+}
+
+std::map<std::pair<int, int>, int> EffectManager::getEffectCountMap()
+{
+    return effectCount;
+}
+
 void EffectManager::setActivePlayerEffect(bool active)
 {
     activePlayerEffect = active;
@@ -55,7 +69,11 @@ void EffectManager::setActivePlayerEffect(bool active)
 bool EffectManager::UpdateEffectCount(std::pair<int, int> pos)
 {
     effectCount[pos]--;
-    return effectCount[pos] == 0;
+    if (effectCount[pos] == 0) {
+        effectMap.erase(pos);
+        return true;
+    }
+    return true;
 }
 
 void EffectManager::Update(float deltaTime)
@@ -126,4 +144,9 @@ void EffectManager::clearEffects()
     upperEffects.clear();
     effectCount.clear();
     effectMap.clear();
+}
+
+void EffectManager::accept(FileVisitor *v)
+{
+    v->VisitFile(this);
 }

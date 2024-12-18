@@ -78,7 +78,12 @@ KinematicTile::~KinematicTile()
     }
 }
 
-void KinematicTile::setPosition(const Vector2& position)
+std::vector<std::pair<int, int>> KinematicTile::getFrames()
+{
+    return frames;
+}
+
+void KinematicTile::setPosition(const Vector2 &position)
 {
     Tile::setPosition(position);
 }
@@ -192,4 +197,9 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
 
 void KinematicTile::OnEndContact(SceneNode* other)
 {
+}
+
+void KinematicTile::accept(FileVisitor *v)
+{
+    v->VisitFile(this);
 }

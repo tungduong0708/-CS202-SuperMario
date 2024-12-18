@@ -37,6 +37,7 @@ public:
     void print() const;
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal);
     virtual void OnEndContact(SceneNode* other);
+    virtual void accept(FileVisitor* v);
 };
 
 #endif // TILE_H

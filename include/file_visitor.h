@@ -7,6 +7,9 @@
 
 class FileVisitor {
 public:
+    virtual ~FileVisitor() = default;
+    virtual void VisitFile(StaticTile* obj)  = 0;
+    virtual void VisitFile(KinematicTile* obj) = 0;
     virtual void VisitFile(Mushroom* obj)   = 0;
     virtual void VisitFile(Star* obj)       = 0;
     virtual void VisitFile(FireFlower* obj) = 0;
@@ -16,6 +19,7 @@ public:
     virtual void VisitFile(AttackBall* obj) = 0;
     virtual void VisitFile(FireBall* obj)   = 0;
     virtual void VisitFile(Player* obj)     = 0;
+    virtual void VisitFile(EffectManager* obj) = 0;
 };
 
 class ExportFileVisitor : public FileVisitor {
@@ -27,6 +31,8 @@ public:
     static ExportFileVisitor* getInstance();
     ~ExportFileVisitor() = default;
 
+    void VisitFile(StaticTile* obj) override;
+    void VisitFile(KinematicTile *obj) override;
     void VisitFile(Mushroom* obj) override;
     void VisitFile(Star* obj) override;
     void VisitFile(FireFlower* obj) override;
@@ -36,6 +42,7 @@ public:
     void VisitFile(AttackBall* obj) override;
     void VisitFile(FireBall* obj) override;
     void VisitFile(Player* obj) override;
+    void VisitFile(EffectManager* obj) override;
 };
 
 
@@ -50,6 +57,8 @@ public:
 
     static void setFilePath(string path);
 
+    void VisitFile(StaticTile* obj) override;
+    void VisitFile(KinematicTile *obj) override;
     void VisitFile(Mushroom* obj) override;
     void VisitFile(Star* obj) override;
     void VisitFile(FireFlower* obj) override;
@@ -59,6 +68,7 @@ public:
     void VisitFile(AttackBall* obj) override;
     void VisitFile(FireBall* obj) override;
     void VisitFile(Player* obj) override;
+    void VisitFile(EffectManager* obj) override;
 };
 
 #endif

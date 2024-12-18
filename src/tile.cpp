@@ -70,3 +70,8 @@ void Tile::OnBeginContact(SceneNode *other, b2Vec2 normal)
 void Tile::OnEndContact(SceneNode *other)
 {
 }
+
+void Tile::accept(FileVisitor *v)
+{
+    v->VisitFile(this);
+}

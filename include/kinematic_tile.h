@@ -26,11 +26,13 @@ public:
     StaticObject* clone();
     virtual ~KinematicTile();
 
+    std::vector<std::pair<int, int>> getFrames();
     void setPosition(const Vector2& position);
     void Update(Vector2 playerVelocity, float deltaTime);
     void Draw();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
+    void accept(FileVisitor* v);
 };
 
 #endif // KINEMATIC_TILE_H

@@ -75,6 +75,26 @@ StaticTile::~StaticTile()
     
 }
 
+bool StaticTile::getIsDestroyed()
+{
+    return isDestroyed;
+}
+
+bool StaticTile::getIsActivated()
+{
+    return isActivated;
+}
+
+void StaticTile::setIsDestroyed(bool isDestroyed)
+{
+    this->isDestroyed = isDestroyed;
+}
+
+void StaticTile::setIsActivated(bool isActivated)
+{
+    this->isActivated = isActivated;
+}
+
 void StaticTile::setPosition(const Vector2& position)
 {
     Tile::setPosition(position);
@@ -153,4 +173,9 @@ void StaticTile::OnEndContact(SceneNode* other)
     if (enemy != nullptr && getType() == "brick" && isDestroyed) {
         enemy->Dead();
     }
+}
+
+void StaticTile::accept(FileVisitor *v)
+{
+    v->VisitFile(this);
 }
