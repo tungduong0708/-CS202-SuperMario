@@ -5,6 +5,7 @@
 #include "my_bounding_box.h"
 #include "renderer.h"
 #include "scene_node.h"
+#include "file_visitor.h"
 #include <box2d/box2d.h>
 #include <vector>
 #include <string>

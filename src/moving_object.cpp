@@ -1,6 +1,5 @@
 #include "include.h"
 #include "object.h"
-#include "moving_object.h"
 
 
 MovingObject::MovingObject() {

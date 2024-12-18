@@ -2,6 +2,7 @@
 #include "include.h"
 #include "scene_node.h"
 #include "imagehandler.h"
+#include "file_visitor.h"
 #include "moving_object.h"
 
 #ifndef CHARACTER_H

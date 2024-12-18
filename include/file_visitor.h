@@ -1,10 +1,23 @@
 #ifndef FILE_VISITOR_H
 #define FILE_VISITOR_H
 
-#include "scene_node.h"
-#include "moving_object.h"
-#include "character.h"
+#include <string>
 #include <fstream>
+
+// Forward declaration
+class StaticTile;
+class KinematicTile;
+class MovingPlatform;
+class Mushroom;
+class Star;
+class FireFlower;
+class Goomba;
+class Koopa;
+class Boss;
+class AttackBall;
+class FireBall;
+class Player;
+class EffectManager;
 
 class FileVisitor {
 public:
@@ -26,8 +39,8 @@ public:
 
 class ExportFileVisitor : public FileVisitor {
 private:
-    const string filePath = "resources/save/save.txt";
-    ofstream file;
+    const std::string filePath = "resources/save/save.txt";
+    std::ofstream file;
     static ExportFileVisitor* instance;
     ExportFileVisitor() = default;
 public:
@@ -54,15 +67,15 @@ public:
 
 class ImportFileVisitor : public FileVisitor {
 private:
-    string filePath;
+    std::string filePath;
     static ImportFileVisitor* instance;
-    ifstream file;
+    std::ifstream file;
     ImportFileVisitor() = default;
 public:
     static ImportFileVisitor* getInstance();
     ~ImportFileVisitor() = default;
 
-    void setFilePath(string path);
+    void setFilePath(std::string path);
     void openFile();
     void closeFile();
 

@@ -2,6 +2,7 @@
 #include "include.h"
 #include "scene_node.h"
 #include "imagehandler.h"
+#include "file_visitor.h"
 #include <box2d/box2d.h>
 #ifndef MOVING_OBJECT_H
 #define MOVING_OBJECT_H

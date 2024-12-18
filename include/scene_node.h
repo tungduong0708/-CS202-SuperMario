@@ -2,6 +2,7 @@
 #define SCENE_NODE_H
 #include <raylib.h>
 #include <box2d/box2d.h>
+#include "file_visitor.h"
 
 class SceneNode {
 private:
