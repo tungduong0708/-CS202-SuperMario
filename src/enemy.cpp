@@ -489,9 +489,10 @@ void Boss::Init(b2Vec2 position) {
     bossState = BossState::BOSS_IDLE;
     animations = AnimationHandler::setAnimations(type);
     Animation attack = animations[BossState::BOSS_ATTACK];
-    for (int i = 0; i < 3; i++) {
-        timer += attack.getFrameTime(i);
-    }
+    // for (int i = 0; i < 3; i++) {
+    //     timer += attack.getFrameTime(i);
+    // }
+    timer = 1.0f;
 
     texture = animations[bossState].GetFrame();
     frameWidth = texture.width;
@@ -549,7 +550,7 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
             // assemble the attack ball
             AttackBall* atkball = new AttackBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
             atkball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), 0.15f));
-            atkball->setSpeed(-6.0f);
+            atkball->setSpeed(6.0f * (faceLeft ? -1 : 1));
 
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->addNode(atkball);

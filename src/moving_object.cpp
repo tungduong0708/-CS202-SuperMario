@@ -357,6 +357,10 @@ AttackBall::~AttackBall() {
     damage = 0;
     flag = false;
     span = 0.0f;
+    if (body) {
+        Physics::world.DestroyBody(body);
+        body = nullptr;
+    }
 }
 
 void AttackBall::setDamage(float damage) {
@@ -398,24 +402,28 @@ void AttackBall::Init(b2Vec2 position) {
     MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, restitution);
 
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
-    b2Fixture* fixture = body->GetFixtureList();
-    b2Filter filter = fixture->GetFilterData();
-    filter.maskBits = CATEGORY_PLAYER;
-    fixture->SetFilterData(filter);
+    body->SetGravityScale(0.0f);
+    // b2Fixture* fixture = body->GetFixtureList();
+    // b2Filter filter = fixture->GetFilterData();
+    // filter.maskBits = CATEGORY_PLAYER;
+    // fixture->SetFilterData(filter);
 }
 
 void AttackBall::Draw() {
     if (!body) return;
+    bool faceLeft = speed < 0;
     b2Vec2 pos = body->GetPosition();
     Texture text = animations[0].GetFrame();
     Rectangle sourceRect = { 0, 0, static_cast<float>(text.width), static_cast<float>(text.height) };
-    Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, angle);
+    Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, faceLeft, angle);
 }
 
 void AttackBall::Draw(Vector2 position, float angle) {
 };
 
 void AttackBall::Update(Vector2 playerVelocity, float deltaTime) {
+    if (!body) return;
+    setSpeed(speed);
     elapsedTime += deltaTime;
     span += deltaTime;
     if (span >= 1.5f) {
@@ -438,6 +446,9 @@ void AttackBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
         if (player->isImmortal()) return;
         if (player->getMode() == Mode::SMALL) {
             player->setHealth(player->getHealth() - damage);
+            if (player->getHealth() <= 0) {
+                // player->setAlive(false);
+            }
         } else if (player->getMode() == Mode::BIG || player->getMode() == Mode::FIRE) {
             b2Body* playerBody = player->getBody();
             Vector2 playerSize = player->getSize();
