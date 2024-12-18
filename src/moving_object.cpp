@@ -402,8 +402,6 @@ void AttackBall::Init(b2Vec2 position) {
     b2Filter filter = fixture->GetFilterData();
     filter.maskBits = CATEGORY_PLAYER;
     fixture->SetFilterData(filter);
-
-    setSpeed(6.0f);
 }
 
 void AttackBall::Draw()
@@ -420,7 +418,6 @@ void AttackBall::Update(Vector2 playerVelocity, float deltaTime) {
     if (span >= 1.5f) {
         flag = true;
     }
-    angle += 5.0f;
 }
 
 void AttackBall::HandleInput() {
@@ -432,6 +429,9 @@ void AttackBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
 
     Player *player = dynamic_cast<Player*>(other);
     if (player) {
+        Physics::bodiesToDestroy.push_back(body);
+        body = nullptr;
+        animations.clear();
         if (player->isImmortal()) return;
         if (player->getMode() == Mode::SMALL) {
             player->setHealth(player->getHealth() - damage);
@@ -443,11 +443,6 @@ void AttackBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
             player->changeMode(Mode::SMALL);
             player->setImmortal(true);
             player->setImmortalTime(1.5f);
-
-            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("shrink_mario", Vector2{pos.x, pos.y + playerSize.y}));
-            effectManager->setActivePlayerEffect(true);
-            playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
         }
     }
 }

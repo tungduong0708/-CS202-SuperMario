@@ -517,37 +517,38 @@ void Boss::Init(b2Vec2 position) {
 }
 
 void Boss::Update(Vector2 playerVelocity, float deltaTime) {
-    if (!body) return;
+    player = Tilemap::getInstance()->GetPlayer();
+    if (!body || !player->isAlive()) return;
     Vector2 playerPos = player->getPosition();
     elapsedTime += deltaTime;
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
     destRect.y = position.y;
 
-    if (position.x - playerPos.x > 10.0f) {
-        faceLeft = true;
+    float diff = position.x - playerPos.x;
+    if (abs(diff) > 5.0f) {
         bossState = BossState::BOSS_ATTACK;
-        elapsedTime = 0.0f;
     }
-    else if (position.x - playerPos.x < 10.0f and position.x - playerPos.x > 0.0f) {
-        faceLeft = true;
+    else {
         bossState = BossState::BOSS_WALK;
-        speed = -abs(speed);
+    }
+
+    if (diff > 0.5f) {
+        faceLeft = true;
+        setSpeed(-abs(speed));
     }
     else {
         faceLeft = false;
-        bossState = BossState::BOSS_WALK;
-        speed = abs(speed) + 3.0f;
+        setSpeed(abs(speed));
     }
+
 
     if (bossState == BossState::BOSS_ATTACK) {
         if (elapsedTime >= timer) {
             // assemble the attack ball
             AttackBall* atkball = new AttackBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
             atkball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), 0.15f));
-            b2Fixture* fixture = atkball->getBody()->GetFixtureList();
-            fixture->SetDensity(2.0f);
-            atkball->setSpeed(6.0f);
+            atkball->setSpeed(-6.0f);
 
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->addNode(atkball);

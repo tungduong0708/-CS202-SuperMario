@@ -20,6 +20,12 @@ void EnemyCreator::InitEnemies() {
         koopa->setSpeed(-2.0f);
         return koopa;
     });
+    RegisterEnemy("boss", [](Vector2 pos) { 
+        Boss* boss = new Boss("boss", 0.0f, true, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f); 
+        boss->Init(b2Vec2{pos.x, pos.y});
+        boss->setSpeed(-2.0f);
+        return boss;
+    });
 }
 
 Enemy* EnemyCreator::CreateEnemy(const std::string& name, Vector2 position) {
