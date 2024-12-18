@@ -32,7 +32,7 @@ int ActiveItem::getValue() {
 }
 
 void ActiveItem::Init(b2Vec2 position) {
-    // initialize the grow item
+    // initialize the growth item
     // animations initialization....
     Texture texture = animations[0].GetFrame();
     size = {static_cast<float>(texture.width) / IMAGE_WIDTH, static_cast<float>(texture.height) / IMAGE_WIDTH};
@@ -87,6 +87,7 @@ Mushroom::~Mushroom() {}
 
 void Mushroom::Init(b2Vec2 position) {
     // initialize the mushroom
+    playSoundEffect(SoundEffect::POWER_UP_APPEAR);
     animations = AnimationHandler::setAnimations("mushroom");
     ActiveItem::Init(position);
 }
@@ -95,6 +96,10 @@ void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     // handle the begin contact of the mushroom
     Player* player = dynamic_cast<Player*>(other);
     if (player != nullptr) {
+        player->setAddScore(1000);
+        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+        effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+        player->updateScore();
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
@@ -128,6 +133,10 @@ void FireFlower::Init(b2Vec2 position) {
 void FireFlower::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     Player* player = dynamic_cast<Player*>(other);
     if (player != nullptr) {
+        player->setAddScore(1500);
+        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+        effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+        player->updateScore();
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
@@ -157,6 +166,23 @@ void Star::Init(b2Vec2 position) {
     // initialize the star
     animations = AnimationHandler::setAnimations("star");
     ActiveItem::Init(position);
+    
+    b2Fixture* fixture = body->GetFixtureList();
+    b2Filter filter = fixture->GetFilterData();
+    filter.categoryBits = CATEGORY_STAR;
+    filter.maskBits = MASK_ENEMY;
+    fixture->SetFilterData(filter);
+
+    body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -8.0f), true);
+    setSpeed(7.0f);
+}
+
+void Star::Update(Vector2 playerVelocity, float deltaTime) {
+    ActiveItem::Update(playerVelocity, deltaTime);
+    if (body == nullptr) return;
+    b2Vec2 pos = body->GetPosition();
+    b2Vec2 vel = body->GetLinearVelocity();
+    setSpeed(speed);
 }
 
 void Star::OnBeginContact(SceneNode* other, b2Vec2 normal) {
@@ -165,9 +191,23 @@ void Star::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     if (player != nullptr) {
         player->setImmortal(true);
         player->setImmortalTime(5.0f);
+        player->setAddScore(1000);
+        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+        effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+        player->updateScore();
+
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+    }
+    else {
+        if (normal.x > 0.9f) {
+            setSpeed(-abs(speed));
+        }
+        else if (normal.x < -0.9f) {
+            setSpeed(abs(speed));
+        }
+        //body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
     }
 }
 

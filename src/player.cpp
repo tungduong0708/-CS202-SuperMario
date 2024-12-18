@@ -1,4 +1,5 @@
 #include "include.h"
+#include "game.h"
 #include "object.h"
 #include "character.h"
 
@@ -24,15 +25,26 @@ Player::Player(string type, string name, float coins, int lives, int health,
     coins(coins),  
     lives(lives)
 {
-    time = 0;
-    currentMap = "";
-    alive = true;
+    this->currentMap = "";
+    this->alive = true;
+    this->mode = Mode::SMALL;
+    this->elapsedTime = 0.0f;
+    this->time = 300.0f;
+    this->lives = 3;
+    this->health = 100;
 
-    speed = 8.0f;
-    force = -26.0f;
-    bulletSpeed = 9.0f;
-    bulletFreq = 0.75f;
-    mode = Mode::SMALL;
+    if (type == "mario") {
+        this->speed = 8.5f;
+        force = -26.0f;
+        bulletSpeed = 9.0f;
+        bulletFreq = 0.40f;
+    }
+    else {
+        this->speed = 6.5f;
+        force = -30.0f;
+        bulletSpeed = 8.0f;
+        bulletFreq = 0.30f;
+    }
 }
 
 Player::Player(const Player &p): 
@@ -46,10 +58,17 @@ Player::Player(const Player &p):
 }
 
 Player::~Player() {
-    name = "";
-    coins = 0;
-    lives = 0;
-    time = 0;
+    if (this) {
+        name = "";
+        coins = 0;
+        lives = 0;
+        time = 0;
+    }
+}
+
+void Player::setAddScore(int s)
+{
+    addScore = s;
 }
 
 void Player::setPositon(b2Vec2 pos)
@@ -118,7 +137,19 @@ void Player::updateScore(int s) {
     score += s;
 }
 
-string Player::getName() {
+void Player::updateScore()
+{
+    score += addScore;
+    addScore = 0;
+}
+
+int Player::getAddScore()
+{
+    return addScore;
+}
+
+string Player::getName()
+{
     return name;
 }
 
@@ -197,9 +228,11 @@ void Player::HandleInput() {
     if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
         if (isOnGround) {
             if (mode == SMALL) {
+                playSoundEffect(SoundEffect::JUMP);
                 body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force), true);
             }
             else if (mode == BIG or mode == FIRE) {
+                playSoundEffect(SoundEffect::JUMP_SUPER);
                 body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force * 1.5f), true);
             }
             previousImage = currentImage;
@@ -208,18 +241,20 @@ void Player::HandleInput() {
         }
     }
 
-    // frequency of the bullet: 0.75 seconds
+    // default frequency of the bullet: 0.4 seconds
     if ((IsKeyPressed(KEY_E) || IsKeyPressed(KEY_ENTER)) && mode == FIRE) {
         previousImage = currentImage;
         currentImage = HOLD;
         animations[currentImage].setTimer();
         if (elapsedTime >= bulletFreq) {
+            // sound effect
+            playSoundEffect(SoundEffect::SHOOT_FIREBALL);
             // create a fireball
             FireBall* fireball = new FireBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
             fireball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), texture.height/32));
             b2Fixture* fixture = fireball->getBody()->GetFixtureList();
             fixture->SetDensity(2.0f);
-            fireball->setSpeed(20.0f * (faceLeft ? -1 : 1));
+            fireball->setSpeed(10.0f * (faceLeft ? -1 : 1) + body->GetLinearVelocity().x);
 
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->addNode(fireball);
@@ -270,15 +305,20 @@ void Player::Dead() {
             body = nullptr;
             alive = false;
             lives--;
-            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_mario", Vector2{pos.x, pos.y}));
+            std::string effectName = "dead_" + type;
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, Vector2{pos.x, pos.y}));
             effectManager->setActivePlayerEffect(true);
         }
         else {
             if (lives == 0) {
                 // game over
+                playSoundEffect(SoundEffect::GAME_OVER);
             }
             else {
                 // reset the player
+                playSoundEffect(SoundEffect::PLAYER_DIE);
+                Game* game = Game::getInstance();
+                game->changeState(game->deathState.get());
                 Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
             }
         }
@@ -302,14 +342,14 @@ void Player::Draw() {
 }
 
 void Player::Draw(Vector2 position, float angle) {
-    TextHelper::DrawPackage(lives, score, coins, currentMap, time, position, 12, WHITE);
+    TextHelper::DrawPackage(lives, score, coins, currentMap, time, position, 9, WHITE);
 }
 
 void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
     if (!other) return;
 
-    if (normal.y < -0.5f) {
+    if (normal.y > 0.5f) {
         isOnGround = true;
     }
 
@@ -324,12 +364,13 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
             if (mode == FIRE) mode = BIG;
             else if (mode == SMALL) changeMode(BIG);
         }
-        if (modeChanged) {
+        if (modeChanged) {            
             b2Vec2 pos = body->GetPosition();
             position = Vector2{pos.x, pos.y - 0.5f};
 
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("grow_mario", Vector2{pos.x, pos.y + size.y}));
+            std::string effectName = "grow_" + type;
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, Vector2{pos.x, pos.y + size.y}));
             effectManager->setActivePlayerEffect(true);
             body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
         }

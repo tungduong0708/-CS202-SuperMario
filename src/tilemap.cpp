@@ -89,16 +89,17 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     json j;
     file >> j;
     
+    this->filePath = filePath;
     width = j["width"];
     height = j["height"];
     tileSize = j["tilewidth"];
 
     // Define boundary
     vector<b2Vec2> vertices = {
-        b2Vec2{0.0f, height},
+        b2Vec2{0.0f, (float)height},
         b2Vec2{0.0f, 0.0f},
-        b2Vec2{width, 0.0f},
-        b2Vec2{width, height}
+        b2Vec2{(float)width, 0.0f},
+        b2Vec2{(float)width, (float)height}
     };
 
     b2BodyDef bodyDef;
@@ -111,16 +112,20 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         edge.SetTwoSided(vertices[i], vertices[i + 1]);
         lineBody->CreateFixture(&edge, 1.0f);
     }
+    StaticObject* lineNode = new StaticObject(lineBody);
 
     b2Body* deadLine;
+    deadLine = Physics::world.CreateBody(&bodyDef);
     b2EdgeShape edge;
     edge.SetTwoSided(vertices[0], vertices[3]);
-    lineBody->CreateFixture(&edge, 0.0f);
-    DeadLine* deadLineNode = new DeadLine(lineBody);
-    lineBody->GetUserData().pointer = reinterpret_cast<uintptr_t>(deadLineNode);   
-    std::vector<SceneNode*> deadLineLayer;
-    deadLineLayer.push_back(deadLineNode);
-    nodes.push_back(deadLineLayer);
+    deadLine->CreateFixture(&edge, 0.0f);
+    DeadLine* deadLineNode = new DeadLine(deadLine);
+    deadLine->GetUserData().pointer = reinterpret_cast<uintptr_t>(deadLineNode);   
+
+    std::vector<SceneNode*> boundaryLayer;
+    boundaryLayer.push_back(deadLineNode);
+    boundaryLayer.push_back(lineNode);
+    nodes.push_back(boundaryLayer);
 
     for (const auto& tileset : j["tilesets"]) {
         std::string tilesetPath = tileset["source"].get<std::string>();
@@ -196,21 +201,12 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                     }
                     else {
                         if (object.contains("type") && object["type"] == "player") {
-                            if (!player) {
-                                std::string name = object["name"].get<std::string>();
-                                player = new Player(name);
-                                player->Init(b2Vec2{x, y});
-                                player->setSpeed(8.0f);
-                                player->setInitialPosition(Vector2{x, y});
-                                player->setHealth(100);
-                                player->setLives(3);
-                                player->setTime(300.0f);
-                                player->setCurrentMap(filePath);
-                            }
-                            else {
-                                player->setPositionBody(b2Vec2{x, y});
-                                player->setInitialPosition(Vector2{x, y});
-                                player->setCurrentMap(filePath);
+                            playerPosition = Vector2{x, y};
+                            if (player != nullptr) {
+                                player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
+                                player->setInitialPosition(playerPosition);
+                                string fPath = filePath.substr(4,3);
+                                player->setCurrentMap(fPath);
                                 player->setElapsedTime(0.0f);
                                 player->setTime(300.0f);
                             }
@@ -276,8 +272,8 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         }
         nodes.push_back(nodeLayer);
     }
+    camera = MyCamera(38.0f, playerPosition, Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
     file.close();
-    camera = MyCamera(38.0f, player->getPosition(), Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
     std::cout << "Map loaded successfully!" << std::endl;
     std::cout << Physics::world.GetBodyCount() << " bodies in the world after loading.\n";
 
@@ -331,6 +327,17 @@ void Tilemap::Draw() const {
     effectManager->DrawUpper();
     EndMode2D();
 
+}
+
+void Tilemap::setPlayer(const std::string name)
+{
+    player = new Player(name);
+    TextHelper::loadTexture("coin", "small" + name);
+    player->Init(b2Vec2{playerPosition.x, playerPosition.y});
+    player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
+    player->setInitialPosition(playerPosition);
+    string fPath = filePath.substr(4,3);
+    player->setCurrentMap(fPath);
 }
 
 void Tilemap::SetNewMapPath(const std::string &path)

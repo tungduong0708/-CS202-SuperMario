@@ -18,6 +18,21 @@ public:
     virtual bool isActive();
 };
 
+class ScoreEffect : public AnimationEffect {
+private:
+    float height = 1.0f;
+    float fadeTime = 0.0f;
+    float fadeDuration = 0.5f;
+    float alpha = 1.0f;
+    Vector2 size;
+    std::string score;
+public:
+    ScoreEffect(Vector2 pos);
+    ~ScoreEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
 class CoinEffect : public AnimationEffect {
 private:
     float height = 1.0f;
@@ -117,6 +132,19 @@ public:
     void Draw();
 };
 
+class DeadLuigiEffect : public AnimationEffect {
+private:
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+    b2Body* body = nullptr;
+public:
+    DeadLuigiEffect(Vector2 pos);
+    ~DeadLuigiEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
 class DeadKoopaEffect : public AnimationEffect {
 private:
     Vector2 position;
@@ -157,7 +185,7 @@ public:
     void Draw();
 };
 
-class GrowEffect : public AnimationEffect {
+class GrowMarioEffect : public AnimationEffect {
 private:
     float effectTime = 1.5f;
     float totalTime = 0.0f;
@@ -169,13 +197,13 @@ private:
     Vector2 size;
     Animation animation;
 public:
-    GrowEffect(Vector2 pos);
-    ~GrowEffect() = default;
+    GrowMarioEffect(Vector2 pos);
+    ~GrowMarioEffect() = default;
     void Update(float deltaTime);
     void Draw();
 };
 
-class ShrinkEffect : public AnimationEffect {
+class GrowLuigiEffect : public AnimationEffect {
 private:
     float effectTime = 1.5f;
     float totalTime = 0.0f;
@@ -187,8 +215,8 @@ private:
     Vector2 size;
     Animation animation;
 public:
-    ShrinkEffect(Vector2 pos);
-    ~ShrinkEffect() = default;
+    GrowLuigiEffect(Vector2 pos);
+    ~GrowLuigiEffect() = default;
     void Update(float deltaTime);
     void Draw();
 };

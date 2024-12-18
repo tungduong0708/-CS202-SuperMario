@@ -2,6 +2,7 @@
 #include "character.h"
 #include "string.h"
 #include "tilemap.h"
+#include "game.h"
 
 StaticObject::StaticObject() : body(nullptr) {
 }
@@ -92,6 +93,7 @@ void Gate::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
     Player* player = dynamic_cast<Player*>(other);
     if (player != nullptr) {
+        Game::getInstance()->changeState(Game::getInstance()->changeStageState.get());
         Tilemap::getInstance()->SetNewMapPath(addressNext);
     }
 }

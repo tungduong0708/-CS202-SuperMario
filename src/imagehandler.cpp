@@ -69,6 +69,10 @@ vector<Image>& ImageHandler::setImages(string path) {
         images.push_back(LoadImage("resources/images/smallluigi/hold.png"));
         images.push_back(LoadImage("resources/images/smallluigi/victory.png"));
     }
+    else if (path == "grow_luigi") {
+        images.push_back(LoadImage("resources/images/smallluigi/grow1.png"));
+        images.push_back(LoadImage("resources/images/smallluigi/grow2.png"));
+    }
     else if (path == "bigluigi") {
         images.push_back(LoadImage("resources/images/bigluigi/idle.png"));
         images.push_back(LoadImage("resources/images/bigluigi/duck.png"));
@@ -157,8 +161,20 @@ vector<Image>& ImageHandler::setImages(string path) {
         images.push_back(LoadImage("resources/images/fireflower/fireflower1.png"));
         images.push_back(LoadImage("resources/images/fireflower/fireflower2.png"));
     }
+    else if (path == "attackball") {
+        images.push_back(LoadImage("resources/images/boss/bullet1.png"));  
+        images.push_back(LoadImage("resources/images/boss/bullet2.png"));
+    }
     else if (path == "movingplatform"){
         images.push_back(LoadImage("resources/images/movingplatform/movingplatform.png"));
+    }
+    else if (path == "boss") {
+        images.push_back(LoadImage("resources/images/boss/idle.png"));
+        images.push_back(LoadImage("resources/images/boss/walk1.png"));
+        images.push_back(LoadImage("resources/images/boss/walk2.png"));
+        images.push_back(LoadImage("resources/images/boss/blow1.png"));
+        images.push_back(LoadImage("resources/images/boss/blow2.png"));
+        images.push_back(LoadImage("resources/images/boss/blow3.png"));
     }
     
     // copy vector
@@ -262,6 +278,11 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
             Animation({Frame(1.0f, textures[0]), Frame(1.0f, textures[1])}) // grow1 & grow2
         };
     }
+    else if (path == "grow_luigi") {
+        animations = {
+            Animation({Frame(1.0f, textures[0]), Frame(1.0f, textures[1])}) // grow1 & grow2
+        };
+    }
     else if (path == "shrink_mario") {
         animations = {
             Animation({Frame(1.0f, textures[0]), Frame(1.0f, textures[1])}) // grow1 & grow2
@@ -360,6 +381,19 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
     else if (path == "movingplatform") {
         animations = {
             Animation({Frame(0.1f, textures[0])}) 
+        };
+    }
+    else if (path == "attackball") {
+        animations = {
+            Animation({Frame(0.1f, textures[0]), Frame(0.1f, textures[1])}) // fireball
+        };
+    }
+    else if (path == "boss") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}), // idle
+            Animation({Frame(0.1f, textures[1]), Frame(0.1f, textures[2])}), // walk1 & walk2
+            Animation({Frame(0.15f, textures[3]), Frame(0.15f, textures[4]), Frame(0.15f, textures[5])}), // blow1 & blow2 & blow3
+            Animation({Frame(0.1f, textures[0])}) // dead
         };
     }
 

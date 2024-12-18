@@ -119,6 +119,16 @@ void Character::setMode(Mode mode) {
     this->mode = mode;
 }
 
+void Character::setOnGround(bool og) {
+    isOnGround = og;
+}
+
+void Character::setInvisibleTime(float it)
+{
+    invincible = true;
+    blinkTime = it;
+}
+
 int Character::getHealth() {
     return health;
 }
@@ -139,6 +149,11 @@ Mode Character::getMode() {
     return mode;
 }
 
+bool Character::isInvisible()
+{
+    return invincible;
+}
+
 bool Character::onGround() {
     return isOnGround;
 }
@@ -152,7 +167,13 @@ bool Character::isAlive() {
 }
 
 void Character::changeMode(Mode mode)
-{
+{   
+    if (this->mode < mode){
+        playSoundEffect(SoundEffect::POWER_UP);
+    }
+    else if (this->mode > mode){
+        playSoundEffect(SoundEffect::POWER_DOWN);
+    }
     this->mode = mode;
     this->modeChanged = true;
 }
@@ -286,15 +307,36 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
             immortal = false;
         }
     }
+    else if (invincible) {
+        b2Fixture* fixture = body->GetFixtureList();
+        b2Filter filter = fixture->GetFilterData();
+        filter.categoryBits = CATEGORY_PLAYER;
+        filter.maskBits = MASK_ENEMY;
+        fixture->SetFilterData(filter);
+        appearTimer += deltaTime;
+        blinkTime -= deltaTime;
+        if (blinkTime <= 0.0f) {
+            invincible = false;
+            blinkTime = 0.0f;
+            appear = true;
+            filter.maskBits = MASK_DEFAULT;
+            fixture->SetFilterData(filter);
+            return;
+        }
+        if (appearTimer >= 0.1f) {
+            appearTimer = 0.0f;
+            appear = !appear;
+        }
+    }
 }
 
 void Character::Draw() {
+    if (!appear) return;
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Vector2 drawPosition = { pos.x, pos.y };
     SetTextureFilter(texture, TEXTURE_FILTER_POINT);
     if (immortal) {
-        // colors[colorIndex].a = 50;
         Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft, 0.0f, Vector2{-1.0f, -1.0f}, colors[colorIndex]);
     }
     else {
@@ -312,3 +354,4 @@ void Character::OnBeginContact(SceneNode* other)
 void Character::OnEndContact(SceneNode* other)
 {
 }
+

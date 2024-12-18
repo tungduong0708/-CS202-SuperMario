@@ -16,12 +16,14 @@ struct GameSettings
 
 class Game {
 public:
-    Game();
+    static Game* getInstance();
 
     void run();
     void update();
     void draw();
     void exitGame();
+
+    ~Game();
 
     // Getters
     GameSettings& getSettings();
@@ -46,6 +48,12 @@ public:
     std::unique_ptr<GameState> victoryState;
 
 private:
+    static Game* instance;
+
+    Game();
+    Game(const Game&) = delete;
+    Game& operator=(const Game&) = delete;
+
     static constexpr int screenWidth = 800;
     static constexpr int screenHeight = 600;
     GameState* currentState;

@@ -1,5 +1,6 @@
 #include "include.h"
 #include "object.h"
+#include "moving_object.h"
 
 
 MovingObject::MovingObject() {
@@ -379,4 +380,135 @@ void MovingPlatform::Draw(Vector2 position, float angle) {
 MovingObject* MovingPlatform::copy() const {
     return new MovingPlatform(*this);
 }
+
+AttackBall::AttackBall() {
+    damage = 0;
+    flag = false;
+    span = 0.0f;
+}
+
+AttackBall::AttackBall(float d, Vector2 size, float speed, float angle): 
+    MovingObject(size, speed, angle), damage(d), flag(false), span(0.0f) {
+}
+
+AttackBall::AttackBall(const AttackBall &ff): MovingObject(ff) {
+    damage = ff.damage;
+    flag = ff.flag;
+    span = ff.span;
+}
+
+AttackBall::~AttackBall() {
+    damage = 0;
+    flag = false;
+    span = 0.0f;
+    if (body) {
+        Physics::world.DestroyBody(body);
+        body = nullptr;
+    }
+}
+
+void AttackBall::setDamage(float damage) {
+    this->damage = damage;
+}
+
+void AttackBall::setFlag(bool flag) {
+    this->flag = flag;
+}
+
+float AttackBall::getDamage() {
+    return damage;
+}
+
+bool AttackBall::isActive() {
+    return flag;
+}
+
+Animation AttackBall::getAnimation(bool flag) {
+    return animations[0];
+}
+
+MovingObject* AttackBall::copy() const {
+    return new AttackBall(*this);
+}
+
+void AttackBall::Init(b2Vec2 position) {
+    animations = AnimationHandler::setAnimations("attackball");
+    Texture texture = animations[0].GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+
+    std::vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{size.x, 0.0f},
+        b2Vec2{size.x, size.y},
+        b2Vec2{0.0f, size.y}
+    };
+    restitution = 0.0f;
+    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y}, restitution);
+
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+    body->SetGravityScale(0.0f);
+    // b2Fixture* fixture = body->GetFixtureList();
+    // b2Filter filter = fixture->GetFilterData();
+    // filter.maskBits = CATEGORY_PLAYER;
+    // fixture->SetFilterData(filter);
+}
+
+void AttackBall::Draw() {
+    if (!body) return;
+    bool faceLeft = speed < 0;
+    b2Vec2 pos = body->GetPosition();
+    Texture text = animations[0].GetFrame();
+    Rectangle sourceRect = { 0, 0, static_cast<float>(text.width), static_cast<float>(text.height) };
+    Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, faceLeft, angle);
+}
+
+void AttackBall::Draw(Vector2 position, float angle) {
+};
+
+void AttackBall::Update(Vector2 playerVelocity, float deltaTime) {
+    if (!body) return;
+    setSpeed(speed);
+    elapsedTime += deltaTime;
+    span += deltaTime;
+    if (span >= 1.5f) {
+        flag = true;
+    }
+}
+
+void AttackBall::HandleInput() {
+    // Attack balls generally do not require input handling
+}
+
+void AttackBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
+    if (!other || !body) return;
+
+    Player *player = dynamic_cast<Player*>(other);
+    if (player) {
+        if (player->isImmortal()) return;
+        if (player->getMode() == Mode::SMALL) {
+            player->setHealth(player->getHealth() - damage);
+            if (player->getHealth() <= 0) {
+                // player->setAlive(false);
+            }
+        } else if (player->getMode() == Mode::BIG || player->getMode() == Mode::FIRE) {
+            b2Body* playerBody = player->getBody();
+            Vector2 playerSize = player->getSize();
+            Vector2 pos = player->getPosition();
+            player->setPositon(b2Vec2{pos.x, pos.y});
+            player->changeMode(Mode::SMALL);
+            player->setImmortal(true);
+            player->setImmortalTime(1.5f);
+        }
+    }
+    Physics::bodiesToDestroy.push_back(body);
+    body = nullptr;
+    animations.clear();
+}
+
+void AttackBall::OnEndContact(SceneNode *other) {
+    // Handle end of collision logic if needed
+}
+
+
+
 

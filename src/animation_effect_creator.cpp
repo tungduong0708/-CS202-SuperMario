@@ -10,6 +10,9 @@ void AnimationEffectCreator::RegisterEffect(const std::string &name, std::functi
 
 void AnimationEffectCreator::InitEffects()
 {
+    RegisterEffect("score", [](Vector2 position) {
+        return new ScoreEffect(position);
+    });
     RegisterEffect("coin", [](Vector2 position) {
         return new CoinEffect(position);
     });
@@ -31,6 +34,9 @@ void AnimationEffectCreator::InitEffects()
     RegisterEffect("dead_mario", [](Vector2 position) {
         return new DeadMarioEffect(position);
     });
+    RegisterEffect("dead_luigi", [](Vector2 position) {
+        return new DeadLuigiEffect(position);
+    });
     RegisterEffect("dead_koopa", [](Vector2 position) {
         return new DeadKoopaEffect(position);
     });
@@ -41,10 +47,10 @@ void AnimationEffectCreator::InitEffects()
         return new SquashDeadGoombaEffect(position);
     });
     RegisterEffect("grow_mario", [](Vector2 position) {
-        return new GrowEffect(position);
+        return new GrowMarioEffect(position);
     });
-    RegisterEffect("shrink_mario", [](Vector2 position) {
-        return new ShrinkEffect(position);
+    RegisterEffect("grow_luigi", [](Vector2 position) {
+        return new GrowLuigiEffect(position);
     });
 }
 

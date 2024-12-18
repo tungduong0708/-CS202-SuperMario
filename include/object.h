@@ -13,6 +13,10 @@
 #include "renderer.h"
 #include "text_helper.h"
 #include "string_mode.h"
+#include "file_check_helper.h"
+
+// Visitor pattern for file handling
+#include "file_visitor.h"
 
 
 // Physics package: Headers for box2d physics engine

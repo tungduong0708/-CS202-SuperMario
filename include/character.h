@@ -27,8 +27,12 @@ protected:
     Rectangle destRect;         // Scaled drawing rectangle
     Vector2 origin;             // Sprite origin
     Vector2 position;
+    bool appear = true;
+    bool invincible = false;
     bool immortal;
+    float blinkTime;
     float immortalTime;
+    float appearTimer = 0.0f;
     float colorChangeTimer = 0.0f; 
     int colorIndex = 0;
     int frameWidth, frameHeight;
@@ -51,6 +55,8 @@ public:
     void setLevel(int l);
     void setStrength(int st);
     void setMode(Mode mode);
+    void setOnGround(bool og);
+    void setInvisibleTime(float it);
 
     int getHealth();
     int getScore();
@@ -61,6 +67,7 @@ public:
     bool isAlive();
     void changeMode(Mode mode);
     Mode getMode();
+    bool isInvisible();
 
     // default image = IDLE
     virtual void Init(b2Vec2 position);  
@@ -81,6 +88,7 @@ private:
     string name;
     float coins;
     int lives;
+    int addScore = 0;
     string currentMap;
     float time; // time allotted for the player to complete the map
     float force;
@@ -96,6 +104,7 @@ public:
     Player(const Player &p);
     virtual ~Player();
 
+    void setAddScore(int s);
     void setPositon(b2Vec2 pos);
     void setPositionBody(b2Vec2 pos);
     void setName(string n);
@@ -111,8 +120,10 @@ public:
     void setInitialPosition(Vector2 pos);
     void impulseForce(Vector2 force);
     void updateScore(int s);
+    void updateScore();
 
 
+    int getAddScore();
     string getName();
     float getCoins();
     float getForce();
@@ -143,6 +154,7 @@ protected:
     bool fixtureChange;
     bool deadByPlayer;
     bool deadByFireball;
+    bool isBodyChanged;
 public:
     Enemy();
     Enemy(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, int strength = 0, 
@@ -152,18 +164,20 @@ public:
     void setType(string t);
     void setRange(float r);
     void setIsAlive(bool ia);
+    void setState(EnemyState s);
 
     string getType();
     float getRange();
+    EnemyState getState();
 
-    void Init(b2Vec2 position);  
+    virtual void Init(b2Vec2 position);  
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal);
     virtual void OnEndContact(SceneNode* other);
-    void HandleInput();
+    virtual void HandleInput();
     virtual void Dead();
-    void Draw();
-    void Draw(Vector2 position, float angle = 0.0f);
+    virtual void Draw();
+    virtual void Draw(Vector2 position, float angle = 0.0f);
 
     MovingObject* copy() const;
 };
@@ -184,6 +198,9 @@ public:
 };
 
 class Koopa : public Enemy {
+private:
+    float delay;
+    bool isDelay;
 public:
     Koopa();
     Koopa(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, 
@@ -192,9 +209,43 @@ public:
     virtual ~Koopa();
 
     void Dead();
+    void Update(Vector2 playerVelocity, float deltaTime);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     MovingObject* copy() const; 
-};  
+}; 
+
+
+class Boss: public Enemy {
+private:
+    float bulletFreq;
+    float bulletSpeed;
+    bool attackFire;
+    BossState bossState;
+    float timer; // total time of 3 attack frames
+public:
+    Boss();
+    Boss(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
+         int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
+    Boss(const Boss &b);
+    virtual ~Boss();
+
+    void setBulletFreq(float bf);
+    void setBulletSpeed(float bs);
+    void setBossState(BossState bs);
+
+    BossState getBossState();
+    float getBulletFreq();
+    float getBulletSpeed();
+
+    void Init(b2Vec2 position);
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    void OnEndContact(SceneNode* other);
+    void Dead();
+    // void Draw();
+    // void Draw(Vector2 position, float angle = 0.0f);
+    MovingObject* copy() const;
+};
 
 #endif

@@ -43,7 +43,19 @@
          "draworder":"topdown",
          "id":2,
          "name":"Object Layer 1",
-         "objects":[],
+         "objects":[
+                {
+                 "height":0,
+                 "id":1,
+                 "name":"mario",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player",
+                 "visible":true,
+                 "width":0,
+                 "x":10,
+                 "y":108.5
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -51,10 +63,10 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":1,
+ "nextobjectid":2,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tilesets":[
         {

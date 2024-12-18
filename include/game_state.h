@@ -2,17 +2,11 @@
 
 #include <vector>
 #include <string>
-#include "include.h"
 #include "object.h"
-#include "physics.h"
-#include "contactlistener.h"
 #include "raylib.h"
 
 class Game;
-class ButtonInterface
-{
-    Rectangle rect;
-};
+
 struct Button
 {
     Rectangle rect;
@@ -99,7 +93,7 @@ public:
     explicit GameplayState(Game* game);
     void update() override;
     void draw() override;
-    void cleanup();
+    void cleanup() override;
 
 private:
     std::vector<MovingObject*> movingObjects;
@@ -136,23 +130,38 @@ private:
     ImageButton player2Button;
 };
 
-class DeathState : public GameState
-{
-public:
-    explicit DeathState(Game* game);
-    void update() override;
-    void draw() override;
-protected:
-    int lifeRemaining;
-    std::vector<Button> buttons;
-};
-
-class ChangeStageState : public DeathState
+class ChangeStageState : public GameState
 {
 public:
     explicit ChangeStageState(Game* game);
     void update() override;
     void draw() override;
+    void setLifeRemaining(int life);
+    virtual void reset();
+
+    void setStageName(const std::string& name);
+
+    ~ChangeStageState() override;
+
+protected:
+    float elapsedTime;
+    int lifeRemaining;
+    Texture2D characterTexture;
+    std::string stageName;
+};
+
+class DeathState : public ChangeStageState
+{
+public:
+    explicit DeathState(Game* game);
+    void update() override;
+    void draw() override;
+    void reset() override;
+    ~DeathState() override;
+
+private:
+    bool showDeathImage;
+    Texture2D deathTexture;
 };
 
 class GameOverState : public GameState
@@ -161,6 +170,11 @@ public:
     explicit GameOverState(Game* game);
     void update() override;
     void draw() override;
+
+    // Setters
+    void setScore(int score);
+    void setHighScore(int highScore);
+    void setTimeRemaining(int timeRemaining);
 protected:
     std::vector<Button> buttons;
     int score;

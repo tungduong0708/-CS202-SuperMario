@@ -174,7 +174,7 @@ void DrawImageButton(const ImageButton& button, const Game& game)
     // --- Text at the Bottom ---
     if (!button.text.empty())
     {
-        const int textSize = 24; // Bigger text size
+        constexpr int textSize = 24; // Bigger text size
         Vector2 textSizeVec = MeasureTextEx(game.getFont(), button.text.c_str(), textSize, 1);
 
         // Text shadow

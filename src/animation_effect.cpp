@@ -9,6 +9,35 @@ bool AnimationEffect::isActive()
     return active;
 }
 
+ScoreEffect::ScoreEffect(Vector2 pos)
+{
+    position = pos;
+    Tilemap* tilemap = Tilemap::getInstance();
+    Player* player = tilemap->GetPlayer();
+    score = std::to_string(player->getAddScore());
+    std::cout << "Score: " << score << std::endl;
+}
+
+void ScoreEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    fadeTime += deltaTime;
+    if (fadeTime > fadeDuration) {
+        float elapsed = fadeTime - fadeDuration;
+        alpha = 1.0f -  2 * elapsed / fadeDuration;
+        if (alpha <= 0.0f) active = false;
+    }
+    position.y -= deltaTime * 2;   
+}
+
+void ScoreEffect::Draw()
+{
+    if (!active) return;
+    Color color = { 255, 255, 255, (unsigned char)(alpha * 255) };
+    TextHelper::Draw(score, position, 6, color);
+}
+
+
 CoinEffect::CoinEffect(Vector2 pos)
 {
     animation = AnimationHandler::setAnimations("coin")[0];
@@ -288,6 +317,48 @@ void DeadMarioEffect::Draw()
     DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }
 
+DeadLuigiEffect::DeadLuigiEffect(Vector2 pos)
+{
+    position = pos;
+    animation = AnimationHandler::setAnimations("smallluigi")[6];
+    texture = animation.GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+}
+
+void DeadLuigiEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    if (!body) {
+        std::vector<b2Vec2> vertices = {
+            b2Vec2{0.0f, 0.0f},
+            b2Vec2{size.x, 0.0f},
+            b2Vec2{0.0f, size.y},
+            b2Vec2{size.x, size.y}
+        };
+        MyBoundingBox::createBody(body, b2_dynamicBody, vertices, position);
+        b2Fixture* fixture = body->GetFixtureList();
+        fixture->SetSensor(true);
+        body->ApplyLinearImpulseToCenter(b2Vec2{0.0f, -20.0f}, true);
+    }
+    else {
+        int heightMap = Tilemap::getInstance()->GetHeight();
+        b2Vec2 pos = body->GetPosition();
+        if (pos.y > heightMap)
+        {
+            Physics::world.DestroyBody(body);
+            body = nullptr;
+            active = false;
+        }
+    }
+}
+
+void DeadLuigiEffect::Draw()
+{
+    if (!active || !body) return;
+    b2Vec2 pos = body->GetPosition();
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+}
+
 DeadKoopaEffect::DeadKoopaEffect(Vector2 pos)
 {
     position = pos;
@@ -398,7 +469,7 @@ void SquashDeadGoombaEffect::Draw()
 }
 
 
-GrowEffect::GrowEffect(Vector2 pos)
+GrowMarioEffect::GrowMarioEffect(Vector2 pos)
 {
     // Lower left origin
     position = pos;
@@ -408,7 +479,7 @@ GrowEffect::GrowEffect(Vector2 pos)
     size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
 }
 
-void GrowEffect::Update(float deltaTime)
+void GrowMarioEffect::Update(float deltaTime)
 {
     if (!active) return;
     elapsedTime += deltaTime;
@@ -427,23 +498,23 @@ void GrowEffect::Update(float deltaTime)
     position.y = currentPostion.y - size.y;
 }
 
-void GrowEffect::Draw()
+void GrowMarioEffect::Draw()
 {
     if (!active || !appear) return;
     DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{position.x, position.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }
 
-ShrinkEffect::ShrinkEffect(Vector2 pos)
+GrowLuigiEffect::GrowLuigiEffect(Vector2 pos)
 {
     // Lower left origin
     position = pos;
     currentPostion = pos;
-    animation = AnimationHandler::setAnimations("shrink_mario")[0];
+    animation = AnimationHandler::setAnimations("grow_luigi")[0];
     texture = animation.GetFrame();
     size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
 }
 
-void ShrinkEffect::Update(float deltaTime)
+void GrowLuigiEffect::Update(float deltaTime)
 {
     if (!active) return;
     elapsedTime += deltaTime;
@@ -462,7 +533,7 @@ void ShrinkEffect::Update(float deltaTime)
     position.y = currentPostion.y - size.y;
 }
 
-void ShrinkEffect::Draw()
+void GrowLuigiEffect::Draw()
 {
     if (!active || !appear) return;
     DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, (float)texture.height}, Rectangle{position.x, position.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
