@@ -249,7 +249,7 @@ GameplayState::GameplayState(Game* game)
     Physics::Init(); 
     AnimationEffectCreator::InitEffects();
     EnemyCreator::InitEnemies();
-    TextHelper::loadFont("Mario256", "");
+    TextHelper::loadFont("PressStart", "");
     TilesetHandler::Init();
     
     float buttonWidth = 35;

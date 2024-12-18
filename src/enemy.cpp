@@ -22,6 +22,9 @@ Enemy::Enemy(string type, float range, bool alive, int health, int score, int le
     state = EnemyState::ENEMY_WALK;
     deadByPlayer = false;
     deadByFireball = false;
+    this->health = 100;
+    this->strength = 100;
+    this->speed = -2.0f;
 }
 
 Enemy::Enemy(const Enemy &e): Character(e) {
@@ -119,8 +122,8 @@ void Enemy::Update(Vector2 playerVelocity, float deltaTime) {
 
         b2Fixture* fixture = body->GetFixtureList();
         b2Filter filter = fixture->GetFilterData();
-        filter.categoryBits = CATEGORY_DEFAULT;
-        filter.maskBits = MASK_DEFAULT;
+        // filter.categoryBits = CATEGORY_DEFAULT;
+        // filter.maskBits = MASK_DEFAULT;
         fixture->SetFilterData(filter);
         fixtureChange = false;
     }
@@ -169,6 +172,9 @@ Goomba::Goomba(string type, float range, bool alive, bool sit, int health, int s
                int strength, Vector2 size, float speed, float angle): 
     Enemy(type, range, alive, health, score, level, strength, size, speed, angle)
 {
+    this->health = 100;
+    this->strength = 100;
+    this->speed = -2.0f;
 }
 
 Goomba::Goomba(const Goomba &g): Enemy(g) {
@@ -294,6 +300,9 @@ Koopa::Koopa(string type, float range, bool alive, bool sit, int health, int sco
     faceLeft = true;
     delay = 0.2f;
     isDelay = false;
+    this->health = 100;
+    this->strength = 100;
+    this->speed = -2.0f;
 }
 
 Koopa::Koopa(const Koopa &k): Enemy(k) {
@@ -328,6 +337,10 @@ void Koopa::Update(Vector2 playerVelocity, float deltaTime) {
             isDelay = false;
             delay = 0.2f;
         }
+    }
+
+    if (state == EnemyState::ENEMY_SHELL) {
+        setSpeed(0.0f);
     }
 }
 
@@ -384,17 +397,29 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
                 fixtureChange = true;
                 texture = animations[state].GetFrame();
                 size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
-                setSpeed(0);
+                setSpeed(0.0f);
                 isDelay = true;
                 return;
             }
             if (state == EnemyState::ENEMY_SHELL) {
+                playSoundEffect(SoundEffect::HIT_ENEMY);
                 state = EnemyState::ENEMY_SPIN;
+                b2Fixture* fixture = body->GetFixtureList();
+                b2Filter filter = fixture->GetFilterData();
+                filter.categoryBits = CATEGORY_DEFAULT;
+                filter.maskBits = MASK_DEFAULT;
+                fixture->SetFilterData(filter);
                 setSpeed(15.0f);
                 return;
             }
             if (state == EnemyState::ENEMY_SPIN) {
+                playSoundEffect(SoundEffect::HIT_ENEMY);
                 state = EnemyState::ENEMY_SHELL;
+                b2Fixture* fixture = body->GetFixtureList();
+                b2Filter filter = fixture->GetFilterData();
+                filter.categoryBits = CATEGORY_ENEMY;
+                filter.maskBits = MASK_ENEMY;   
+                fixture->SetFilterData(filter);
                 setSpeed(0);
                 return;
             }
@@ -436,6 +461,9 @@ Boss::Boss(string type, float range, bool alive, int health, int score, int leve
     bossState = BossState::BOSS_IDLE;
     attackFire = true;
     timer = 0.0f;
+    this->health = 1250;
+    this->strength = 100;
+    this->speed = -4.0f;
 }
 
 Boss::Boss(const Boss &b): Enemy(b) {
@@ -475,6 +503,7 @@ BossState Boss::getBossState() {
 }
 
 void Boss::Init(b2Vec2 position) {
+    alive = true;
     bossState = BossState::BOSS_IDLE;
     animations = AnimationHandler::setAnimations(type);
     Animation attack = animations[BossState::BOSS_ATTACK];
@@ -505,6 +534,8 @@ void Boss::Init(b2Vec2 position) {
     filter.categoryBits = CATEGORY_ENEMY;
     filter.maskBits = MASK_ENEMY;
     fixture->SetFilterData(filter);
+
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 
 void Boss::Update(Vector2 playerVelocity, float deltaTime) {
@@ -551,15 +582,6 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     else {
         body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
     }
-
-    // if (elapsedTime >= 1.5f) {
-    //     elapsedTime = 0.0f;
-    // }
-    // else {
-    //     if (elapsedTime >= timer) {
-    //         bossState = BossState::BOSS_IDLE;
-    //     }
-    // }
 
     animations[bossState].Update(deltaTime);
     texture = animations[bossState].GetFrame();
