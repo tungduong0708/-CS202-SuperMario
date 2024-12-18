@@ -219,7 +219,6 @@ private:
     float bulletFreq;
     float bulletSpeed;
     bool attackFire;
-    Player* player;
     BossState bossState;
     float timer; // total time of 3 attack frames
 public:
@@ -231,11 +230,9 @@ public:
 
     void setBulletFreq(float bf);
     void setBulletSpeed(float bs);
-    void setPlayer(Player* pos);
     void setBossState(BossState bs);
 
     BossState getBossState();
-    Player* getPlayer();
     float getBulletFreq();
     float getBulletSpeed();
 

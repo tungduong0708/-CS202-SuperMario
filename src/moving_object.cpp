@@ -440,9 +440,6 @@ void AttackBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
 
     Player *player = dynamic_cast<Player*>(other);
     if (player) {
-        Physics::bodiesToDestroy.push_back(body);
-        body = nullptr;
-        animations.clear();
         if (player->isImmortal()) return;
         if (player->getMode() == Mode::SMALL) {
             player->setHealth(player->getHealth() - damage);
@@ -459,6 +456,9 @@ void AttackBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
             player->setImmortalTime(1.5f);
         }
     }
+    Physics::bodiesToDestroy.push_back(body);
+    body = nullptr;
+    animations.clear();
 }
 
 void AttackBall::OnEndContact(SceneNode *other) {
