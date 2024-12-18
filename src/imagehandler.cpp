@@ -69,6 +69,10 @@ vector<Image>& ImageHandler::setImages(string path) {
         images.push_back(LoadImage("resources/images/smallluigi/hold.png"));
         images.push_back(LoadImage("resources/images/smallluigi/victory.png"));
     }
+    else if (path == "grow_luigi") {
+        images.push_back(LoadImage("resources/images/smallluigi/grow1.png"));
+        images.push_back(LoadImage("resources/images/smallluigi/grow2.png"));
+    }
     else if (path == "bigluigi") {
         images.push_back(LoadImage("resources/images/bigluigi/idle.png"));
         images.push_back(LoadImage("resources/images/bigluigi/duck.png"));
@@ -270,6 +274,11 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
         };
     }
     else if (path == "grow_mario") {
+        animations = {
+            Animation({Frame(1.0f, textures[0]), Frame(1.0f, textures[1])}) // grow1 & grow2
+        };
+    }
+    else if (path == "grow_luigi") {
         animations = {
             Animation({Frame(1.0f, textures[0]), Frame(1.0f, textures[1])}) // grow1 & grow2
         };

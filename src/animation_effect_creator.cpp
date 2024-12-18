@@ -31,6 +31,9 @@ void AnimationEffectCreator::InitEffects()
     RegisterEffect("dead_mario", [](Vector2 position) {
         return new DeadMarioEffect(position);
     });
+    RegisterEffect("dead_luigi", [](Vector2 position) {
+        return new DeadLuigiEffect(position);
+    });
     RegisterEffect("dead_koopa", [](Vector2 position) {
         return new DeadKoopaEffect(position);
     });
@@ -41,7 +44,10 @@ void AnimationEffectCreator::InitEffects()
         return new SquashDeadGoombaEffect(position);
     });
     RegisterEffect("grow_mario", [](Vector2 position) {
-        return new GrowEffect(position);
+        return new GrowMarioEffect(position);
+    });
+    RegisterEffect("grow_luigi", [](Vector2 position) {
+        return new GrowLuigiEffect(position);
     });
 }
 

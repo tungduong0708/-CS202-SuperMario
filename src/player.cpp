@@ -281,7 +281,8 @@ void Player::Dead() {
             body = nullptr;
             alive = false;
             lives--;
-            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_mario", Vector2{pos.x, pos.y}));
+            std::string effectName = "dead_" + type;
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, Vector2{pos.x, pos.y}));
             effectManager->setActivePlayerEffect(true);
         }
         else {
@@ -344,7 +345,8 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
             position = Vector2{pos.x, pos.y - 0.5f};
 
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("grow_mario", Vector2{pos.x, pos.y + size.y}));
+            std::string effectName = "grow_" + type;
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, Vector2{pos.x, pos.y + size.y}));
             effectManager->setActivePlayerEffect(true);
             body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
         }
