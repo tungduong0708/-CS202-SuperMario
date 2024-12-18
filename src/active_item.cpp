@@ -110,7 +110,12 @@ void Mushroom::OnEndContact(SceneNode* other) {
     // handle the end contact of the mushroom
 }
 
-MovingObject* Mushroom::copy() const {
+void Mushroom::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject *Mushroom::copy() const
+{
     return new Mushroom(*this);
 }
 
@@ -147,7 +152,12 @@ void FireFlower::OnEndContact(SceneNode* other) {
     // handle the end contact of the fire flower
 }
 
-MovingObject* FireFlower::copy() const {
+void FireFlower::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject *FireFlower::copy() const
+{
     return new FireFlower(*this);
 }
 
@@ -207,15 +217,18 @@ void Star::OnBeginContact(SceneNode* other, b2Vec2 normal) {
         else if (normal.x < -0.9f) {
             setSpeed(abs(speed));
         }
-        //body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -15.0f), true);
     }
 }
 
 void Star::OnEndContact(SceneNode* other) {
-    // handle the end contact of the star
+
 }
 
-MovingObject* Star::copy() const {
+void Star::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject *Star::copy() const
+{
     return new Star(*this);
 }
-

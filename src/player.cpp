@@ -45,6 +45,7 @@ Player::Player(string type, string name, float coins, int lives, int health,
         bulletSpeed = 8.0f;
         bulletFreq = 0.30f;
     }
+
 }
 
 Player::Player(const Player &p): 
@@ -148,6 +149,10 @@ int Player::getAddScore()
     return addScore;
 }
 
+int Player::getLives() {
+    return lives;
+}
+
 string Player::getName()
 {
     return name;
@@ -159,6 +164,10 @@ float Player::getCoins() {
 
 string Player::getCurrentMap() {
     return currentMap;
+}
+
+Vector2 Player::getInitialPosition() {
+    return initialPosition;
 }
 
 float Player::getTime() {
@@ -398,7 +407,11 @@ void Player::OnEndContact(SceneNode *other) {
     }
 }
 
-MovingObject* Player::copy() const {
-    return new Player(*this);
+void Player::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
 }
 
+MovingObject *Player::copy() const
+{
+    return new Player(*this);
+}

@@ -58,6 +58,8 @@ public:
     virtual void HandleInput() = 0;
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal) = 0;
     virtual void OnEndContact(SceneNode* other) = 0;
+
+    virtual void accept(FileVisitor* visitor) = 0;
 };
 
 class FireBall : public MovingObject {
@@ -88,6 +90,7 @@ public:
     void OnBeginContact(SceneNode* other, b2Vec2 normal);  
     void OnEndContact(SceneNode* other);
 
+    void accept(FileVisitor* visitor);
     MovingObject* copy() const;
 };
 
@@ -101,7 +104,7 @@ private:
     // other attributes are inherited from the moving object class ---
 public:
     AttackBall();
-    AttackBall(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0);
+    AttackBall(float d, Vector2 size = {0, 0}, float s = 0, float a = 0);
     AttackBall(const AttackBall &ff);
     virtual ~AttackBall();
     void setDamage(float d);
@@ -118,6 +121,7 @@ public:
     void OnBeginContact(SceneNode* other, b2Vec2 normal);  
     void OnEndContact(SceneNode* other);
 
+    void accept(FileVisitor* visitor);
     MovingObject* copy() const;
 };
 
@@ -142,6 +146,9 @@ public:
     virtual void HandleInput();
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal) = 0;
     virtual void OnEndContact(SceneNode* other) = 0;
+
+    virtual void accept(FileVisitor* visitor) = 0;
+    virtual MovingObject* copy() const = 0;
 };
 
 class Mushroom : public ActiveItem {
@@ -154,6 +161,8 @@ public:
     void Init(b2Vec2 position);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
+
+    void accept(FileVisitor* visitor);
     MovingObject* copy() const;
 };
 
@@ -167,6 +176,8 @@ public:
     void Init(b2Vec2 position);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
+
+    void accept(FileVisitor* visitor);
     MovingObject* copy() const;
 };
 
@@ -181,6 +192,8 @@ public:
     void Update(Vector2 playerVelocity, float deltaTime);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
+
+    void accept(FileVisitor* visitor);
     MovingObject* copy() const;
 };
 
@@ -209,6 +222,8 @@ public:
     void OnEndContact(SceneNode *other) override;
     void Draw() override;
     void Draw(Vector2 position, float angle = 0.0f) override;
+
+    void accept(FileVisitor* visitor) override;
     MovingObject* copy() const override;
 };
 

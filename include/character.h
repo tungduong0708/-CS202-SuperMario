@@ -17,32 +17,33 @@ protected:
     int score;
     int level;
     int strength;
+    int colorIndex = 0;
+    int frameWidth, frameHeight;
+    int currentFrame;
     bool alive;
+    bool appear = true;
+    bool invincible = false;
+    bool immortal;
+    bool isOnGround;          // Is character on the ground
+    bool modeChanged;
+    bool faceLeft;            // Is character facing left
+    float blinkTime;
+    float immortalTime;
+    float appearTimer = 0.0f;
+    float colorChangeTimer = 0.0f; 
+    float frameTime, frameSpeed;
+
     string type;
     Mode mode;
-
     Texture texture;            // Character texture
     Animation curAnim;          // Character sprite sheet              
     Rectangle sourceRect;       // Sprite frame to draw
     Rectangle destRect;         // Scaled drawing rectangle
     Vector2 origin;             // Sprite origin
     Vector2 position;
-    bool appear = true;
-    bool invincible = false;
-    bool immortal;
-    float blinkTime;
-    float immortalTime;
-    float appearTimer = 0.0f;
-    float colorChangeTimer = 0.0f; 
-    int colorIndex = 0;
-    int frameWidth, frameHeight;
-    int currentFrame;
-    float frameTime, frameSpeed;
-    bool isOnGround;          // Is character on the ground
-    bool modeChanged;
     ImageSet currentImage;
     ImageSet previousImage;
-    bool faceLeft;            // Is character facing left
+
 public:
     Character();
     Character(string type, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, 
@@ -57,6 +58,7 @@ public:
     void setMode(Mode mode);
     void setOnGround(bool og);
     void setInvisibleTime(float it);
+    void changeMode(Mode mode);
 
     int getHealth();
     int getScore();
@@ -65,38 +67,38 @@ public:
     bool onGround();
     bool isLeft();
     bool isAlive();
-    void changeMode(Mode mode);
-    Mode getMode();
     bool isInvisible();
+    string getType();
+    Mode getMode();
 
-    // default image = IDLE
     virtual void Init(b2Vec2 position);  
     virtual void UpdateMode(Mode mode, b2Vec2 position);
     virtual void Update(Vector2 playerVelocity, float deltaTime);
     virtual void Draw();  
     virtual void Draw(Vector2 position, float angle = 0.0f) = 0;
     virtual void Dead();
-    void ResizeBody(float newWidth, float newHeight);
     virtual void OnBeginContact(SceneNode* other);
     virtual void OnEndContact(SceneNode* other);
     virtual void HandleInput();
+
+    virtual void accept(FileVisitor* visitor) = 0;
     virtual MovingObject* copy() const = 0;
 };
 
 class Player : public Character {
 private:
-    string name;
-    float coins;
     int lives;
     int addScore = 0;
-    string currentMap;
+    float coins;
     float time; // time allotted for the player to complete the map
     float force;
     float bulletSpeed;
     float bulletFreq;
+    bool isWalkingOnPlatform;
+    string name;
+    string currentMap;
     Vector2 initialPosition;
     MovingPlatform* currentPlatform;
-    bool isWalkingOnPlatform;
 public:
     Player();
     Player(string type, string name = "", float coins = 0.0f, int lives = 0, int health = 0, 
@@ -122,16 +124,17 @@ public:
     void updateScore(int s);
     void updateScore();
 
-
     int getAddScore();
-    string getName();
+    int getLives();
     float getCoins();
     float getForce();
     float getBulletSpeed();
     float getBulletFreq();
-    string getCurrentMap();
     float getTime();
     bool isImmortal();
+    Vector2 getInitialPosition();
+    string getCurrentMap();
+    string getName();
 
     void Init(b2Vec2 position);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
@@ -142,19 +145,21 @@ public:
     void UpdateAnimation();
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
+
+    void accept(FileVisitor* visitor);
     MovingObject* copy() const;
 };
 
 
 class Enemy : public Character {
 protected:
-    string type;
     float range;
-    EnemyState state;
     bool fixtureChange;
     bool deadByPlayer;
     bool deadByFireball;
     bool isBodyChanged;
+    string type;
+    EnemyState state;
 public:
     Enemy();
     Enemy(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, int strength = 0, 
@@ -167,8 +172,8 @@ public:
     void setState(EnemyState s);
 
     string getType();
-    float getRange();
     EnemyState getState();
+    float getRange();
 
     virtual void Init(b2Vec2 position);  
     virtual void Update(Vector2 playerVelocity, float deltaTime);
@@ -179,7 +184,8 @@ public:
     virtual void Draw();
     virtual void Draw(Vector2 position, float angle = 0.0f);
 
-    MovingObject* copy() const;
+    virtual void accept(FileVisitor* visitor) = 0;
+    virtual MovingObject* copy() const = 0;
 };
 
 
@@ -194,6 +200,8 @@ public:
     void Dead();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
+
+    void accept(FileVisitor* visitor);
     MovingObject* copy() const;
 };
 
@@ -212,6 +220,8 @@ public:
     void Update(Vector2 playerVelocity, float deltaTime);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
+
+    void accept(FileVisitor* visitor);
     MovingObject* copy() const; 
 }; 
 
@@ -220,9 +230,9 @@ class Boss: public Enemy {
 private:
     float bulletFreq;
     float bulletSpeed;
+    float timer; // total time of 3 attack frames
     bool attackFire;
     BossState bossState;
-    float timer; // total time of 3 attack frames
 public:
     Boss();
     Boss(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
@@ -243,8 +253,8 @@ public:
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     void Dead();
-    // void Draw();
-    // void Draw(Vector2 position, float angle = 0.0f);
+
+    void accept(FileVisitor* visitor);
     MovingObject* copy() const;
 };
 

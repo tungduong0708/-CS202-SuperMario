@@ -40,3 +40,7 @@ void Background::OnBeginContact(SceneNode* other, b2Vec2 normal)
 void Background::OnEndContact(SceneNode* other)
 {
 }
+
+void Background::accept(FileVisitor *visitor) {
+    
+}

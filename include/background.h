@@ -20,6 +20,7 @@ public:
     void Draw();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
+    void accept(FileVisitor* visitor);
 };
 
 #endif // BACKGROUND_H

@@ -154,6 +154,10 @@ bool Character::isInvisible()
     return invincible;
 }
 
+string Character::getType() {
+    return type;
+}
+
 bool Character::onGround() {
     return isOnGround;
 }
@@ -237,32 +241,9 @@ void Character::UpdateMode(Mode mode, b2Vec2 position)
 
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
+
 void Character::Dead()
 {
-}
-
-void Character::ResizeBody(float newWidth, float newHeight)
-{
-    // Destroy the existing fixture
-    b2Fixture* fixture = body->GetFixtureList();
-    while (fixture != nullptr) {
-        b2Fixture* next = fixture->GetNext();
-        body->DestroyFixture(fixture);
-        fixture = next;
-    }
-
-    // Define a new shape with the desired size
-    b2PolygonShape dynamicBox;
-    dynamicBox.SetAsBox(newWidth / 2.0f, newHeight / 2.0f); // Box2D uses half-widths and half-heights
-
-    // Define a new fixture
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &dynamicBox;
-    fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.0f;
-
-    // Create the new fixture on the body
-    body->CreateFixture(&fixtureDef);
 }
 
 void Character::Update(Vector2 playerVelocity, float deltaTime) {

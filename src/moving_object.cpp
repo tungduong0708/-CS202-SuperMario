@@ -167,7 +167,12 @@ Animation FireBall::getAnimation(bool flag) {
     return animations[flag];
 }
 
-MovingObject* FireBall::copy() const {
+void FireBall::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject *FireBall::copy() const
+{
     return new FireBall(*this);
 }
 
@@ -377,7 +382,12 @@ void MovingPlatform::Draw(Vector2 position, float angle) {
     Renderer::DrawPro(text, sourceRect, position, Vector2{size.x, size.y}, false, angle);
 }
 
-MovingObject* MovingPlatform::copy() const {
+void MovingPlatform::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject *MovingPlatform::copy() const
+{
     return new MovingPlatform(*this);
 }
 
@@ -427,7 +437,12 @@ Animation AttackBall::getAnimation(bool flag) {
     return animations[0];
 }
 
-MovingObject* AttackBall::copy() const {
+void AttackBall::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject *AttackBall::copy() const
+{
     return new AttackBall(*this);
 }
 

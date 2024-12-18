@@ -161,10 +161,6 @@ void Enemy::Draw() {
 void Enemy::Draw(Vector2 position, float angle) {
 }
 
-MovingObject* Enemy::copy() const {
-    return new Enemy(*this);
-}
-
 Goomba::Goomba() : Enemy() {
 }
 
@@ -172,9 +168,21 @@ Goomba::Goomba(string type, float range, bool alive, bool sit, int health, int s
                int strength, Vector2 size, float speed, float angle): 
     Enemy(type, range, alive, health, score, level, strength, size, speed, angle)
 {
-    this->health = 100;
-    this->strength = 100;
-    this->speed = -2.0f;
+    if (level == 1) {
+        this->health = 100;
+        this->strength = 100;
+        this->speed = -2.0f;
+    }
+    else if (level == 2) {
+        this->health = 200;
+        this->strength = 200;
+        this->speed = -3.0f;
+    }
+    else if (level == 3) {
+        this->health = 300;
+        this->strength = 300;
+        this->speed = -4.0f;
+    }
 }
 
 Goomba::Goomba(const Goomba &g): Enemy(g) {
@@ -282,7 +290,12 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
 void Goomba::OnEndContact(SceneNode *other) {
 }
 
-MovingObject* Goomba::copy() const {
+void Goomba::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject *Goomba::copy() const
+{
     return new Goomba(*this);
 }
 
@@ -296,9 +309,22 @@ Koopa::Koopa(string type, float range, bool alive, bool sit, int health, int sco
     faceLeft = true;
     delay = 0.2f;
     isDelay = false;
-    this->health = 100;
-    this->strength = 100;
-    this->speed = -2.0f;
+    
+    if (level == 1) {
+        this->health = 100;
+        this->strength = 100;
+        this->speed = -2.0f;
+    }
+    else if (level == 2) {
+        this->health = 200;
+        this->strength = 200;
+        this->speed = -3.0f;
+    }
+    else if (level == 3) {
+        this->health = 350;
+        this->strength = 350;
+        this->speed = -4.0f;
+    }
 }
 
 Koopa::Koopa(const Koopa &k): Enemy(k) {
@@ -450,7 +476,12 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
 void Koopa::OnEndContact(SceneNode *other) {
 }
 
-MovingObject* Koopa::copy() const {
+void Koopa::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject *Koopa::copy() const
+{
     return new Koopa(*this);
 }
 
@@ -470,10 +501,22 @@ Boss::Boss(string type, float range, bool alive, int health, int score, int leve
     bulletSpeed = 0.0f;
     bossState = BossState::BOSS_IDLE;
     attackFire = true;
-    timer = 0.0f;
-    this->health = 1250;
-    this->strength = 100;
-    this->speed = -4.0f;
+    
+    if (level == 1) {
+        this->health = 1000;
+        this->strength = 100;
+        this->speed = -3.0f;
+    }
+    else if (level == 2) {
+        this->health = 1700;
+        this->strength = 100;
+        this->speed = -4.0f;
+    }
+    else if (level == 3) {
+        this->health = 2250;
+        this->strength = 100;
+        this->speed = -5.0f;
+    }
 }
 
 Boss::Boss(const Boss &b): Enemy(b) {
@@ -517,10 +560,6 @@ void Boss::Init(b2Vec2 position) {
     bossState = BossState::BOSS_IDLE;
     animations = AnimationHandler::setAnimations(type);
     Animation attack = animations[BossState::BOSS_ATTACK];
-    for (int i = 0; i < 3; i++) {
-        timer += attack.getFrameTime(i);
-    }
-    timer = 1.5f;
 
     texture = animations[bossState].GetFrame();
     frameWidth = texture.width;
@@ -661,14 +700,11 @@ void Boss::Dead() {
 
 }
 
-// void Boss::Draw() {
+void Boss::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
 
-// }
-
-// void Boss::Draw(Vector2 position, float angle) {
-
-// }
-
-MovingObject *Boss::copy() const {
+MovingObject *Boss::copy() const
+{
     return new Boss(*this);
 }

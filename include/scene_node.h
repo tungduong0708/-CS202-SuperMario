@@ -14,7 +14,7 @@ public:
     virtual void Draw() = 0;
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal) = 0;
     virtual void OnEndContact(SceneNode* other) = 0;
-    virtual void accept(class FileVisitor* v) = 0; // Visitor pattern
+    virtual void accept(FileVisitor* visitor) = 0; // Visitor pattern
 };
 
 #endif // SCENE_NODE_H
