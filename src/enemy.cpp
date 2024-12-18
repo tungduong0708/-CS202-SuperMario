@@ -422,7 +422,6 @@ MovingObject* Koopa::copy() const {
 Boss::Boss() : Enemy() {
     bulletFreq = 0.0f;
     bulletSpeed = 0.0f;
-    player = nullptr;
     bossState = BossState::BOSS_IDLE;
     attackFire = false;
     timer = 0.0f;
@@ -434,7 +433,6 @@ Boss::Boss(string type, float range, bool alive, int health, int score, int leve
 {
     bulletFreq = 0.0f;
     bulletSpeed = 0.0f;
-    player = nullptr;
     bossState = BossState::BOSS_IDLE;
     attackFire = true;
     timer = 0.0f;
@@ -445,12 +443,11 @@ Boss::Boss(const Boss &b): Enemy(b) {
     bulletSpeed = b.bulletSpeed;
     bossState = b.bossState;
     attackFire = b.attackFire;
-    player = dynamic_cast<Player*>(b.player->copy());
     timer = b.timer;
 }
 
 Boss::~Boss() {
-    player = nullptr;
+    
 }
 
 void Boss::setBulletFreq(float bf) {
@@ -459,10 +456,6 @@ void Boss::setBulletFreq(float bf) {
 
 void Boss::setBulletSpeed(float bs) {
     bulletSpeed = bs;
-}
-
-void Boss::setPlayer(Player* p) {
-    player = p;
 }
 
 void Boss::setBossState(BossState bs) {
@@ -477,10 +470,6 @@ float Boss::getBulletSpeed() {
     return bulletSpeed;
 }
 
-Player* Boss::getPlayer() {
-    return player;
-}
-
 BossState Boss::getBossState() {
     return bossState;
 }
@@ -489,10 +478,10 @@ void Boss::Init(b2Vec2 position) {
     bossState = BossState::BOSS_IDLE;
     animations = AnimationHandler::setAnimations(type);
     Animation attack = animations[BossState::BOSS_ATTACK];
-    // for (int i = 0; i < 3; i++) {
-    //     timer += attack.getFrameTime(i);
-    // }
-    timer = 1.0f;
+    for (int i = 0; i < 3; i++) {
+        timer += attack.getFrameTime(i);
+    }
+    timer = 1.5f;
 
     texture = animations[bossState].GetFrame();
     frameWidth = texture.width;
@@ -519,7 +508,7 @@ void Boss::Init(b2Vec2 position) {
 }
 
 void Boss::Update(Vector2 playerVelocity, float deltaTime) {
-    player = Tilemap::getInstance()->GetPlayer();
+    Player* player = Tilemap::getInstance()->GetPlayer();
     if (!body || !player->isAlive()) return;
     Vector2 playerPos = player->getPosition();
     elapsedTime += deltaTime;
@@ -535,6 +524,7 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
         bossState = BossState::BOSS_WALK;
     }
 
+
     if (diff > 0.5f) {
         faceLeft = true;
         setSpeed(-abs(speed));
@@ -546,9 +536,10 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
 
 
     if (bossState == BossState::BOSS_ATTACK) {
+        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         if (elapsedTime >= timer) {
             // assemble the attack ball
-            AttackBall* atkball = new AttackBall(10.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
+            AttackBall* atkball = new AttackBall(100.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
             atkball->Init(body->GetPosition() + b2Vec2(!faceLeft * ((float)texture.width/16 + 0.1f), 0.15f));
             atkball->setSpeed(6.0f * (faceLeft ? -1 : 1));
 
@@ -560,6 +551,15 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     else {
         body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
     }
+
+    // if (elapsedTime >= 1.5f) {
+    //     elapsedTime = 0.0f;
+    // }
+    // else {
+    //     if (elapsedTime >= timer) {
+    //         bossState = BossState::BOSS_IDLE;
+    //     }
+    // }
 
     animations[bossState].Update(deltaTime);
     texture = animations[bossState].GetFrame();
