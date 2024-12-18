@@ -294,12 +294,12 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
         Dead();
     }
     //movingplatform 
-    if (currentPlatform) {
-        b2Vec2 platformVelocity = currentPlatform->getBody()->GetLinearVelocity();
-        b2Vec2 playerVelocity = body->GetLinearVelocity();
-        playerVelocity += platformVelocity;
-        body->SetLinearVelocity(playerVelocity);
-    }
+    // if (currentPlatform) {
+    //     b2Vec2 platformVelocity = currentPlatform->getBody()->GetLinearVelocity();
+    //     b2Vec2 playerVelocity = body->GetLinearVelocity();
+    //     playerVelocity += platformVelocity;
+    //     body->SetLinearVelocity(playerVelocity);
+    // }
 }
 
 void Player::Dead() {

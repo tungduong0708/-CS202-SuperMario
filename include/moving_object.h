@@ -73,7 +73,7 @@ private:
     // other attributes are inherited from the moving object class ---
 public:
     FireBall();
-    FireBall(float d = 0, Vector2 size = {0, 0}, float s = 0, float a = 0);
+    FireBall(float d, Vector2 size = {0, 0}, float s = 0, float a = 0);
     FireBall(const FireBall &ff);
     virtual ~FireBall();
     void setDamage(float d);

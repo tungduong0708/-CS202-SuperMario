@@ -73,7 +73,7 @@ void StaticObject::OnEndContact(SceneNode *other)
 {
 }
 
-void StaticObject::accept(FileVisitor *v)
+void StaticObject::accept(FileVisitor *visitor)
 {
 }
 
@@ -106,9 +106,8 @@ void Gate::OnEndContact(SceneNode *other)
 {
 }
 
-void Gate::accept(FileVisitor *v)
+void Gate::accept(FileVisitor *visitor)
 {
-    v->VisitFile(this);
 }
 
 DeadLine::DeadLine(b2Body *body) : StaticObject(body)
@@ -128,7 +127,6 @@ void DeadLine::OnEndContact(SceneNode *other)
 {
 }
 
-void DeadLine::accept(FileVisitor *v)
+void DeadLine::accept(FileVisitor *visitor)
 {
-    v->VisitFile(this);
 }

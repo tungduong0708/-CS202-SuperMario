@@ -174,6 +174,12 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                     frames.clear();
                     frames.push_back({2, 0});
                     animation = false;
+
+                    std::cout << "Write to file done\n";
+                    ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
+                    visitor->openFile();
+                    accept(visitor);
+                    visitor->closeFile();
                 }
             }
         }

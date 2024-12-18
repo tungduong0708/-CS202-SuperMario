@@ -1,7 +1,7 @@
 #ifndef STATIC_OBJECT_H
 #define STATIC_OBJECT_H
 
-#include "object.h"
+#include "file_visitor.h"
 #include "scene_node.h"
 #include "physics.h"
 #include <string>
@@ -30,7 +30,7 @@ public:
     virtual void Draw();
     virtual void OnBeginContact(SceneNode* other, b2Vec2 normal);
     virtual void OnEndContact(SceneNode* other);
-    virtual void accept(FileVisitor* v);
+    virtual void accept(FileVisitor* visitor);
 };
 
 class Gate : public StaticObject {
@@ -45,7 +45,7 @@ public:
     void Draw();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
-    void accept(FileVisitor* v);
+    void accept(FileVisitor* visitor);
 };
 
 class DeadLine : public StaticObject {
@@ -55,7 +55,7 @@ public:
 
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
-    void accept(FileVisitor* v);
+    void accept(FileVisitor* visitor);
 };
 
 #endif // STATIC_OBJECT_H

@@ -1,5 +1,6 @@
 #include "include.h"
 #include "object.h"
+#include "file_visitor.h"
 
 ExportFileVisitor* ExportFileVisitor::instance;
 ImportFileVisitor* ImportFileVisitor::instance;
@@ -13,7 +14,7 @@ ExportFileVisitor *ExportFileVisitor::getInstance() {
 
 void ExportFileVisitor::openFile()
 {
-    file.open(filePath);
+    file.open(filePath, ios::app);
     if (!file.is_open()) {
         throw std::runtime_error("Cannot open file");
     }
@@ -149,6 +150,10 @@ void ImportFileVisitor::closeFile() {
     file.close();
 }
 
+ifstream& ImportFileVisitor::getFile()
+{
+    return file;
+}
 
 void ImportFileVisitor::VisitFile(StaticTile *obj)
 {

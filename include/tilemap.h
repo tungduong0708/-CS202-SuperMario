@@ -9,6 +9,7 @@
 #include "effect_manager.h"
 #include <vector>
 #include <string>
+#include <set>
 #include <raylib.h> 
 #include "nlohmann/json.hpp" 
 
@@ -27,6 +28,7 @@ private:
     EffectManager* effectManager;
     std::vector<std::vector<SceneNode*>> nodes;
     std::vector<std::pair<std::string, int>> tilesets;
+    std::set<std::pair<int, int>> activatedTiles;
     
     Tilemap();
     Tilemap(const std::string& filePath);
@@ -45,6 +47,8 @@ public:
     std::pair<std::string, int> GetTilesetInfo(int tileIdx) const;
     void addNode(SceneNode* node);
     void LoadMapFromJson(const std::string& filePath);
+    void LoadSaveGame(const std::string& filePath);
+    void SaveGame(const std::string& filePath);
     void Update(float deltaTime);
     void Draw() const;
     

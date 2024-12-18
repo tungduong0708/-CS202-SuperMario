@@ -159,6 +159,11 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                         Tile::setTilesetPath("resources/tilesets/OverWorld.json");
                         Tile::setId(2);
                         isActivated = true;
+
+                        ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
+                        visitor->openFile();
+                        accept(visitor);
+                        visitor->closeFile();
                     }
                 }
             }

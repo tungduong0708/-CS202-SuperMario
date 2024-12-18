@@ -73,5 +73,4 @@ void Tile::OnEndContact(SceneNode *other)
 
 void Tile::accept(FileVisitor *v)
 {
-    v->VisitFile(this);
 }

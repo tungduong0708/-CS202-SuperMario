@@ -78,6 +78,8 @@ public:
     void setFilePath(std::string path);
     void openFile();
     void closeFile();
+    
+    std::ifstream& getFile();
 
     void VisitFile(StaticTile* obj) override;
     void VisitFile(KinematicTile *obj) override;

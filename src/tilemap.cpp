@@ -161,6 +161,9 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
 
             for (int y = 0; y < height; ++y) {
                 for (int x = 0; x < width; ++x) {
+                    if (activatedTiles.find({x, y}) != activatedTiles.end()) {
+                        continue;
+                    }
                     int id = data[y * width + x].get<int>();  
                     if (id == 0) {
                         continue;  
@@ -277,6 +280,104 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     std::cout << "Map loaded successfully!" << std::endl;
     std::cout << Physics::world.GetBodyCount() << " bodies in the world after loading.\n";
 
+}
+
+void Tilemap::LoadSaveGame(const std::string &filePath)
+{
+    std::string savePath = "resources/saves/" + filePath;
+    std::cout << "Loading save " << savePath << std::endl;
+    ImportFileVisitor* visitor = ImportFileVisitor::getInstance();
+    visitor->setFilePath(savePath);
+    visitor->openFile();
+    ifstream& file = visitor->getFile();
+    std::string obj;
+    while(file >> obj) {
+        if (obj == "StaticTile") {
+            StaticTile* tile = new StaticTile();
+            tile->accept(visitor);
+            Vector2 pos = tile->getPosition();
+            activatedTiles.insert({(int)pos.x, (int)pos.y});
+            addNode(tile);
+        }
+        else if (obj == "KinematicTile") {
+            KinematicTile* tile = new KinematicTile();
+            tile->accept(visitor);
+            Vector2 pos = tile->getPosition(); 
+            activatedTiles.insert({(int)pos.x, (int)pos.y});
+            addNode(tile);
+        }
+        else if (obj == "MovingPlatform") {
+            MovingPlatform* platform = new MovingPlatform();
+            platform->accept(visitor);
+            addNode(platform);
+        }
+        else if (obj == "Mushroom") {
+            Mushroom* mushroom = new Mushroom();
+            mushroom->accept(visitor);
+            addNode(mushroom);
+        }
+        else if (obj == "Star") {
+            Star* star = new Star();
+            star->accept(visitor);
+            addNode(star);
+        }
+        else if (obj == "FireFlower") {
+            FireFlower* flower = new FireFlower();
+            flower->accept(visitor);
+            addNode(flower);
+        }
+        else if (obj == "Goomba") {
+            Goomba* goomba = new Goomba();
+            goomba->accept(visitor);
+            addNode(goomba);
+        }
+        else if (obj == "Koopa") {
+            Koopa* koopa = new Koopa();
+            koopa->accept(visitor);
+            addNode(koopa);
+        }
+        else if (obj == "Boss") {
+            Boss* boss = new Boss();
+            boss->accept(visitor);
+            addNode(boss);
+        }
+        else if (obj == "AttackBall") {
+            AttackBall* ball = new AttackBall();
+            ball->accept(visitor);
+            addNode(ball);
+        }
+        else if (obj == "FireBall") {
+            FireBall* ball = new FireBall();
+            ball->accept(visitor);
+            addNode(ball);
+        }
+        else if (obj == "Player") {
+            player->accept(visitor);
+        }
+        else if (obj == "EffectManager") {
+            effectManager->accept(visitor);
+        }
+    }
+    visitor->closeFile();
+}
+
+void Tilemap::SaveGame(const std::string &filePath)
+{
+    ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
+    visitor->openFile();
+    for (auto& layer : nodes) {
+        for (auto& node : layer) {
+            Enemy* enemy = dynamic_cast<Enemy*>(node);
+            ActiveItem* item = dynamic_cast<ActiveItem*>(node);
+            if (enemy) {
+                enemy->accept(visitor);
+            }
+            else if (item) {
+                item->accept(visitor);
+            }
+        }
+    }
+    visitor->closeFile();
 }
 
 void Tilemap::Update(float deltaTime) {
