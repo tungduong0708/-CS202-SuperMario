@@ -62,10 +62,10 @@ void TextHelper::DrawPackage(int lives, int score, int coins, string currentMap,
     //1-1 (currentMap)
     DrawTextEx(font, "WORLD", {position.x + 10.5f, position.y}, (float)fontSize/16, 0, color);
     //cout << currentMap << endl;
-    DrawTextEx(font, currentMap.c_str(), {position.x + 10.5f, position.y + 1.0f}, (float)fontSize/16, 0, color);
+    DrawTextEx(font, currentMap.c_str(), {position.x + 10.5f, position.y + 0.9f}, (float)fontSize/16, 0, color);
 
     //time
     //001 (timeLeft)
     DrawTextEx(font, "TIME", {position.x + 16.0f, position.y}, (float)fontSize/16, 0, color);
-    DrawTextEx(font, to_string((int)timeLeft).c_str(), {position.x + 16.0f, position.y + 1.0f}, (float)fontSize/16, 0, color);
+    DrawTextEx(font, to_string((int)timeLeft).c_str(), {position.x + 16.1f, position.y + 0.9f}, (float)fontSize/16, 0, color);
 }
