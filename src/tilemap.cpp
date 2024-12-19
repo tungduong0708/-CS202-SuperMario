@@ -387,15 +387,12 @@ void Tilemap::Update(float deltaTime) {
     }
     else {
         b2Vec2 playerVelocity = player->getVelocity();
-        for (auto& layer : nodes) {
-            if (layer.empty()) {
-                effectManager->Update(deltaTime);
-                continue;
-            }
-            for (auto& node : layer) {
-                node->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
+        for (int i = 0; i < nodes.size(); ++i) {
+            for (int j = 0; j < nodes[i].size(); ++j) {
+                nodes[i][j]->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
             }
         }
+        effectManager->Update(deltaTime);
         if (!effectManager->isActivePlayerEffect()) {
             if (player->isAlive()) camera.Update(player->getPosition());  
             player->HandleInput();
@@ -409,18 +406,18 @@ void Tilemap::Draw() const {
         return;
     }
     BeginMode2D(camera.GetCamera());
-    for (int i = 0; i < nodes.size() - 1; ++i) {
+
+    for (int i = 0; i < nodes.size(); ++i) {
         if (nodes[i].empty()) {
-            effectManager->DrawLower();
+            effectManager->DrawUpper();
             continue;
+        }
+        if (i == nodes.size() - 1) {
+            if (!effectManager->isActivePlayerEffect()) player->Draw();
         }
         for (auto& node : nodes[i]) {
             node->Draw();
         }
-    }
-    if (!effectManager->isActivePlayerEffect()) player->Draw();
-    for (auto& node : nodes.back()) {
-        node->Draw();
     }
 
     Vector2 cameraTarget = camera.GetCameraTarget();

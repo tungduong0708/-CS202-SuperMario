@@ -314,8 +314,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":0,
-                 "x":859.5,
-                 "y":192
+                 "x":276,
+                 "y":188
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -327,7 +327,7 @@
  "nextobjectid":104,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tilesets":[
         {

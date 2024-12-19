@@ -385,12 +385,12 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
         }
     }
     //movingplatform
-    MovingPlatform* platform = dynamic_cast<MovingPlatform*>(other);
-    if (platform) {
-        currentPlatform = platform;
-        isWalkingOnPlatform = true;
-        isOnGround = true; // Ensure the player is considered on the ground
-    }
+    // MovingPlatform* platform = dynamic_cast<MovingPlatform*>(other);
+    // if (platform) {
+    //     currentPlatform = platform;
+    //     isWalkingOnPlatform = true;
+    //     isOnGround = true; // Ensure the player is considered on the ground
+    // }
 }
 
 void Player::Init(b2Vec2 position) {
@@ -399,12 +399,12 @@ void Player::Init(b2Vec2 position) {
 
 void Player::OnEndContact(SceneNode *other) {
     //end contact with movingplatform
-    MovingPlatform* platform = dynamic_cast<MovingPlatform*>(other);
-    if (platform && platform == currentPlatform) {
-        currentPlatform = nullptr;
-        isWalkingOnPlatform = false;
-        isOnGround = false; // Ensure the player is considered off the ground
-    }
+    // MovingPlatform* platform = dynamic_cast<MovingPlatform*>(other);
+    // if (platform && platform == currentPlatform) {
+    //     currentPlatform = nullptr;
+    //     isWalkingOnPlatform = false;
+    //     isOnGround = false; // Ensure the player is considered off the ground
+    // }
 }
 
 void Player::accept(FileVisitor *visitor) {

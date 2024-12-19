@@ -617,16 +617,16 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
 
     if (bossState == BossState::BOSS_ATTACK) {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
-        if (elapsedTime >= timer) {
+        if (elapsedTime >= 1.0f) {
             // assemble the attack ball
             AttackBall* atkball = new AttackBall(100.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
             b2Vec2 pos = body->GetPosition();
             pos.y += 0.15f;
             if (faceLeft) {
-                pos.x -= ((float)texture.width/16 + 0.1f);
+                pos.x -= atkball->getSize().x + size.x + 0.1f;
             }
             else {
-                pos.x += ((float)texture.width/16 + 0.1f);
+                pos.x += size.x + 0.1f;
             }
             atkball->Init(pos);
             atkball->setSpeed(6.0f * (faceLeft ? -1 : 1));
