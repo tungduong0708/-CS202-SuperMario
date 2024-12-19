@@ -227,7 +227,6 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 nodeLayer.push_back(enemy);
                             }
                         }
-                        /*
                         else if (object.contains("type") && object["type"] == "platform") {
                             std::string platformName = object["name"].get<std::string>();
                             PlatformCreator::InitPlatforms();
