@@ -552,14 +552,101 @@ DeathState::~DeathState()
     UnloadTexture(deathTexture);
 }
 
-GameOverState::GameOverState(Game* game) : GameState(game), buttons(), score(0), highScore(0), timeRemaining(0) {}
+GameOverState::GameOverState(Game* game) : GameState(game), score(0), highScore(0), timeRemaining(0) {
+    // Initialize buttons
+    float buttonWidth = 250;
+    float buttonHeight = 50;
+    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+    buttons.push_back({{centerX, 300, buttonWidth, buttonHeight}, "Main Menu", false});
+    buttons.push_back({{centerX, 375, buttonWidth, buttonHeight}, "Retry", false});
+}
 
-void GameOverState::update() {}
+void GameOverState::update() {
+    // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
 
-void GameOverState::draw() {}
+    // Handle button clicks
+    if (IsButtonClicked(buttons[0])) {
+        game->changeState(game->mainMenuState.get());
+    }
+    if (IsButtonClicked(buttons[1])) {
+        // Retry the game
+    }
+}
 
-VictoryState::VictoryState(Game* game) : GameOverState(game) {}
+void GameOverState::draw() {
+    // Draw the underlying GameplayState
+    game->gameplayState->draw();
 
-void VictoryState::update() {}
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
 
-void VictoryState::draw() {}
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
+
+    // Draw score, high score, and time remaining
+    DrawTextEx(game->getFont(), TextFormat("Score: %d", score), {10, 10}, 20, 2, WHITE);
+    DrawTextEx(game->getFont(), TextFormat("High Score: %d", highScore), {10, 40}, 20, 2, WHITE);
+    DrawTextEx(game->getFont(), TextFormat("Time Remaining: %d", timeRemaining), {10, 70}, 20, 2, WHITE);
+}
+
+void GameOverState::setScore(int score) {
+    this->score = score;
+}
+
+void GameOverState::setHighScore(int highScore) {
+    this->highScore = highScore;
+}
+
+void GameOverState::setTimeRemaining(int timeRemaining) {
+    this->timeRemaining = timeRemaining;
+}
+
+VictoryState::VictoryState(Game* game) : GameOverState(game) {
+    float buttonWidth = 250;
+    float buttonHeight = 50;
+    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+    buttons.push_back({{centerX, 300, buttonWidth, buttonHeight}, "Main Menu", false});
+    buttons.push_back({{centerX, 375, buttonWidth, buttonHeight}, "Next Stage", false});
+    buttons.push_back({{centerX, 450, buttonWidth, buttonHeight}, "Play Again", false});
+}
+
+void VictoryState::update() {
+    // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    // Handle button clicks
+    if (IsButtonClicked(buttons[0])) {
+        game->changeState(game->mainMenuState.get());
+    }
+    if (IsButtonClicked(buttons[1])) {
+        // Next stage
+    }
+    if (IsButtonClicked(buttons[2])) {
+        // Retry the game
+    }
+}
+
+void VictoryState::draw() {
+    // Draw the underlying GameplayState
+    game->gameplayState->draw();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
+
+    // Draw score, high score, and time remaining
+    DrawTextEx(game->getFont(), TextFormat("Score: %d", score), {10, 10}, 20, 2, WHITE);
+    DrawTextEx(game->getFont(), TextFormat("High Score: %d", highScore), {10, 40}, 20, 2, WHITE);
+    DrawTextEx(game->getFont(), TextFormat("Time Remaining: %d", timeRemaining), {10, 70}, 20, 2, WHITE);
+}
