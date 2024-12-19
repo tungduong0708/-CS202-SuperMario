@@ -650,3 +650,110 @@ void VictoryState::draw() {
     DrawTextEx(game->getFont(), TextFormat("High Score: %d", highScore), {10, 40}, 20, 2, WHITE);
     DrawTextEx(game->getFont(), TextFormat("Time Remaining: %d", timeRemaining), {10, 70}, 20, 2, WHITE);
 }
+
+// just write the methods' name, and some comments, no need to implement
+GameSavingState::GameSavingState(Game* game) : GameState(game) {
+    // Initialize buttons
+}
+
+void GameSavingState::update() {
+    // Update button hover states
+}
+
+void GameSavingState::draw() {
+    // Draw the underlying GameplayState
+}
+
+GameSavingState::~GameSavingState() {
+    // Unload textures
+}
+
+GameSavingState::~GameSavingState() {
+    // Unload textures
+}
+
+SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game) {
+    // Initialize buttons
+}
+
+void SelectDifficultyState::update() {
+    // Update button hover states
+}
+
+void SelectDifficultyState::draw() {
+    // Draw the underlying MainMenuState
+}
+
+SelectDifficultyState::~SelectDifficultyState() {
+    // Unload textures
+}
+
+AreYouSureState::AreYouSureState(Game* game) : GameState(game) {
+    // Initialize buttons
+}
+
+void AreYouSureState::update() {
+    // Update button hover states
+}
+
+void AreYouSureState::draw() {
+    // Draw the underlying MainMenuState
+}
+
+AreYouSureState::~AreYouSureState() {
+    // Unload textures
+}
+
+WannaSaveState::WannaSaveState(Game* game) : AreYouSureState(game) {
+    // Initialize buttons
+}
+
+void WannaSaveState::update() {
+    // Update button hover states
+}
+
+void WannaSaveState::draw() {
+    // Draw the underlying MainMenuState
+}
+
+WannaSaveState::~WannaSaveState() {
+    // Unload textures
+}
+
+QuitState::QuitState(Game *game) : GameState(game) {
+    // Initialize buttons
+}
+
+void QuitState::update()
+{
+    // Update button hover states
+}
+
+void QuitState::draw()
+{
+    // Draw the underlying MainMenuState
+}
+
+QuitState::~QuitState()
+{
+    // Unload textures
+}
+
+BackToMenuState::BackToMenuState(Game *game) : QuitState(game) {
+    // Initialize buttons
+}
+
+void BackToMenuState::update()
+{
+    // Update button hover states
+}
+
+void BackToMenuState::draw()
+{
+    // Draw the underlying MainMenuState
+}
+
+BackToMenuState::~BackToMenuState()
+{
+    // Unload textures
+}

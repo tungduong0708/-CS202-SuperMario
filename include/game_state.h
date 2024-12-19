@@ -189,3 +189,68 @@ public:
     void update() override;
     void draw() override;
 };
+
+
+class GameSavingState : public GameState
+{
+public:
+    explicit GameSavingState(Game* game);
+    void update() override;
+    void draw() override;
+    ~GameSavingState() override;
+private:
+    std::vector<Button> buttons;
+    Texture2D backgroundTexture;
+};
+
+
+class SelectDifficultyState : public GameState
+{
+public:
+    explicit SelectDifficultyState(Game* game);
+    void update() override;
+    void draw() override;
+    ~SelectDifficultyState() override;
+private:
+    std::vector<Button> buttons;
+    std::vector<Texture2D> difficultyTextures;
+};
+
+class AreYouSureState : public GameState
+{
+public:
+    explicit AreYouSureState(Game* game);
+    void update() override;
+    void draw() override;
+    ~AreYouSureState() override;
+protected:
+    std::vector<Button> buttons;
+    Texture2D backgroundTexture;
+};
+
+class WannaSaveState : public AreYouSureState
+{
+public:
+    explicit WannaSaveState(Game* game);
+    void update() override;
+    void draw() override;
+    ~WannaSaveState() override;
+};
+
+class QuitState : public GameState {
+public:
+    explicit QuitState(Game* game);
+    void update() override;
+    void draw() override;
+    ~QuitState() override;
+protected:
+    std::vector<Button> buttons;
+};
+
+class BackToMenuState : public QuitState {
+public:
+    explicit BackToMenuState(Game* game);
+    void update() override;
+    void draw() override;
+    ~BackToMenuState() override;
+};

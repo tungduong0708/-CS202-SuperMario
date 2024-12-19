@@ -18,7 +18,9 @@ Game::Game()
       changeStageState(nullptr),
       gameOverState(nullptr),
       victoryState(nullptr),
+      previousState(nullptr),
       currentState(nullptr),
+      nextState(nullptr),
       shouldExit(false)
 {
     InitWindow(screenWidth, screenHeight, "Game");
@@ -109,6 +111,20 @@ int Game::getScreenHeight() {
     return screenHeight;
 }
 
+GameState* Game::getPreviousState() const {
+    return previousState;
+}
+
+GameState* Game::getCurrentState() const {
+    return currentState;
+}
+
+GameState* Game::getNextState() const {
+    return nextState;
+}
+
 void Game::changeState(GameState *state) {
+    previousState = currentState;
     currentState = state;
+    nextState = nullptr;
 }
