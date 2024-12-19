@@ -99,7 +99,6 @@ private:
     string name;
     string currentMap;
     Vector2 initialPosition;
-    MovingPlatform* currentPlatform;
 public:
     Player();
     Player(string type, string name = "", float coins = 0.0f, int lives = 0, int health = 0, 
@@ -124,6 +123,8 @@ public:
     void impulseForce(Vector2 force);
     void updateScore(int s);
     void updateScore();
+     void SetIsOnGround(bool state);
+    void SetWalkingOnPlatform(bool state);
 
     int getAddScore();
     int getLives();

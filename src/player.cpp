@@ -143,7 +143,10 @@ void Player::updateScore()
     score += addScore;
     addScore = 0;
 }
-
+void Player::SetIsOnGround(bool state) { 
+    isOnGround = state; }
+void Player::SetWalkingOnPlatform(bool state){ 
+    isWalkingOnPlatform = state; }
 int Player::getAddScore()
 {
     return addScore;
@@ -293,13 +296,6 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
     else {
         Dead();
     }
-    //movingplatform 
-    // if (currentPlatform) {
-    //     b2Vec2 platformVelocity = currentPlatform->getBody()->GetLinearVelocity();
-    //     b2Vec2 playerVelocity = body->GetLinearVelocity();
-    //     playerVelocity += platformVelocity;
-    //     body->SetLinearVelocity(playerVelocity);
-    // }
 }
 
 void Player::Dead() {
@@ -384,13 +380,6 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
             body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
         }
     }
-    //movingplatform
-    MovingPlatform* platform = dynamic_cast<MovingPlatform*>(other);
-    if (platform) {
-        currentPlatform = platform;
-        isWalkingOnPlatform = true;
-        isOnGround = true; // Ensure the player is considered on the ground
-    }
 }
 
 void Player::Init(b2Vec2 position) {
@@ -398,13 +387,6 @@ void Player::Init(b2Vec2 position) {
 }
 
 void Player::OnEndContact(SceneNode *other) {
-    //end contact with movingplatform
-    MovingPlatform* platform = dynamic_cast<MovingPlatform*>(other);
-    if (platform && platform == currentPlatform) {
-        currentPlatform = nullptr;
-        isWalkingOnPlatform = false;
-        isOnGround = false; // Ensure the player is considered off the ground
-    }
 }
 
 void Player::accept(FileVisitor *visitor) {

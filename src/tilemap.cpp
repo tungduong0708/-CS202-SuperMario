@@ -222,6 +222,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                             }
 
                         }
+                        /*
                         else if (object.contains("type") && object["type"] == "platform") {
                             std::string platformName = object["name"].get<std::string>();
                             PlatformCreator::InitPlatforms();
@@ -229,7 +230,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                             if (platform != nullptr) {
                                 nodeLayer.push_back(platform);
                             }
-}
+                        }*/
                         else if (object.contains("name") && object["name"].is_string()) {
                             std::string effectName = object["name"].get<std::string>();
                             effectManager->AddEffectPosition(std::make_pair((int)x, (int)y), effectName);
