@@ -272,7 +272,6 @@ MovingPlatform::~MovingPlatform() {
         body = nullptr;
     }
     animations.clear();
-    std::cout << "MovingPlatform destroyed." << std::endl;
 }
 
 void MovingPlatform::Init(b2Vec2 position) {
@@ -364,8 +363,23 @@ void MovingPlatform::HandleInput() {
 }
 
 void MovingPlatform::OnBeginContact(SceneNode *other, b2Vec2 normal) {
+    Player* player = dynamic_cast<Player*>(other);
+    if (player) {
+        player->SetIsOnGround(true);       
+        player->SetWalkingOnPlatform(true);
+        
+        b2Vec2 platformVelocity = body->GetLinearVelocity();
+        b2Vec2 playerVelocity = player->getBody()->GetLinearVelocity();
+        playerVelocity += platformVelocity; 
+        player->getBody()->SetLinearVelocity(playerVelocity);
+    }
 }
-void MovingPlatform::OnEndContact(SceneNode *other) { 
+void MovingPlatform::OnEndContact(SceneNode *other) {
+     Player* player = dynamic_cast<Player*>(other);
+    if (player) {
+        player->SetIsOnGround(false);
+        player->SetWalkingOnPlatform(false);
+    } 
 }
 
 void MovingPlatform::Draw() {

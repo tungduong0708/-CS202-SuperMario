@@ -30,6 +30,9 @@ public:
     [[nodiscard]] Font getFont() const;
     [[nodiscard]] static int getScreenWidth();
     [[nodiscard]] static int getScreenHeight();
+    [[nodiscard]] GameState* getPreviousState() const;
+    [[nodiscard]] GameState* getCurrentState() const;
+    [[nodiscard]] GameState* getNextState() const;
 
     void changeState(GameState* state);
 
@@ -57,6 +60,8 @@ private:
     static constexpr int screenWidth = 800;
     static constexpr int screenHeight = 600;
     GameState* currentState;
+    GameState* previousState;
+    GameState* nextState;
     Font font{};
     Music music{};
     GameSettings settings{};
