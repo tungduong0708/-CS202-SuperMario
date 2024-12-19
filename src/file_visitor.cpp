@@ -12,31 +12,39 @@ ExportFileVisitor *ExportFileVisitor::getInstance() {
     return instance;
 }
 
+void ExportFileVisitor::setFilePath(std::string path)
+{
+    file << path << std::endl;
+}
+
 void ExportFileVisitor::openFile()
 {
-    file.open(filePath, ios::app);
+    file.open(filePath, std::ios::app);
     if (!file.is_open()) {
         throw std::runtime_error("Cannot open file");
     }
+    else std::cout << "File " << filePath << " opened\n";
 }
 
 void ExportFileVisitor::closeFile() {
-    file.close();
+    if (file.is_open()) {
+        file.close();
+    }
 }
 
 void ExportFileVisitor::VisitFile(StaticTile *obj)
 {
     file << "StaticTile " << obj->getId() << std::endl;
-    file  << obj->getTilesetPath() << std::endl;
+    file << obj->getTilesetPath() << std::endl;
     file << obj->getPosition().x << " " << obj->getPosition().y << std::endl;
     file << obj->getIsDestroyed() << " " << obj->getIsActivated() << std::endl;
-    file.close();
 }
 
 void ExportFileVisitor::VisitFile(KinematicTile *obj)
 {
-    file << "KinematicTile " << obj->getId() << std::endl;
-    file  << obj->getTilesetPath() << std::endl;
+    int id = obj->getId();
+    file << "KinematicTile " << id << std::endl;
+    file << obj->getTilesetPath() << std::endl;
     file << obj->getPosition().x << " " << obj->getPosition().y << std::endl;
     std::vector<std::pair<int, int>> frames = obj->getFrames();
     file << frames.size() << std::endl;
@@ -147,7 +155,7 @@ void ImportFileVisitor::setFilePath(string path)
 }
 
 void ImportFileVisitor::closeFile() {
-    file.close();
+    if (file.is_open()) file.close();
 }
 
 ifstream& ImportFileVisitor::getFile()

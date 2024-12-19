@@ -80,6 +80,12 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
 {
     std::string mapPath = "resources/tilemaps/" + filePath;
     std::cout << "Loading map " << mapPath << std::endl;
+
+    ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
+    visitor->openFile();
+    visitor->setFilePath(filePath);
+    visitor->closeFile();
+
     std::ifstream file(mapPath);
     if (!file.is_open()) {
         std::cerr << "Failed to open map file!" << std::endl;
@@ -220,7 +226,6 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                             if (enemy != nullptr) {
                                 nodeLayer.push_back(enemy);
                             }
-
                         }
                         else if (object.contains("type") && object["type"] == "platform") {
                             std::string platformName = object["name"].get<std::string>();
@@ -229,7 +234,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                             if (platform != nullptr) {
                                 nodeLayer.push_back(platform);
                             }
-}
+                        }
                         else if (object.contains("name") && object["name"].is_string()) {
                             std::string effectName = object["name"].get<std::string>();
                             effectManager->AddEffectPosition(std::make_pair((int)x, (int)y), effectName);
@@ -409,7 +414,7 @@ void Tilemap::Draw() const {
 
     for (int i = 0; i < nodes.size(); ++i) {
         if (nodes[i].empty()) {
-            effectManager->DrawUpper();
+            effectManager->DrawLower();
             continue;
         }
         if (i == nodes.size() - 1) {
