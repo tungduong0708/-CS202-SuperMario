@@ -93,6 +93,20 @@ void ExportFileVisitor::VisitFile(Boss *obj) {
     file << obj->getHealth() << std::endl;
 }
 
+void ExportFileVisitor::VisitFile(LarvaBubble *obj) {
+    file << "LarvaBubble" << std::endl;
+    file << obj->getPosition().x << " " << obj->getPosition().y << std::endl;
+    file << obj->getLevel() << std::endl;
+    file << obj->getHealth() << std::endl;
+}
+
+void ExportFileVisitor::VisitFile(MonsterFlower *obj) {
+    file << "MonsterFlower" << std::endl;
+    file << obj->getPosition().x << " " << obj->getPosition().y << std::endl;
+    file << obj->getLevel() << std::endl;
+    file << obj->getHealth() << std::endl;
+}
+
 void ExportFileVisitor::VisitFile(AttackBall *obj) {
     file << "AttackBall" << std::endl;
     file << obj->getPosition().x << " " << obj->getPosition().y << std::endl;
@@ -263,6 +277,28 @@ void ImportFileVisitor::VisitFile(Boss *obj)
     obj->Init(b2Vec2{x, y});
     obj->setLevel(level);
     obj->setHealth(health);
+}
+
+void ImportFileVisitor::VisitFile(LarvaBubble *obj)
+{
+    float x, y;
+    int level, health;
+    file >> x >> y;
+    file >> level >> health;
+    delete obj;
+    obj = new LarvaBubble("larvabubble", 0.0f, true, 100, 100, 1, 100, Vector2{0.6f, 0.6f});
+    obj->Init(b2Vec2{x, y});
+}
+
+void ImportFileVisitor::VisitFile(MonsterFlower *obj)
+{
+    float x, y;
+    int level, health;
+    file >> x >> y;
+    file >> level >> health;
+    delete obj;
+    obj = new MonsterFlower("monsterflower", 0.0f, true, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f);
+    obj->Init(b2Vec2{x, y});
 }
 
 void ImportFileVisitor::VisitFile(AttackBall *obj)

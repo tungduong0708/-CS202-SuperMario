@@ -24,7 +24,7 @@ Enemy::Enemy(string type, float range, bool alive, int health, int score, int le
     deadByFireball = false;
     this->health = 100;
     this->strength = 100;
-    this->speed = -2.0f;
+    this->speed = speed;
 }
 
 Enemy::Enemy(const Enemy &e): Character(e) {
@@ -104,7 +104,6 @@ void Enemy::Init(b2Vec2 position) {
 
 
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
-    setSpeed(-2.0f);
 }
 
 void Enemy::Update(Vector2 playerVelocity, float deltaTime) {
@@ -707,4 +706,253 @@ void Boss::accept(FileVisitor *visitor) {
 MovingObject *Boss::copy() const
 {
     return new Boss(*this);
+}
+
+LarvaBubble::LarvaBubble() : Enemy() {
+}
+
+LarvaBubble::LarvaBubble(string type, float range, bool alive, int health, int score, int level, 
+             int strength, Vector2 size, float speed, float angle, float gravity, float waitTime): 
+    Enemy(type, range, alive, health, score, level, strength, size, speed, angle), initialSpeed(speed), gravity(gravity), waitTime(waitTime)
+{
+    speed = 0;
+}
+
+LarvaBubble::LarvaBubble(const LarvaBubble &lb): Enemy(lb) {
+}
+
+LarvaBubble::~LarvaBubble() {
+}
+
+void LarvaBubble::Init(b2Vec2 position) {
+    Enemy::Init(position);
+    b2Fixture *fixture = body->GetFixtureList();
+    fixture->SetSensor(true);
+}
+
+void LarvaBubble::Explode() {
+    if (body) {
+        b2Vec2 pos = body->GetPosition();
+        Physics::bodiesToDestroy.push_back(body);
+        body = nullptr;
+        animations.clear();
+
+        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+        effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_koopa", Vector2{pos.x, pos.y}));
+    }
+}
+
+void LarvaBubble::Splash() {
+}
+
+void LarvaBubble::Update(Vector2 playerVelocity, float deltaTime) {
+    if (!body) return;
+    if (elapsedTime < waitTime && speed == 0) {
+        elapsedTime += deltaTime;
+    }
+    else if (elapsedTime >= waitTime && speed == 0) {
+        speed = initialSpeed;
+        elapsedTime = 0;
+    }
+
+    if (speed <= 0) {
+        state = EnemyState::ENEMY_WALK;
+    }
+    else {
+        state = EnemyState::ENEMY_DEAD;
+    }
+    b2Vec2 pos = body->GetPosition();
+    
+    destRect.x = pos.x;
+    destRect.y = pos.y;
+
+    speed += gravity * deltaTime;
+
+    if (pos.y > 14.1) { // keep the bubble at ground level
+        if (speed > 0) {
+            speed = 0;
+        }
+    }
+
+    body->SetLinearVelocity(b2Vec2(0, speed));
+
+    animations[state].Update(deltaTime);
+    texture = animations[state].GetFrame();
+}
+
+void LarvaBubble::OnBeginContact(SceneNode *other, b2Vec2 normal) {
+    if (!other) return;
+    if (!alive) return;
+    Player* player = dynamic_cast<Player*>(other);
+    FireBall* fireball = dynamic_cast<FireBall*>(other);
+    StaticTile* tile = dynamic_cast<StaticTile*>(other);
+    if (player) {
+        if (player->isImmortal()){
+            Explode();
+        }
+        else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+            b2Body* playerBody = player->getBody();
+            Vector2 playerSize = player->getSize();
+            Vector2 pos = player->getPosition();
+            player->setPositon(b2Vec2{pos.x, pos.y});
+            player->changeMode(Mode::SMALL);
+            player->setImmortal(true);
+            player->setImmortalTime(2.0f);
+            Explode();
+
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("shrink_mario", Vector2{pos.x, pos.y + playerSize.y}));
+            effectManager->setActivePlayerEffect(true);
+            playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+        }
+        else if (player->getMode() == Mode::SMALL) {
+            player->setHealth(player->getHealth() - getStrength());
+        }
+    }
+    else if (fireball) {
+        Explode();
+    }
+    else if (tile) {
+        Splash();
+    }
+}
+
+void LarvaBubble::OnEndContact(SceneNode *other) {
+}
+
+void LarvaBubble::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject* LarvaBubble::copy() const {
+    return new LarvaBubble(*this);
+}
+
+void LarvaBubble::Draw() {
+    if (body->GetPosition().y + size.y > 14.1f) {
+    }
+    else {
+        Enemy::Draw();
+    }
+}
+
+
+MonsterFlower::MonsterFlower() : Enemy() {
+}
+
+MonsterFlower::MonsterFlower(string type, float range, bool alive, int health, int score, int level, 
+             int strength, Vector2 size, float speed, float angle, float waitTime, float delayTime): 
+    Enemy(type, range, alive, health, score, level, strength, size, speed, angle), waitTime(waitTime), delayTime(delayTime)
+{
+    elapsedTime = 0.0f;
+    Image pipeImage = LoadImage("resources/images/monsterflower/pipe.png");
+    pipe = LoadTextureFromImage(pipeImage);
+}
+
+MonsterFlower::MonsterFlower(const MonsterFlower &mf): Enemy(mf) {
+    waitTime = mf.waitTime;
+    elapsedTime = mf.elapsedTime;
+    pipe = mf.pipe;
+}
+
+MonsterFlower::~MonsterFlower() {
+    UnloadTexture(pipe);
+}
+
+void MonsterFlower::Init(b2Vec2 position) {
+    Enemy::Init(position + b2Vec2{-0.5f*size.x, size.y});
+    b2Fixture *fixture = body->GetFixtureList();
+    fixture->SetSensor(true);
+    initialPosition = position;
+    body->SetGravityScale(0.0f);
+}
+
+void MonsterFlower::Update(Vector2 playerVelocity, float deltaTime) {
+    if (!body) return;
+    
+    b2Vec2 pos = body->GetPosition();
+    if (pos.y <= initialPosition.y) {
+        speed = abs(speed); // Move down
+        if (elapsedTime < delayTime) {
+            elapsedTime += deltaTime;
+            body->SetLinearVelocity(b2Vec2(0, 0));
+        }
+        else {
+            body->SetLinearVelocity(b2Vec2(0, speed));
+            elapsedTime = 0.0f;
+        }
+    } 
+    else if (pos.y >= initialPosition.y + size.y) {
+        speed = -abs(speed); // Move up
+        if (elapsedTime < waitTime) {
+            elapsedTime += deltaTime;
+            body->SetLinearVelocity(b2Vec2(0, 0));
+        }
+        else {
+            body->SetLinearVelocity(b2Vec2(0, speed));
+            elapsedTime = 0.0f;
+        }
+    }
+    else {
+        body->SetLinearVelocity(b2Vec2(0, speed));
+    }
+
+    destRect.x = pos.x;
+    destRect.y = pos.y;
+
+    animations[state].Update(deltaTime);
+    texture = animations[state].GetFrame();
+}
+
+void MonsterFlower::OnBeginContact(SceneNode *other, b2Vec2 normal) {
+    if (!other) return;
+    if (!alive) return;
+    Player* player = dynamic_cast<Player*>(other);
+    if (player) {
+        Vector2 playerPos = player->getPosition();
+        Vector2 flowerPos = {body->GetPosition().x, body->GetPosition().y};
+        if (playerPos.y + player->getSize().y >= flowerPos.y && playerPos.y <= initialPosition.y + size.y) {
+            if (player->isImmortal()) return;
+            if (player->getMode() == Mode::SMALL) {
+                player->setHealth(player->getHealth() - getStrength());
+            }
+            else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+                player->changeMode(Mode::SMALL);
+                player->setInvisibleTime(1.5f);
+                b2Body* playerBody = player->getBody();
+                Vector2 pos = player->getPosition();
+                player->setPositon(b2Vec2{pos.x, pos.y});
+                playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+            }
+        }
+    }
+    // else {
+    //     if (normal.x > 0.9f) {
+    //         setSpeed(-abs(speed));
+    //         faceLeft = true;
+    //     }
+    //     if (normal.x < -0.9f) {
+    //         setSpeed(+abs(speed));
+    //         faceLeft = false;
+    //     }
+    // }
+}
+
+void MonsterFlower::OnEndContact(SceneNode *other) {
+}
+
+void MonsterFlower::accept(FileVisitor *visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject* MonsterFlower::copy() const {
+    return new MonsterFlower(*this);
+}
+
+void MonsterFlower::Draw() {
+    if (!body) return;
+    Enemy::Draw();
+    Vector2 pipeSize = {2.0f, 2.0f};
+    Vector2 pipePos = {initialPosition.x - 0.5f*pipeSize.x, initialPosition.y + bodySize.y};
+    Renderer::DrawPro(pipe, sourceRect, pipePos, pipeSize, true, 0.0f, pipeSize);
 }

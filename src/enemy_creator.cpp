@@ -26,6 +26,17 @@ void EnemyCreator::InitEnemies() {
         boss->setSpeed(-2.0f);
         return boss;
     });
+    RegisterEnemy("larvabubble", [](Vector2 pos) { 
+        cout << "Creating larvabubble" << endl;
+        LarvaBubble* larvaBubble = new LarvaBubble("larvabubble", 0.0f, true, 100, 100, 1, 100, Vector2{0.6f, 0.6f}); 
+        larvaBubble->Init(b2Vec2{pos.x, pos.y});
+        return larvaBubble;
+    });
+    RegisterEnemy("monsterflower", [](Vector2 pos) { 
+        MonsterFlower* monsterFlower = new MonsterFlower("monsterflower", 0.0f, true, 100, 100, 1, 100, Vector2{1.0f, 1.0f}); 
+        monsterFlower->Init(b2Vec2{pos.x, pos.y});
+        return monsterFlower;
+    });
 }
 
 Enemy* EnemyCreator::CreateEnemy(const std::string& name, Vector2 position) {

@@ -260,4 +260,57 @@ public:
     MovingObject* copy() const;
 };
 
+class LarvaBubble : public Enemy {
+public:
+    LarvaBubble();
+    LarvaBubble(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
+                int strength = 0, Vector2 size = {0.6f, 0.6f}, float speed = -15.0f, float angle = 0.0f, float gravity = 15.0f, float waitTime = 1.0f);
+    LarvaBubble(const LarvaBubble &lb);
+    ~LarvaBubble();
+
+    void Init(b2Vec2 position);
+    void Explode();
+    void Splash();
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void OnBeginContact(SceneNode *other, b2Vec2 normal);
+    void OnEndContact(SceneNode *other);
+
+    void accept(FileVisitor *visitor);
+    MovingObject* copy() const;
+
+    void Draw();
+
+private:
+    float gravity;
+    float initialSpeed;
+    float waitTime;
+    float elapsedTime = 0.0f;
+};
+
+
+class MonsterFlower : public Enemy {
+private:
+    float waitTime;
+    float elapsedTime = 0.0f;
+    float delayTime;
+    Texture2D pipe;
+    b2Vec2 initialPosition;
+public:
+    MonsterFlower();
+    MonsterFlower(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
+                  int strength = 0, Vector2 size = {1.0f, 1.0f}, float speed = -5.0f, float angle = 0.0f, float waitTime = 1.0f, float delayTime = 0.5f);
+    MonsterFlower(const MonsterFlower &mf);
+    ~MonsterFlower();
+
+    void Init(b2Vec2 position);
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void OnBeginContact(SceneNode *other, b2Vec2 normal);
+    void OnEndContact(SceneNode *other);
+
+    void accept(FileVisitor *visitor);
+    MovingObject* copy() const;
+
+    void Draw();
+};
+
 #endif

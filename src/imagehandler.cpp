@@ -176,6 +176,17 @@ vector<Image>& ImageHandler::setImages(string path) {
         images.push_back(LoadImage("resources/images/boss/blow2.png"));
         images.push_back(LoadImage("resources/images/boss/blow3.png"));
     }
+    else if (path == "larvabubble") {
+        cout << "Loading larvabubble" << endl;
+        images.push_back(LoadImage("resources/images/larvabubble/fly_up.png"));
+        cout << "Loaded fly_up" << endl;
+        images.push_back(LoadImage("resources/images/larvabubble/fly_down.png"));
+        cout << "Loaded fly_down" << endl;
+    }
+    else if (path == "monsterflower") {
+        images.push_back(LoadImage("resources/images/monsterflower/close.png"));
+        images.push_back(LoadImage("resources/images/monsterflower/open.png"));
+    }
     
     // copy vector
     return images;
@@ -396,7 +407,17 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
             Animation({Frame(0.1f, textures[0])}) // dead
         };
     }
-
+    else if (path == "larvabubble") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}), // fly_up
+            Animation({Frame(0.1f, textures[1])}) // fly_down
+        };
+    }
+    else if (path == "monsterflower") {
+        animations = {
+            Animation({Frame(0.3f, textures[0]), Frame(0.3f, textures[1])}) // close & open
+        };
+    }
 
     return animations;
 }

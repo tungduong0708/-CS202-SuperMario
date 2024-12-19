@@ -327,6 +327,30 @@
                  "width":9.25,
                  "x":-7.625,
                  "y":194.25
+                }, 
+                {
+                 "height":0,
+                 "id":109,
+                 "name":"larvabubble",
+                 "point":true,
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":0,
+                 "x":286.811593159386,
+                 "y":224.050205141414
+                }, 
+                {
+                 "height":0,
+                 "id":110,
+                 "name":"monsterflower",
+                 "point":true,
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":0,
+                 "x":447.917424720514,
+                 "y":168.382004632963
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -335,7 +359,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":108,
+ "nextobjectid":113,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

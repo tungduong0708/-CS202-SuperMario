@@ -14,6 +14,8 @@ class FireFlower;
 class Goomba;
 class Koopa;
 class Boss;
+class LarvaBubble;
+class MonsterFlower;
 class AttackBall;
 class FireBall;
 class Player;
@@ -31,6 +33,8 @@ public:
     virtual void VisitFile(Goomba* obj)         = 0;
     virtual void VisitFile(Koopa* obj)          = 0;
     virtual void VisitFile(Boss* obj)           = 0;
+    virtual void VisitFile(LarvaBubble* obj)    = 0;
+    virtual void VisitFile(MonsterFlower* obj)  = 0;
     virtual void VisitFile(AttackBall* obj)     = 0;
     virtual void VisitFile(FireBall* obj)       = 0;
     virtual void VisitFile(Player* obj)         = 0;
@@ -59,6 +63,8 @@ public:
     void VisitFile(Goomba* obj) override;
     void VisitFile(Koopa* obj) override;
     void VisitFile(Boss* obj) override;
+    void VisitFile(LarvaBubble* obj) override;
+    void VisitFile(MonsterFlower* obj) override;
     void VisitFile(AttackBall* obj) override;
     void VisitFile(FireBall* obj) override;
     void VisitFile(Player* obj) override;
@@ -91,6 +97,8 @@ public:
     void VisitFile(Goomba* obj) override;
     void VisitFile(Koopa* obj) override;
     void VisitFile(Boss* obj) override;
+    void VisitFile(LarvaBubble* obj) override;
+    void VisitFile(MonsterFlower* obj) override;
     void VisitFile(AttackBall* obj) override;
     void VisitFile(FireBall* obj) override;
     void VisitFile(Player* obj) override;
