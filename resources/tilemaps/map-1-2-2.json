@@ -63,8 +63,8 @@
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":44.5,
-                 "y":76.5
+                 "x":49.6666666666665,
+                 "y":72.8333333333333
                 }, 
                 {
                  "height":28.8181818181818,
@@ -80,50 +80,74 @@
                 {
                  "height":0,
                  "id":5,
-                 "name":"downverticalmovingplatform1",
+                 "name":"movingplatform",
                  "point":true,
                  "rotation":0,
-                 "type":"platform",
+                 "type":"downvertical",
                  "visible":true,
                  "width":0,
-                 "x":2250.83333333333,
-                 "y":131.666666666667
-                }, 
-                {
-                 "height":0,
-                 "id":7,
-                 "name":"downverticalmovingplatform2",
-                 "point":true,
-                 "rotation":0,
-                 "type":"platform",
-                 "visible":true,
-                 "width":0,
-                 "x":2253,
-                 "y":227
-                }, 
-                {
-                 "height":0,
-                 "id":9,
-                 "name":"upverticalmovingplatform2",
-                 "point":true,
-                 "rotation":0,
-                 "type":"platform",
-                 "visible":true,
-                 "width":0,
-                 "x":2479.66666666667,
-                 "y":164.333333333333
+                 "x":2221.66666666666,
+                 "y":176
                 }, 
                 {
                  "height":0,
                  "id":10,
-                 "name":"upverticalmovingplatform1",
+                 "name":"movingplatform",
                  "point":true,
                  "rotation":0,
-                 "type":"platform",
+                 "type":"upvertical",
                  "visible":true,
                  "width":0,
-                 "x":2476.66666666667,
-                 "y":36.3333333333333
+                 "x":2465.16666666667,
+                 "y":177.5
+                }, 
+                {
+                 "height":0,
+                 "id":5,
+                 "name":"movingplatform",
+                 "point":true,
+                 "rotation":0,
+                 "type":"upvertical",
+                 "visible":true,
+                 "width":0,
+                 "x":2466.66666666667,
+                 "y":104.833333333333
+                }, 
+                {
+                 "height":0,
+                 "id":6,
+                 "name":"movingplatform",
+                 "point":true,
+                 "rotation":0,
+                 "type":"downvertical",
+                 "visible":true,
+                 "width":0,
+                 "x":2222.5,
+                 "y":253
+                }, 
+                {
+                 "height":0,
+                 "id":7,
+                 "name":"movingplatform",
+                 "point":true,
+                 "rotation":0,
+                 "type":"downvertical",
+                 "visible":true,
+                 "width":0,
+                 "x":2220.83333333333,
+                 "y":103
+                }, 
+                {
+                 "height":0,
+                 "id":8,
+                 "name":"movingplatform",
+                 "point":true,
+                 "rotation":0,
+                 "type":"upvertical",
+                 "visible":true,
+                 "width":0,
+                 "x":2467,
+                 "y":252.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -132,10 +156,10 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":5,
+ "nextobjectid":9,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tilesets":[
         {

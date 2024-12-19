@@ -207,7 +207,8 @@ void Character::Init(b2Vec2 position) {
         b2Vec2{0.0f + 0.2f, size.y}
     };
     MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y});
-
+    b2Fixture* fixture = body->GetFixtureList();
+    fixture->SetFriction(0.3f);
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
     currentImage = IDLE;
 }

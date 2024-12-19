@@ -250,21 +250,15 @@ void FireBall::Draw(Vector2 position, float angle) {
 
 
 MovingPlatform::MovingPlatform() 
-    : MovingObject(), movementType(MovementType::Horizontal), direction(1.0f),
-      topBoundary(0), bottomBoundary(0), leftBoundary(0), rightBoundary(0) {}
+    : MovingObject() {}
 
-MovingPlatform::MovingPlatform(MovementType type, Vector2 size, float speed, float angle, float boundaries[4]) 
-    : MovingObject(size, speed, angle), movementType(type), direction(1.0f) {
-    topBoundary = boundaries[0];
-    bottomBoundary = boundaries[1];
-    leftBoundary = boundaries[2];
-    rightBoundary = boundaries[3];
+MovingPlatform::MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle) 
+    : MovingObject(size, speed.x, angle), distance(distance), speed(speed) 
+    {
 }
 
 MovingPlatform::MovingPlatform(const MovingPlatform &mp)
-    : MovingObject(mp), movementType(mp.movementType), direction(mp.direction),
-      topBoundary(mp.topBoundary), bottomBoundary(mp.bottomBoundary),
-      leftBoundary(mp.leftBoundary), rightBoundary(mp.rightBoundary) {}
+    : MovingObject(mp) {}
 
 MovingPlatform::~MovingPlatform() {
     if (body) {
@@ -287,75 +281,36 @@ void MovingPlatform::Init(b2Vec2 position) {
     };
     restitution = 0.0f;
     MyBoundingBox::createBody(body, b2_kinematicBody, vertices, Vector2{position.x, position.y}, restitution);
-    body->SetLinearVelocity(b2Vec2(2.0f, 0.0f));
+    body->SetLinearVelocity(b2Vec2(speed.x, speed.y));
+    b2Fixture* fixture = body->GetFixtureList();
+    fixture->SetFriction(10.0f);
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
-    
 }
 
 void MovingPlatform::Update(Vector2 playerVelocity, float deltaTime) {
-   if (deltaTime > 0.1f) deltaTime = 0.1f;
-    elapsedTime += deltaTime;
-    b2Vec2 velocity = body->GetLinearVelocity();
-
-    const float tolerance = 0.01f; //error number
-    b2Vec2 position = body->GetPosition();
-
-    if (movementType == MovementType::Vertical) {
-        velocity.x = 0.0f; 
-        velocity.y = speed * direction;
-        body->SetLinearVelocity(velocity);
-
-        // Check boundaries 
-        if (position.y <= bottomBoundary + tolerance) {
-            position.y = bottomBoundary; 
-            direction = 1.0f;            
+    if (!body) return;
+    if (speed.x != 0) curDistance += abs(speed.x) * deltaTime;
+    else if (speed.y != 0) curDistance += abs(speed.y) * deltaTime;
+    if (distance == 0) {
+        Tilemap* tilemap = Tilemap::getInstance();
+        float heightMap = (float)tilemap->GetHeight();
+        b2Vec2 pos = body->GetPosition();
+        if (pos.y < 0) {
+            pos.y = heightMap;
         }
-        else if (position.y >= topBoundary - tolerance) {
-            position.y = topBoundary; 
-            direction = -1.0f;        
+        else if (pos.y > heightMap) {
+            pos.y = 0;
         }
-    } 
-    else if (movementType == MovementType::Horizontal) {
-        velocity.x = speed * direction;
-        body->SetLinearVelocity(velocity);
-
-       
-        if (position.x <= leftBoundary + tolerance) {
-            position.x = leftBoundary;  
-            direction = 1.0f;           
-        }
-        else if (position.x >= rightBoundary - tolerance) {
-            position.x = rightBoundary; 
-            direction = -1.0f;          
+        body->SetTransform(b2Vec2(pos.x, pos.y), body->GetAngle());
+    }
+    else {
+        if (curDistance >= distance) {
+            speed.x = -speed.x;
+            speed.y = -speed.y;
+            curDistance = 0;
+            body->SetLinearVelocity(b2Vec2(speed.x, speed.y));
         }
     }
-    else if (movementType == MovementType::UpVertical) {
-        direction = -1.0f;
-        velocity.x = 0.0f; 
-        //position.y += speed * deltaTime;
-        velocity.y = speed * direction;
-        body->SetLinearVelocity(velocity);
-        // Check boundaries 
-        if (position.y <= bottomBoundary + tolerance) {
-            position.y = topBoundary; 
-        }
-    } 
-    else if (movementType == MovementType::DownVertical) {
-        direction = 1.0f;
-        velocity.x = 0.0f; 
-        //position.y -= speed * deltaTime;
-        velocity.y = speed * direction;
-        body->SetLinearVelocity(velocity);
-        // Check boundaries 
-        if (position.y >= topBoundary - tolerance) {
-            position.y = bottomBoundary; 
-        }
-        //std::cout<<"bottomBoundary:"<<bottomBoundary<<std::endl;
-        //std::cout<<"pos.y:"<<position.y<<std::endl;
-    } 
-
-    body->SetTransform(position, body->GetAngle());
-    animations[0].Update(deltaTime);
 }
 
 void MovingPlatform::HandleInput() {
@@ -363,23 +318,9 @@ void MovingPlatform::HandleInput() {
 }
 
 void MovingPlatform::OnBeginContact(SceneNode *other, b2Vec2 normal) {
-    Player* player = dynamic_cast<Player*>(other);
-    if (player) {
-        player->SetIsOnGround(true);       
-        player->SetWalkingOnPlatform(true);
-        
-        b2Vec2 platformVelocity = body->GetLinearVelocity();
-        b2Vec2 playerVelocity = player->getBody()->GetLinearVelocity();
-        playerVelocity += platformVelocity; 
-        player->getBody()->SetLinearVelocity(playerVelocity);
-    }
 }
+
 void MovingPlatform::OnEndContact(SceneNode *other) {
-     Player* player = dynamic_cast<Player*>(other);
-    if (player) {
-        player->SetIsOnGround(false);
-        player->SetWalkingOnPlatform(false);
-    } 
 }
 
 void MovingPlatform::Draw() {

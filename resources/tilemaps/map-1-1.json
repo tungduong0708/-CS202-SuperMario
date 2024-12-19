@@ -322,7 +322,7 @@
                  "id":104,
                  "name":"gate",
                  "rotation":0,
-                 "type":"map-1-2-1.json",
+                 "type":"map-1-2-2.json",
                  "visible":true,
                  "width":9.25,
                  "x":-7.625,
@@ -335,7 +335,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":105,
+ "nextobjectid":108,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

@@ -227,10 +227,10 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 nodeLayer.push_back(enemy);
                             }
                         }
-                        else if (object.contains("type") && object["type"] == "platform") {
-                            std::string platformName = object["name"].get<std::string>();
-                            PlatformCreator::InitPlatforms();
-                            MovingPlatform* platform = PlatformCreator::CreatePlatform(platformName, Vector2{x, y});
+                        else if (object.contains("name") && object["name"] == "movingplatform") {
+                            std::string platformType = object["type"].get<std::string>();
+                            platformType += "movingplatform";
+                            MovingPlatform* platform = PlatformCreator::CreatePlatform(platformType, Vector2{x, y});
                             if (platform != nullptr) {
                                 nodeLayer.push_back(platform);
                             }

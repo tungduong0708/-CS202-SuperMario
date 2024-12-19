@@ -249,6 +249,7 @@ GameplayState::GameplayState(Game* game)
     Physics::Init(); 
     AnimationEffectCreator::InitEffects();
     EnemyCreator::InitEnemies();
+    PlatformCreator::InitPlatforms();
     TextHelper::loadFont("PressStart2P-Regular", "");
     TilesetHandler::Init();
     
@@ -662,10 +663,6 @@ void GameSavingState::update() {
 
 void GameSavingState::draw() {
     // Draw the underlying GameplayState
-}
-
-GameSavingState::~GameSavingState() {
-    // Unload textures
 }
 
 GameSavingState::~GameSavingState() {

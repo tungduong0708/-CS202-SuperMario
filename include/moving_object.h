@@ -1,12 +1,11 @@
-#pragma once
+#ifndef MOVING_OBJECT_H
+#define MOVING_OBJECT_H
+
 #include "include.h"
 #include "scene_node.h"
 #include "imagehandler.h"
 #include "file_visitor.h"
 #include <box2d/box2d.h>
-#ifndef MOVING_OBJECT_H
-#define MOVING_OBJECT_H
-
 // Forward declaration
 class FireBall;
 class Bullet;
@@ -198,21 +197,15 @@ public:
     MovingObject* copy() const;
 };
 
-enum class MovementType {
-    Vertical,   
-    Horizontal,
-    UpVertical,
-    DownVertical  
-};
 class MovingPlatform : public MovingObject {
 private:
-    MovementType movementType; 
+    Vector2 speed;
+    float distance;
+    float curDistance = 0;
     float direction;          
-    float topBoundary, bottomBoundary; // Vertical boundaries
-    float leftBoundary, rightBoundary; // Horizontal boundaries
 public:
     MovingPlatform();
-    MovingPlatform(MovementType type, Vector2 size, float speed, float angle, float boundaries[4]);
+    MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle = 0.0f);
     MovingPlatform(const MovingPlatform &mp);
     virtual ~MovingPlatform();
 

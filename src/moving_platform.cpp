@@ -10,45 +10,30 @@ void PlatformCreator::RegisterPlatform(const std::string& name, std::function<Mo
 
 void PlatformCreator::InitPlatforms() {
     
-    RegisterPlatform("movingplatform", [](Vector2 pos) {
+    RegisterPlatform("horizontalmovingplatform", [](Vector2 pos) {
         float boundaries[] = {0.0f, 0.0f, pos.x - 3.0f, pos.x + 3.0f}; // Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(MovementType::Horizontal, Vector2{1.0f, 4.0f}, 1.0f, 0.0f, boundaries);
+        MovingPlatform* platform = new MovingPlatform(Vector2{1.0f, 4.0f}, Vector2{1.0f, 0.0f}, 2.0f);
         platform->Init(b2Vec2{pos.x, pos.y});
-        //platform->setSpeed(2.0f);
         return platform;
     });
 
     RegisterPlatform("verticalmovingplatform", [](Vector2 pos) {
      float boundaries[] = {pos.y + 3.0f, pos.y - 3.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(MovementType::Vertical, Vector2{1.0f, 4.0f}, 1.0f, 0.0f, boundaries);
+        MovingPlatform* platform = new MovingPlatform(Vector2{1.0f, 4.0f}, Vector2{0.0f, 1.0f}, 2.0f);
         platform->Init(b2Vec2{pos.x, pos.y});
         return platform;
     });
 
-    RegisterPlatform("upverticalmovingplatform1", [](Vector2 pos) {
-     float boundaries[] = {pos.y + 3.0f, pos.y - 3.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(MovementType::UpVertical, Vector2{1.0f, 4.0f}, 1.0f, 0.0f, boundaries);
+    RegisterPlatform("upverticalmovingplatform", [](Vector2 pos) {
+     float boundaries[] = {pos.y + 20.0f, pos.y - 3.0f, 0.0f, 0.0f};// Adjust boundaries as needed
+        MovingPlatform* platform = new MovingPlatform(Vector2{1.0f, 4.0f}, Vector2{0.0f, -1.0f}, 0.0f);
         platform->Init(b2Vec2{pos.x, pos.y});
         return platform;
     });
 
-    RegisterPlatform("upverticalmovingplatform2", [](Vector2 pos) {
-     float boundaries[] = {pos.y + 3.0f, pos.y - 3.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(MovementType::UpVertical, Vector2{1.0f, 4.0f}, 1.0f, 0.0f, boundaries);
-        platform->Init(b2Vec2{pos.x, pos.y});
-        return platform;
-    });
-
-    RegisterPlatform("downverticalmovingplatform1", [](Vector2 pos) {
-     float boundaries[] = {pos.y + 3.0f, pos.y - 3.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(MovementType::DownVertical, Vector2{1.0f, 4.0f}, 1.0f, 0.0f, boundaries);
-        platform->Init(b2Vec2{pos.x, pos.y});
-        return platform;
-    });
-
-    RegisterPlatform("downverticalmovingplatform2", [](Vector2 pos) {
-     float boundaries[] = {pos.y + 3.0f, pos.y - 3.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(MovementType::DownVertical, Vector2{1.0f, 4.0f}, 1.0f, 0.0f, boundaries);
+    RegisterPlatform("downverticalmovingplatform", [](Vector2 pos) {
+     float boundaries[] = {pos.y + 3.0f, pos.y - 20.0f, 0.0f, 0.0f};// Adjust boundaries as needed
+        MovingPlatform* platform = new MovingPlatform(Vector2{1.0f, 4.0f}, Vector2{0.0f, 1.0f}, 0.0f);
         platform->Init(b2Vec2{pos.x, pos.y});
         return platform;
     });
