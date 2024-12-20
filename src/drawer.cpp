@@ -136,7 +136,7 @@ void DrawImageButton(const Game& game, const PlayerInfo& player)
     Color shadowColor = Fade(BLACK, 0.4f);            // Shadow color
     Color borderColor = player.button.isHovered ? Fade(WHITE, 1.0f) : Fade(DARKBLUE, 0.9f); // Border changes color
     Color baseColor = player.button.isHovered
-                         ? (player.name == "Mario" ? RED : GREEN) // Red for Mario, Green for Luigi
+                         ? (player.name == "Mario" ? PINK : DARKGREEN) // Red for Mario, Green for Luigi
                          : YELLOW;                                             // Gold background when not hovered
     Vector2 mousePos = GetMousePosition();
 
@@ -144,31 +144,21 @@ void DrawImageButton(const Game& game, const PlayerInfo& player)
     bool isHovered = CheckCollisionPointRec(mousePos, player.button.rect);
 
     // --- Shadow Effect ---
-    DrawRectangle(
-        player.button.rect.x + 4, player.button.rect.y + 4, player.button.rect.width, player.button.rect.height,
-        shadowColor);
+    DrawRectangleRounded(
+        {player.button.rect.x + 4, player.button.rect.y + 4, player.button.rect.width, player.button.rect.height},
+        0.3f, 6, shadowColor);
 
     // --- Button Background ---
-    int gradientSteps = 20;  // Number of steps for the gradient
-    float stepHeight = player.button.rect.height / static_cast<float>(gradientSteps); // Height of each step
-
-    for (int i = 0; i < gradientSteps; i++) {
-        float alpha = 0.1f + (static_cast<float>(i) * 0.05f); // Gradually decrease alpha for a fade effect
-        Color stepColor = Fade(baseColor, alpha); // Base color RED, fading gradually
-
-        DrawRectangle(
-            player.button.rect.x, player.button.rect.y + static_cast<float>(i) * stepHeight, player.button.rect.width, stepHeight + 1.0f, // Adjust height for smooth overlap
-            stepColor);
-    }
-
-    DrawRectangleLines(player.button.rect.x, player.button.rect.y, player.button.rect.width, player.button.rect.height, borderColor);
+    DrawRectangleRounded(player.button.rect, 0.3f, 6, baseColor);
+    DrawRectangleRoundedLines(player.button.rect, 0.3f, 6, 2, borderColor);
 
     // --- Texture on the Left ---
-    float texturePadding = 20.0f; // Padding for the texture
+    float texturePaddingX = 50.0f; // Padding for the texture
+    float texturePaddingY = 20.0f; // Padding for the texture
     float ratio = player.button.rect.height / player.texture.height * 5 / 6; // Scale texture to button height
     float textureSizeX = player.texture.width * ratio;
     float textureSizeY = player.texture.height * ratio;
-    Rectangle textureDest = {player.button.rect.x + texturePadding, player.button.rect.y + texturePadding, textureSizeX, textureSizeY};
+    Rectangle textureDest = {player.button.rect.x + texturePaddingX, player.button.rect.y + texturePaddingY, textureSizeX, textureSizeY};
 
     // Draw the player's texture
     DrawTexturePro(
@@ -180,12 +170,40 @@ void DrawImageButton(const Game& game, const PlayerInfo& player)
         WHITE);
 
     // --- Text on the Right ---
-    float textX = player.button.rect.x + textureSizeX + texturePadding * 2; // Start text to the right of the texture
+    float textX = player.button.rect.x + textureSizeX + texturePaddingX * 2; // Start text to the right of the texture
     float textY = player.button.rect.y + player.button.rect.height / 2 - 50; // Center vertically
 
     // Player name (large text)
-    Color textColor = player.name == "Mario" ? RED : GREEN; // Red when hovered
     constexpr int nameFontSize = 35;
+    Color textColor = player.name == "Mario" ? RED : GREEN; // Diiferent color for each player
+    // Draw shadow for player name
+    DrawTextEx(
+        game.getFont(),
+        player.name.c_str(),
+        {textX + 2, textY + 2},
+        nameFontSize, 2, shadowColor);
+
+    // Draw border for player name
+    DrawTextEx(
+        game.getFont(),
+        player.name.c_str(),
+        {textX - 1, textY - 1},
+        nameFontSize, 2, BLACK);
+    DrawTextEx(
+        game.getFont(),
+        player.name.c_str(),
+        {textX + 1, textY - 1},
+        nameFontSize, 2, BLACK);
+    DrawTextEx(
+        game.getFont(),
+        player.name.c_str(),
+        {textX - 1, textY + 1},
+        nameFontSize, 2, BLACK);
+    DrawTextEx(
+        game.getFont(),
+        player.name.c_str(),
+        {textX + 1, textY + 1},
+        nameFontSize, 2, BLACK);
     DrawTextEx(
         game.getFont(),
         player.name.c_str(),
@@ -208,10 +226,42 @@ void DrawImageButton(const Game& game, const PlayerInfo& player)
         description = (player.name == "Mario") ? "The heroic plumber!" : "The green brother!";
     }
 
+    Color descColor = isHovered ? GOLD : WHITE;
+
+    // Draw the description/stats text with border
+    // Draw shadow for description
+    DrawTextEx(
+        game.getFont(),
+        description.c_str(),
+        {textX + 2, textY + nameFontSize + 22},
+        descFontSize, 1, shadowColor);
+
+    // Draw border for description
+    DrawTextEx(
+        game.getFont(),
+        description.c_str(),
+        {textX - 1, textY + nameFontSize + 19},
+        descFontSize, 1, BLACK);
+    DrawTextEx(
+        game.getFont(),
+        description.c_str(),
+        {textX + 1, textY + nameFontSize + 19},
+        descFontSize, 1, BLACK);
+    DrawTextEx(
+        game.getFont(),
+        description.c_str(),
+        {textX - 1, textY + nameFontSize + 21},
+        descFontSize, 1, BLACK);
+    DrawTextEx(
+        game.getFont(),
+        description.c_str(),
+        {textX + 1, textY + nameFontSize + 21},
+        descFontSize, 1, BLACK);
+
     // Draw the description/stats text
     DrawTextEx(
         game.getFont(),
         description.c_str(),
         {textX, textY + nameFontSize + 20}, // Position below the name
-        descFontSize, 1, Fade(BLACK, 0.8f));
+        descFontSize, 1, descColor);
 }
