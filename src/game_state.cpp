@@ -558,32 +558,90 @@ void DeathState::update()
     }
 }
 
-void DeathState::draw()
-{
+void DeathState::draw() {
     // Draw the underlying GameplayState
     game->gameplayState->draw();
 
-    // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    // Draw a semi-transparent black overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
 
-    // Draw the small rectangle with Mario's image and life count
-    float rectWidth = 200.0f;
-    float rectHeight = 100.0f;
+    // Draw the central rounded rectangle (panel)
+    float rectWidth = 300.0f;
+    float rectHeight = 150.0f;
     float rectX = (game->getScreenWidth() - rectWidth) / 2;
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
-    DrawRectangle(rectX, rectY, rectWidth, rectHeight, Fade(BLACK, 0.7f));
 
-    // Draw Mario's image
-    DrawTexture(characterTexture, rectX + 10, rectY + 10, WHITE);
+    // Draw shadow for depth
+    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.2f, 10, Fade(BLACK, 0.4f));
 
-    // Draw life remaining text
-    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining), {rectX + 60, rectY + 20}, 20, 2, WHITE);
+    int gradientSteps = 10;  // Number of steps for the gradient
+    float stepHeight = rectHeight / static_cast<float>(gradientSteps); // Height of each step
 
-    if (showDeathImage) {
-        // Draw death image and "life - 1" text
-        DrawTexture(deathTexture, rectX + 10, rectY + 50, WHITE);
-        DrawTextEx(game->getFont(), "life - 1", {rectX + 60, rectY + 60}, 10, 2, WHITE);
+    for (int i = 0; i < gradientSteps; i++) {
+        float alpha = 0.8f - (static_cast<float>(i) * 0.1f); // Gradually decrease alpha for a fade effect
+        Color stepColor = Fade(RED, alpha); // Base color RED, fading gradually
+
+        DrawRectangleRounded(
+            {rectX, rectY + static_cast<float>(i) * stepHeight, rectWidth, stepHeight + 1.5f}, // Adjust height for smooth overlap
+            0.2f, 10, stepColor);
     }
+
+    // Draw "You Died" text with Shadow
+    constexpr int fontSize = 30;
+    constexpr int spacing = 1;
+
+    const char* deathText = "You Died";
+    Vector2 deathTextSize = MeasureTextEx(game->getFont(), deathText, fontSize, spacing);
+    Vector2 deathTextPos = {
+        rectX + (rectWidth - deathTextSize.x) / 2, // Center horizontally
+        rectY + 20                                // Margin from the top
+    };
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), deathText,
+               {deathTextPos.x + 2, deathTextPos.y + 2}, fontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), deathText,
+               deathTextPos, fontSize, 2, ORANGE);
+
+    // Draw Mario's Image (Scaled 2x)
+    float imageScale = 2.0f;
+    float imageX = rectX + 70;
+    float imageY = rectY + (rectHeight - characterTexture.height * imageScale) / 2;
+    DrawTextureEx(characterTexture, {imageX, imageY}, 0.0f, imageScale, WHITE);
+
+    // Draw Life Count with Shadow
+    constexpr int lifeFontSize = 24;
+    Vector2 lifeTextPos = {imageX + 90, imageY + 10};
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining),
+               {lifeTextPos.x + 2, lifeTextPos.y + 2}, lifeFontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining),
+               lifeTextPos, lifeFontSize, 2, WHITE);
+
+    // Draw Death Image
+    if (showDeathImage) {
+        float deathImageScale = 1.5f;
+        float deathImageX = rectX + 90;
+        float deathImageY = rectY + (rectHeight - deathTexture.height * deathImageScale) / 6 * 5;
+        DrawTextureEx(deathTexture, {deathImageX, deathImageY}, 0.0f, deathImageScale, WHITE);
+
+        // Write life - 1
+        constexpr int lifeFontSize = 18;
+        Vector2 lifeTextPos = {deathImageX + 72, deathImageY + 10};
+
+        // Draw text shadow
+        DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining - 1),
+                   {lifeTextPos.x + 2, lifeTextPos.y + 2}, lifeFontSize, 2, Fade(BLACK, 0.6f));
+        // Draw main text
+        DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining - 1),
+                   lifeTextPos, lifeFontSize, 2, WHITE);
+    }
+
+    // Add a decorative border
+    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.2f, 10, 5, WHITE);
 }
 
 void DeathState::reset()
