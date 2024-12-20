@@ -20,7 +20,7 @@ protected:
     vector<Animation> animations;
     float elapsedTime;
     float frameTime;
-    b2Body* body; 
+    b2Body* body = nullptr; 
     float restitution;
 public:
     MovingObject();
@@ -136,6 +136,7 @@ public:
     ActiveItem(const ActiveItem &gi);
     virtual ~ActiveItem();
     void setValue(int v);
+    void setFlag(bool f);
     bool isAvailable();
     int getValue();
 

@@ -198,6 +198,7 @@ void Goomba::Dead()
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+        alive = false;
 
 
         if (deadByPlayer) {
@@ -340,6 +341,7 @@ void Koopa::Dead()
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+        alive = false;
 
         playSoundEffect(SoundEffect::HIT_ENEMY);
 

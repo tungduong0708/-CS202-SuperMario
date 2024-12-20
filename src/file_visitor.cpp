@@ -17,13 +17,21 @@ void ExportFileVisitor::setFilePath(std::string path)
     file << path << std::endl;
 }
 
-void ExportFileVisitor::openFile()
+
+void ExportFileVisitor::openFile(bool overwrite)
 {
-    file.open(filePath, std::ios::app);
-    if (!file.is_open()) {
-        throw std::runtime_error("Cannot open file");
+    if (overwrite) {
+        file.open(filePath, std::ios::out);  
+    } else {
+        file.open(filePath, std::ios::app);  
     }
-    else std::cout << "File " << filePath << " opened\n";
+
+    if (!file.is_open()) {
+        throw std::runtime_error("Cannot open file: " + filePath);
+    }
+
+    std::cout << "File " << filePath << " opened in " 
+              << (overwrite ? "overwrite" : "append") << " mode.\n";
 }
 
 void ExportFileVisitor::closeFile() {
@@ -46,6 +54,7 @@ void ExportFileVisitor::VisitFile(KinematicTile *obj)
     file << "KinematicTile " << id << std::endl;
     file << obj->getTilesetPath() << std::endl;
     file << obj->getPosition().x << " " << obj->getPosition().y << std::endl;
+    file << obj->isAnimation() << std::endl;
     std::vector<std::pair<int, int>> frames = obj->getFrames();
     file << frames.size() << std::endl;
     for (auto frame : frames) {
@@ -158,7 +167,7 @@ void ImportFileVisitor::closeFile() {
     if (file.is_open()) file.close();
 }
 
-ifstream& ImportFileVisitor::getFile()
+std::ifstream& ImportFileVisitor::getFile()
 {
     return file;
 }
@@ -172,9 +181,12 @@ void ImportFileVisitor::VisitFile(StaticTile *obj)
     file >> id >> tilesetPath >> x >> y;
     file >> isDestroyed >> isActivated;
     if (!isDestroyed) {
-        obj = new StaticTile(id, Vector2{x, y}, "", tilesetPath);
+        *obj = StaticTile(id, Vector2{x, y}, "", tilesetPath);
         obj->setIsDestroyed(isDestroyed);
         obj->setIsActivated(isActivated);
+        obj->createBody();
+    } else {
+        obj = nullptr; // StaticTile remains destroyed
     }
 }
 
@@ -184,15 +196,20 @@ void ImportFileVisitor::VisitFile(KinematicTile *obj)
     string tilesetPath;
     float x, y;
     int frameSize;
+    bool animation;
     file >> id >> tilesetPath >> x >> y;
-    file >> frameSize;
+    file >> animation >> frameSize;
     std::vector<std::pair<int, int>> frames;
     for (int i = 0; i < frameSize; i++) {
-        int x, y;
-        file >> x >> y;
-        frames.push_back({x, y});
+        int frameId, frameTime;
+        file >> frameId >> frameTime;
+        frames.push_back({frameId, frameTime});
     }
-    obj = new KinematicTile(id, Vector2{x, y}, "", tilesetPath, frames);
+    *obj = KinematicTile(id, Vector2{x, y}, "", tilesetPath, frames);
+    obj->setAnimation(animation);
+    if (frameSize > 0) {
+        obj->createBody();
+    }
 }
 
 void ImportFileVisitor::VisitFile(MovingPlatform *obj) {
@@ -203,8 +220,7 @@ void ImportFileVisitor::VisitFile(Mushroom *obj)
 {
     float x, y;
     file >> x >> y;
-    delete obj;
-    obj = new Mushroom();
+    *obj = Mushroom();
     obj->Init(b2Vec2{x, y});
 }
 
@@ -212,8 +228,7 @@ void ImportFileVisitor::VisitFile(Star *obj)
 {
     float x, y;
     file >> x >> y;
-    delete obj;
-    obj = new Star();
+    *obj = Star();
     obj->Init(b2Vec2{x, y});
 }
 
@@ -221,8 +236,7 @@ void ImportFileVisitor::VisitFile(FireFlower *obj)
 {
     float x, y;
     file >> x >> y;
-    delete obj;
-    obj = new FireFlower();
+    *obj = FireFlower();
     obj->Init(b2Vec2{x, y});
 }
 
@@ -232,8 +246,7 @@ void ImportFileVisitor::VisitFile(Goomba *obj)
     int level, health;
     file >> x >> y;
     file >> level >> health;
-    delete obj;
-    obj = new Goomba("goomba", 0.0f, true, false, 100, 100, level, 100, Vector2{1.0f, 1.0f}, -2.0f, 0.0f);
+    *obj = Goomba("goomba", 0.0f, true, false, 100, 100, level, 100, Vector2{1.0f, 1.0f}, -2.0f, 0.0f);
     obj->Init(b2Vec2{x, y});
     obj->setLevel(level);
     obj->setHealth(health);
@@ -245,8 +258,7 @@ void ImportFileVisitor::VisitFile(Koopa *obj)
     int level, health;
     file >> x >> y;
     file >> level >> health;
-    delete obj;
-    obj = new Koopa("koopa", 0.0f, true, false, 100, 100, level, 100, Vector2{1.0f, 1.0f}, -2.0f, 0.0f);
+    *obj = Koopa("koopa", 0.0f, true, false, 100, 100, level, 100, Vector2{1.0f, 1.0f}, -2.0f, 0.0f);
     obj->Init(b2Vec2{x, y});
     obj->setLevel(level);
     obj->setHealth(health);
@@ -258,8 +270,7 @@ void ImportFileVisitor::VisitFile(Boss *obj)
     int level, health;
     file >> x >> y;
     file >> level >> health;
-    delete obj;
-    obj = new Boss("boss", 0.0f, true, 100, 100, level, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f);
+    *obj = Boss("boss", 0.0f, true, 100, 100, level, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f);
     obj->Init(b2Vec2{x, y});
     obj->setLevel(level);
     obj->setHealth(health);
@@ -271,8 +282,7 @@ void ImportFileVisitor::VisitFile(AttackBall *obj)
     float damage;
     file >> x >> y;
     file >> damage;
-    delete obj;
-    obj = new AttackBall(damage, Vector2{0.5f, 0.5f}, -6.0f, 0.0f);
+    *obj = AttackBall(damage, Vector2{0.5f, 0.5f}, -6.0f, 0.0f);
     obj->Init(b2Vec2{x, y});
     obj->setDamage(damage);
 }
@@ -281,8 +291,7 @@ void ImportFileVisitor::VisitFile(FireBall *obj)
 {
     float x, y;
     file >> x >> y;
-    delete obj;
-    obj = new FireBall(100, Vector2{0.5f, 0.5f}, 6.0f, 0.0f);
+    *obj = FireBall(100, Vector2{0.5f, 0.5f}, 6.0f, 0.0f);
     obj->Init(b2Vec2{x, y});
 }
 
@@ -301,8 +310,8 @@ void ImportFileVisitor::VisitFile(Player *obj)
     file >> score >> coins >> lives;
     file >> time;
     file >> currentMap;
-    delete obj;
-    obj = new Player(type, "player", coins, lives, 100, score, 0, 0, Vector2{1.0f, 1.0f});
+    *obj = Player(type, "player", coins, lives, 100, score, 0, 0, Vector2{1.0f, 1.0f});
+    TextHelper::loadTexture("coin", "small" + type);
     obj->Init(b2Vec2{x, y});
     obj->setInitialPosition(Vector2{initialX, initialY});
     if (mode == 0) {
@@ -337,5 +346,5 @@ void ImportFileVisitor::VisitFile(EffectManager *obj)
         file >> x >> y >> count;
         effectCount[{x, y}] = count;
     }
-    obj = new EffectManager(effectMap, effectCount);
+    *obj = EffectManager(effectMap, effectCount);
 }

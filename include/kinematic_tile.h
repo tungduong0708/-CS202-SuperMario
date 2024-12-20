@@ -24,10 +24,13 @@ public:
     KinematicTile(int id, std::string type, std::string tilesetName, const std::vector<std::pair<int, int>>& frames);
     KinematicTile(int id, Vector2 pos, std::string type, std::string tilesetName, const std::vector<std::pair<int, int>>& frames);
     KinematicTile(KinematicTile& other);
+    void createBody();
     StaticObject* clone();
     virtual ~KinematicTile();
-
+    
+    bool isAnimation() const;
     std::vector<std::pair<int, int>> getFrames();
+    void setAnimation(bool anim);
     void setPosition(const Vector2& position);
     void Update(Vector2 playerVelocity, float deltaTime);
     void Draw();

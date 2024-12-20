@@ -39,7 +39,7 @@ public:
 
 class ExportFileVisitor : public FileVisitor {
 private:
-    const std::string filePath = "../resources/save/save.txt";
+    const std::string filePath = "../resources/save/save1.txt";
     std::ofstream file;
     static ExportFileVisitor* instance;
     ExportFileVisitor() = default;
@@ -47,7 +47,7 @@ public:
     static ExportFileVisitor* getInstance();
     ~ExportFileVisitor() = default;
     void setFilePath(std::string path);
-    void openFile();
+    void openFile(bool overwrite = false);
     void closeFile();
 
     void VisitFile(StaticTile* obj) override;

@@ -28,6 +28,7 @@ private:
     EffectManager* effectManager;
     std::vector<std::vector<SceneNode*>> nodes;
     std::vector<std::pair<std::string, int>> tilesets;
+    std::vector<SceneNode*> loadedNodes;
     std::set<std::pair<int, int>> activatedTiles;
     
     Tilemap();
@@ -48,7 +49,7 @@ public:
     void addNode(SceneNode* node);
     void LoadMapFromJson(const std::string& filePath);
     void LoadSaveGame(const std::string& filePath);
-    void SaveGame(const std::string& filePath);
+    void SaveGame();
     void Update(float deltaTime);
     void Draw() const;
     

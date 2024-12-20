@@ -22,6 +22,7 @@ public:
     StaticTile(int id, std::string type, std::string tilesetName);
     StaticTile(int id, Vector2 pos, std::string type, std::string tilesetName);
     StaticTile(StaticTile& other);
+    void createBody();
     StaticObject* clone();
     virtual ~StaticTile();
 
