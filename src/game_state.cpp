@@ -372,27 +372,37 @@ void MapPauseState::draw()
 
 SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
     // Initialize buttons
-    float buttonWidth = 250;
-    float buttonHeight = 400;
-    float column1X = static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
-    float column2X = 3 * static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
+    float buttonWidth = 500;
+    float buttonHeight = 250;
+    float column1X = 30;
+    float column2X = static_cast<float>(game->getScreenWidth()) - buttonWidth - 30;
 
-    Texture2D player1Texture = LoadTexture("../resources/images/smallmario/idle.png");
-    Texture2D player1HoverTexture = LoadTexture("../resources/images/smallmario/victory.png");
-    player1Button = {{column1X, 100, buttonWidth, buttonHeight}, player1Texture, player1HoverTexture, "Mario", false};
+    player1.name = "Mario";
+    player1.texture = LoadTexture("../resources/images/smallmario/idle.png");
+    player1.hoverTexture = LoadTexture("../resources/images/smallmario/victory.png");
+    player1.button = {{column1X, 30, buttonWidth, buttonHeight}, player1.texture, player1.hoverTexture, false};
+    player1.speed = 85;
+    player1.jumpForce = 90;
+    player1.bulletSpeed = 72;
+    player1.bulletFreq = 60;
 
-    Texture2D player2Texture = LoadTexture("../resources/images/smallluigi/idle.png");
-    Texture2D player2HoverTexture = LoadTexture("../resources/images/smallluigi/victory.png");
-    player2Button = {{column2X, 100, buttonWidth, buttonHeight}, player2Texture, player2HoverTexture, "Luigi", false};
+    player2.name = "Luigi";
+    player2.texture = LoadTexture("../resources/images/smallluigi/idle.png");
+    player2.hoverTexture = LoadTexture("../resources/images/smallluigi/victory.png");
+    player2.button = {{column2X, 330, buttonWidth, buttonHeight}, player2.texture, player2.hoverTexture, false};
+    player2.speed = 75;
+    player2.jumpForce = 84;
+    player2.bulletSpeed = 88;
+    player2.bulletFreq = 80;
 }
 
 void SelectPlayerState::update() {
     // Update button hover states
-    player1Button.isHovered = CheckCollisionPointRec(GetMousePosition(), player1Button.rect);
-    player2Button.isHovered = CheckCollisionPointRec(GetMousePosition(), player2Button.rect);
+    player1.button.isHovered = CheckCollisionPointRec(GetMousePosition(), player1.button.rect);
+    player2.button.isHovered = CheckCollisionPointRec(GetMousePosition(), player2.button.rect);
 
     // Handle button clicks
-    if (IsButtonClicked(player1Button)) {
+    if (IsButtonClicked(player1.button)) {
         // Set player to Mario
         Tilemap* tilemap = Tilemap::getInstance();
         tilemap->LoadMapFromJson("map-1-1.json");
@@ -400,7 +410,7 @@ void SelectPlayerState::update() {
 
         game->changeState(game->gameplayState.get());
     }
-    if (IsButtonClicked(player2Button)) {
+    if (IsButtonClicked(player2.button)) {
         // Set player to Luigi
         Tilemap* tilemap = Tilemap::getInstance();
         tilemap->LoadMapFromJson("map-1-1.json");
@@ -415,19 +425,19 @@ void SelectPlayerState::draw() {
     game->mainMenuState->drawBackground();
 
     // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.6f));
     
     // Draw buttons
-    DrawImageButton(player1Button, *game);
-    DrawImageButton(player2Button, *game);
+    DrawImageButton(*game, player1);
+    DrawImageButton(*game, player2);
 }
 
 SelectPlayerState::~SelectPlayerState()
 {
-    UnloadTexture(player1Button.texture);
-    UnloadTexture(player1Button.hoverTexture);
-    UnloadTexture(player2Button.texture);
-    UnloadTexture(player2Button.hoverTexture);
+    UnloadTexture(player1.button.texture);
+    UnloadTexture(player1.button.hoverTexture);
+    UnloadTexture(player2.button.texture);
+    UnloadTexture(player2.button.hoverTexture);
 }
 
 ChangeStageState::ChangeStageState(Game* game) : GameState(game), elapsedTime(0.0f), lifeRemaining(3)
@@ -624,20 +634,20 @@ void DeathState::draw() {
     // Draw Death Image
     if (showDeathImage) {
         float deathImageScale = 1.5f;
-        float deathImageX = rectX + 90;
+        float deathImageX = rectX + 70;
         float deathImageY = rectY + (rectHeight - deathTexture.height * deathImageScale) / 6 * 5;
         DrawTextureEx(deathTexture, {deathImageX, deathImageY}, 0.0f, deathImageScale, WHITE);
 
         // Write life - 1
-        constexpr int lifeFontSize = 18;
-        Vector2 lifeTextPos = {deathImageX + 72, deathImageY + 10};
+        constexpr int deathFontSize = 18;
+        Vector2 deathTextPos = {deathImageX + 72, deathImageY + 10};
 
         // Draw text shadow
-        DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining - 1),
-                   {lifeTextPos.x + 2, lifeTextPos.y + 2}, lifeFontSize, 2, Fade(BLACK, 0.6f));
+        DrawTextEx(game->getFont(), TextFormat("LIFE - %d", 1),
+                   {deathTextPos.x + 2, deathTextPos.y + 2}, deathFontSize, 2, Fade(BLACK, 0.6f));
         // Draw main text
-        DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining - 1),
-                   lifeTextPos, lifeFontSize, 2, WHITE);
+        DrawTextEx(game->getFont(), TextFormat("LIFE - %d", 1),
+                   deathTextPos, deathFontSize, 2, WHITE);
     }
 
     // Add a decorative border

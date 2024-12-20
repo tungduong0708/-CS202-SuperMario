@@ -129,69 +129,89 @@ void DrawMarioSlider(Rectangle rect, int& value, const float& minValue, const fl
     }
 }
 
-void DrawImageButton(const ImageButton& button, const Game& game)
+// Customized image button drawing
+void DrawImageButton(const Game& game, const PlayerInfo& player)
 {
     // Define Mario-themed colors
-    Color shadowColor = Fade(BLACK, 0.4f);          // Shadow color
-    Color borderColor = button.isHovered ? Fade(WHITE, 1.0f) : Fade(DARKBLUE, 0.9f); // Border changes color
-    Color highlightColor = Fade(YELLOW, 0.8f);      // Yellow highlight for the button
-    Color baseColor = button.isHovered ? Fade(YELLOW, 0.5f) : Fade(GOLD, 0.4f);      // Base changes color
+    Color shadowColor = Fade(BLACK, 0.4f);            // Shadow color
+    Color borderColor = player.button.isHovered ? Fade(WHITE, 1.0f) : Fade(DARKBLUE, 0.9f); // Border changes color
+    Color baseColor = player.button.isHovered
+                         ? (player.name == "Mario" ? RED : GREEN) // Red for Mario, Green for Luigi
+                         : YELLOW;                                             // Gold background when not hovered
     Vector2 mousePos = GetMousePosition();
 
-    // Check hover state
-    bool isHovered = CheckCollisionPointRec(mousePos, button.rect);
+    // --- Check Hover State ---
+    bool isHovered = CheckCollisionPointRec(mousePos, player.button.rect);
 
     // --- Shadow Effect ---
-    DrawRectangleRounded(
-        {button.rect.x + 4, button.rect.y + 4, button.rect.width, button.rect.height},
-        0.3f, 6, shadowColor);
+    DrawRectangle(
+        player.button.rect.x + 4, player.button.rect.y + 4, player.button.rect.width, player.button.rect.height,
+        shadowColor);
 
-    // --- Yellow Highlight Background ---
-    DrawRectangleRounded(button.rect, 0.3f, 6, highlightColor);
+    // --- Button Background ---
+    int gradientSteps = 20;  // Number of steps for the gradient
+    float stepHeight = player.button.rect.height / static_cast<float>(gradientSteps); // Height of each step
 
-    // --- Button Body ---
-    DrawRectangleRounded(button.rect, 0.3f, 6, baseColor);
-    DrawRectangleRoundedLines(button.rect, 0.3f, 6, 4, borderColor);
+    for (int i = 0; i < gradientSteps; i++) {
+        float alpha = 0.1f + (static_cast<float>(i) * 0.05f); // Gradually decrease alpha for a fade effect
+        Color stepColor = Fade(baseColor, alpha); // Base color RED, fading gradually
 
-    // --- Scale and Center the Texture ---
-    float scaleFactor = 7.0f; // Scale the texture by 3 times (adjust as needed)
-    float textureWidth = button.texture.width * scaleFactor;
-    float textureHeight = button.texture.height * scaleFactor;
-
-    // Calculate position to center the texture
-    float textureX = button.rect.x + (button.rect.width - textureWidth) / 2;
-    float textureY = button.rect.y + (button.rect.height / 2 - textureHeight / 2) - 10; // Adjust upward slightly
-
-    // Draw the texture
-    DrawTexturePro(
-        isHovered ? button.hoverTexture : button.texture,       // Use hover texture if hovered
-        {0, 0, static_cast<float>(button.texture.width), static_cast<float>(button.texture.height)}, // Source rectangle
-        {textureX, textureY, textureWidth, textureHeight},      // Destination rectangle (scaled size)
-        {0, 0},                                                // Origin point
-        0.0f,                                                  // No rotation
-        WHITE);                                                // Tint color
-
-    // --- Text at the Bottom ---
-    if (!button.text.empty())
-    {
-        constexpr int textSize = 24; // Bigger text size
-        Vector2 textSizeVec = MeasureTextEx(game.getFont(), button.text.c_str(), textSize, 1);
-
-        // Text shadow
-        DrawTextEx(
-            game.getFont(),
-            button.text.c_str(),
-            {button.rect.x + button.rect.width / 2 - textSizeVec.x / 2 + 2,
-             button.rect.y + button.rect.height - textSizeVec.y - 10 + 2},
-            textSize, 1, shadowColor);
-
-        // Main text
-        DrawTextEx(
-            game.getFont(),
-            button.text.c_str(),
-            {button.rect.x + button.rect.width / 2 - textSizeVec.x / 2,
-             button.rect.y + button.rect.height - textSizeVec.y - 10},
-            textSize, 1, WHITE);
+        DrawRectangle(
+            player.button.rect.x, player.button.rect.y + static_cast<float>(i) * stepHeight, player.button.rect.width, stepHeight + 1.0f, // Adjust height for smooth overlap
+            stepColor);
     }
-}
 
+    DrawRectangleLines(player.button.rect.x, player.button.rect.y, player.button.rect.width, player.button.rect.height, borderColor);
+
+    // --- Texture on the Left ---
+    float texturePadding = 20.0f; // Padding for the texture
+    float ratio = player.button.rect.height / player.texture.height * 5 / 6; // Scale texture to button height
+    float textureSizeX = player.texture.width * ratio;
+    float textureSizeY = player.texture.height * ratio;
+    Rectangle textureDest = {player.button.rect.x + texturePadding, player.button.rect.y + texturePadding, textureSizeX, textureSizeY};
+
+    // Draw the player's texture
+    DrawTexturePro(
+        isHovered ? player.hoverTexture : player.texture,   // Use hover texture if hovered
+        {0, 0, static_cast<float>(player.texture.width), static_cast<float>(player.texture.height)}, // Source rectangle
+        textureDest,                                        // Destination rectangle
+        {0, 0},                                             // Origin point
+        0.0f,                                               // No rotation
+        WHITE);
+
+    // --- Text on the Right ---
+    float textX = player.button.rect.x + textureSizeX + texturePadding * 2; // Start text to the right of the texture
+    float textY = player.button.rect.y + player.button.rect.height / 2 - 50; // Center vertically
+
+    // Player name (large text)
+    Color textColor = player.name == "Mario" ? RED : GREEN; // Red when hovered
+    constexpr int nameFontSize = 35;
+    DrawTextEx(
+        game.getFont(),
+        player.name.c_str(),
+        {textX, textY},
+        nameFontSize, 2, textColor);
+
+    // Description or stats (smaller text)
+    constexpr int descFontSize = 18;
+    std::string description;
+
+    if (isHovered)
+    {
+        // Display player stats when hovered
+        description = TextFormat("Speed: %d\nJump: %d\nBullet Speed: %d\nAttack Speed: %d",
+                                 player.speed, player.jumpForce, player.bulletSpeed, player.bulletFreq);
+    }
+    else
+    {
+        // Fun description when not hovered
+        description = (player.name == "Mario") ? "The heroic plumber!" : "The green brother!";
+    }
+
+    // Draw the description/stats text
+    DrawTextEx(
+        game.getFont(),
+        description.c_str(),
+        {textX, textY + nameFontSize + 20}, // Position below the name
+        descFontSize, 1, Fade(BLACK, 0.8f));
+}

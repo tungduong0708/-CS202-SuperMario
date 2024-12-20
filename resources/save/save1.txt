@@ -653,3 +653,479 @@ EffectManager
 130 5 1
 131 5 1
 173 9 1
+map-1-1.json
+KinematicTile 2
+resources/tilesets/OverWorld.json
+15 10
+0
+1
+2 0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+17 10
+0
+0
+Koopa
+29.0594 12.2975
+1
+100
+Goomba
+31.1488 13.0475
+1
+100
+Boss
+44.6109 11.985
+1
+1000
+LarvaBubble
+17.9257 9.28642
+1
+100
+MonsterFlower
+27.4948 11.4408
+1
+100
+Mushroom
+16.34 9.58234
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+100
+1
+2
+297.038
+1-1
+EffectManager
+15
+13 9 star
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
+Koopa
+30.6157 12.2975
+1
+100
+Goomba
+29.5926 13.0475
+1
+100
+Boss
+44.6109 11.985
+1
+1000
+LarvaBubble
+17.9257 12.4362
+1
+100
+MonsterFlower
+27.4948 12.1075
+1
+100
+Mushroom
+18.3716 12.985
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+100
+1
+1
+297.038
+1-1
+EffectManager
+15
+13 9 star
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
+map-1-1.json
+Koopa
+29.3543 12.2977
+1
+100
+Goomba
+30.8468 13.0475
+1
+100
+Boss
+44.6381 11.985
+1
+1000
+LarvaBubble
+17.9257 8.73886
+1
+100
+MonsterFlower
+27.4948 12.1078
+1
+100
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+0
+0
+2
+296.894
+1-1
+EffectManager
+16
+13 9 star
+15 9 mushroom_fireflower
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+15 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
+Koopa
+30.9154 12.2975
+1
+100
+Goomba
+29.2915 13.0475
+1
+100
+Boss
+44.6381 11.985
+1
+1000
+LarvaBubble
+17.9257 13.4418
+1
+100
+MonsterFlower
+27.4948 10.5244
+1
+100
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+0
+0
+1
+296.894
+1-1
+EffectManager
+16
+13 9 star
+15 9 mushroom_fireflower
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+15 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
+map-1-1.json
+KinematicTile 52
+resources/tilesets/tiles-2.json
+27 11
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+28 11
+0
+0
+Koopa
+30.4209 12.2975
+1
+100
+Boss
+44.6296 11.985
+1
+1000
+LarvaBubble
+17.9257 11.4706
+1
+100
+MonsterFlower
+27.4948 12.1104
+1
+100
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+300
+2
+2
+294.702
+1-1
+EffectManager
+16
+13 9 star
+15 9 mushroom_fireflower
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+15 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
+map-1-1.json
+Koopa
+29.0232 12.2975
+1
+100
+Goomba
+31.203 13.0475
+1
+100
+Boss
+44.6212 11.9846
+1
+1000
+LarvaBubble
+17.9257 9.00124
+1
+100
+MonsterFlower
+27.4948 12.1064
+1
+100
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+0
+0
+2
+297.068
+1-1
+EffectManager
+16
+13 9 star
+15 9 mushroom_fireflower
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+15 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
+Koopa
+30.565 12.2975
+1
+100
+Goomba
+29.6347 13.0475
+1
+100
+Boss
+44.6212 11.9846
+1
+1000
+LarvaBubble
+17.9257 11.7528
+1
+100
+MonsterFlower
+27.4948 11.2696
+1
+100
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+0
+0
+1
+297.068
+1-1
+EffectManager
+16
+13 9 star
+15 9 mushroom_fireflower
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+15 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
