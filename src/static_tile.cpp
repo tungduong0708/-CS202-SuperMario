@@ -61,6 +61,17 @@ StaticTile::StaticTile(StaticTile& other) : Tile(other)
     }
 }
 
+void StaticTile::createBody()
+{
+    std::vector<b2Vec2> vertices = TilesetHandler::getBoxVertices(Tile::getTilesetPath(), getId());
+    if (!vertices.empty()) {
+        b2Body* body = GetBody();
+        MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
+        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+        SetBody(body);
+    }
+}
+
 StaticObject *StaticTile::clone()
 {
     return new StaticTile(*this);

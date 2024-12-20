@@ -197,6 +197,7 @@ void Goomba::Dead()
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+        alive = false;
 
 
         if (deadByPlayer) {
@@ -339,6 +340,7 @@ void Koopa::Dead()
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+        alive = false;
 
         playSoundEffect(SoundEffect::HIT_ENEMY);
 
@@ -784,7 +786,6 @@ void LarvaBubble::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!other) return;
     if (!alive) return;
     Player* player = dynamic_cast<Player*>(other);
-    FireBall* fireball = dynamic_cast<FireBall*>(other);
     StaticTile* tile = dynamic_cast<StaticTile*>(other);
     if (player) {
         if (player->isImmortal()){
@@ -808,9 +809,6 @@ void LarvaBubble::OnBeginContact(SceneNode *other, b2Vec2 normal) {
         else if (player->getMode() == Mode::SMALL) {
             player->setHealth(player->getHealth() - getStrength());
         }
-    }
-    else if (fireball) {
-        Explode();
     }
     else if (tile) {
         Splash();
@@ -926,16 +924,6 @@ void MonsterFlower::OnBeginContact(SceneNode *other, b2Vec2 normal) {
             }
         }
     }
-    // else {
-    //     if (normal.x > 0.9f) {
-    //         setSpeed(-abs(speed));
-    //         faceLeft = true;
-    //     }
-    //     if (normal.x < -0.9f) {
-    //         setSpeed(+abs(speed));
-    //         faceLeft = false;
-    //     }
-    // }
 }
 
 void MonsterFlower::OnEndContact(SceneNode *other) {

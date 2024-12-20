@@ -30,8 +30,6 @@ Player::Player(string type, string name, float coins, int lives, int health,
     this->mode = Mode::SMALL;
     this->elapsedTime = 0.0f;
     this->time = 300.0f;
-    this->lives = 3;
-    this->health = 100;
 
     if (type == "mario") {
         this->speed = 8.5f;
@@ -325,6 +323,11 @@ void Player::Dead() {
                 Game* game = Game::getInstance();
                 game->changeState(game->deathState.get());
                 Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
+
+                Tilemap* tilemap = Tilemap::getInstance();
+                setLives(lives);
+                tilemap->SaveGame();
+                setHealth(getHealth() - 1000);
             }
         }
     }

@@ -23,6 +23,11 @@ void ActiveItem::setValue(int v) {
     value = v;
 }
 
+void ActiveItem::setFlag(bool f)
+{
+    flag = f;
+}
+
 bool ActiveItem::isAvailable() {
     return !flag;
 }
@@ -90,6 +95,8 @@ void Mushroom::Init(b2Vec2 position) {
     playSoundEffect(SoundEffect::POWER_UP_APPEAR);
     animations = AnimationHandler::setAnimations("mushroom");
     ActiveItem::Init(position);
+    setSpeed(1.0f);
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 
 void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
@@ -103,6 +110,7 @@ void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+        setFlag(true);
     }
 }
 
@@ -132,6 +140,10 @@ void FireFlower::Init(b2Vec2 position) {
     // initialize the fire flower
     animations = AnimationHandler::setAnimations("fireflower");
     ActiveItem::Init(position);
+    body->SetType(b2_staticBody);
+    b2Fixture* fixture = body->GetFixtureList();
+    fixture->SetSensor(true);
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 
 
@@ -145,6 +157,7 @@ void FireFlower::OnBeginContact(SceneNode* other, b2Vec2 normal) {
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+        setFlag(true);
     }
 }
 
@@ -183,8 +196,9 @@ void Star::Init(b2Vec2 position) {
     filter.maskBits = MASK_ENEMY;
     fixture->SetFilterData(filter);
 
-    body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -8.0f), true);
-    setSpeed(7.0f);
+    body->SetType(b2_staticBody);
+    fixture->SetSensor(true);    
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 
 void Star::Update(Vector2 playerVelocity, float deltaTime) {
@@ -209,6 +223,7 @@ void Star::OnBeginContact(SceneNode* other, b2Vec2 normal) {
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
+        setFlag(true);
     }
     else {
         if (normal.x > 0.9f) {

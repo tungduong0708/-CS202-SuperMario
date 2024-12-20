@@ -8,8 +8,7 @@ void Renderer::Draw(Texture2D texture, const Vector2& position, const Vector2& s
     DrawTexture(texture, position.x, position.y, WHITE);
 }
 
-void Renderer::DrawPro(Texture2D texture, const Rectangle &srcRect, const Vector2& position, const Vector2 &size, 
-                       bool isLeft, float rotation, Vector2 bodySize, Color color) {
+void Renderer::DrawPro(Texture2D texture, const Rectangle &srcRect, const Vector2& position, const Vector2 &size, bool isLeft, float rotation, Vector2 bodySize, Color color) {
     Rectangle destRect;
     if (bodySize.x <= 0 or bodySize.y <= 0) {
         destRect = { position.x, position.y, size.x, size.y };

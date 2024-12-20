@@ -81,6 +81,8 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     std::string mapPath = "resources/tilemaps/" + filePath;
     std::cout << "Loading map " << mapPath << std::endl;
 
+    // LoadSaveGame("save.txt");
+
     ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
     visitor->openFile();
     visitor->setFilePath(filePath);
@@ -189,7 +191,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                 }
             }
         }
-        else if (layer["type"] == "objectgroup" && layer.contains("objects")) {
+        else if (layer["type"] == "objectgroup" && layer.contains("objects") && activatedTiles.empty()) {
             std::cout << "Object layer found!" << std::endl;
             for (const auto& object : layer["objects"]) {
                 float width = object["width"].get<float>() / tileSize;
@@ -280,6 +282,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         }
         nodes.push_back(nodeLayer);
     }
+    nodes.push_back(loadedNodes);
     camera = MyCamera(38.0f, playerPosition, Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
     file.close();
     std::cout << "Map loaded successfully!" << std::endl;
@@ -289,84 +292,94 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
 
 void Tilemap::LoadSaveGame(const std::string &filePath)
 {
-    std::string savePath = "resources/saves/" + filePath;
+    std::string savePath = "../resources/save/" + filePath;
     std::cout << "Loading save " << savePath << std::endl;
     ImportFileVisitor* visitor = ImportFileVisitor::getInstance();
     visitor->setFilePath(savePath);
     visitor->openFile();
     ifstream& file = visitor->getFile();
-    std::string obj;
-    while(file >> obj) {
+    std::string obj, mapPath;
+    file >> mapPath;
+
+    while (file >> obj) {
+        SceneNode* newNode = nullptr;
+
         if (obj == "StaticTile") {
-            StaticTile* tile = new StaticTile();
+            auto tile = std::make_unique<StaticTile>();
             tile->accept(visitor);
             Vector2 pos = tile->getPosition();
-            activatedTiles.insert({(int)pos.x, (int)pos.y});
-            addNode(tile);
-        }
+            activatedTiles.insert({static_cast<int>(pos.x), static_cast<int>(pos.y)});
+            newNode = tile.release();
+        } 
         else if (obj == "KinematicTile") {
-            KinematicTile* tile = new KinematicTile();
+            auto tile = std::make_unique<KinematicTile>();
             tile->accept(visitor);
-            Vector2 pos = tile->getPosition(); 
-            activatedTiles.insert({(int)pos.x, (int)pos.y});
-            addNode(tile);
-        }
+            Vector2 pos = tile->getPosition();
+            activatedTiles.insert({static_cast<int>(pos.x), static_cast<int>(pos.y)});
+            newNode = tile.release();
+        } 
         else if (obj == "MovingPlatform") {
-            MovingPlatform* platform = new MovingPlatform();
+            auto platform = std::make_unique<MovingPlatform>();
             platform->accept(visitor);
-            addNode(platform);
-        }
+            newNode = platform.release();
+        } 
         else if (obj == "Mushroom") {
-            Mushroom* mushroom = new Mushroom();
+            auto mushroom = std::make_unique<Mushroom>();
             mushroom->accept(visitor);
-            addNode(mushroom);
-        }
+            newNode = mushroom.release();
+        } 
         else if (obj == "Star") {
-            Star* star = new Star();
+            auto star = std::make_unique<Star>();
             star->accept(visitor);
-            addNode(star);
-        }
+            newNode = star.release();
+        } 
         else if (obj == "FireFlower") {
-            FireFlower* flower = new FireFlower();
+            auto flower = std::make_unique<FireFlower>();
             flower->accept(visitor);
-            addNode(flower);
-        }
+            newNode = flower.release();
+        } 
         else if (obj == "Goomba") {
-            Goomba* goomba = new Goomba();
+            auto goomba = std::make_unique<Goomba>();
             goomba->accept(visitor);
-            addNode(goomba);
-        }
+            newNode = goomba.release();
+        } 
         else if (obj == "Koopa") {
-            Koopa* koopa = new Koopa();
+            auto koopa = std::make_unique<Koopa>();
             koopa->accept(visitor);
-            addNode(koopa);
-        }
+            newNode = koopa.release();
+        } 
         else if (obj == "Boss") {
-            Boss* boss = new Boss();
+            auto boss = std::make_unique<Boss>();
             boss->accept(visitor);
-            addNode(boss);
-        }
+            newNode = boss.release();
+        } 
         else if (obj == "AttackBall") {
-            AttackBall* ball = new AttackBall();
+            auto ball = std::make_unique<AttackBall>();
             ball->accept(visitor);
-            addNode(ball);
-        }
+            newNode = ball.release();
+        } 
         else if (obj == "FireBall") {
-            FireBall* ball = new FireBall();
+            auto ball = std::make_unique<FireBall>();
             ball->accept(visitor);
-            addNode(ball);
-        }
+            newNode = ball.release();
+        } 
         else if (obj == "Player") {
+            player = new Player();
             player->accept(visitor);
-        }
+        } 
         else if (obj == "EffectManager") {
             effectManager->accept(visitor);
         }
+
+        if (newNode) {
+            loadedNodes.push_back(newNode);
+        } 
     }
     visitor->closeFile();
+
 }
 
-void Tilemap::SaveGame(const std::string &filePath)
+void Tilemap::SaveGame()
 {
     ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
     visitor->openFile();
@@ -374,14 +387,16 @@ void Tilemap::SaveGame(const std::string &filePath)
         for (auto& node : layer) {
             Enemy* enemy = dynamic_cast<Enemy*>(node);
             ActiveItem* item = dynamic_cast<ActiveItem*>(node);
-            if (enemy) {
+            if (enemy && enemy->isAlive()) {
                 enemy->accept(visitor);
             }
-            else if (item) {
+            else if (item && item->isAvailable()) {
                 item->accept(visitor);
             }
         }
     }
+    player->accept(visitor);
+    effectManager->accept(visitor);
     visitor->closeFile();
 }
 

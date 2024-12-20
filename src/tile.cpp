@@ -19,6 +19,10 @@ StaticObject *Tile::clone()
     return new Tile(*this);
 }
 
+void Tile::createBody()
+{
+}
+
 void Tile::setId(int id)
 {
     this->id = id;

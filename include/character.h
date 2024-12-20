@@ -101,7 +101,7 @@ private:
     Vector2 initialPosition;
 public:
     Player();
-    Player(string type, string name = "", float coins = 0.0f, int lives = 0, int health = 0, 
+    Player(string type, string name = "", float coins = 0.0f, int lives = 3, int health = 100, 
           int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, float speed = 0.0f, float angle = 0.0f);
     Player(const Player &p);
     virtual ~Player();

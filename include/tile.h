@@ -24,6 +24,7 @@ public:
     virtual ~Tile() = default;
 
     virtual StaticObject* clone();
+    virtual void createBody();
     virtual void setId(int id);
     virtual void setPosition(const Vector2& newPos);
     virtual void setTilesetPath(const std::string& path);

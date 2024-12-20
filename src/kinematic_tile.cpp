@@ -62,6 +62,18 @@ KinematicTile::KinematicTile(KinematicTile& other)
     }
 }
 
+void KinematicTile::createBody()
+{
+    std::vector<b2Vec2> vertices = TilesetHandler::getBoxVertices(Tile::getTilesetPath(), getId());
+    if (!vertices.empty()) {
+        b2Body* body = GetBody();
+        MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
+
+        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+        SetBody(body);
+    }
+}
+
 StaticObject *KinematicTile::clone()
 {
     return new KinematicTile(*this);
@@ -78,9 +90,19 @@ KinematicTile::~KinematicTile()
     }
 }
 
+bool KinematicTile::isAnimation() const
+{
+    return animation;
+}
+
 std::vector<std::pair<int, int>> KinematicTile::getFrames()
 {
     return frames;
+}
+
+void KinematicTile::setAnimation(bool anim)
+{
+    animation = anim;
 }
 
 void KinematicTile::setPosition(const Vector2 &position)
@@ -132,9 +154,12 @@ void KinematicTile::Draw()
             MyBoundingBox::updateFixture(body, TilesetHandler::getBoxVertices(tilesetPath, id));
         }
     }
-    
-    Rectangle srcRect = { static_cast<float>(src_x), static_cast<float>(src_y), 
-                        static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };
+    if (id == 2) {
+        // animation = false;
+    }
+    float x = static_cast<float>(src_x);
+    float y = static_cast<float>(src_y);
+    Rectangle srcRect = { x, y, static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };
 
     Renderer::DrawPro(TilesetHandler::getTexture(tilesetPath), srcRect, getPosition(), Vector2{ 1, 1 }, true);
 }
@@ -175,7 +200,6 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                     frames.push_back({2, 0});
                     animation = false;
 
-                    std::cout << "Write to file done\n";
                     ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
                     visitor->openFile();
                     accept(visitor);
@@ -190,11 +214,17 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 animation = false;
                 Physics::bodiesToDestroy.push_back(GetBody());
                 SetBody(nullptr);
+                frames.clear();
                 playerPtr->setAddScore(100);
                 playerPtr->setCoins(playerPtr->getCoins() + 1);
                 EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
                 effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", pos));
                 playerPtr->updateScore();
+
+                ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
+                visitor->openFile();
+                accept(visitor);
+                visitor->closeFile();
             }
         }
     }
