@@ -96,6 +96,7 @@ private:
     float bulletSpeed;
     float bulletFreq;
     bool isWalkingOnPlatform;
+    bool allowInput; // allow to handle input
     string name;
     string currentMap;
     Vector2 initialPosition;
@@ -120,10 +121,11 @@ public:
     void setBulletSpeed(float bs);
     void setBulletFreq(float bf);
     void setInitialPosition(Vector2 pos);
+    void setAllowInput(bool state);
     void impulseForce(Vector2 force);
     void updateScore(int s);
     void updateScore();
-     void SetIsOnGround(bool state);
+    void SetIsOnGround(bool state);
     void SetWalkingOnPlatform(bool state);
 
     int getAddScore();
@@ -134,6 +136,7 @@ public:
     float getBulletFreq();
     float getTime();
     bool isImmortal();
+    bool isAllowInput();
     Vector2 getInitialPosition();
     string getCurrentMap();
     string getName();
