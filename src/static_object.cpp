@@ -78,6 +78,9 @@ void StaticObject::accept(FileVisitor *visitor)
 }
 
 Gate::Gate(b2Body* body, std::string addressNext) : StaticObject(body), addressNext(addressNext) {
+    elapsedTime = 0.0f;
+    delay = 6.5f;
+    start = false;
 }
 
 std::string Gate::getAddressNext() const
@@ -87,6 +90,23 @@ std::string Gate::getAddressNext() const
 
 void Gate::Update(Vector2 playerVelocity, float deltaTime)
 {
+    if (!start) return;
+    elapsedTime += deltaTime;
+    Player* player = Tilemap::getInstance()->GetPlayer();
+    if (elapsedTime > delay) {
+        elapsedTime = 0.0f;
+        Game::getInstance()->changeState(Game::getInstance()->changeStageState.get());
+        Tilemap::getInstance()->SetNewMapPath(addressNext);
+
+        player->setAllowInput(true);
+    }
+    else {
+        float ratio = player->getTime() / (delay) * deltaTime;
+        if (player->getTime() > 0 and start) {
+            player->setTime(player->getTime() - ratio*5);
+            player->setScore(player->getScore() + ratio*100);
+        }
+    }
 }
 
 void Gate::Draw()
@@ -97,8 +117,15 @@ void Gate::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
     Player* player = dynamic_cast<Player*>(other);
     if (player != nullptr) {
-        Game::getInstance()->changeState(Game::getInstance()->changeStageState.get());
-        Tilemap::getInstance()->SetNewMapPath(addressNext);
+        start = true;
+        elapsedTime = 0.0f;
+
+        playSoundEffect(SoundEffect::STAGE_CLEAR);
+        player->setAllowInput(false);
+        player->setSpeed(0.0f);
+
+        Game* game = Game::getInstance();
+        game->getSettings().volume = 0.0f;
     }
 }
 

@@ -36,6 +36,9 @@ public:
 class Gate : public StaticObject {
 private:
     std::string addressNext;
+    float delay;
+    float elapsedTime;
+    bool start;
 public:
     Gate(b2Body* body, std::string addressNext);
     virtual ~Gate() = default;

@@ -6,11 +6,12 @@
 Player::Player() : Character()
 {
     name = "";
+    currentMap = "";
+    immortal = false;
+    allowInput = true;  
     coins = 0;
     lives = 0;
     time = 0;
-    immortal = false;
-    currentMap = "";
     force = -12.0f;
     bulletSpeed = 9.0f;
     bulletFreq = 0.75f;
@@ -30,6 +31,7 @@ Player::Player(string type, string name, float coins, int lives, int health,
     this->mode = Mode::SMALL;
     this->elapsedTime = 0.0f;
     this->time = 300.0f;
+    this->allowInput = true;
 
     if (type == "mario") {
         this->speed = 8.5f;
@@ -128,6 +130,10 @@ void Player::setInitialPosition(Vector2 pos)
     initialPosition = pos;
 }
 
+void Player::setAllowInput(bool state) {
+    allowInput = state;
+}
+
 void Player::impulseForce(Vector2 force) { 
     body->ApplyLinearImpulseToCenter(b2Vec2(force.x, force.y), true);
 }
@@ -191,8 +197,12 @@ bool Player::isImmortal() {
     return immortal;
 }
 
+bool Player::isAllowInput() {
+    return allowInput;
+}
+
 void Player::HandleInput() {
-    if (isAlive() == false) {
+    if (!isAlive() or !allowInput) {
         return;
     }
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
@@ -279,7 +289,21 @@ void Player::HandleInput() {
 }
 
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
+    if (!body) return;
     if (body) Character::Update(playerVelocity, deltaTime);
+    b2Vec2 vel = body->GetLinearVelocity();
+    if (vel.x != 0) {
+        if (isOnGround && currentImage != JUMP) {
+            previousImage = currentImage;
+            currentImage = WALK;
+        }
+    }
+    if (vel.x > 0) {
+        faceLeft = false;
+    }
+    else if (vel.x < 0) {
+        faceLeft = true;
+    }
     if (time <= 0) {
         alive = false;
         time = 300.0f;
