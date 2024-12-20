@@ -447,27 +447,71 @@ void ChangeStageState::update()
 
 void ChangeStageState::draw()
 {
+    setStageName("Stage 1-2");
     // Draw the underlying GameplayState
     game->gameplayState->draw();
 
-    // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    // Draw a semi-transparent black overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
 
-    // Draw the small rectangle with Mario's image and life count
-    float rectWidth = 200.0f;
-    float rectHeight = 100.0f;
+    // Draw the central rounded rectangle (panel)
+    float rectWidth = 300.0f;
+    float rectHeight = 150.0f;
     float rectX = (game->getScreenWidth() - rectWidth) / 2;
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
-    DrawRectangle(rectX, rectY, rectWidth, rectHeight, Fade(BLACK, 0.7f));
 
-    // Draw Mario's image
-    DrawTexture(characterTexture, rectX + 10, rectY + 10, WHITE);
+    // Draw shadow for depth
+    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.2f, 10, Fade(BLACK, 0.4f));
 
-    // Draw life remaining text
-    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining), {rectX + 60, rectY + 20}, 20, 2, WHITE);
+    int gradientSteps = 10;  // Number of steps for the gradient
+    float stepHeight = rectHeight / static_cast<float>(gradientSteps); // Height of each step
 
-    // Draw stage name
-    DrawTextEx(game->getFont(), stageName.c_str(), {rectX + 60, rectY + 60}, 20, 2, WHITE);
+    for (int i = 0; i < gradientSteps; i++)
+    {
+        float alpha = 0.8f - (static_cast<float>(i) * 0.1f); // Gradually decrease alpha for a fade effect
+        Color stepColor = Fade(YELLOW, alpha); // Base color BLUE, fading gradually
+
+        DrawRectangleRounded(
+            {rectX, rectY + static_cast<float>(i) * stepHeight, rectWidth, stepHeight + 1}, // Adjust height for smooth overlap
+            0.2f, 10, stepColor);
+    }
+
+    // Draw Stage Name with Shadow
+    constexpr int fontSize = 30;
+    constexpr int spacing = 1;
+
+    Vector2 stageTextSize = MeasureTextEx(game->getFont(), stageName.c_str(), fontSize, spacing);
+    Vector2 stageTextPos = {
+        rectX + (rectWidth - stageTextSize.x) / 2, // Center horizontally
+        rectY + 20                                // Margin from the top
+    };
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), stageName.c_str(),
+               {stageTextPos.x + 2, stageTextPos.y + 2}, fontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), stageName.c_str(),
+               stageTextPos, fontSize, 2, BLUE);
+
+    // Draw Mario's Image (Scaled 2x)
+    float imageScale = 2.0f;
+    float imageX = rectX + 40;
+    float imageY = rectY + (rectHeight - characterTexture.height * imageScale) / 3 * 2;
+    DrawTextureEx(characterTexture, {imageX, imageY}, 0.0f, imageScale, WHITE);
+
+    // Draw Life Count with Shadow
+    constexpr int lifeFontSize = 24;
+    Vector2 lifeTextPos = {imageX + 90, imageY + 10};
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining),
+               {lifeTextPos.x + 2, lifeTextPos.y + 2}, lifeFontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining),
+               lifeTextPos, lifeFontSize, 2, WHITE);
+
+    // Add a decorative border
+    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.2f, 10, 5, WHITE);
 }
 
 void ChangeStageState::setLifeRemaining(int life)
@@ -652,7 +696,6 @@ void VictoryState::draw() {
     DrawTextEx(game->getFont(), TextFormat("Time Remaining: %d", timeRemaining), {10, 70}, 20, 2, WHITE);
 }
 
-// just write the methods' name, and some comments, no need to implement
 GameSavingState::GameSavingState(Game* game) : GameState(game) {
     // Initialize buttons
 }

@@ -135,7 +135,7 @@ void DrawImageButton(const ImageButton& button, const Game& game)
     Color shadowColor = Fade(BLACK, 0.4f);          // Shadow color
     Color borderColor = button.isHovered ? Fade(WHITE, 1.0f) : Fade(DARKBLUE, 0.9f); // Border changes color
     Color highlightColor = Fade(YELLOW, 0.8f);      // Yellow highlight for the button
-    Color baseColor = Fade(YELLOW, 0.4f);        // Default button base color
+    Color baseColor = button.isHovered ? Fade(YELLOW, 0.5f) : Fade(GOLD, 0.4f);      // Base changes color
     Vector2 mousePos = GetMousePosition();
 
     // Check hover state
