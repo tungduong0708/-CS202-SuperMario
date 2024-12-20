@@ -296,8 +296,7 @@ void ImportFileVisitor::VisitFile(LarvaBubble *obj)
     int level, health;
     file >> x >> y;
     file >> level >> health;
-    delete obj;
-    obj = new LarvaBubble("larvabubble", 0.0f, true, 100, 100, 1, 100, Vector2{0.6f, 0.6f});
+    *obj = LarvaBubble("larvabubble", 0.0f, true, 100, 100, 1, 100, Vector2{0.6f, 0.6f});
     obj->Init(b2Vec2{x, y});
 }
 
@@ -307,8 +306,7 @@ void ImportFileVisitor::VisitFile(MonsterFlower *obj)
     int level, health;
     file >> x >> y;
     file >> level >> health;
-    delete obj;
-    obj = new MonsterFlower("monsterflower", 0.0f, true, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f);
+    *obj = MonsterFlower("monsterflower", 0.0f, true, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f);
     obj->Init(b2Vec2{x, y});
 }
 

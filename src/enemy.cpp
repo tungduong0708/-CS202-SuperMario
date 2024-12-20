@@ -827,6 +827,7 @@ MovingObject* LarvaBubble::copy() const {
 }
 
 void LarvaBubble::Draw() {
+    if (!body) return;
     if (body->GetPosition().y + size.y > 14.1f) {
     }
     else {
