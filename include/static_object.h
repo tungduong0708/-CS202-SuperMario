@@ -38,6 +38,8 @@ private:
     std::string addressNext;
     float delay;
     float elapsedTime;
+    float prevVolume;
+    float prevSpeed;
     bool start;
 public:
     Gate(b2Body* body, std::string addressNext);

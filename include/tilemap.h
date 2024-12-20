@@ -55,6 +55,7 @@ public:
     
     void setPlayer(const std::string name);
     void SetNewMapPath(const std::string& path);
+    std::string GetCurrentMapPath() const;
     EffectManager* GetEffectManager();
     Player* GetPlayer();
     Vector2 GetPlayerPosition() const;

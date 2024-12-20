@@ -99,6 +99,9 @@ void Gate::Update(Vector2 playerVelocity, float deltaTime)
         Tilemap::getInstance()->SetNewMapPath(addressNext);
 
         player->setAllowInput(true);
+        Game* game = Game::getInstance();
+        game->getSettings().volume = prevVolume;
+        player->setSpeed(prevSpeed);
     }
     else {
         float ratio = player->getTime() / (delay) * deltaTime;
@@ -117,15 +120,22 @@ void Gate::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
     Player* player = dynamic_cast<Player*>(other);
     if (player != nullptr) {
-        start = true;
-        elapsedTime = 0.0f;
+        Tilemap* tilemap = Tilemap::getInstance();
+        if (addressNext[7] == '-' && tilemap->GetCurrentMapPath()[7] == '-') {
+            tilemap->SetNewMapPath(addressNext);
+        } else {
+            start = true;
+            elapsedTime = 0.0f;
 
-        playSoundEffect(SoundEffect::STAGE_CLEAR);
-        player->setAllowInput(false);
-        player->setSpeed(0.0f);
+            playSoundEffect(SoundEffect::STAGE_CLEAR);
+            player->setAllowInput(false);
+            prevSpeed = player->getSpeed();
+            player->setSpeed(0.0f);
 
-        Game* game = Game::getInstance();
-        game->getSettings().volume = 0.0f;
+            Game* game = Game::getInstance();
+            prevVolume = game->getSettings().volume;
+            game->getSettings().volume = 0.0f;
+        }
     }
 }
 

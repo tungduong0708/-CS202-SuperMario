@@ -432,15 +432,12 @@ void Tilemap::Draw() const {
             effectManager->DrawLower();
             continue;
         }
-        if (i == nodes.size() - 1) {
-            if (!effectManager->isActivePlayerEffect()) player->Draw();
-        }
         for (auto& node : nodes[i]) {
             node->Draw();
         }
     }
-
     Vector2 cameraTarget = camera.GetCameraTarget();
+    if (!effectManager->isActivePlayerEffect()) player->Draw();
     player->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
     effectManager->DrawUpper();
     EndMode2D();
@@ -461,6 +458,11 @@ void Tilemap::setPlayer(const std::string name)
 void Tilemap::SetNewMapPath(const std::string &path)
 {
     newMapPath = path;
+}
+
+std::string Tilemap::GetCurrentMapPath() const
+{
+    return filePath;
 }
 
 EffectManager* Tilemap::GetEffectManager()
