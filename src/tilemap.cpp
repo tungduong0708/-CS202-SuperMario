@@ -33,8 +33,8 @@ Tilemap* Tilemap::getInstance()
 void Tilemap::clearMap()
 {
     std::cout << Physics::world.GetBodyCount() << " bodies in the world before clear.\n";
-    for (auto& layer : nodes) {
-        for (auto& node : layer) {
+    for (int i = nodes.size() - 1; i >= 0; i--) {
+        for (auto& node : nodes[i]) {
             delete node;
         }
     }

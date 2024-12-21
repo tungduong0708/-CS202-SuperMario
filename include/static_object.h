@@ -61,6 +61,7 @@ public:
 class Pole : public StaticObject {
 private:
     bool activated;
+    bool activating;
     bool flagOnGround;
     bool playerOnGround;
     float speed;

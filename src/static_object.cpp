@@ -205,6 +205,7 @@ void DeadLine::accept(FileVisitor *visitor)
 Pole::Pole() : StaticObject()
 {
     activated = false;
+    activating = false;
     flagOnGround = false;
     speed = 1.0f;
     height = 0.0f;
@@ -232,7 +233,8 @@ void Pole::Init(std::vector<b2Vec2> vertices, b2Vec2 position)
 
 void Pole::Update(Vector2 playerVelocity, float deltaTime)
 {
-    if (activated && (!flagOnGround || !playerOnGround))
+    if (activated) return;
+    if (activating && (!flagOnGround || !playerOnGround))
     {
         Player *player = Tilemap::getInstance()->GetPlayer();
         Vector2 playerPos = player->getPosition();
@@ -254,9 +256,10 @@ void Pole::Update(Vector2 playerVelocity, float deltaTime)
         }
 
         if (flagOnGround && playerOnGround) {
+            activating = false;
+            activated = true;
             player->setCurrentImage(ImageSet::WALK);
             player->setAllowInput(true);
-            activated = false;
             player->getBody()->SetGravityScale(1.0f);
             player->setSpeed(prevPlayerSpeed);
         }
@@ -265,10 +268,11 @@ void Pole::Update(Vector2 playerVelocity, float deltaTime)
 
 void Pole::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
+    if (activated) return;   
     Player *player = dynamic_cast<Player *>(other);
     if (player != nullptr)
     {
-        activated = true;
+        activating = true;
         Vector2 playerPos = player->getPosition();
         Vector2 polePos = getPosition();
         polePos.y += height;
