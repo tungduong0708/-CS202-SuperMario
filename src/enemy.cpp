@@ -504,7 +504,7 @@ Boss::Boss(string type, float range, bool alive, int health, int score, int leve
     attackFire = true;
     
     if (level == 1) {
-        this->health = 1000;
+        this->health = 100;
         this->strength = 100;
         this->speed = -3.0f;
     }
@@ -698,7 +698,14 @@ void Boss::OnEndContact(SceneNode *other) {
 }
 
 void Boss::Dead() {
+    b2Vec2 pos = body->GetPosition();
+    Physics::bodiesToDestroy.push_back(body);
+    body = nullptr;
+    animations.clear();
+    alive = false;
 
+    EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+    effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_boss", Vector2{pos.x, pos.y}));
 }
 
 void Boss::accept(FileVisitor *visitor) {

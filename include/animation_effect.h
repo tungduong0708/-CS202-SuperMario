@@ -171,6 +171,19 @@ public:
     void Draw();
 };
 
+class DeadBossEffect : public AnimationEffect {
+private:
+    Vector2 position;
+    Vector2 size;
+    Animation animation;
+    b2Body* body = nullptr;
+public:
+    DeadBossEffect(Vector2 pos);
+    ~DeadBossEffect() = default;
+    void Update(float deltaTime);
+    void Draw();
+};
+
 class SquashDeadGoombaEffect : public AnimationEffect {
 private:
     float effectTime = 0.5f;

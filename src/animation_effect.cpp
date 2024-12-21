@@ -430,6 +430,49 @@ void DeadGoombaEffect::Draw()
     DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, -(float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
 }
 
+DeadBossEffect::DeadBossEffect(Vector2 pos)
+{
+    position = pos;
+    animation = AnimationHandler::setAnimations("boss")[0];
+    texture = animation.GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+}
+
+void DeadBossEffect::Update(float deltaTime)
+{
+    if (!active) return;
+    if (!body) {
+        std::vector<b2Vec2> vertices = {
+            b2Vec2{0.0f, 0.0f},
+            b2Vec2{size.x, 0.0f},
+            b2Vec2{0.0f, size.y},
+            b2Vec2{size.x, size.y}
+        };
+        MyBoundingBox::createBody(body, b2_dynamicBody, vertices, position);
+        b2Fixture* fixture = body->GetFixtureList();
+        fixture->SetSensor(true);
+        body->ApplyLinearImpulseToCenter(b2Vec2{0.0f, -15.0f}, true);
+    }
+    else {
+        int heightMap = Tilemap::getInstance()->GetHeight();
+        b2Vec2 pos = body->GetPosition();
+        if (pos.y > heightMap)
+        {
+            Physics::world.DestroyBody(body);
+            body = nullptr;
+            active = false;
+        }
+    }
+}
+
+void DeadBossEffect::Draw()
+{
+    if (!active || !body) return;
+    b2Vec2 pos = body->GetPosition();
+    DrawTexturePro(texture, Rectangle{0, 0, (float)texture.width, -(float)texture.height}, Rectangle{pos.x, pos.y, size.x, size.y}, Vector2{0.0f, 0.0f}, 0.0f, WHITE);
+}
+
+
 SquashDeadGoombaEffect::SquashDeadGoombaEffect(Vector2 pos)
 {
     position = pos;
