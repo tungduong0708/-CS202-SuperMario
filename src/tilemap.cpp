@@ -81,7 +81,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     std::string mapPath = "resources/tilemaps/" + filePath;
     std::cout << "Loading map " << mapPath << std::endl;
 
-    LoadSaveGame("save.txt");
+    //LoadSaveGame("save.txt");
 
     ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
     visitor->openFile();

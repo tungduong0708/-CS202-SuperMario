@@ -406,7 +406,7 @@ void SelectPlayerState::update() {
         // Set player to Mario
         Tilemap* tilemap = Tilemap::getInstance();
         tilemap->LoadMapFromJson("map-1-1.json");
-        //tilemap->setPlayer("mario");
+        tilemap->setPlayer("mario");
 
         game->changeState(game->gameplayState.get());
     }
@@ -414,7 +414,7 @@ void SelectPlayerState::update() {
         // Set player to Luigi
         Tilemap* tilemap = Tilemap::getInstance();
         tilemap->LoadMapFromJson("map-1-1.json");
-        //tilemap->setPlayer("luigi");
+        tilemap->setPlayer("luigi");
         
         game->changeState(game->gameplayState.get());
     }
