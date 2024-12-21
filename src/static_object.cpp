@@ -204,7 +204,7 @@ Pole::Pole() : StaticObject()
 {
     activated = false;
     flagOnGround = false;
-    speed = 5.0f;
+    speed = 1.0f;
     height = 0.0f;
 }
 
@@ -241,21 +241,21 @@ void Pole::Update(Vector2 playerVelocity, float deltaTime)
             playerOnGround = true;
         }
         else if (!playerOnGround) {
-            player->setPositionBody(b2Vec2{playerPos.x, playerPos.y + speed * deltaTime});
-
+            player->setPositionBody(b2Vec2{playerPos.x, playerPos.y});
         }
         if (flagPos.y + flag->getSize().y + 0.5f >= polePos.y + height)
         {
             flagOnGround = true;
         }
         else if (!flagOnGround) {
-            flag->setPosition(Vector2{flagPos.x, flagPos.y + speed * deltaTime});
+            flag->setPosition(Vector2{flagPos.x, flagPos.y + 5.0f * speed * deltaTime});
         }
 
         if (flagOnGround && playerOnGround) {
             player->setCurrentImage(ImageSet::WALK);
             player->setAllowInput(true);
             activated = false;
+            player->getBody()->SetGravityScale(1.0f);
             player->setSpeed(prevPlayerSpeed);
         }
     }
@@ -277,6 +277,9 @@ void Pole::OnBeginContact(SceneNode *other, b2Vec2 normal)
         player->updateScore();
         player->setAllowInput(false);
         player->setCurrentImage(ImageSet::HOLD);
+
+        float gravity = player->getBody()->GetGravityScale();
+        player->getBody()->SetGravityScale(0.3f);
         prevPlayerSpeed = player->getSpeed();
         player->setSpeed(0.0f);
     }
