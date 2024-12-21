@@ -116,6 +116,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     b2Body* lineBody = Physics::world.CreateBody(&bodyDef);
 
     for (int i = 0; i < 3; i++) {
+        if (i == 1) continue;
         b2EdgeShape edge;
         edge.SetTwoSided(vertices[i], vertices[i + 1]);
         lineBody->CreateFixture(&edge, 1.0f);
@@ -145,6 +146,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         tilesets.push_back({tilesetPath, tileset["firstgid"].get<int>()});
     }
     
+    Pole* pole = nullptr;
     for (const auto& layer : j["layers"]) {
         std::vector<SceneNode*> nodeLayer;
         if (layer["type"] == "imagelayer" && layer["name"] != "Effect") {
@@ -229,12 +231,12 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 nodeLayer.push_back(enemy);
                             }
                         }
-                        else if (object.contains("name") && object["name"] == "movingplatform") {
-                            std::string platformType = object["type"].get<std::string>();
-                            platformType += "movingplatform";
-                            MovingPlatform* platform = PlatformCreator::CreatePlatform(platformType, Vector2{x, y});
-                            if (platform != nullptr) {
-                                nodeLayer.push_back(platform);
+                        else if (object.contains("type") && object["type"] == "object") {
+                            std::string objName = object["name"].get<std::string>();
+                            SceneNode* node = ObjectCreator::CreateObject(objName, Vector2{x, y});
+                            nodeLayer.push_back(node);
+                            if (objName == "flag") {
+                                pole->addFlag(static_cast<Flag*>(node));
                             }
                         }
                         else if (object.contains("name") && object["name"].is_string()) {
@@ -259,16 +261,19 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         b2Vec2{0.0f, height}
                     };
                     
-                    if (object.contains("name") && object["name"] == "gate") {
-                        b2Body* body;
-                        MyBoundingBox::createBody(body, b2_staticBody, vertices, Vector2{x, y});
-                        b2Fixture* fixture = body->GetFixtureList();
-                        fixture->SetSensor(true);
-
-                        std::string addressNext = object["type"].get<std::string>();
-                        Gate* gate = new Gate(body, addressNext);
-                        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(gate);
-                        nodeLayer.push_back(gate);
+                    if (object.contains("type") && object["type"] == "object") {
+                        std::string objName = object["name"].get<std::string>();
+                        SceneNode* node = ObjectCreator::CreateObject(objName, Vector2{x, y});
+                        if (objName == "pole") {
+                            pole = static_cast<Pole*>(node);
+                            pole->Init(vertices, b2Vec2{x, y});
+                        }
+                        else if (objName == "gate") {
+                            std::string addressNext = object["properties"][0]["value"].get<std::string>();
+                            SceneNode* gate = ObjectCreator::CreateObject("gate", Vector2{x, y});
+                            static_cast<Gate*>(node)->Init(vertices, Vector2{x, y}, addressNext);
+                        }
+                        nodeLayer.push_back(node);
                     }
                     else {
                         b2Body* body;
@@ -282,7 +287,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         }
         nodes.push_back(nodeLayer);
     }
-    nodes.push_back(loadedNodes);
+    if (loadedNodes.size() > 0) nodes.push_back(loadedNodes);
     camera = MyCamera(38.0f, playerPosition, Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
     file.close();
     std::cout << "Map loaded successfully!" << std::endl;

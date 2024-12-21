@@ -222,4 +222,23 @@ public:
     MovingObject* copy() const override;
 };
 
+class Flag : public MovingObject {
+public:
+    Flag();
+    Flag(const Flag &f);
+    virtual ~Flag();
+
+    void setPosition(Vector2 position);
+    void Init(b2Vec2 position);
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void HandleInput();
+    void OnBeginContact(SceneNode *other, b2Vec2 normal);
+    void OnEndContact(SceneNode *other);
+    void Draw();
+    void Draw(Vector2 position, float angle);
+
+    void accept(FileVisitor* visitor);
+    MovingObject* copy() const;
+};
+
 #endif

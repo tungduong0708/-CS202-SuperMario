@@ -67,87 +67,93 @@
                  "y":72.8333333333333
                 }, 
                 {
-                 "height":28.8181818181818,
-                 "id":4,
-                 "name":"gate",
-                 "rotation":0,
-                 "type":"map-1-2-3.json",
-                 "visible":true,
-                 "width":8.22727272727252,
-                 "x":2654.95454545455,
-                 "y":144.954545454545
-                }, 
-                {
                  "height":0,
                  "id":5,
-                 "name":"movingplatform",
+                 "name":"upverticalmovingplatform",
                  "point":true,
                  "rotation":0,
-                 "type":"downvertical",
+                 "type":"object",
                  "visible":true,
                  "width":0,
-                 "x":2221.66666666666,
-                 "y":176
-                }, 
-                {
-                 "height":0,
-                 "id":10,
-                 "name":"movingplatform",
-                 "point":true,
-                 "rotation":0,
-                 "type":"upvertical",
-                 "visible":true,
-                 "width":0,
-                 "x":2465.16666666667,
-                 "y":177.5
-                }, 
-                {
-                 "height":0,
-                 "id":5,
-                 "name":"movingplatform",
-                 "point":true,
-                 "rotation":0,
-                 "type":"upvertical",
-                 "visible":true,
-                 "width":0,
-                 "x":2466.66666666667,
-                 "y":104.833333333333
-                }, 
-                {
-                 "height":0,
-                 "id":6,
-                 "name":"movingplatform",
-                 "point":true,
-                 "rotation":0,
-                 "type":"downvertical",
-                 "visible":true,
-                 "width":0,
-                 "x":2222.5,
-                 "y":253
+                 "x":2464.66666666667,
+                 "y":43.333333333333
                 }, 
                 {
                  "height":0,
                  "id":7,
-                 "name":"movingplatform",
+                 "name":"downverticalmovingplatform",
                  "point":true,
                  "rotation":0,
-                 "type":"downvertical",
+                 "type":"object",
                  "visible":true,
                  "width":0,
-                 "x":2220.83333333333,
-                 "y":103
+                 "x":2225.83333333333,
+                 "y":112.5
+                }, 
+                {
+                 "height":27.5,
+                 "id":9,
+                 "name":"gate",
+                 "properties":[
+                        {
+                         "name":"address_next",
+                         "type":"string",
+                         "value":"map-1-2-3.json"
+                        }],
+                 "rotation":0,
+                 "type":"object",
+                 "visible":true,
+                 "width":5.25,
+                 "x":2654.32954545455,
+                 "y":146.886363636364
                 }, 
                 {
                  "height":0,
-                 "id":8,
-                 "name":"movingplatform",
+                 "id":10,
+                 "name":"downverticalmovingplatform",
                  "point":true,
                  "rotation":0,
-                 "type":"upvertical",
+                 "type":"object",
                  "visible":true,
                  "width":0,
-                 "x":2467,
-                 "y":252.5
+                 "x":2227.75,
+                 "y":184.75
+                }, 
+                {
+                 "height":0,
+                 "id":11,
+                 "name":"downverticalmovingplatform",
+                 "point":true,
+                 "rotation":0,
+                 "type":"object",
+                 "visible":true,
+                 "width":0,
+                 "x":2226.5,
+                 "y":253.25
+                }, 
+                {
+                 "height":0,
+                 "id":12,
+                 "name":"upverticalmovingplatform",
+                 "point":true,
+                 "rotation":0,
+                 "type":"object",
+                 "visible":true,
+                 "width":0,
+                 "x":2464.5,
+                 "y":110.5
+                }, 
+                {
+                 "height":0,
+                 "id":13,
+                 "name":"upverticalmovingplatform",
+                 "point":true,
+                 "rotation":0,
+                 "type":"object",
+                 "visible":true,
+                 "width":0,
+                 "x":2465.5,
+                 "y":185.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -156,7 +162,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":9,
+ "nextobjectid":14,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

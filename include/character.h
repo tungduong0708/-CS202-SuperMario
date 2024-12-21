@@ -52,6 +52,7 @@ public:
     Character(const Character &c);
     virtual ~Character();
 
+    void setCurrentImage(ImageSet image);
     void setHealth(int h);
     void setScore(int s);
     void setLevel(int l);
@@ -269,7 +270,7 @@ public:
     LarvaBubble(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
                 int strength = 0, Vector2 size = {0.6f, 0.6f}, float speed = -15.0f, float angle = 0.0f, float gravity = 15.0f, float waitTime = 1.0f);
     LarvaBubble(const LarvaBubble &lb);
-    ~LarvaBubble();
+    virtual ~LarvaBubble();
 
     void Init(b2Vec2 position);
     void Explode();
@@ -303,7 +304,7 @@ public:
     MonsterFlower(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
                   int strength = 0, Vector2 size = {1.0f, 1.0f}, float speed = -5.0f, float angle = 0.0f, float waitTime = 1.0f, float delayTime = 0.5f);
     MonsterFlower(const MonsterFlower &mf);
-    ~MonsterFlower();
+    virtual ~MonsterFlower();
 
     void Init(b2Vec2 position);
     void Update(Vector2 playerVelocity, float deltaTime);

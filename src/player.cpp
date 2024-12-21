@@ -289,29 +289,34 @@ void Player::HandleInput() {
 }
 
 void Player::Update(Vector2 playerVelocity, float deltaTime) {
-    if (!body) return;
-    if (body) Character::Update(playerVelocity, deltaTime);
-    b2Vec2 vel = body->GetLinearVelocity();
-    if (vel.x != 0) {
-        if (isOnGround && currentImage != JUMP) {
-            previousImage = currentImage;
-            currentImage = WALK;
+    if (body) {
+        Character::Update(playerVelocity, deltaTime);
+        b2Vec2 vel = body->GetLinearVelocity();
+        if (vel.x != 0) {
+            if (isOnGround && currentImage != JUMP) {
+                previousImage = currentImage;
+                currentImage = WALK;
+            }
         }
-    }
-    if (vel.x > 0) {
-        faceLeft = false;
-    }
-    else if (vel.x < 0) {
-        faceLeft = true;
-    }
+        
+        if (vel.x > 0) {
+            faceLeft = false;
+        }
+        else if (vel.x < 0) {
+            faceLeft = true;
+        }
+    }    
+
     if (time <= 0) {
         alive = false;
         time = 300.0f;
     }
+
     if (health <= 0) {
         alive = false;
         health = 100;
     }
+
     if (alive) {
         time -= deltaTime;
     }
@@ -348,10 +353,10 @@ void Player::Dead() {
                 game->changeState(game->deathState.get());
                 Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
 
-                Tilemap* tilemap = Tilemap::getInstance();
-                setLives(lives);
-                tilemap->SaveGame();
-                setHealth(getHealth() - 1000);
+                // Tilemap* tilemap = Tilemap::getInstance();
+                // setLives(lives);
+                // tilemap->SaveGame();
+                // setHealth(getHealth() - 1000);
             }
         }
     }

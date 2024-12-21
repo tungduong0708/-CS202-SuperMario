@@ -96,7 +96,14 @@ Character::~Character() {
     immortal = false;
 }
 
-void Character::setHealth(int health) {
+void Character::setCurrentImage(ImageSet image)
+{
+    previousImage = currentImage;
+    currentImage = image;
+}
+
+void Character::setHealth(int health)
+{
     this->health = health;
     if (health <= 0) {
         alive = false;

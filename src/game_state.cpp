@@ -249,7 +249,7 @@ GameplayState::GameplayState(Game* game)
     Physics::Init(); 
     AnimationEffectCreator::InitEffects();
     EnemyCreator::InitEnemies();
-    PlatformCreator::InitPlatforms();
+    ObjectCreator::InitObjects();
     TextHelper::loadFont("PressStart2P-Regular", "");
     TilesetHandler::Init();
     

@@ -168,6 +168,9 @@ vector<Image>& ImageHandler::setImages(string path) {
     else if (path == "movingplatform"){
         images.push_back(LoadImage("resources/images/movingplatform/movingplatform.png"));
     }
+    else if (path == "flag") {
+        images.push_back(LoadImage("resources/images/object/flag.png"));
+    }
     else if (path == "boss") {
         images.push_back(LoadImage("resources/images/boss/idle.png"));
         images.push_back(LoadImage("resources/images/boss/walk1.png"));
@@ -392,6 +395,11 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
     else if (path == "movingplatform") {
         animations = {
             Animation({Frame(0.1f, textures[0])}) 
+        };
+    }
+    else if (path == "flag") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) // gate
         };
     }
     else if (path == "attackball") {

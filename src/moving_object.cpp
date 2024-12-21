@@ -1,6 +1,6 @@
 #include "include.h"
 #include "object.h"
-
+#include "moving_object.h"
 
 MovingObject::MovingObject() {
     size = {0, 0};
@@ -478,6 +478,78 @@ void AttackBall::OnEndContact(SceneNode *other) {
     // Handle end of collision logic if needed
 }
 
+Flag::Flag()
+{
+    elapsedTime = 0.0f;
+}
 
+Flag::Flag(const Flag &f)
+{
+    elapsedTime = f.elapsedTime;
+}
 
+Flag::~Flag()
+{
+    elapsedTime = 0.0f;
+}
 
+void Flag::setPosition(Vector2 position)
+{
+    if (body) body->SetTransform(b2Vec2{position.x, position.y}, body->GetAngle());
+}
+
+void Flag::Init(b2Vec2 position) 
+{
+    animations = AnimationHandler::setAnimations("flag");
+    Texture texture = animations[0].GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+
+    std::vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{size.x, 0.0f},
+        b2Vec2{size.x, size.y},
+        b2Vec2{0.0f, size.y}
+    };
+    restitution = 0.0f;
+    MyBoundingBox::createBody(body, b2_staticBody, vertices, Vector2{position.x, position.y}, restitution);
+    b2Fixture *fixture = body->GetFixtureList();
+    fixture->SetSensor(true);
+}
+
+void Flag::Update(Vector2 playerVelocity, float deltaTime)
+{
+}
+
+void Flag::HandleInput()
+{
+}
+
+void Flag::OnBeginContact(SceneNode *other, b2Vec2 normal)
+{
+}
+
+void Flag::OnEndContact(SceneNode *other)
+{
+}
+
+void Flag::Draw()
+{
+    if (!body) return;
+    b2Vec2 pos = body->GetPosition();
+    Texture text = animations[0].GetFrame();
+    Rectangle sourceRect = {0, 0, static_cast<float>(text.width), static_cast<float>(text.height)};
+    Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, true, 0);
+}
+
+void Flag::Draw(Vector2 position, float angle)
+{
+}
+
+void Flag::accept(FileVisitor *visitor)
+{
+}
+
+MovingObject *Flag::copy() const
+{
+    return new Flag(*this);
+}

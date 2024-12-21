@@ -308,15 +308,21 @@
                  "y":208.333333333333
                 }, 
                 {
-                 "height":26,
-                 "id":26,
+                 "height":27.5,
+                 "id":27,
                  "name":"gate",
+                 "properties":[
+                        {
+                         "name":"address_next",
+                         "type":"string",
+                         "value":"map-1-4.json"
+                        }],
                  "rotation":0,
-                 "type":"map-1-4.json",
+                 "type":"object",
                  "visible":true,
-                 "width":7.66666666666652,
-                 "x":2550.66666666667,
-                 "y":198
+                 "width":5.25,
+                 "x":2553.125,
+                 "y":195.5
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -325,7 +331,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":27,
+ "nextobjectid":28,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

@@ -55,4 +55,4 @@
 #include "moving_object.h"
 #include "character.h"
 #include "enemy_creator.h"
-#include "moving_platform.h" 
+#include "object_creator.h"
