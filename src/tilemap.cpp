@@ -147,6 +147,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     }
     
     Pole* pole = nullptr;
+    Axe* axe = nullptr;
     for (const auto& layer : j["layers"]) {
         std::vector<SceneNode*> nodeLayer;
         if (layer["type"] == "imagelayer" && layer["name"] != "Effect") {
@@ -189,7 +190,11 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                         continue;  
                     }
                     tile->setPosition(pos);
-                    nodeLayer.push_back(tile->clone());
+                    StaticObject* tileCopy = tile->clone();
+                    nodeLayer.push_back(tileCopy);
+                    if (tile->getType() == "bridge") {
+                        axe->AddBridgeTile(static_cast<StaticTile*>(tileCopy));
+                    }
                 }
             }
         }
@@ -237,6 +242,8 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                             nodeLayer.push_back(node);
                             if (objName == "flag") {
                                 pole->addFlag(static_cast<Flag*>(node));
+                            } else if (objName == "axe") {
+                                axe = static_cast<Axe*>(node);
                             }
                         }
                         else if (object.contains("name") && object["name"].is_string()) {

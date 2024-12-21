@@ -241,4 +241,30 @@ public:
     MovingObject* copy() const;
 };
 
+class Axe : public MovingObject {
+private:
+    std::vector<StaticTile*> tiles;
+    Texture2D texture;
+    bool activating = false;
+    bool activated = false;
+    float animationTime = 2.0f;
+    float elapsedTime = 0.0f;
+public:
+    Axe();
+    Axe(const Axe &a);
+    virtual ~Axe() = default;
+
+    void AddBridgeTile(StaticTile* tile);
+    void Init(b2Vec2 position);
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void HandleInput();
+    void OnBeginContact(SceneNode *other, b2Vec2 normal);
+    void OnEndContact(SceneNode *other);
+    void Draw();
+    void Draw(Vector2 position, float angle);
+
+    void accept(FileVisitor* visitor);
+    MovingObject* copy() const;
+};
+
 #endif

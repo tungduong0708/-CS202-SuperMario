@@ -96,6 +96,15 @@ bool StaticTile::getIsActivated()
     return isActivated;
 }
 
+void StaticTile::setSensorBody(bool sensor)
+{
+    b2Body* body = GetBody();
+    if (body) {
+        b2Fixture* fixture = body->GetFixtureList();
+        fixture->SetSensor(sensor);
+    }
+}
+
 void StaticTile::setIsDestroyed(bool isDestroyed)
 {
     this->isDestroyed = isDestroyed;

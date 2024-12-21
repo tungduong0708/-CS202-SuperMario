@@ -28,6 +28,7 @@ public:
 
     bool getIsDestroyed();
     bool getIsActivated();
+    void setSensorBody(bool sensor);
     void setIsDestroyed(bool isDestroyed);
     void setIsActivated(bool isActivated);
     void setPosition(const Vector2& position);

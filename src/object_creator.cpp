@@ -53,6 +53,12 @@ void ObjectCreator::InitObjects() {
         Gate* gate = new Gate();
         return gate;
     });
+
+    RegisterObject("axe", [](Vector2 pos) {
+        Axe* axe = new Axe();
+        axe->Init(b2Vec2{pos.x, pos.y});
+        return axe;
+    });
 }
 
 SceneNode* ObjectCreator::CreateObject(const std::string& name, Vector2 position) {

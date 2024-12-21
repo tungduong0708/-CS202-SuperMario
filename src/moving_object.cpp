@@ -553,3 +553,115 @@ MovingObject *Flag::copy() const
 {
     return new Flag(*this);
 }
+
+Axe::Axe() : MovingObject()
+{
+}
+
+Axe::Axe(const Axe &a) : MovingObject(a)
+{
+}
+
+void Axe::AddBridgeTile(StaticTile *tile)
+{
+    tiles.push_back(tile);
+}
+
+void Axe::Init(b2Vec2 position)
+{
+    animations = AnimationHandler::setAnimations("axe");
+    Texture texture = animations[0].GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+
+    std::vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{size.x, 0.0f},
+        b2Vec2{size.x, size.y},
+        b2Vec2{0.0f, size.y}
+    };
+    restitution = 0.0f;
+    MyBoundingBox::createBody(body, b2_staticBody, vertices, Vector2{position.x, position.y}, restitution);
+    b2Fixture *fixture = body->GetFixtureList();
+    fixture->SetSensor(true);
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+}
+
+void Axe::Update(Vector2 playerVelocity, float deltaTime)
+{
+    if (activated) return;
+    if (!activating && !activated) {
+        animations[0].Update(deltaTime);
+        texture = animations[0].GetFrame();
+        return;
+    }
+    elapsedTime += deltaTime;
+    float tilesSize = tiles.size();
+    float activateTime = 1.0f / tilesSize;
+    if (elapsedTime >= activateTime)
+    {
+        elapsedTime = 0.0f;
+        if (tiles.size() > 0)
+        {
+            StaticTile *tile = tiles.back();
+            tile->setIsDestroyed(true);
+            tile->setSensorBody(true);
+            tiles.pop_back();
+        }
+    }
+
+    if (tiles.size() == 0)
+    {
+        activated = true;
+        Tilemap *tilemap = Tilemap::getInstance();
+        Player *player = tilemap->GetPlayer();
+        b2Body *playerBody = player->getBody();
+        playerBody->SetGravityScale(1.0f);
+        player->setSpeed(8.5f);
+    }
+}
+
+void Axe::HandleInput()
+{
+}
+
+void Axe::OnBeginContact(SceneNode *other, b2Vec2 normal)
+{
+    Player *player = dynamic_cast<Player *>(other);
+    if (player)
+    {
+        activating = true;
+        Physics::bodiesToDestroy.push_back(body);
+        body = nullptr;
+        animations.clear();
+
+        b2Body *playerBody = player->getBody();
+        playerBody->SetGravityScale(0.0f);
+        player->setSpeed(0.0f);
+    }
+}
+
+void Axe::OnEndContact(SceneNode *other)
+{
+}
+
+void Axe::Draw()
+{
+    if (!body) return;
+    b2Vec2 pos = body->GetPosition();
+    Texture text = animations[0].GetFrame();
+    Rectangle sourceRect = {0, 0, static_cast<float>(text.width), static_cast<float>(text.height)};
+    Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, 0);
+}
+
+void Axe::Draw(Vector2 position, float angle)
+{
+}
+
+void Axe::accept(FileVisitor *visitor)
+{
+}
+
+MovingObject *Axe::copy() const
+{
+    return new Axe(*this);
+}

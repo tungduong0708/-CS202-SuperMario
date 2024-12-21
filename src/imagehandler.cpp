@@ -171,6 +171,12 @@ vector<Image>& ImageHandler::setImages(string path) {
     else if (path == "flag") {
         images.push_back(LoadImage("resources/images/object/flag.png"));
     }
+    else if (path == "axe") {
+        images.push_back(LoadImage("resources/images/axe/axe1.png"));
+        images.push_back(LoadImage("resources/images/axe/axe2.png"));
+        images.push_back(LoadImage("resources/images/axe/axe3.png"));
+        images.push_back(LoadImage("resources/images/axe/axe4.png"));
+    }
     else if (path == "boss") {
         images.push_back(LoadImage("resources/images/boss/idle.png"));
         images.push_back(LoadImage("resources/images/boss/walk1.png"));
@@ -400,6 +406,11 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
     else if (path == "flag") {
         animations = {
             Animation({Frame(0.1f, textures[0])}) // gate
+        };
+    }
+    else if (path == "axe") {
+        animations = {
+            Animation({Frame(0.1f, textures[0]), Frame(0.1f, textures[1]), Frame(0.1f, textures[2]), Frame(0.1f, textures[3])}) // axe
         };
     }
     else if (path == "attackball") {
