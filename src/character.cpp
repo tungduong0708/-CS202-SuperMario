@@ -130,6 +130,10 @@ void Character::setOnGround(bool og) {
     isOnGround = og;
 }
 
+void Character::setAppear(bool iv) {
+    appear = iv;
+}
+
 void Character::setInvisibleTime(float it)
 {
     invincible = true;

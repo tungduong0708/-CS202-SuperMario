@@ -5,63 +5,38 @@ resources/tilesets/OverWorld.json
 0
 1
 2 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-15 10
-0
-1
-2 0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-17 10
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-27 11
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-28 11
-0
-0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-22 10
-0
-1
-2 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-20 10
-0
-1
-2 0
-Goomba
-31.803 13.0475
+Koopa
+29.3097 12.2975
 1
 100
 Boss
-44.3832 11.985
+44.1454 11.985
 1
-1000
-Star
-13 9
+100
+LarvaBubble
+17.9257 14.8106
+1
+100
+MonsterFlower
+28.0573 9.24796
+1
+100
 Player
 10.8333 9.45312
 10.8333 9.45312
 0
-luigi
-3100
-4
+mario
+1100
+0
 2
-208.66
+281.574
 1-1
 EffectManager
-13
+15
+15 9 mushroom_fireflower
 20 9 coin
 21 5 coin
+22 9 mushroom_fireflower
 23 9 coin
 71 9 mushroom_fireflower
 93 5 coin
@@ -74,8 +49,10 @@ EffectManager
 131 5 coin
 173 9 coin
 16
-20 9 2
+15 9 1
+20 9 3
 21 5 1
+22 9 1
 23 9 2
 71 9 1
 93 5 1

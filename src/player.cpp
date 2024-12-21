@@ -353,10 +353,10 @@ void Player::Dead() {
                 game->changeState(game->deathState.get());
                 Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
 
-                // Tilemap* tilemap = Tilemap::getInstance();
-                // setLives(lives);
-                // tilemap->SaveGame();
-                // setHealth(getHealth() - 1000);
+                Tilemap* tilemap = Tilemap::getInstance();
+                setLives(lives);
+                tilemap->SaveGame();
+                setHealth(getHealth() - 1000);
             }
         }
     }
@@ -375,7 +375,13 @@ void Player::UpdateAnimation() {
 }
 
 void Player::Draw() {
-    if (body) Character::Draw();
+    if (body) {
+        Vector2 position = Vector2{body->GetPosition().x, body->GetPosition().y};
+        if (position.x == initialPosition.x && position.y == initialPosition.y) {
+            return;
+        }
+        Character::Draw();
+    }
 }
 
 void Player::Draw(Vector2 position, float angle) {

@@ -21,6 +21,7 @@ protected:
     int colorIndex = 0;
     int frameWidth, frameHeight;
     int currentFrame;
+
     bool alive;
     bool appear = true;
     bool invincible = false;
@@ -28,6 +29,7 @@ protected:
     bool isOnGround;          // Is character on the ground
     bool modeChanged;
     bool faceLeft;            // Is character facing left
+
     float blinkTime;
     float immortalTime;
     float appearTimer = 0.0f;
@@ -59,6 +61,7 @@ public:
     void setStrength(int st);
     void setMode(Mode mode);
     void setOnGround(bool og);
+    void setAppear(bool ap);
     void setInvisibleTime(float it);
     void changeMode(Mode mode);
 

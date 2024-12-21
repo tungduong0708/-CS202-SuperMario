@@ -130,6 +130,7 @@ void Gate::Update(Vector2 playerVelocity, float deltaTime)
         Tilemap::getInstance()->SetNewMapPath(addressNext);
 
         player->setAllowInput(true);
+        player->setAppear(true);
         Game* game = Game::getInstance();
         game->getSettings().volume = prevVolume;
         player->setSpeed(prevSpeed);
@@ -161,6 +162,7 @@ void Gate::OnBeginContact(SceneNode *other, b2Vec2 normal)
 
             playSoundEffect(SoundEffect::STAGE_CLEAR);
             player->setAllowInput(false);
+            player->setAppear(false);
             prevSpeed = player->getSpeed();
             player->setSpeed(0.0f);
 
@@ -271,7 +273,7 @@ void Pole::OnBeginContact(SceneNode *other, b2Vec2 normal)
         Vector2 polePos = getPosition();
         polePos.y += height;
         float scoreRatio = 5000.0f / height;
-        player->setAddScore((polePos.y - playerPos.y) * scoreRatio);
+        player->setAddScore(int((polePos.y - playerPos.y) * scoreRatio)/ 10 * 10);
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", Vector2{polePos.x, polePos.y}));
         player->updateScore();

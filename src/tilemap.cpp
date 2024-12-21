@@ -81,7 +81,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     std::string mapPath = "resources/tilemaps/" + filePath;
     std::cout << "Loading map " << mapPath << std::endl;
 
-    // LoadSaveGame("save.txt");
+    LoadSaveGame("save.txt");
 
     ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
     visitor->openFile();
@@ -372,6 +372,16 @@ void Tilemap::LoadSaveGame(const std::string &filePath)
             player = new Player();
             player->accept(visitor);
         } 
+        else if (obj == "LarvaBubble") {
+            auto lbubble = std::make_unique<LarvaBubble>();
+            lbubble->accept(visitor);
+            newNode = lbubble.release();
+        }
+        else if (obj == "MonsterFlower") {
+            auto mflower = std::make_unique<MonsterFlower>();
+            mflower->accept(visitor);
+            newNode = mflower.release();
+        }
         else if (obj == "EffectManager") {
             effectManager->accept(visitor);
         }
