@@ -320,7 +320,7 @@ void PauseGameState::update() {
         game->changeState(game->gameplayState.get());
     }
     if (IsButtonClicked(buttons[3])) {
-        game->changeState(game->mainMenuState.get());
+        game->changeState(game->gameSavingState.get());
     }
 
     float centerX = (game->getScreenWidth() - 250) / 2;
@@ -766,14 +766,46 @@ void VictoryState::draw() {
 
 GameSavingState::GameSavingState(Game* game) : GameState(game) {
     // Initialize buttons
+    float buttonWidth = 250;
+    float buttonHeight = 50;
+    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+    for (int i = 0; i < 5; ++i) {
+        buttons.push_back(Button{{centerX, static_cast<float>(100 + i * 75), buttonWidth, buttonHeight}, "Slot " + std::to_string(i + 1), false});
+    }
 }
 
 void GameSavingState::update() {
     // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    // Handle button clicks
+    bool isClicked = false;
+    for (int i = 0; i < 5; ++i) {
+        if (IsButtonClicked(buttons[i])) {
+            // Save the game to the slot
+
+            // Change state to MainMenuState
+            isClicked = true;
+            break;
+        }
+    }
+    if (isClicked) {
+        game->changeState(game->mainMenuState.get());
+    }
 }
 
 void GameSavingState::draw() {
     // Draw the underlying GameplayState
+    game->gameplayState->draw();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
 }
 
 GameSavingState::~GameSavingState() {

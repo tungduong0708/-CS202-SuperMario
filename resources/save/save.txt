@@ -93,3 +93,99 @@ map-1-4.json
 map-1-4.json
 map-1-4.json
 map-1-4.json
+map-1-1.json
+KinematicTile 52
+resources/tilesets/tiles-2.json
+18 10
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+27 11
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+17 10
+0
+0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+13 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+15 10
+0
+1
+2 0
+map-1-1.json
+KinematicTile 2
+resources/tilesets/OverWorld.json
+71 10
+0
+1
+2 0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+93 9
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+93 9
+0
+0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+93 6
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+100 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+105 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+108 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+111 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+130 6
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+131 6
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+173 10
+0
+1
+2 0
+map-1-1.json
+map-1-1.json
+map-1-1.json

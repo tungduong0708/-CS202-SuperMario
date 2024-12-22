@@ -45,6 +45,7 @@ public:
     std::unique_ptr<GameState> pauseGameState;
     std::unique_ptr<GameState> mapPauseState;
     std::unique_ptr<GameState> selectPlayerState;
+    std::unique_ptr<GameState> gameSavingState;
     std::unique_ptr<GameState> deathState;
     std::unique_ptr<GameState> changeStageState;
     std::unique_ptr<GameState> gameOverState;

@@ -39,6 +39,7 @@ Game::Game()
     pauseGameState = std::make_unique<PauseGameState>(this);
     mapPauseState = std::make_unique<MapPauseState>(this);
     selectPlayerState = std::make_unique<SelectPlayerState>(this);
+    gameSavingState = std::make_unique<GameSavingState>(this);
     deathState = std::make_unique<DeathState>(this);
     changeStageState = std::make_unique<ChangeStageState>(this);
     gameOverState = std::make_unique<GameOverState>(this);
