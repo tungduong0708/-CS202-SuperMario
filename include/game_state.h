@@ -74,6 +74,18 @@ private:
     std::vector<Button> buttons;
 };
 
+class TutorialState : public GameState
+{
+public:
+    explicit TutorialState(Game* game);
+    void update() override;
+    void draw() override;
+    ~TutorialState() override;
+private:
+    std::vector<Button> buttons;
+    std::vector<Texture2D> tutorialTextures;
+};
+
 class SavedGameState : public GameState
 {
 public:

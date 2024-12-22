@@ -161,6 +161,30 @@ void SettingsState::draw() {
     DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
+TutorialState::TutorialState(Game *game) : GameState(game)
+{
+    // Tutorial here
+}
+
+void TutorialState::update()
+{
+    // Some update code here
+}
+
+void TutorialState::draw()
+{
+    // Some draw code here
+}
+
+TutorialState::~TutorialState()
+{
+    // Some cleanup code here
+    for (const auto& texture : tutorialTextures)
+    {
+        UnloadTexture(texture);
+    }
+}
+
 SavedGameState::SavedGameState(Game* game)
     : GameState(game)
 {
