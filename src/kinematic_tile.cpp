@@ -200,10 +200,8 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                     frames.push_back({2, 0});
                     animation = false;
 
-                    ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
-                    visitor->openFile();
-                    accept(visitor);
-                    visitor->closeFile();
+                    Tilemap* tilemap = Tilemap::getInstance();
+                    tilemap->addChangedTile(this);
                 }
             }
         }
@@ -221,10 +219,8 @@ void KinematicTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", pos));
                 playerPtr->updateScore();
 
-                ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
-                visitor->openFile();
-                accept(visitor);
-                visitor->closeFile();
+                Tilemap* tilemap = Tilemap::getInstance();
+                tilemap->addChangedTile(this);
             }
         }
     }

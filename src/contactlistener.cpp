@@ -30,8 +30,21 @@ void ContactListener::BeginContact(b2Contact *contact)
 
 void ContactListener::EndContact(b2Contact *contact)
 {
-    SceneNode* nodeA = reinterpret_cast<SceneNode*>(contact->GetFixtureA()->GetBody()->GetUserData().pointer);
-    SceneNode* nodeB = reinterpret_cast<SceneNode*>(contact->GetFixtureB()->GetBody()->GetUserData().pointer);
+    if (!contact) return;
+
+    b2Body* bodyA = contact->GetFixtureA()->GetBody();
+    b2Body* bodyB = contact->GetFixtureB()->GetBody();
+
+    SceneNode* nodeA = nullptr;
+    SceneNode* nodeB = nullptr;
+
+    if (bodyA && bodyA->GetUserData().pointer) {
+        nodeA = reinterpret_cast<SceneNode*>(bodyA->GetUserData().pointer);
+    }
+
+    if (bodyB && bodyB->GetUserData().pointer) {
+        nodeB = reinterpret_cast<SceneNode*>(bodyB->GetUserData().pointer);
+    }
 
     if (nodeA) nodeA->OnEndContact(nodeB);
     if (nodeB) nodeB->OnEndContact(nodeA);

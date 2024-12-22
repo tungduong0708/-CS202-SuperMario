@@ -15,6 +15,7 @@
 
 class Tilemap {
 private:
+    bool playerLoaded = false;
     bool isChangingMap = false;
     std::string filePath;
     std::string newMapPath;
@@ -27,6 +28,7 @@ private:
     std::vector<std::pair<std::string, int>> tilesets;
     std::vector<SceneNode*> loadedNodes;
     std::set<std::pair<int, int>> activatedTiles;
+    std::vector<Tile*> changedTiles;
     
     Tilemap();
     Tilemap(const std::string& filePath);
@@ -44,9 +46,10 @@ public:
 
     std::pair<std::string, int> GetTilesetInfo(int tileIdx) const;
     void addNode(SceneNode* node);
+    void addChangedTile(Tile* tile);
     void LoadMapFromJson(const std::string& filePath);
     void LoadSaveGame(const std::string& filePath);
-    void SaveGame();
+    void SaveGame(std::string filePath) const;
     void Update(float deltaTime);
     void Draw() const;
     

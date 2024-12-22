@@ -352,12 +352,6 @@ void Player::Dead() {
                 Game* game = Game::getInstance();
                 game->changeState(game->deathState.get());
                 Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
-
-                // Tilemap* tilemap = Tilemap::getInstance();
-                // setLives(lives);
-                // tilemap->SaveGame();
-                // setLives(0);
-                // setHealth(getHealth() - 1000);
             }
         }
     }

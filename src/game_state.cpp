@@ -208,7 +208,15 @@ void SavedGameState::update() {
     // Handle button clicks
     for (int i = 0; i < 5; ++i) {
         if (IsButtonClicked(buttons[i])) {
-            // Handle saved game slot click (currently does nothing)
+            // Handle saved game slot click 
+            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(i + 1) + ".txt";
+            std::ifstream file(saveGamePath);
+
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->~Tilemap();
+            tilemap = Tilemap::getInstance();
+            tilemap->LoadSaveGame(saveGamePath);
+            game->changeState(game->gameplayState.get());
         }
     }
     if (IsButtonClicked(buttons[5])) {
@@ -429,6 +437,8 @@ void SelectPlayerState::update() {
     if (IsButtonClicked(player1.button)) {
         // Set player to Mario
         Tilemap* tilemap = Tilemap::getInstance();
+        tilemap->~Tilemap();
+        tilemap = Tilemap::getInstance();
         tilemap->LoadMapFromJson("map-1-1.json");
         tilemap->setPlayer("mario");
 
@@ -437,6 +447,8 @@ void SelectPlayerState::update() {
     if (IsButtonClicked(player2.button)) {
         // Set player to Luigi
         Tilemap* tilemap = Tilemap::getInstance();
+        tilemap->~Tilemap();
+        tilemap = Tilemap::getInstance();
         tilemap->LoadMapFromJson("map-1-1.json");
         tilemap->setPlayer("luigi");
         
@@ -809,7 +821,9 @@ void GameSavingState::update() {
     for (int i = 0; i < 5; ++i) {
         if (IsButtonClicked(buttons[i])) {
             // Save the game to the slot
-
+            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(i + 1) + ".txt";
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->SaveGame(saveGamePath);
             // Change state to MainMenuState
             isClicked = true;
             break;

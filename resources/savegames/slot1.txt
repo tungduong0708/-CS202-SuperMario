@@ -1,0 +1,39 @@
+map-1-2-2.json
+KinematicTile 52
+resources/tilesets/tiles-2.json
+58 9
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+59 9
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+60 9
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+61 9
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+68 9
+0
+0
+Player
+64.6793 12.7975
+3.10417 4.55208
+0
+mario
+6128
+5
+3
+268.047
+1-2
+EffectManager
+0
+0

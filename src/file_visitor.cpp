@@ -1,5 +1,6 @@
 #include "include.h"
 #include "object.h"
+#include "file_visitor.h"
 
 ExportFileVisitor* ExportFileVisitor::instance;
 ImportFileVisitor* ImportFileVisitor::instance;
@@ -13,14 +14,14 @@ ExportFileVisitor *ExportFileVisitor::getInstance() {
 
 void ExportFileVisitor::setFilePath(std::string path)
 {
-    file << path << std::endl;
+    filePath = path;
 }
 
 
 void ExportFileVisitor::openFile(bool overwrite)
 {
     if (overwrite) {
-        file.open(filePath, std::ios::out);  
+        file.open(filePath, std::ios::out | std::ios::trunc);  
     } else {
         file.open(filePath, std::ios::app);  
     }
@@ -37,6 +38,11 @@ void ExportFileVisitor::closeFile() {
     if (file.is_open()) {
         file.close();
     }
+}
+
+void ExportFileVisitor::exportMapPath(std::string path)
+{
+    file << path << std::endl;
 }
 
 void ExportFileVisitor::VisitFile(StaticTile *obj)
@@ -179,6 +185,10 @@ void ImportFileVisitor::setFilePath(string path)
     filePath = path;
 }
 
+std::string ImportFileVisitor::getFilePath() const
+{
+    return filePath;
+}
 void ImportFileVisitor::closeFile() {
     if (file.is_open()) file.close();
 }
@@ -386,5 +396,10 @@ void ImportFileVisitor::VisitFile(EffectManager *obj)
         file >> x >> y >> count;
         effectCount[{x, y}] = count;
     }
-    *obj = EffectManager(effectMap, effectCount);
+    if (effectSize > 0) {
+        *obj = EffectManager(effectMap, effectCount);
+    }
+    else {
+        *obj = EffectManager();
+    }
 }

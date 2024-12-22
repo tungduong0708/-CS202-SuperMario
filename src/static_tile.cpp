@@ -180,10 +180,8 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                         Tile::setId(2);
                         isActivated = true;
 
-                        ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
-                        visitor->openFile();
-                        accept(visitor);
-                        visitor->closeFile();
+                        Tilemap* tilemap = Tilemap::getInstance();
+                        tilemap->addChangedTile(this);
                     }
                 }
             }
