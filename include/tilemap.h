@@ -13,9 +13,6 @@
 #include <raylib.h> 
 #include "nlohmann/json.hpp" 
 
-const int screenWidth = 800;
-const int screenHeight = 600;
-
 class Tilemap {
 private:
     bool isChangingMap = false;

@@ -57,8 +57,8 @@ private:
     Game(const Game&) = delete;
     Game& operator=(const Game&) = delete;
 
-    static constexpr int screenWidth = 800;
-    static constexpr int screenHeight = 600;
+    static constexpr int screenWidth = 1000;
+    static constexpr int screenHeight = 750;
     GameState* currentState;
     GameState* previousState;
     GameState* nextState;

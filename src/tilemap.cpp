@@ -295,7 +295,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
         nodes.push_back(nodeLayer);
     }
     if (loadedNodes.size() > 0) nodes.push_back(loadedNodes);
-    camera = MyCamera(38.0f, playerPosition, Vector2{ (float)width, (float)height }, screenWidth, screenHeight);
+    camera = MyCamera(46.875f, playerPosition, Vector2{ (float)width, (float)height });
     file.close();
     std::cout << "Map loaded successfully!" << std::endl;
     std::cout << Physics::world.GetBodyCount() << " bodies in the world after loading.\n";
