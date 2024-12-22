@@ -7,22 +7,22 @@
 #include <functional>
 
 // PlatformCreator class handles registering and creating MovingPlatform objects
-class PlatformCreator {
+class ObjectCreator {
 private:
     // Map for associating platform names with their creation functions
-    static std::unordered_map<std::string, std::function<MovingPlatform*(Vector2)>> creators;
+    std::unordered_map<std::string, std::function<SceneNode*(Vector2)>> ObjectCreator::creators;
 
 public:
-    PlatformCreator() = default;
-    ~PlatformCreator() = default;
+    ObjectCreator() = default;
+    ~ObjectCreator() = default;
     // Registers a platform type with a corresponding creation function
-    static void RegisterPlatform(const std::string& name, std::function<MovingPlatform*(Vector2)> creator);
+    static void RegisterObject(const std::string& name, std::function<SceneNode*(Vector2)> creator);
 
     // Initializes predefined platform types
-    static void InitPlatforms();
+    static void InitObjects();
 
     // Creates a platform based on the given name and position
-    static MovingPlatform* CreatePlatform(const std::string& name, Vector2 position);
+    static SceneNode* CreateObject(const std::string& name, Vector2 position);
 };
 
 #endif 

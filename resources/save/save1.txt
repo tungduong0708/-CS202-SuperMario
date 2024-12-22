@@ -1,0 +1,378 @@
+map-1-1.json
+Koopa
+30.0188 12.2975
+1
+100
+Goomba
+30.3684 13.0475
+1
+100
+Boss
+44.5711 11.985
+1
+1000
+LarvaBubble
+17.9257 12.2279
+1
+100
+MonsterFlower
+27.4948 12.1462
+1
+100
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+0
+0
+2
+293.667
+1-1
+EffectManager
+16
+13 9 star
+15 9 mushroom_fireflower
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+15 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
+Koopa
+31.5739 12.2975
+1
+100
+Goomba
+29.0935 13.0475
+1
+100
+Boss
+44.5711 11.985
+1
+1000
+LarvaBubble
+17.9257 14.7445
+1
+100
+MonsterFlower
+27.4948 10.4795
+1
+100
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+0
+0
+1
+293.667
+1-1
+EffectManager
+16
+13 9 star
+15 9 mushroom_fireflower
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+15 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
+map-1-1.json
+KinematicTile 2
+resources/tilesets/OverWorld.json
+13 10
+0
+1
+2 0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+28 11
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+27 11
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+93 9
+0
+0
+map-1-2-1.json
+map-1-2-2.json
+map-1-1.json
+KinematicTile 2
+resources/tilesets/OverWorld.json
+15 10
+0
+1
+2 0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+17 10
+0
+0
+Koopa
+30.0944 12.2975
+1
+100
+Goomba
+31.3438 13.0475
+1
+100
+Boss
+44.6272 11.985
+1
+1000
+LarvaBubble
+17.9257 9.85976
+1
+100
+MonsterFlower
+27.4948 11.2746
+1
+100
+Mushroom
+21.4308 12.9833
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+100
+1
+2
+285.489
+1-1
+EffectManager
+15
+13 9 star
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
+Koopa
+29.4881 12.2975
+1
+100
+Goomba
+31.1816 13.0475
+1
+100
+Boss
+44.6272 11.985
+1
+1000
+LarvaBubble
+17.9257 14.514
+1
+100
+MonsterFlower
+27.4948 11.0286
+1
+100
+Mushroom
+23.1569 12.9833
+Player
+10.8333 9.45312
+10.8333 9.45312
+0
+mario
+100
+1
+1
+285.489
+1-1
+EffectManager
+15
+13 9 star
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1
+map-1-1.json
+KinematicTile 52
+resources/tilesets/tiles-2.json
+28 11
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+27 11
+0
+0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+71 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+22 10
+0
+1
+2 0
+StaticTile 2
+resources/tilesets/OverWorld.json
+23 10
+0 1
+KinematicTile 2
+resources/tilesets/OverWorld.json
+21 6
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+13 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+15 10
+0
+1
+2 0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+93 9
+0
+0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+100 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+105 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+108 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+111 10
+0
+1
+2 0
+map-1-1.json
+map-1-2-2.json
+map-1-1.json
+map-1-1.json
+map-1-1.json
+map-1-1.json
+map-1-1.json

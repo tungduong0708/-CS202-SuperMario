@@ -252,8 +252,8 @@ void FireBall::Draw(Vector2 position, float angle) {
 MovingPlatform::MovingPlatform() 
     : MovingObject() {}
 
-MovingPlatform::MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle) 
-    : MovingObject(size, speed.x, angle), distance(distance), speed(speed) 
+MovingPlatform::MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle, string _type) 
+    : MovingObject(size, speed.x, angle), distance(distance), speed(speed), type(_type) 
     {
 }
 
@@ -269,7 +269,8 @@ MovingPlatform::~MovingPlatform() {
 }
 
 void MovingPlatform::Init(b2Vec2 position) {
-    animations = AnimationHandler::setAnimations("movingplatform");
+    if (type=="movingplatform") animations = AnimationHandler::setAnimations("movingplatform");
+    else if(type=="rotatingblaze") animations = AnimationHandler::setAnimations("firebar");
     Texture texture = animations[0].GetFrame();
     size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
 
@@ -288,6 +289,7 @@ void MovingPlatform::Init(b2Vec2 position) {
 }
 
 void MovingPlatform::Update(Vector2 playerVelocity, float deltaTime) {
+    if(type == "movingplatform") {
     if (!body) return;
     if (speed.x != 0) curDistance += abs(speed.x) * deltaTime;
     else if (speed.y != 0) curDistance += abs(speed.y) * deltaTime;
@@ -310,6 +312,26 @@ void MovingPlatform::Update(Vector2 playerVelocity, float deltaTime) {
             curDistance = 0;
             body->SetLinearVelocity(b2Vec2(speed.x, speed.y));
         }
+    }
+    }
+    else if (type=="rotating")
+    {
+        if (!body) return;
+
+   
+    angle += speed.x * deltaTime; 
+    body->SetTransform(body->GetPosition(), angle); 
+
+   
+    for (size_t i = 0; i < fireballs.size(); ++i) {
+     
+        float radians = angle + i * (2 * M_PI / fireballs.size()); 
+        float newX = body->GetPosition().x + radius * cos(radians);
+        float newY = body->GetPosition().y + radius * sin(radians);
+
+    
+        fireballs[i]->getBody()->SetTransform(b2Vec2(newX, newY), fireballs[i]->getAngle());
+    }
     }
 }
 
@@ -343,6 +365,20 @@ void MovingPlatform::accept(FileVisitor *visitor) {
 MovingObject *MovingPlatform::copy() const
 {
     return new MovingPlatform(*this);
+}
+
+void MovingPlatform::AddFireBall(FireBall* fireball) {
+    fireballs.push_back(fireball);
+}
+
+void MovingPlatform::ClearFireBalls() {
+    for (auto fireball : fireballs) {
+        if (fireball->getBody()) {
+            Physics::world.DestroyBody(fireball->getBody());
+        }
+        delete fireball;
+    }
+    fireballs.clear();
 }
 
 AttackBall::AttackBall() {

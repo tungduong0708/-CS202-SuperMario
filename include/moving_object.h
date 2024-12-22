@@ -203,10 +203,13 @@ private:
     Vector2 speed;
     float distance;
     float curDistance = 0;
-    float direction;          
+    float direction;  
+    string type;        
+    std::vector<FireBall*> fireballs;
+    float radius = 2.0f; 
 public:
     MovingPlatform();
-    MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle = 0.0f);
+    MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle, string _type);
     MovingPlatform(const MovingPlatform &mp);
     virtual ~MovingPlatform();
 
@@ -220,6 +223,8 @@ public:
 
     void accept(FileVisitor* visitor) override;
     MovingObject* copy() const override;
+    void AddFireBall(FireBall* fireball); 
+    void ClearFireBalls();
 };
 
 #endif
