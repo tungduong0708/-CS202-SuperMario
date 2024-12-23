@@ -21,7 +21,9 @@ StaticObject::~StaticObject()
 {
     if (body)
     {
-        Physics::world.DestroyBody(body);
+        Physics::bodiesToDestroy.push_back(body);
+        // Physics::world.DestroyBody(body);
+        body->GetUserData().pointer = reinterpret_cast<uintptr_t>(nullptr);
         body = nullptr;
     }
 }

@@ -12,16 +12,18 @@ MainMenuState::MainMenuState(Game* game): GameState(game)
 {
     // Initialize buttons
     float buttonWidth = static_cast<float>(Game::getScreenWidth()) * 0.4;
-    float buttonHeight = 50;
+    float buttonHeight = 75;
     float column1X = static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
     float column2X = 3 * static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
     float firstButtonWidth = column2X - column1X + buttonWidth;
 
-    buttons.push_back({{column1X, 300, firstButtonWidth, buttonHeight}, "New Game", false});
-    buttons.push_back({{column1X, 375, buttonWidth, buttonHeight}, "Settings", false});
-    buttons.push_back({{column2X, 375, buttonWidth, buttonHeight}, "Saved Games", false});
-    buttons.push_back({{column1X, 450, buttonWidth, buttonHeight}, "Map Builder", false});
-    buttons.push_back({{column2X, 450, buttonWidth, buttonHeight}, "Exit", false});
+    buttons.push_back({{column1X, 340, firstButtonWidth, buttonHeight}, "New Game", false});
+    buttons.push_back({{column1X, 440, buttonWidth, buttonHeight}, "Continue", false});
+    buttons.push_back({{column2X, 440, buttonWidth, buttonHeight}, "Tutorial", false});
+    buttons.push_back({{column1X, 540, buttonWidth, buttonHeight}, "Settings", false});
+    buttons.push_back({{column2X, 540, buttonWidth, buttonHeight}, "Saved Games", false});
+    buttons.push_back({{column1X, 640, buttonWidth, buttonHeight}, "Map Builder", false});
+    buttons.push_back({{column2X, 640, buttonWidth, buttonHeight}, "Exit", false});
 
     // Load background image
     backgroundTexture = LoadTexture("../resources/background/menuBackground.png");
@@ -38,18 +40,24 @@ void MainMenuState::update() {
 
     // Handle button clicks
     if (IsButtonClicked(buttons[0])) {
-        game->changeState(game->selectPlayerState.get());
+        game->changeState(game->selectDifficultyState.get());
     }
     if (IsButtonClicked(buttons[1])) {
-        game->changeState(game->settingsState.get());
+        game->changeState(game->gameplayState.get());
     }
     if (IsButtonClicked(buttons[2])) {
-        game->changeState(game->savedGameState.get());
+        game->changeState(game->tutorialState.get());
     }
     if (IsButtonClicked(buttons[3])) {
-        game->changeState(game->mapBuilderState.get());
+        game->changeState(game->settingsState.get());
     }
     if (IsButtonClicked(buttons[4])) {
+        game->changeState(game->savedGameState.get());
+    }
+    if (IsButtonClicked(buttons[5])) {
+        game->changeState(game->mapBuilderState.get());
+    }
+    if (IsButtonClicked(buttons[6])) {
         game->exitGame(); // Exit the game
     }
 }
@@ -73,7 +81,7 @@ void MainMenuState::draw() {
     DrawTexturePro(
         logoTexture,
         {0, 0, static_cast<float>(logoTexture.width), static_cast<float>(logoTexture.height)},
-        {game->getScreenWidth() / 2 - logoRectWidth / 2, 70, logoRectWidth, logoRectHeight},
+        {game->getScreenWidth() / 2 - logoRectWidth / 2, 100, logoRectWidth, logoRectHeight},
         {0, 0},
         0.0f,
         WHITE
@@ -109,12 +117,12 @@ SettingsState::SettingsState(Game* game)
     : GameState(game)
 {
     // Initialize buttons
-    float buttonWidth = 250;
-    float buttonHeight = 50;
+    float buttonWidth = 400;
+    float buttonHeight = 75;
     float centerX = (game->getScreenWidth() - buttonWidth) / 2;
     buttons.push_back({{centerX, 150, buttonWidth, buttonHeight}, "", false});
-    buttons.push_back({{centerX, 225, buttonWidth, buttonHeight}, "", false});
-    buttons.push_back({{centerX, 300, buttonWidth, buttonHeight}, "Back to Menu", false});
+    buttons.push_back({{centerX, 250, buttonWidth, buttonHeight}, "", false});
+    buttons.push_back({{centerX, 350, buttonWidth, buttonHeight}, "Back to Menu", false});
 }
 
 void SettingsState::update() {
@@ -138,10 +146,10 @@ void SettingsState::update() {
         game->changeState(game->mainMenuState.get());
     }
 
-    float centerX = (game->getScreenWidth() - 250) / 2;
+    float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
-    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+    DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 void SettingsState::draw() {
@@ -155,10 +163,10 @@ void SettingsState::draw() {
         DrawButton(button, *game);
     }
 
-    float centerX = (game->getScreenWidth() - 250) / 2;
+    float centerX = (game->getScreenWidth() - 400) / 2;
     // Draw sliders
-    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+    DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 TutorialState::TutorialState(Game *game) : GameState(game)
@@ -208,7 +216,15 @@ void SavedGameState::update() {
     // Handle button clicks
     for (int i = 0; i < 5; ++i) {
         if (IsButtonClicked(buttons[i])) {
-            // Handle saved game slot click (currently does nothing)
+            // Handle saved game slot click 
+            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(i + 1) + ".txt";
+            std::ifstream file(saveGamePath);
+
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->~Tilemap();
+            tilemap = Tilemap::getInstance();
+            tilemap->LoadSaveGame(saveGamePath);
+            game->changeState(game->gameplayState.get());
         }
     }
     if (IsButtonClicked(buttons[5])) {
@@ -429,7 +445,6 @@ void SelectPlayerState::update() {
     if (IsButtonClicked(player1.button)) {
         // Set player to Mario
         Tilemap* tilemap = Tilemap::getInstance();
-        tilemap->LoadMapFromJson("map-1-1.json");
         tilemap->setPlayer("mario");
 
         game->changeState(game->gameplayState.get());
@@ -437,7 +452,6 @@ void SelectPlayerState::update() {
     if (IsButtonClicked(player2.button)) {
         // Set player to Luigi
         Tilemap* tilemap = Tilemap::getInstance();
-        tilemap->LoadMapFromJson("map-1-1.json");
         tilemap->setPlayer("luigi");
         
         game->changeState(game->gameplayState.get());
@@ -449,7 +463,7 @@ void SelectPlayerState::draw() {
     game->mainMenuState->drawBackground();
 
     // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.6f));
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
     
     // Draw buttons
     DrawImageButton(*game, player1);
@@ -486,7 +500,7 @@ void ChangeStageState::draw()
     game->gameplayState->draw();
 
     // Draw a semi-transparent black overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.5f));
 
     // Draw the central rounded rectangle (panel)
     float rectWidth = 300.0f;
@@ -796,6 +810,9 @@ GameSavingState::GameSavingState(Game* game) : GameState(game) {
     for (int i = 0; i < 5; ++i) {
         buttons.push_back(Button{{centerX, static_cast<float>(100 + i * 75), buttonWidth, buttonHeight}, "Slot " + std::to_string(i + 1), false});
     }
+
+    // Initialize background texture
+    backgroundTexture = LoadTexture("../resources/images/icon/squareboard.png");
 }
 
 void GameSavingState::update() {
@@ -809,7 +826,9 @@ void GameSavingState::update() {
     for (int i = 0; i < 5; ++i) {
         if (IsButtonClicked(buttons[i])) {
             // Save the game to the slot
-
+            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(i + 1) + ".txt";
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->SaveGame(saveGamePath);
             // Change state to MainMenuState
             isClicked = true;
             break;
@@ -826,6 +845,16 @@ void GameSavingState::draw() {
 
     // Draw a semi-transparent gray overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw background texture
+    constexpr float backgroundScale = 3.0f;
+    float textureWidth = backgroundTexture.width * backgroundScale;
+    float textureHeight = backgroundTexture.height * backgroundScale;
+    float posX = (game->getScreenWidth() - textureWidth) / 2;
+    float posY = (game->getScreenHeight() - textureHeight) / 2;
+
+    DrawTextureEx(backgroundTexture, {posX, posY}, 0.0f, backgroundScale, WHITE);
+
     // Draw buttons
     for (const auto& button : buttons) {
         DrawButton(button, *game);
@@ -836,20 +865,64 @@ GameSavingState::~GameSavingState() {
     // Unload textures
 }
 
-SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game) {
+SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game)
+{
     // Initialize buttons
+    float buttonWidth = 650;
+    float buttonHeight = 150;
+    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+
+    difficultyTextures.push_back(LoadTexture("../resources/images/goomba/walk.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/goomba/dead.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/koopa/idle.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/koopa/fly1.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/boss/walk2.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/boss/blow3.png"));
+
+    buttons.push_back({{centerX, 100, buttonWidth, buttonHeight}, difficultyTextures[0],
+        difficultyTextures[1], false});
+    buttons.push_back({{centerX, 300, buttonWidth, buttonHeight}, difficultyTextures[2],
+        difficultyTextures[3], false});
+    buttons.push_back({{centerX, 500, buttonWidth, buttonHeight}, difficultyTextures[4],
+        difficultyTextures[5], false});
 }
 
 void SelectDifficultyState::update() {
     // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    for (int i = 0; i < 3; ++i)
+    {
+        if (IsButtonClicked(buttons[i])) {
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->~Tilemap();
+            tilemap = Tilemap::getInstance();
+            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
+            game->changeState(game->selectPlayerState.get());
+        }
+    }
 }
 
 void SelectDifficultyState::draw() {
-    // Draw the underlying MainMenuState
+    // Draw the underlying SelectDifficultState
+    game->mainMenuState->drawBackground();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.6f));
+
+    // Draw buttons
+    DrawDifficultyButton(buttons[0], "Easy");
+    DrawDifficultyButton(buttons[1], "Medium");
+    DrawDifficultyButton(buttons[2], "Hard");
 }
 
 SelectDifficultyState::~SelectDifficultyState() {
     // Unload textures
+    for (const auto& texture : difficultyTextures) {
+        UnloadTexture(texture);
+    }
 }
 
 AreYouSureState::AreYouSureState(Game* game) : GameState(game) {

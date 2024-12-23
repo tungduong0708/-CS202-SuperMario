@@ -194,6 +194,7 @@ void Character::changeMode(Mode mode)
 }
 
 void Character::Init(b2Vec2 position) {
+    this->position = Vector2{position.x, position.y};  
     alive = true;
     currentImage = ImageSet::WALK;
     mode = SMALL;

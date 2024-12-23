@@ -12,6 +12,7 @@
 
 class EffectManager {
 private:
+    bool loadedFromMap = false;
     bool activePlayerEffect = false;
     std::map<std::pair<int, int>, std::string> effectMap; // Map effect position
     std::map<std::pair<int, int>, int> effectCount;
@@ -20,17 +21,20 @@ private:
 public:
     EffectManager() = default;
     EffectManager(std::map<std::pair<int, int>, std::string> effectMap, std::map<std::pair<int, int>, int> effectCount);
+    EffectManager(const EffectManager& other);
     ~EffectManager();
     void AddEffectPosition(std::pair<int, int> pos, std::string name);
     void AddEffectCount(std::pair<int, int> pos, int count);
     void AddLowerEffect(AnimationEffect* effect);
     void AddUpperEffect(AnimationEffect* effect);
     bool isActivePlayerEffect();
+    bool isLoadedFromMap();
     std::string GetEffectName(std::pair<int, int> pos);
     int GetEffectCount(std::pair<int, int> pos);
     std::map<std::pair<int, int>, std::string> getEffectMap();
     std::map<std::pair<int, int>, int> getEffectCountMap();
     void setActivePlayerEffect(bool active);
+    void setLoadedFromMap(bool loaded);
     bool UpdateEffectCount(std::pair<int, int> pos);
     void Update(float deltaTime);
     void DrawLower() const;

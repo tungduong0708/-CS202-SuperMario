@@ -43,7 +43,7 @@ public:
 
 class ExportFileVisitor : public FileVisitor {
 private:
-    const std::string filePath = "../resources/save/save.txt";
+    std::string filePath;
     std::ofstream file;
     static ExportFileVisitor* instance;
     ExportFileVisitor() = default;
@@ -54,6 +54,7 @@ public:
     void openFile(bool overwrite = false);
     void closeFile();
 
+    void exportMapInfo(std::string path, int difficulty);
     void VisitFile(StaticTile* obj) override;
     void VisitFile(KinematicTile *obj) override;
     void VisitFile(MovingPlatform* obj) override;
@@ -83,6 +84,7 @@ public:
     ~ImportFileVisitor() = default;
 
     void setFilePath(std::string path);
+    std::string getFilePath() const;
     void openFile();
     void closeFile();
     

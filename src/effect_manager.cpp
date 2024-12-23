@@ -4,6 +4,10 @@ EffectManager::EffectManager(std::map<std::pair<int, int>, std::string> effectMa
 {
 }
 
+EffectManager::EffectManager(const EffectManager &other) : effectMap(other.effectMap), effectCount(other.effectCount)
+{
+}
+
 EffectManager::~EffectManager()
 {
     for (auto* effect : lowerEffects) {
@@ -41,6 +45,11 @@ bool EffectManager::isActivePlayerEffect()
     return activePlayerEffect;
 }
 
+bool EffectManager::isLoadedFromMap()
+{
+    return loadedFromMap;
+}
+
 std::string EffectManager::GetEffectName(std::pair<int, int> pos)
 {
     return effectMap[pos];
@@ -64,6 +73,11 @@ std::map<std::pair<int, int>, int> EffectManager::getEffectCountMap()
 void EffectManager::setActivePlayerEffect(bool active)
 {
     activePlayerEffect = active;
+}
+
+void EffectManager::setLoadedFromMap(bool loaded)
+{
+    loadedFromMap = loaded;
 }
 
 bool EffectManager::UpdateEffectCount(std::pair<int, int> pos)
@@ -136,14 +150,15 @@ void EffectManager::clearEffects()
 {
     for (auto* effect : lowerEffects) {
         delete effect;
+        effect = nullptr; // Set to nullptr to avoid dangling pointer
     }
     lowerEffects.clear();
+
     for (auto* effect : upperEffects) {
         delete effect;
+        effect = nullptr; // Set to nullptr to avoid dangling pointer
     }
     upperEffects.clear();
-    effectCount.clear();
-    effectMap.clear();
 }
 
 void EffectManager::accept(FileVisitor *v)

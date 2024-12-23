@@ -1,0 +1,70 @@
+map-1-1.json
+Koopa
+31.3433 12.2975
+1
+100
+Goomba
+29.1373 13.0475
+1
+100
+Boss
+41.9626 11.985
+1
+100
+LarvaBubble
+17.9257 13.3755
+1
+100
+MonsterFlower
+28.0659 12.0816
+1
+100
+Koopa
+55.0212 12.2975
+1
+100
+Player
+10.8333 12.735
+10.8333 9.45312
+0
+luigi
+0
+0
+3
+298.273
+1-1
+EffectManager
+16
+13 9 star
+15 9 mushroom_fireflower
+20 9 coin
+21 5 coin
+22 9 mushroom_fireflower
+23 9 coin
+71 9 mushroom_fireflower
+93 5 coin
+100 9 star
+105 9 coin
+108 5 mushroom_fireflower
+108 9 coin
+111 9 coin
+130 5 coin
+131 5 coin
+173 9 coin
+16
+13 9 1
+15 9 1
+20 9 3
+21 5 1
+22 9 1
+23 9 2
+71 9 1
+93 5 1
+100 9 1
+105 9 1
+108 5 1
+108 9 1
+111 9 1
+130 5 1
+131 5 1
+173 9 1

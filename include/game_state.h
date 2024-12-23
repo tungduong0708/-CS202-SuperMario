@@ -235,7 +235,7 @@ public:
     void draw() override;
     ~SelectDifficultyState() override;
 private:
-    std::vector<Button> buttons;
+    std::vector<ImageButton> buttons;
     std::vector<Texture2D> difficultyTextures;
 };
 
