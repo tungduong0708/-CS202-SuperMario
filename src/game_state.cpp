@@ -673,6 +673,12 @@ DeathState::DeathState(Game* game) : ChangeStageState(game), showDeathImage(fals
 void DeathState::update()
 {
     elapsedTime += GetFrameTime();
+    Player* player = Tilemap::getInstance()->GetPlayer();
+
+    if (elapsedTime < 1.0f && !showDeathImage) {
+        // Set the remaining lives correctly
+        lifeRemaining = player->getLives() + 1;
+    }
 
     if (elapsedTime > 1.0f && elapsedTime < 2.0f && !showDeathImage) {
         showDeathImage = true;
@@ -680,7 +686,8 @@ void DeathState::update()
 
     if (elapsedTime > 2.0f && showDeathImage) {
         showDeathImage = false;
-        lifeRemaining--;
+        // set the remaining lives correctly
+        lifeRemaining = player->getLives();
     }
 
     if (elapsedTime > 4.0f) {
@@ -690,6 +697,7 @@ void DeathState::update()
 }
 
 void DeathState::draw() {
+
     // Draw the underlying GameplayState
     game->gameplayState->draw();
 

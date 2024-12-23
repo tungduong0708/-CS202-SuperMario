@@ -349,18 +349,18 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
 
     if (difficulty == "Easy")
     {
-        description = "Relaxed pace, perfect for \nbeginners to enjoy.";
+        description = "Relaxed pace, perfect for \n\nbeginners to enjoy.";
     }
     else if (difficulty == "Medium")
     {
-        description = "Balanced challenge for \nseasoned and casual players alike.";
+        description = "Balanced challenge for \n\nseasoned and casual players alike.";
     }
     else if (difficulty == "Hard")
     {
-        description = "Intense gameplay, only for \nthe bravest of heroes!";
+        description = "Intense gameplay, only for \n\nthe bravest of heroes!";
     }
 
-    // Draw shadow for description
+    // // Draw shadow for description
     DrawTextEx(
         font,
         description.c_str(),
