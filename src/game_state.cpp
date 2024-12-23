@@ -197,14 +197,20 @@ SavedGameState::SavedGameState(Game* game)
     : GameState(game)
 {
     // Initialize buttons for saved game slots
-    float buttonWidth = 250;
+    float buttonWidth = 300;
     float buttonHeight = 50;
     float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+    float spacing = 25;
+    float firstY = (game->getScreenHeight() - 6 * buttonHeight - 5 * spacing) / 2;
     for (int i = 0; i < 5; ++i) {
-        buttons.push_back(Button{{centerX, static_cast<float>(100 + i * 75), buttonWidth, buttonHeight}, "Slot " + std::to_string(i + 1), false});
+        buttons.push_back(Button{{centerX, firstY + buttonHeight * i + spacing * i, buttonWidth, buttonHeight}, 
+        "Slot " + std::to_string(i + 1), false});
     }
     // Initialize back to menu button
-    buttons.push_back({{centerX, 475, buttonWidth, buttonHeight}, "Back to Menu", false});
+    buttons.push_back({{centerX, firstY + buttonHeight * 5 + spacing * 5, buttonWidth, buttonHeight}, "Back to Menu", false});
+
+    // Load background image
+    backgroundTexture = LoadTexture("../resources/images/icon/squareboard.png");
 }
 
 void SavedGameState::update() {
@@ -238,19 +244,34 @@ void SavedGameState::draw() {
 
     // Draw a semi-transparent gray overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw background image
+    constexpr float backgroundScale = 4.0f;
+    float textureWidth = backgroundTexture.width * backgroundScale;
+    float textureHeight = backgroundTexture.height * backgroundScale;
+    float posX = (game->getScreenWidth() - textureWidth) / 2;
+    float posY = (game->getScreenHeight() - textureHeight) / 2;
+
+    DrawTextureEx(backgroundTexture, {posX, posY}, 0.0f, backgroundScale, WHITE);
+
     // Draw buttons
     for (const auto& button : buttons) {
         DrawButton(button, *game);
     }
 }
 
+SavedGameState::~SavedGameState() {
+    // Unload background texture
+    UnloadTexture(backgroundTexture);
+}
+
 MapBuilderState::MapBuilderState(Game* game)
     : GameState(game)
 {
     backgroundTexture = LoadTexture("../resources/background/menuBackground.png");
-    float buttonWidth = 35;
-    float buttonHeight = 35;
-    pauseButton = {{755, 10, buttonWidth, buttonHeight}, "II", false};
+    float buttonWidth = 50;
+    float buttonHeight = 50;
+    pauseButton = {{game->getScreenWidth() - buttonWidth - 10, 10, buttonWidth, buttonHeight}, "II", false};
 }
 
 void MapBuilderState::update() {
@@ -293,9 +314,9 @@ GameplayState::GameplayState(Game* game)
     TextHelper::loadFont("PressStart2P-Regular", "");
     TilesetHandler::Init();
     
-    float buttonWidth = 35;
-    float buttonHeight = 35;
-    pauseButton = {{755, 10, buttonWidth, buttonHeight}, "II", false};
+    float buttonWidth = 50;
+    float buttonHeight = 50;
+    pauseButton = {{game->getScreenWidth() - buttonWidth - 10, 10, buttonWidth, buttonHeight}, "II", false};
 }
 
 
@@ -330,13 +351,16 @@ PauseGameState::PauseGameState(Game* game)
     : GameState(game)
 {
     // Initialize buttons
-    float buttonWidth = 250;
-    float buttonHeight = 50;
+    float buttonWidth = 400;
+    float buttonHeight = 75;
     float centerX = (game->getScreenWidth() - buttonWidth) / 2;
-    buttons.push_back({{centerX, 100, buttonWidth, buttonHeight}, "", false});
-    buttons.push_back({{centerX, 175, buttonWidth, buttonHeight}, "", false});
-    buttons.push_back({{centerX, 250, buttonWidth, buttonHeight}, "Resume", false});
-    buttons.push_back({{centerX, 325, buttonWidth, buttonHeight}, "Back to Menu", false});
+    float spacing = 25;
+    float firstY = (game->getScreenHeight() - 6 * buttonHeight - 5 * spacing) / 2;
+
+    buttons.push_back({{centerX, firstY, buttonWidth, buttonHeight}, "", false});
+    buttons.push_back({{centerX, firstY + buttonHeight + spacing, buttonWidth, buttonHeight}, "", false});
+    buttons.push_back({{centerX, firstY + buttonHeight * 2 + spacing * 2, buttonWidth, buttonHeight}, "Resume", false});
+    buttons.push_back({{centerX, firstY + buttonHeight * 3 + spacing * 3, buttonWidth, buttonHeight}, "Back to Menu", false});
 }
 
 void PauseGameState::update() {
@@ -363,10 +387,10 @@ void PauseGameState::update() {
         game->changeState(game->gameSavingState.get());
     }
 
-    float centerX = (game->getScreenWidth() - 250) / 2;
+    float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
-    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+    DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 void PauseGameState::draw() {
@@ -381,14 +405,45 @@ void PauseGameState::draw() {
         DrawButton(button, *game);
     }
 
-    float centerX = (game->getScreenWidth() - 250) / 2;
+    float centerX = (game->getScreenWidth() - 400) / 2;
     // Draw sliders
-    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+    DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 MapPauseState::MapPauseState(Game *game) : PauseGameState(game)
 {   
+}
+
+void MapPauseState::update()
+{
+    // Update button texts based on settings
+    buttons[0].text = game->getSettings().music ? "Music: On" : "Music: Off";
+    buttons[1].text = game->getSettings().soundEffects ? "Sound Effects: On" : "Sound Effects: Off";
+
+    // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    // Handle button clicks
+    if (IsButtonClicked(buttons[0])) {
+        game->getSettings().music = !game->getSettings().music;
+    }
+    if (IsButtonClicked(buttons[1])) {
+        game->getSettings().soundEffects = !game->getSettings().soundEffects;
+    }
+    if (IsButtonClicked(buttons[2])) {
+        game->changeState(game->mapBuilderState.get());
+    }
+    if (IsButtonClicked(buttons[3])) {
+        game->changeState(game->mainMenuState.get());
+    }
+
+    float centerX = (game->getScreenWidth() - 400) / 2;
+    // Update sliders
+    DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 void MapPauseState::draw()
@@ -404,23 +459,23 @@ void MapPauseState::draw()
         DrawButton(button, *game);
     }
 
-    float centerX = (game->getScreenWidth() - 250) / 2;
+    float centerX = (game->getScreenWidth() - 400) / 2;
     // Draw sliders
-    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+    DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
     // Initialize buttons
-    float buttonWidth = 500;
-    float buttonHeight = 250;
-    float column1X = 30;
-    float column2X = static_cast<float>(game->getScreenWidth()) - buttonWidth - 30;
+    float buttonWidth = 600;
+    float buttonHeight = 300;
+    float column1X = 50;
+    float column2X = static_cast<float>(game->getScreenWidth()) - buttonWidth - column1X;
 
     player1.name = "Mario";
     player1.texture = LoadTexture("../resources/images/smallmario/idle.png");
     player1.hoverTexture = LoadTexture("../resources/images/smallmario/victory.png");
-    player1.button = {{column1X, 30, buttonWidth, buttonHeight}, player1.texture, player1.hoverTexture, false};
+    player1.button = {{column1X, 50, buttonWidth, buttonHeight}, player1.texture, player1.hoverTexture, false};
     player1.speed = 85;
     player1.jumpForce = 90;
     player1.bulletSpeed = 72;
@@ -429,7 +484,8 @@ SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
     player2.name = "Luigi";
     player2.texture = LoadTexture("../resources/images/smallluigi/idle.png");
     player2.hoverTexture = LoadTexture("../resources/images/smallluigi/victory.png");
-    player2.button = {{column2X, 330, buttonWidth, buttonHeight}, player2.texture, player2.hoverTexture, false};
+    player2.button = {{column2X, game->getScreenHeight() - buttonHeight - 50, buttonWidth, buttonHeight}, 
+                       player2.texture, player2.hoverTexture, false};
     player2.speed = 75;
     player2.jumpForce = 84;
     player2.bulletSpeed = 88;
@@ -860,11 +916,14 @@ void VictoryState::draw() {
 
 GameSavingState::GameSavingState(Game* game) : GameState(game) {
     // Initialize buttons
-    float buttonWidth = 250;
+    float buttonWidth = 300;
     float buttonHeight = 50;
     float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+    float spacing = 25;
+    float firstY = (game->getScreenHeight() - 5 * buttonHeight - 4 * spacing) / 2;
     for (int i = 0; i < 5; ++i) {
-        buttons.push_back(Button{{centerX, static_cast<float>(100 + i * 75), buttonWidth, buttonHeight}, "Slot " + std::to_string(i + 1), false});
+        buttons.push_back(Button{{centerX, firstY + buttonHeight * i + spacing * i, buttonWidth, buttonHeight}, 
+        "Slot " + std::to_string(i + 1), false});
     }
 
     // Initialize background texture
@@ -903,7 +962,7 @@ void GameSavingState::draw() {
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
 
     // Draw background texture
-    constexpr float backgroundScale = 3.0f;
+    constexpr float backgroundScale = 3.5f;
     float textureWidth = backgroundTexture.width * backgroundScale;
     float textureHeight = backgroundTexture.height * backgroundScale;
     float posX = (game->getScreenWidth() - textureWidth) / 2;
@@ -919,6 +978,7 @@ void GameSavingState::draw() {
 
 GameSavingState::~GameSavingState() {
     // Unload textures
+    UnloadTexture(backgroundTexture);
 }
 
 SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game)
