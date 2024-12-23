@@ -38,7 +38,7 @@ void MainMenuState::update() {
 
     // Handle button clicks
     if (IsButtonClicked(buttons[0])) {
-        game->changeState(game->selectPlayerState.get());
+        game->changeState(game->selectDifficultyState.get());
     }
     if (IsButtonClicked(buttons[1])) {
         game->changeState(game->settingsState.get());
@@ -461,7 +461,7 @@ void SelectPlayerState::draw() {
     game->mainMenuState->drawBackground();
 
     // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.6f));
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
     
     // Draw buttons
     DrawImageButton(*game, player1);
@@ -498,7 +498,7 @@ void ChangeStageState::draw()
     game->gameplayState->draw();
 
     // Draw a semi-transparent black overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.5f));
 
     // Draw the central rounded rectangle (panel)
     float rectWidth = 300.0f;
@@ -850,20 +850,62 @@ GameSavingState::~GameSavingState() {
     // Unload textures
 }
 
-SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game) {
+SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game)
+{
     // Initialize buttons
+    float buttonWidth = 650;
+    float buttonHeight = 150;
+    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+
+    difficultyTextures.push_back(LoadTexture("../resources/images/goomba/walk.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/goomba/dead.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/koopa/idle.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/koopa/fly1.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/boss/walk2.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/boss/blow3.png"));
+
+    buttons.push_back({{centerX, 100, buttonWidth, buttonHeight}, difficultyTextures[0],
+        difficultyTextures[1], false});
+    buttons.push_back({{centerX, 300, buttonWidth, buttonHeight}, difficultyTextures[2],
+        difficultyTextures[3], false});
+    buttons.push_back({{centerX, 500, buttonWidth, buttonHeight}, difficultyTextures[4],
+        difficultyTextures[5], false});
 }
 
 void SelectDifficultyState::update() {
     // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    for (int i = 0; i < 3; ++i)
+    {
+        if (IsButtonClicked(buttons[i])) {
+            // Set difficulty level
+
+            game->changeState(game->selectPlayerState.get());
+        }
+    }
 }
 
 void SelectDifficultyState::draw() {
-    // Draw the underlying MainMenuState
+    // Draw the underlying SelectDifficultState
+    game->mainMenuState->drawBackground();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.6f));
+
+    // Draw buttons
+    DrawDifficultyButton(buttons[0], "Easy");
+    DrawDifficultyButton(buttons[1], "Medium");
+    DrawDifficultyButton(buttons[2], "Hard");
 }
 
 SelectDifficultyState::~SelectDifficultyState() {
     // Unload textures
+    for (const auto& texture : difficultyTextures) {
+        UnloadTexture(texture);
+    }
 }
 
 AreYouSureState::AreYouSureState(Game* game) : GameState(game) {

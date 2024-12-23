@@ -265,3 +265,109 @@ void DrawImageButton(const Game& game, const PlayerInfo& player)
         {textX, textY + nameFontSize + 20}, // Position below the name
         descFontSize, 1, descColor);
 }
+
+void DrawDifficultyButton(const ImageButton& button, const std::string& difficulty)
+{
+    Font font = Game::getInstance()->getFont();
+    // Define base colors for difficulty levels
+    Color baseColor;
+    Color hoverColor;
+    if (difficulty == "Easy")
+    {
+        baseColor = GREEN;
+        hoverColor = DARKGREEN;
+    }
+    else if (difficulty == "Medium")
+    {
+        baseColor = YELLOW;
+        hoverColor = ORANGE;
+    }
+    else if (difficulty == "Hard")
+    {
+        baseColor = RED;
+        hoverColor = MAROON;
+    }
+
+    // Check hover state
+    Vector2 mousePos = GetMousePosition();
+    bool isHovered = CheckCollisionPointRec(mousePos, button.rect);
+
+    // Adjust color based on hover state
+    Color backgroundColor = isHovered ? hoverColor : baseColor;
+
+    // Border color
+    Color borderColor = isHovered ? WHITE : DARKBLUE;
+
+    // --- Shadow Effect ---
+    DrawRectangleRounded(
+        {button.rect.x + 4, button.rect.y + 4, button.rect.width, button.rect.height},
+        0.2f, 6, Fade(BLACK, 0.4f));
+
+    // --- Background ---
+    DrawRectangleRounded(button.rect, 0.2f, 6, backgroundColor);
+
+    // --- Border ---
+    DrawRectangleRoundedLines(button.rect, 0.2f, 6, 3, borderColor);
+
+    // --- Texture/Icon on the Left ---
+    float texturePadding = 10.0f; // Padding for the texture
+    float textureSize = button.rect.height - texturePadding * 2; // Fit texture vertically
+    Rectangle textureDest = {button.rect.x + texturePadding, button.rect.y + texturePadding, textureSize, textureSize};
+
+    DrawTexturePro(
+        isHovered ? button.hoverTexture : button.texture,   // Use hover texture if hovered
+        {0, 0, static_cast<float>(button.texture.width), static_cast<float>(button.texture.height)}, // Source rectangle
+        textureDest,                                        // Destination rectangle
+        {0, 0},                                             // Origin point
+        0.0f,                                               // No rotation
+        WHITE);
+
+    // --- Difficulty Name Centered ---
+    float textX = button.rect.x + textureSize + texturePadding * 3; // Start text to the right of the texture
+    float textY = button.rect.y + button.rect.height / 2 - 40; // Center text vertically
+    constexpr int fontSize = 36; // Font size for difficulty name
+
+    // Draw shadow for text
+    DrawTextEx(
+        font, // Replace with your custom font if available
+        difficulty.c_str(),
+        {textX + 2, textY + 2},
+        fontSize, 2, Fade(BLACK, 0.6f));
+
+    // Draw main text
+    DrawTextEx(
+        font, // Replace with your custom font if available
+        difficulty.c_str(),
+        {textX, textY},
+        fontSize, 2, BROWN);
+
+    constexpr int descFontSize = 20;
+    std::string description;
+
+    if (difficulty == "Easy")
+    {
+        description = "Relaxed pace, perfect for \nbeginners to enjoy.";
+    }
+    else if (difficulty == "Medium")
+    {
+        description = "Balanced challenge for \nseasoned and casual players alike.";
+    }
+    else if (difficulty == "Hard")
+    {
+        description = "Intense gameplay, only for \nthe bravest of heroes!";
+    }
+
+    // Draw shadow for description
+    DrawTextEx(
+        font,
+        description.c_str(),
+        {textX + 2, textY + fontSize + 10},
+        descFontSize, 1, Fade(BLACK, 0.6f));
+
+    // Draw main text
+    DrawTextEx(
+        font,
+        description.c_str(),
+        {textX, textY + fontSize + 8},
+        descFontSize, 1, BLUE);
+}
