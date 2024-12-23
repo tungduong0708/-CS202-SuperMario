@@ -26,8 +26,8 @@
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":2020,
-                 "y":138.5
+                 "x":1564.66666666667,
+                 "y":144.5
                 }, 
                 {
                  "height":0,
@@ -47,7 +47,7 @@
                  "name":"boss",
                  "point":true,
                  "rotation":0,
-                 "type":"enemy",
+                 "type":"character",
                  "visible":true,
                  "width":0,
                  "x":2168.5,
@@ -233,7 +233,7 @@
  "nextobjectid":26,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tilesets":[
         {

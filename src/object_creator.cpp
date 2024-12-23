@@ -41,7 +41,8 @@ void ObjectCreator::InitObjects() {
     RegisterObject("rotatingblaze", [](Vector2 pos) {
         MovingPlatform* platform = new MovingPlatform(Vector2{0.5f, 4.0f}, Vector2{0.0f, 0.0f}, 0.0f, 0.0f, "rotatingblaze");
         platform->SetorbitCenter(pos);
-        platform->Init(b2Vec2{pos.x, pos.y});
+        //platform->Init(b2Vec2{pos.x, pos.y});
+        platform->InitOrbit(pos, 2.0f, 120.0f);
 
         // Thiết lập tốc độ quay
         platform->SetorbitSpeed(120.0f); // 90 độ/giây// Tâm quỹ đạo
