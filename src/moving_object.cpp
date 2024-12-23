@@ -195,7 +195,8 @@ void FireBall::Init(b2Vec2 position) {
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
     b2Fixture* fixture = body->GetFixtureList();
     b2Filter filter = fixture->GetFilterData();
-    filter.maskBits = ~CATEGORY_PLAYER;
+    filter.categoryBits = CATEGORY_FIREBALL;
+    filter.maskBits = ~(CATEGORY_PLAYER | CATEGORY_COIN | CATEGORY_FIREBALL);  
     fixture->SetFilterData(filter);
 }
 
@@ -219,6 +220,18 @@ void FireBall::ReloadAnimation() {
 
 void FireBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!other || !body) return;
+
+    KinematicTile *coin = dynamic_cast<KinematicTile*>(other);
+    if (coin) {
+        cout << "Coin" << endl;
+        int cBits = coin->GetBody()->GetFixtureList()->GetFilterData().categoryBits;
+        int mBits = coin->GetBody()->GetFixtureList()->GetFilterData().maskBits;
+        int curCBits = body->GetFixtureList()->GetFilterData().categoryBits;
+        int curMBits = body->GetFixtureList()->GetFilterData().maskBits;
+        cout << "Coin: " << cBits << " " << mBits << endl;
+        cout << "Fireball: " << curCBits << " " << curMBits << endl;
+        cout << "Collide: " << (cBits & curMBits) << " " << (mBits & curCBits) << endl;
+    }
 
     Enemy *enemy = dynamic_cast<Enemy*>(other);
     if (enemy || normal.x != 0) {

@@ -52,6 +52,7 @@ enum CategoryBits {
     CATEGORY_STAR = 0x0001 << 3,
     CATEGORY_ENEMY = 0x0001 << 4,
     CATEGORY_SCENERY = 0x0001 << 5,
+    CATEGORY_COIN = 0x0001 << 6,
     // Add more categories as needed
 };
 
