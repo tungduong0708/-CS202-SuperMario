@@ -614,30 +614,51 @@ void DeathState::draw() {
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
 
     // Draw the central rounded rectangle (panel)
-    float rectWidth = 300.0f;
-    float rectHeight = 150.0f;
+    float rectWidth = 400.0f;
+    float rectHeight = 200.0f;
     float rectX = (game->getScreenWidth() - rectWidth) / 2;
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
 
     // Draw shadow for depth
-    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.2f, 10, Fade(BLACK, 0.4f));
+    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.1f, 10, Fade(BLACK, 0.4f));
 
-    int gradientSteps = 10;  // Number of steps for the gradient
-    float stepHeight = rectHeight / static_cast<float>(gradientSteps); // Height of each step
+    // --- Smooth Gradient ---
+    int gradientSteps = 40;  // Increased steps for smoother gradient
+    float stepHeight = rectHeight / static_cast<float>(gradientSteps);  // Height of each gradient step
+    float overlap = 0.1f;  // Overlap amount to ensure smooth transitions
+
+    // Start and end colors for the gradient (RGBA)
+    Color startColor = (Color){255, 0, 0, 200};  // Bright red
+    Color endColor = (Color){100, 0, 0, 230};    // Dark red (close to crimson)
 
     for (int i = 0; i < gradientSteps; i++) {
-        float alpha = 0.8f - (static_cast<float>(i) * 0.1f); // Gradually decrease alpha for a fade effect
-        Color stepColor = Fade(RED, alpha); // Base color RED, fading gradually
+        float t = static_cast<float>(i) / (gradientSteps - 1);  // Interpolation factor (0 to 1)
+        
+        // Interpolating colors
+        Color stepColor = {
+            (unsigned char)((1 - t) * startColor.r + t * endColor.r),
+            (unsigned char)((1 - t) * startColor.g + t * endColor.g),
+            (unsigned char)((1 - t) * startColor.b + t * endColor.b),
+            (unsigned char)((1 - t) * startColor.a + t * endColor.a)
+        };
 
+        // Determine the rounding for the step
+        float rounding = 0.2f;  // Default rounding
+        if (i < 10) {
+            rounding = 1.0f;  // Increased rounding for the top rectangle
+        } else if (i > gradientSteps - 10) {
+            rounding = 1.0f;  // Increased rounding for the bottom rectangle
+        }
+
+        // Draw the gradient rectangle
         DrawRectangleRounded(
-            {rectX, rectY + static_cast<float>(i) * stepHeight, rectWidth, stepHeight + 1.5f}, // Adjust height for smooth overlap
-            0.2f, 10, stepColor);
+            {rectX, rectY + static_cast<float>(i) * stepHeight - overlap, rectWidth, stepHeight + overlap * 2},
+            rounding, 10, stepColor);
     }
 
-    // Draw "You Died" text with Shadow
+    // --- Draw "You Died" Text with Shadow ---
     constexpr int fontSize = 30;
     constexpr int spacing = 1;
-
     const char* deathText = "You Died";
     Vector2 deathTextSize = MeasureTextEx(game->getFont(), deathText, fontSize, spacing);
     Vector2 deathTextPos = {
@@ -652,13 +673,13 @@ void DeathState::draw() {
     DrawTextEx(game->getFont(), deathText,
                deathTextPos, fontSize, 2, ORANGE);
 
-    // Draw Mario's Image (Scaled 2x)
-    float imageScale = 2.0f;
-    float imageX = rectX + 70;
+    // --- Mario's Image (Scaled 2x) ---
+    float imageScale = 2.5f;
+    float imageX = rectX + 120;
     float imageY = rectY + (rectHeight - characterTexture.height * imageScale) / 2;
     DrawTextureEx(characterTexture, {imageX, imageY}, 0.0f, imageScale, WHITE);
 
-    // Draw Life Count with Shadow
+    // --- Life Count with Shadow ---
     constexpr int lifeFontSize = 24;
     Vector2 lifeTextPos = {imageX + 90, imageY + 10};
 
@@ -669,10 +690,10 @@ void DeathState::draw() {
     DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining),
                lifeTextPos, lifeFontSize, 2, WHITE);
 
-    // Draw Death Image
+    // --- Death Image (Optional) ---
     if (showDeathImage) {
         float deathImageScale = 1.5f;
-        float deathImageX = rectX + 70;
+        float deathImageX = rectX + 100;
         float deathImageY = rectY + (rectHeight - deathTexture.height * deathImageScale) / 6 * 5;
         DrawTextureEx(deathTexture, {deathImageX, deathImageY}, 0.0f, deathImageScale, WHITE);
 
@@ -689,7 +710,7 @@ void DeathState::draw() {
     }
 
     // Add a decorative border
-    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.2f, 10, 5, WHITE);
+    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.1f, 10, 5, WHITE);
 }
 
 void DeathState::reset()
