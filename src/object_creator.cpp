@@ -12,7 +12,7 @@ void ObjectCreator::RegisterObject(const std::string& name, std::function<SceneN
 void ObjectCreator::InitObjects() {
     RegisterObject("horizontalmovingplatform", [](Vector2 pos) {
         float boundaries[] = {0.0f, 0.0f, pos.x - 3.0f, pos.x + 3.0f}; // Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(Vector2{1.0f, 4.0f}, Vector2{1.0f, 0.0f}, 2.0f, 0.0f, "movingplatform");
+        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{1.0f, 0.0f}, 2.0f, 0.0f, "movingplatform");
         platform->Init(b2Vec2{pos.x, pos.y});
         b2Fixture* fixture = platform->getBody()->GetFixtureList();
         fixture->SetFriction(10.0f);
@@ -21,35 +21,35 @@ void ObjectCreator::InitObjects() {
 
     RegisterObject("verticalmovingplatform", [](Vector2 pos) {
         float boundaries[] = {pos.y + 3.0f, pos.y - 3.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(Vector2{1.0f, 4.0f}, Vector2{0.0f, 1.0f}, 2.0f, 0.0f, "movingplatform");
+        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{0.0f, 1.0f}, 2.0f, 0.0f, "movingplatform");
         platform->Init(b2Vec2{pos.x, pos.y});
         return platform;
     });
 
     RegisterObject("upverticalmovingplatform", [](Vector2 pos) {
         float boundaries[] = {pos.y + 20.0f, pos.y - 3.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(Vector2{1.0f, 4.0f}, Vector2{0.0f, -1.0f}, 0.0f, 0.0f, "movingplatform");
+        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{0.0f, -1.0f}, 0.0f, 0.0f, "movingplatform");
         platform->Init(b2Vec2{pos.x, pos.y});
         return platform;
     });
 
     RegisterObject("downverticalmovingplatform", [](Vector2 pos) {
         float boundaries[] = {pos.y + 3.0f, pos.y - 20.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(Vector2{1.0f, 4.0f}, Vector2{0.0f, 1.0f}, 0.0f, 0.0f, "movingplatform");
+        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{0.0f, 1.0f}, 0.0f, 0.0f, "movingplatform");
         platform->Init(b2Vec2{pos.x, pos.y});
         return platform;
     });
 
     RegisterObject("rotatingblaze", [](Vector2 pos) {
-        MovingPlatform* platform = new MovingPlatform(Vector2{0.5f, 4.0f}, Vector2{0.0f, 0.0f}, 0.0f, 0.0f, "rotatingblaze");
-        platform->SetorbitCenter(pos);
+        FireBlaze* fireblaze = new FireBlaze(pos, 2.0f, 0.0f, 120.0f);
+        fireblaze->SetorbitCenter(pos);
         //platform->Init(b2Vec2{pos.x, pos.y});
-        platform->InitOrbit(pos, 2.0f, 120.0f);
+        fireblaze->InitOrbit(pos, 2.0f, 120.0f);
 
         // Thiết lập tốc độ quay
-        platform->SetorbitSpeed(120.0f); // 90 độ/giây// Tâm quỹ đạo
-        platform->SetorbitRadius(2.0f);     
-        return platform;
+        fireblaze->SetorbitSpeed(120.0f); // 90 độ/giây// Tâm quỹ đạo
+        fireblaze->SetorbitRadius(2.0f);     
+        return fireblaze;
     });
 
 

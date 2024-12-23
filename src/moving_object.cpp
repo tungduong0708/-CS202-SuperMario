@@ -411,12 +411,12 @@ MovingObject *MovingPlatform::copy() const
 {
     return new MovingPlatform(*this);
 }
-/*
+
 FireBlaze::FireBlaze() 
     : MovingObject() {}
 
-FireBlaze::FireBlaze() 
-    : MovingObject(size, speed.x, angle), 
+FireBlaze::FireBlaze(Vector2 orbitCenter, float orbitRadius, float orbitAngle, float orbitSpeed) 
+    : MovingObject(), orbitCenter(orbitCenter), orbitRadius(orbitRadius), orbitAngle(orbitAngle), orbitSpeed(orbitSpeed)
     {
 }
 
@@ -430,8 +430,88 @@ FireBlaze::~FireBlaze() {
     }
     animations.clear();
 }
-*/
+void FireBlaze::Init(b2Vec2 position) {
+    animations = AnimationHandler::setAnimations("rotatingball");
+    Texture texture = animations[0].GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
 
+    std::vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{size.x, 0.0f},
+        b2Vec2{size.x, size.y},
+        b2Vec2{0.0f, size.y}
+    };
+    restitution = 0.0f;
+    MyBoundingBox::createBody(body, b2_kinematicBody, vertices, Vector2{position.x, position.y}, restitution);
+    b2Fixture* fixture = body->GetFixtureList();
+    fixture->SetFriction(10.0f);
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+}
+void FireBlaze::InitOrbit(Vector2 center, float radius, float speed){
+    animations = AnimationHandler::setAnimations("rotatingball");
+    Texture texture = animations[0].GetFrame();
+    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+
+    std::vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{size.x, 0.0f},
+        b2Vec2{size.x, size.y},
+        b2Vec2{0.0f, size.y}
+    };
+    restitution = 0.0f;
+    MyBoundingBox::createBody(body, b2_kinematicBody, vertices, center, restitution);
+    b2Fixture* fixture = body->GetFixtureList();
+    fixture->SetSensor(true);
+    orbitCenter = center;
+    orbitRadius = radius;
+    orbitAngle = 0.0f;    
+    orbitSpeed = speed;  
+}
+void FireBlaze::Update(Vector2 playerVelocity, float deltaTime){
+   orbitAngle += orbitSpeed * deltaTime;
+
+        if (orbitAngle >= 360.0f) {
+            orbitAngle -= 360.0f;
+        }
+        float radianAngle = orbitAngle * (M_PI / 180.0f);
+        body->SetTransform(b2Vec2(orbitCenter.x, orbitCenter.y), radianAngle); 
+}
+void FireBlaze::HandleInput(){
+
+}
+void FireBlaze::OnBeginContact(SceneNode *other, b2Vec2 normal){
+    if (!other) return;
+        Player* player = dynamic_cast<Player*>(other);
+        if (player) {
+            //player->setHealth(player->getHealth() - 1000);
+        }
+}
+void FireBlaze::OnEndContact(SceneNode *other){
+        
+}
+void FireBlaze::Draw(){
+    if (!body) return;
+
+    b2Vec2 pos = body->GetPosition();
+  
+    //float radianAngle = orbitAngle * (M_PI / 180.0f);
+
+    Texture text = animations[0].GetFrame();
+    Rectangle sourceRect = { 0, 0, static_cast<float>(text.width), static_cast<float>(text.height) };
+
+    Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, orbitAngle);
+}
+void FireBlaze::Draw(Vector2 position, float angle){
+
+}
+void FireBlaze::accept(FileVisitor *visitor) {
+ 
+}
+
+MovingObject *FireBlaze::copy() const
+{
+    return new FireBlaze(*this);
+}
 
 AttackBall::AttackBall() {
     damage = 0;
