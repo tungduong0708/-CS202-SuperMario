@@ -8,15 +8,15 @@
 
 class EnemyCreator {
 private:
-    static std::unordered_map<std::string, std::function<Enemy*(Vector2)>> creators;
+    static std::unordered_map<std::string, std::function<Enemy*(Vector2, int)>> creators;
 
 public:
     EnemyCreator() = default;
     ~EnemyCreator() = default;
 
-    static void RegisterEnemy(const std::string& name, std::function<Enemy*(Vector2)> creator);
+    static void RegisterEnemy(const std::string& name, std::function<Enemy*(Vector2, int)> creator);
     static void InitEnemies();
-    static Enemy* CreateEnemy(const std::string& name, Vector2 position);
+    static Enemy* CreateEnemy(const std::string& name, Vector2 position, int difficulty);
 };
 
 #endif // ENEMY_CREATOR_H
