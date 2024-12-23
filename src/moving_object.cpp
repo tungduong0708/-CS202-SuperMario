@@ -342,7 +342,7 @@ void MovingPlatform::Update(Vector2 playerVelocity, float deltaTime) {
         if (orbitAngle >= 360.0f) {
             orbitAngle -= 360.0f;
         }
-        float radianAngle = orbitAngle * (3.14f / 180.0f);
+        float radianAngle = orbitAngle * (M_PI / 180.0f);
         body->SetTransform(b2Vec2(orbitCenter.x, orbitCenter.y), radianAngle);
     }
 }
@@ -356,7 +356,7 @@ void MovingPlatform::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if(type=="rotatingblaze"){
         Player* player = dynamic_cast<Player*>(other);
         if (player) {
-            player->setHealth(player->getHealth() - 1000);
+            //player->setHealth(player->getHealth() - 1000);
         }
     }
 }
@@ -400,8 +400,26 @@ MovingObject *MovingPlatform::copy() const
 {
     return new MovingPlatform(*this);
 }
+/*
+FireBlaze::FireBlaze() 
+    : MovingObject() {}
 
+FireBlaze::FireBlaze() 
+    : MovingObject(size, speed.x, angle), 
+    {
+}
 
+FireBlaze::FireBlaze(const FireBlaze &mp)
+    : MovingObject(mp) {}
+
+FireBlaze::~FireBlaze() {
+    if (body) {
+        Physics::world.DestroyBody(body);
+        body = nullptr;
+    }
+    animations.clear();
+}
+*/
 
 
 AttackBall::AttackBall() {

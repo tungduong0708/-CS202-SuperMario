@@ -239,7 +239,36 @@ public:
     void accept(FileVisitor* visitor) override;
     MovingObject* copy() const override;
 };
-
+/*
+class FireBlaze : public MovingObject{
+private:   
+    Vector2 orbitCenter; 
+    float orbitRadius;  
+    float orbitAngle;   
+    float orbitSpeed;  
+public:   
+    FireBlaze();
+    FireBlaze(Vector2 size, Vector2 orbitCenter, float orbitRadius, float orbitAngle, float orbitSpeed);
+    void Init(Vector2 center, float radius, float speed);
+    void Update(Vector2 playerVelocity, float deltaTime) override;
+    void HandleInput() override;
+    void OnBeginContact(SceneNode *other, b2Vec2 normal) override;
+    void OnEndContact(SceneNode *other) override;
+    void Draw() override;
+    void Draw(Vector2 position, float angle = 0.0f) override;
+    void SetorbitSpeed(float speed){
+        orbitSpeed = speed;
+    }
+    void SetorbitRadius(float speed){
+        orbitRadius = speed;
+    }
+    void SetorbitCenter(Vector2 center){
+        orbitCenter = center;
+    }
+    void accept(FileVisitor* visitor) override;
+    MovingObject* copy() const override;
+}
+*/
 class Flag : public MovingObject {
 public:
     Flag();
