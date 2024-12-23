@@ -14,6 +14,7 @@ Game::Game()
       pauseGameState(nullptr),
       mapPauseState(nullptr),
       selectPlayerState(nullptr),
+      selectDifficultyState(nullptr),
       deathState(nullptr),
       changeStageState(nullptr),
       gameOverState(nullptr),
@@ -33,12 +34,14 @@ Game::Game()
     std::cout << "Initializing Game" << std::endl;
     mainMenuState = std::make_unique<MainMenuState>(this);
     settingsState = std::make_unique<SettingsState>(this);
+    tutorialState = std::make_unique<TutorialState>(this);
     savedGameState = std::make_unique<SavedGameState>(this);
     mapBuilderState = std::make_unique<MapBuilderState>(this);
     gameplayState = std::make_unique<GameplayState>(this);
     pauseGameState = std::make_unique<PauseGameState>(this);
     mapPauseState = std::make_unique<MapPauseState>(this);
     selectPlayerState = std::make_unique<SelectPlayerState>(this);
+    selectDifficultyState = std::make_unique<SelectDifficultyState>(this);
     gameSavingState = std::make_unique<GameSavingState>(this);
     deathState = std::make_unique<DeathState>(this);
     changeStageState = std::make_unique<ChangeStageState>(this);

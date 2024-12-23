@@ -39,11 +39,13 @@ public:
     // States
     std::unique_ptr<GameState> mainMenuState;
     std::unique_ptr<GameState> settingsState;
+    std::unique_ptr<GameState> tutorialState;
     std::unique_ptr<GameState> savedGameState;
     std::unique_ptr<GameState> mapBuilderState;
     std::unique_ptr<GameState> gameplayState;
     std::unique_ptr<GameState> pauseGameState;
     std::unique_ptr<GameState> mapPauseState;
+    std::unique_ptr<GameState> selectDifficultyState;
     std::unique_ptr<GameState> selectPlayerState;
     std::unique_ptr<GameState> gameSavingState;
     std::unique_ptr<GameState> deathState;

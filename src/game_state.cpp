@@ -12,16 +12,18 @@ MainMenuState::MainMenuState(Game* game): GameState(game)
 {
     // Initialize buttons
     float buttonWidth = static_cast<float>(Game::getScreenWidth()) * 0.4;
-    float buttonHeight = 50;
+    float buttonHeight = 75;
     float column1X = static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
     float column2X = 3 * static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
     float firstButtonWidth = column2X - column1X + buttonWidth;
 
-    buttons.push_back({{column1X, 300, firstButtonWidth, buttonHeight}, "New Game", false});
-    buttons.push_back({{column1X, 375, buttonWidth, buttonHeight}, "Settings", false});
-    buttons.push_back({{column2X, 375, buttonWidth, buttonHeight}, "Saved Games", false});
-    buttons.push_back({{column1X, 450, buttonWidth, buttonHeight}, "Map Builder", false});
-    buttons.push_back({{column2X, 450, buttonWidth, buttonHeight}, "Exit", false});
+    buttons.push_back({{column1X, 340, firstButtonWidth, buttonHeight}, "New Game", false});
+    buttons.push_back({{column1X, 440, buttonWidth, buttonHeight}, "Continue", false});
+    buttons.push_back({{column2X, 440, buttonWidth, buttonHeight}, "Tutorial", false});
+    buttons.push_back({{column1X, 540, buttonWidth, buttonHeight}, "Settings", false});
+    buttons.push_back({{column2X, 540, buttonWidth, buttonHeight}, "Saved Games", false});
+    buttons.push_back({{column1X, 640, buttonWidth, buttonHeight}, "Map Builder", false});
+    buttons.push_back({{column2X, 640, buttonWidth, buttonHeight}, "Exit", false});
 
     // Load background image
     backgroundTexture = LoadTexture("../resources/background/menuBackground.png");
@@ -38,18 +40,24 @@ void MainMenuState::update() {
 
     // Handle button clicks
     if (IsButtonClicked(buttons[0])) {
-        game->changeState(game->selectPlayerState.get());
+        game->changeState(game->selectDifficultyState.get());
     }
     if (IsButtonClicked(buttons[1])) {
-        game->changeState(game->settingsState.get());
+        game->changeState(game->gameplayState.get());
     }
     if (IsButtonClicked(buttons[2])) {
-        game->changeState(game->savedGameState.get());
+        game->changeState(game->tutorialState.get());
     }
     if (IsButtonClicked(buttons[3])) {
-        game->changeState(game->mapBuilderState.get());
+        game->changeState(game->settingsState.get());
     }
     if (IsButtonClicked(buttons[4])) {
+        game->changeState(game->savedGameState.get());
+    }
+    if (IsButtonClicked(buttons[5])) {
+        game->changeState(game->mapBuilderState.get());
+    }
+    if (IsButtonClicked(buttons[6])) {
         game->exitGame(); // Exit the game
     }
 }
@@ -73,7 +81,7 @@ void MainMenuState::draw() {
     DrawTexturePro(
         logoTexture,
         {0, 0, static_cast<float>(logoTexture.width), static_cast<float>(logoTexture.height)},
-        {game->getScreenWidth() / 2 - logoRectWidth / 2, 70, logoRectWidth, logoRectHeight},
+        {game->getScreenWidth() / 2 - logoRectWidth / 2, 100, logoRectWidth, logoRectHeight},
         {0, 0},
         0.0f,
         WHITE
@@ -109,12 +117,12 @@ SettingsState::SettingsState(Game* game)
     : GameState(game)
 {
     // Initialize buttons
-    float buttonWidth = 250;
-    float buttonHeight = 50;
+    float buttonWidth = 400;
+    float buttonHeight = 75;
     float centerX = (game->getScreenWidth() - buttonWidth) / 2;
     buttons.push_back({{centerX, 150, buttonWidth, buttonHeight}, "", false});
-    buttons.push_back({{centerX, 225, buttonWidth, buttonHeight}, "", false});
-    buttons.push_back({{centerX, 300, buttonWidth, buttonHeight}, "Back to Menu", false});
+    buttons.push_back({{centerX, 250, buttonWidth, buttonHeight}, "", false});
+    buttons.push_back({{centerX, 350, buttonWidth, buttonHeight}, "Back to Menu", false});
 }
 
 void SettingsState::update() {
@@ -138,10 +146,10 @@ void SettingsState::update() {
         game->changeState(game->mainMenuState.get());
     }
 
-    float centerX = (game->getScreenWidth() - 250) / 2;
+    float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
-    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+    DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 void SettingsState::draw() {
@@ -155,10 +163,10 @@ void SettingsState::draw() {
         DrawButton(button, *game);
     }
 
-    float centerX = (game->getScreenWidth() - 250) / 2;
+    float centerX = (game->getScreenWidth() - 400) / 2;
     // Draw sliders
-    DrawMarioSlider({centerX, 450, 250, 20}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+    DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 TutorialState::TutorialState(Game *game) : GameState(game)
@@ -437,9 +445,6 @@ void SelectPlayerState::update() {
     if (IsButtonClicked(player1.button)) {
         // Set player to Mario
         Tilemap* tilemap = Tilemap::getInstance();
-        tilemap->~Tilemap();
-        tilemap = Tilemap::getInstance();
-        tilemap->LoadMapFromJson("map-1-1.json");
         tilemap->setPlayer("mario");
 
         game->changeState(game->gameplayState.get());
@@ -447,9 +452,6 @@ void SelectPlayerState::update() {
     if (IsButtonClicked(player2.button)) {
         // Set player to Luigi
         Tilemap* tilemap = Tilemap::getInstance();
-        tilemap->~Tilemap();
-        tilemap = Tilemap::getInstance();
-        tilemap->LoadMapFromJson("map-1-1.json");
         tilemap->setPlayer("luigi");
         
         game->changeState(game->gameplayState.get());
@@ -461,7 +463,7 @@ void SelectPlayerState::draw() {
     game->mainMenuState->drawBackground();
 
     // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.6f));
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
     
     // Draw buttons
     DrawImageButton(*game, player1);
@@ -491,38 +493,65 @@ void ChangeStageState::update()
     }
 }
 
-void ChangeStageState::draw()
-{
+void ChangeStageState::draw() {
     setStageName("Stage 1-2");
+
     // Draw the underlying GameplayState
     game->gameplayState->draw();
 
     // Draw a semi-transparent black overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
 
+    // Update character texture if the player is Luigi
+    if (Tilemap::getInstance()->GetPlayer()->getBulletSpeed() == 8.0f) {
+        UnloadTexture(characterTexture);
+        characterTexture = LoadTexture("../resources/images/smallluigi/idle.png");
+    }
+
     // Draw the central rounded rectangle (panel)
-    float rectWidth = 300.0f;
-    float rectHeight = 150.0f;
+    float rectWidth = 400.0f;
+    float rectHeight = 200.0f;
     float rectX = (game->getScreenWidth() - rectWidth) / 2;
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
 
     // Draw shadow for depth
-    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.2f, 10, Fade(BLACK, 0.4f));
+    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.1f, 10, Fade(BLACK, 0.4f));
 
-    int gradientSteps = 10;  // Number of steps for the gradient
-    float stepHeight = rectHeight / static_cast<float>(gradientSteps); // Height of each step
+    // --- Smooth Gradient ---
+    int gradientSteps = 40;  // Increased steps for smoother gradient
+    float stepHeight = rectHeight / static_cast<float>(gradientSteps);  // Height of each gradient step
+    float overlap = 0.1f;  // Overlap amount to ensure smooth transitions
 
-    for (int i = 0; i < gradientSteps; i++)
-    {
-        float alpha = 0.8f - (static_cast<float>(i) * 0.1f); // Gradually decrease alpha for a fade effect
-        Color stepColor = Fade(YELLOW, alpha); // Base color BLUE, fading gradually
+    // Start and end colors for the gradient
+    Color startColor = (Color){255, 223, 0, 200};  // Yellow
+    Color endColor = (Color){255, 140, 0, 230};    // Orange-red
 
+    for (int i = 0; i < gradientSteps; i++) {
+        float t = static_cast<float>(i) / (gradientSteps - 1);  // Interpolation factor (0 to 1)
+
+        // Interpolating colors
+        Color stepColor = {
+            (unsigned char)((1 - t) * startColor.r + t * endColor.r),
+            (unsigned char)((1 - t) * startColor.g + t * endColor.g),
+            (unsigned char)((1 - t) * startColor.b + t * endColor.b),
+            (unsigned char)((1 - t) * startColor.a + t * endColor.a)
+        };
+
+        // Determine the rounding for the step
+        float rounding = 0.2f;  // Default rounding
+        if (i < 10) {
+            rounding = 1.0f;  // Increased rounding for the top rectangle
+        } else if (i > gradientSteps - 10) {
+            rounding = 1.0f;  // Increased rounding for the bottom rectangle
+        }
+
+        // Draw the gradient rectangle
         DrawRectangleRounded(
-            {rectX, rectY + static_cast<float>(i) * stepHeight, rectWidth, stepHeight + 1}, // Adjust height for smooth overlap
-            0.2f, 10, stepColor);
+            {rectX, rectY + static_cast<float>(i) * stepHeight - overlap, rectWidth, stepHeight + overlap * 2},
+            rounding, 10, stepColor);
     }
 
-    // Draw Stage Name with Shadow
+    // --- Draw Stage Name with Shadow ---
     constexpr int fontSize = 30;
     constexpr int spacing = 1;
 
@@ -539,13 +568,13 @@ void ChangeStageState::draw()
     DrawTextEx(game->getFont(), stageName.c_str(),
                stageTextPos, fontSize, 2, BLUE);
 
-    // Draw Mario's Image (Scaled 2x)
-    float imageScale = 2.0f;
-    float imageX = rectX + 40;
-    float imageY = rectY + (rectHeight - characterTexture.height * imageScale) / 3 * 2;
+    // --- Draw Mario's Image (Scaled 2.5x) ---
+    float imageScale = 2.5f;
+    float imageX = rectX + 120;
+    float imageY = rectY + (rectHeight - characterTexture.height * imageScale) / 2;
     DrawTextureEx(characterTexture, {imageX, imageY}, 0.0f, imageScale, WHITE);
 
-    // Draw Life Count with Shadow
+    // --- Life Count with Shadow ---
     constexpr int lifeFontSize = 24;
     Vector2 lifeTextPos = {imageX + 90, imageY + 10};
 
@@ -557,7 +586,7 @@ void ChangeStageState::draw()
                lifeTextPos, lifeFontSize, 2, WHITE);
 
     // Add a decorative border
-    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.2f, 10, 5, WHITE);
+    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.1f, 10, 5, WHITE);
 }
 
 void ChangeStageState::setLifeRemaining(int life)
@@ -611,31 +640,60 @@ void DeathState::draw() {
     // Draw a semi-transparent black overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
 
+    if (Tilemap::getInstance()->GetPlayer()->getBulletSpeed() == 8.0f) {
+        UnloadTexture(characterTexture);
+        characterTexture = LoadTexture("../resources/images/smallluigi/idle.png");
+
+        UnloadTexture(deathTexture);
+        deathTexture = LoadTexture("../resources/images/smallluigi/dead.png");
+    }
+
     // Draw the central rounded rectangle (panel)
-    float rectWidth = 300.0f;
-    float rectHeight = 150.0f;
+    float rectWidth = 400.0f;
+    float rectHeight = 200.0f;
     float rectX = (game->getScreenWidth() - rectWidth) / 2;
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
 
     // Draw shadow for depth
-    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.2f, 10, Fade(BLACK, 0.4f));
+    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.1f, 10, Fade(BLACK, 0.4f));
 
-    int gradientSteps = 10;  // Number of steps for the gradient
-    float stepHeight = rectHeight / static_cast<float>(gradientSteps); // Height of each step
+    // --- Smooth Gradient ---
+    int gradientSteps = 40;  // Increased steps for smoother gradient
+    float stepHeight = rectHeight / static_cast<float>(gradientSteps);  // Height of each gradient step
+    float overlap = 0.1f;  // Overlap amount to ensure smooth transitions
+
+    // Start and end colors for the gradient (RGBA)
+    Color startColor = (Color){255, 0, 0, 200};  // Bright red
+    Color endColor = (Color){100, 0, 0, 230};    // Dark red (close to crimson)
 
     for (int i = 0; i < gradientSteps; i++) {
-        float alpha = 0.8f - (static_cast<float>(i) * 0.1f); // Gradually decrease alpha for a fade effect
-        Color stepColor = Fade(RED, alpha); // Base color RED, fading gradually
+        float t = static_cast<float>(i) / (gradientSteps - 1);  // Interpolation factor (0 to 1)
+        
+        // Interpolating colors
+        Color stepColor = {
+            (unsigned char)((1 - t) * startColor.r + t * endColor.r),
+            (unsigned char)((1 - t) * startColor.g + t * endColor.g),
+            (unsigned char)((1 - t) * startColor.b + t * endColor.b),
+            (unsigned char)((1 - t) * startColor.a + t * endColor.a)
+        };
 
+        // Determine the rounding for the step
+        float rounding = 0.2f;  // Default rounding
+        if (i < 10) {
+            rounding = 1.0f;  // Increased rounding for the top rectangle
+        } else if (i > gradientSteps - 10) {
+            rounding = 1.0f;  // Increased rounding for the bottom rectangle
+        }
+
+        // Draw the gradient rectangle
         DrawRectangleRounded(
-            {rectX, rectY + static_cast<float>(i) * stepHeight, rectWidth, stepHeight + 1.5f}, // Adjust height for smooth overlap
-            0.2f, 10, stepColor);
+            {rectX, rectY + static_cast<float>(i) * stepHeight - overlap, rectWidth, stepHeight + overlap * 2},
+            rounding, 10, stepColor);
     }
 
-    // Draw "You Died" text with Shadow
+    // --- Draw "You Died" Text with Shadow ---
     constexpr int fontSize = 30;
     constexpr int spacing = 1;
-
     const char* deathText = "You Died";
     Vector2 deathTextSize = MeasureTextEx(game->getFont(), deathText, fontSize, spacing);
     Vector2 deathTextPos = {
@@ -650,13 +708,13 @@ void DeathState::draw() {
     DrawTextEx(game->getFont(), deathText,
                deathTextPos, fontSize, 2, ORANGE);
 
-    // Draw Mario's Image (Scaled 2x)
-    float imageScale = 2.0f;
-    float imageX = rectX + 70;
+    // --- Mario's Image (Scaled 2x) ---
+    float imageScale = 2.5f;
+    float imageX = rectX + 120;
     float imageY = rectY + (rectHeight - characterTexture.height * imageScale) / 2;
     DrawTextureEx(characterTexture, {imageX, imageY}, 0.0f, imageScale, WHITE);
 
-    // Draw Life Count with Shadow
+    // --- Life Count with Shadow ---
     constexpr int lifeFontSize = 24;
     Vector2 lifeTextPos = {imageX + 90, imageY + 10};
 
@@ -667,10 +725,10 @@ void DeathState::draw() {
     DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining),
                lifeTextPos, lifeFontSize, 2, WHITE);
 
-    // Draw Death Image
+    // --- Death Image (Optional) ---
     if (showDeathImage) {
         float deathImageScale = 1.5f;
-        float deathImageX = rectX + 70;
+        float deathImageX = rectX + 100;
         float deathImageY = rectY + (rectHeight - deathTexture.height * deathImageScale) / 6 * 5;
         DrawTextureEx(deathTexture, {deathImageX, deathImageY}, 0.0f, deathImageScale, WHITE);
 
@@ -687,7 +745,7 @@ void DeathState::draw() {
     }
 
     // Add a decorative border
-    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.2f, 10, 5, WHITE);
+    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.1f, 10, 5, WHITE);
 }
 
 void DeathState::reset()
@@ -808,6 +866,9 @@ GameSavingState::GameSavingState(Game* game) : GameState(game) {
     for (int i = 0; i < 5; ++i) {
         buttons.push_back(Button{{centerX, static_cast<float>(100 + i * 75), buttonWidth, buttonHeight}, "Slot " + std::to_string(i + 1), false});
     }
+
+    // Initialize background texture
+    backgroundTexture = LoadTexture("../resources/images/icon/squareboard.png");
 }
 
 void GameSavingState::update() {
@@ -840,6 +901,16 @@ void GameSavingState::draw() {
 
     // Draw a semi-transparent gray overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw background texture
+    constexpr float backgroundScale = 3.0f;
+    float textureWidth = backgroundTexture.width * backgroundScale;
+    float textureHeight = backgroundTexture.height * backgroundScale;
+    float posX = (game->getScreenWidth() - textureWidth) / 2;
+    float posY = (game->getScreenHeight() - textureHeight) / 2;
+
+    DrawTextureEx(backgroundTexture, {posX, posY}, 0.0f, backgroundScale, WHITE);
+
     // Draw buttons
     for (const auto& button : buttons) {
         DrawButton(button, *game);
@@ -850,20 +921,64 @@ GameSavingState::~GameSavingState() {
     // Unload textures
 }
 
-SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game) {
+SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game)
+{
     // Initialize buttons
+    float buttonWidth = 650;
+    float buttonHeight = 150;
+    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+
+    difficultyTextures.push_back(LoadTexture("../resources/images/goomba/walk.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/goomba/dead.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/koopa/idle.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/koopa/fly1.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/boss/walk2.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/boss/blow3.png"));
+
+    buttons.push_back({{centerX, 100, buttonWidth, buttonHeight}, difficultyTextures[0],
+        difficultyTextures[1], false});
+    buttons.push_back({{centerX, 300, buttonWidth, buttonHeight}, difficultyTextures[2],
+        difficultyTextures[3], false});
+    buttons.push_back({{centerX, 500, buttonWidth, buttonHeight}, difficultyTextures[4],
+        difficultyTextures[5], false});
 }
 
 void SelectDifficultyState::update() {
     // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    for (int i = 0; i < 3; ++i)
+    {
+        if (IsButtonClicked(buttons[i])) {
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->~Tilemap();
+            tilemap = Tilemap::getInstance();
+            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
+            game->changeState(game->selectPlayerState.get());
+        }
+    }
 }
 
 void SelectDifficultyState::draw() {
-    // Draw the underlying MainMenuState
+    // Draw the underlying SelectDifficultState
+    game->mainMenuState->drawBackground();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.6f));
+
+    // Draw buttons
+    DrawDifficultyButton(buttons[0], "Easy");
+    DrawDifficultyButton(buttons[1], "Medium");
+    DrawDifficultyButton(buttons[2], "Hard");
 }
 
 SelectDifficultyState::~SelectDifficultyState() {
     // Unload textures
+    for (const auto& texture : difficultyTextures) {
+        UnloadTexture(texture);
+    }
 }
 
 AreYouSureState::AreYouSureState(Game* game) : GameState(game) {

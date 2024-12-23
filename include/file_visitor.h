@@ -56,7 +56,7 @@ public:
     void openFile(bool overwrite = false);
     void closeFile();
 
-    void exportMapPath(std::string path);
+    void exportMapInfo(std::string path, int difficulty);
     void VisitFile(StaticTile* obj) override;
     void VisitFile(KinematicTile *obj) override;
     void VisitFile(MovingPlatform* obj) override;

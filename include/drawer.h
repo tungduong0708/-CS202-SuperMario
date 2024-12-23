@@ -9,6 +9,7 @@ class Game;
 // Function prototypes
 void DrawButton(const Button& button, const Game& game); // Customized button drawing with game's font
 void DrawImageButton(const Game& game, const PlayerInfo& player); // Customized image button drawing
+void DrawDifficultyButton(const ImageButton& button, const string& difficulty);  // Customized difficulty button drawing
 
 bool IsButtonClicked(const Button& button);             // Handle button click detection
 bool IsButtonClicked(const ImageButton& button);         // Handle image button click detection
