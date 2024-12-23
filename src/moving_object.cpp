@@ -1,6 +1,7 @@
 #include "include.h"
 #include "object.h"
 #include "moving_object.h"
+#include <cmath>
 
 MovingObject::MovingObject() {
     size = {0, 0};
@@ -314,9 +315,8 @@ void MovingPlatform::InitOrbit(Vector2 center, float radius, float speed) {
     };
     restitution = 0.0f;
     MyBoundingBox::createBody(body, b2_kinematicBody, vertices, center, restitution);
-    //b2Fixture* fixture = body->GetFixtureList();
-    //fixture->SetFriction(10.0f);
-    //body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+    b2Fixture* fixture = body->GetFixtureList();
+    fixture->SetSensor(true);
     orbitCenter = center;
     orbitRadius = radius;
     orbitAngle = 0.0f;    
@@ -355,7 +355,7 @@ void MovingPlatform::Update(Vector2 playerVelocity, float deltaTime) {
         if (orbitAngle >= 360.0f) {
             orbitAngle -= 360.0f;
         }
-        float radianAngle = orbitAngle * (M_PI / 180.0f);
+        float radianAngle = orbitAngle * (3.14f / 180.0f);
         body->SetTransform(b2Vec2(orbitCenter.x, orbitCenter.y), radianAngle);
     }
 }
@@ -365,12 +365,12 @@ void MovingPlatform::HandleInput() {
 }
 
 void MovingPlatform::OnBeginContact(SceneNode *other, b2Vec2 normal) {
-    if(type=="rotatingblaze"){
     if (!other) return;
-    Player* player = dynamic_cast<Player*>(other);
-    if (player) {
-       // player->setHealth(player->getHealth() - 1000);
-    }
+    if(type=="rotatingblaze"){
+        Player* player = dynamic_cast<Player*>(other);
+        if (player) {
+            player->setHealth(player->getHealth() - 1000);
+        }
     }
 }
 

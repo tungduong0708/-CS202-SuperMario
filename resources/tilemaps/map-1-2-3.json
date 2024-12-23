@@ -65,19 +65,7 @@
                  "width":2.36483135970786,
                  "x":463.397727272727,
                  "y":197.681818181818
-                }, 
-                {
-                 "height":0,
-                 "id":3,
-                 "name":"flag",
-                 "point":true,
-                 "rotation":0,
-                 "type":"object",
-                 "visible":true,
-                 "width":0,
-                 "x":345,
-                 "y":63.75
-                }, 
+                },  
                 {
                  "height":144.75,
                  "id":4,
@@ -88,6 +76,18 @@
                  "width":2,
                  "x":358.75,
                  "y":63.5
+                },
+                {
+                "height":0,
+                "id":3,
+                "name":"flag",
+                "point":true,
+                "rotation":0,
+                "type":"object",
+                "visible":true,
+                "width":0,
+                "x":345,
+                "y":63.75
                 }],
          "opacity":1,
          "type":"objectgroup",

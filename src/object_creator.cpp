@@ -39,15 +39,15 @@ void ObjectCreator::InitObjects() {
     });
 
     RegisterObject("rotatingblaze", [](Vector2 pos) {
-    MovingPlatform* platform = new MovingPlatform(Vector2{0.5f, 4.0f}, Vector2{0.0f, 0.0f}, 0.0f, 0.0f, "rotatingblaze");
-    platform->SetorbitCenter(pos);
-    platform->Init(b2Vec2{pos.x, pos.y});
+        MovingPlatform* platform = new MovingPlatform(Vector2{0.5f, 4.0f}, Vector2{0.0f, 0.0f}, 0.0f, 0.0f, "rotatingblaze");
+        platform->SetorbitCenter(pos);
+        platform->Init(b2Vec2{pos.x, pos.y});
 
-    // Thiết lập tốc độ quay
-    platform->SetorbitSpeed(120.0f); // 90 độ/giây// Tâm quỹ đạo
-    platform->SetorbitRadius(2.0f);     
-    return platform;
-});
+        // Thiết lập tốc độ quay
+        platform->SetorbitSpeed(120.0f); // 90 độ/giây// Tâm quỹ đạo
+        platform->SetorbitRadius(2.0f);     
+        return platform;
+    });
 
 
     RegisterObject("flag", [](Vector2 pos) {

@@ -130,5 +130,4 @@ GameState* Game::getNextState() const {
 void Game::changeState(GameState *state) {
     previousState = currentState;
     currentState = state;
-    nextState = nullptr;
 }

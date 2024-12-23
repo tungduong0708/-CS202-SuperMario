@@ -7,14 +7,16 @@
 
 void DrawButton(const Button& button, const Game& game)
 {
-    // --- Customizable Colors ---
-    Color frameColor = (Color){139, 69, 19, 230};           // SaddleBrown-like wooden frame
-    Color insetColor = (Color){255, 223, 128, 230};         // Light golden inset
-    Color hoverInsetColor = (Color){255, 165, 0, 255};      // Orange inset on hover
-    Color shadowColor = (Color){0, 0, 0, 80};               // Semi-transparent black shadow
-    Color borderColor = (Color){92, 51, 23, 255};           // Dark brown for border
-    Color textShadowColor = (Color){0, 0, 0, 100};          // Text shadow for better visibility
-    Color textColor = (Color){255, 255, 255, 255};          // Pure white for text
+    // --- Updated Customizable Colors ---
+    Color frameColor = (Color){0, 0, 0, 255};       // SaddleBrown-like for the wooden frame
+    Color insetColor = (Color){212, 130, 83, 204};      // DarkGoldenRod for inset (matches the icon's interior border)
+    Color hoverInsetColor = (Color){210, 180, 140, 255}; // Tan color for hover inset (softer highlight)
+    Color shadowColor = (Color){0, 0, 0, 80};           // Semi-transparent black shadow
+    Color borderColor = (Color){0, 0, 0, 255};          // Pure black for button border
+    Color textShadowColor = (Color){0, 0, 0, 100};      // Text shadow for better visibility
+    Color textColor = (Color){255, 255, 255, 255};         // Dark brown for text (matches the icon)
+
+
 
     // --- Button Shadow (3D Effect) ---
     DrawRectangleRounded(

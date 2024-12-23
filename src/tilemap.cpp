@@ -153,7 +153,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
     }
     
     Pole* pole = nullptr;
-    Axe* axe = nullptr;
+    Axe* axe = nullptr;;
     for (const auto& layer : j["layers"]) {
         std::vector<SceneNode*> nodeLayer;
         if (layer["type"] == "imagelayer" && layer["name"] != "Effect") {
