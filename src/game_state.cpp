@@ -493,38 +493,65 @@ void ChangeStageState::update()
     }
 }
 
-void ChangeStageState::draw()
-{
+void ChangeStageState::draw() {
     setStageName("Stage 1-2");
+
     // Draw the underlying GameplayState
     game->gameplayState->draw();
 
     // Draw a semi-transparent black overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.5f));
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
+
+    // Update character texture if the player is Luigi
+    if (Tilemap::getInstance()->GetPlayer()->getBulletSpeed() == 8.0f) {
+        UnloadTexture(characterTexture);
+        characterTexture = LoadTexture("../resources/images/smallluigi/idle.png");
+    }
 
     // Draw the central rounded rectangle (panel)
-    float rectWidth = 300.0f;
-    float rectHeight = 150.0f;
+    float rectWidth = 400.0f;
+    float rectHeight = 200.0f;
     float rectX = (game->getScreenWidth() - rectWidth) / 2;
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
 
     // Draw shadow for depth
-    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.2f, 10, Fade(BLACK, 0.4f));
+    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.1f, 10, Fade(BLACK, 0.4f));
 
-    int gradientSteps = 10;  // Number of steps for the gradient
-    float stepHeight = rectHeight / static_cast<float>(gradientSteps); // Height of each step
+    // --- Smooth Gradient ---
+    int gradientSteps = 40;  // Increased steps for smoother gradient
+    float stepHeight = rectHeight / static_cast<float>(gradientSteps);  // Height of each gradient step
+    float overlap = 0.1f;  // Overlap amount to ensure smooth transitions
 
-    for (int i = 0; i < gradientSteps; i++)
-    {
-        float alpha = 0.8f - (static_cast<float>(i) * 0.1f); // Gradually decrease alpha for a fade effect
-        Color stepColor = Fade(YELLOW, alpha); // Base color BLUE, fading gradually
+    // Start and end colors for the gradient
+    Color startColor = (Color){255, 223, 0, 200};  // Yellow
+    Color endColor = (Color){255, 140, 0, 230};    // Orange-red
 
+    for (int i = 0; i < gradientSteps; i++) {
+        float t = static_cast<float>(i) / (gradientSteps - 1);  // Interpolation factor (0 to 1)
+
+        // Interpolating colors
+        Color stepColor = {
+            (unsigned char)((1 - t) * startColor.r + t * endColor.r),
+            (unsigned char)((1 - t) * startColor.g + t * endColor.g),
+            (unsigned char)((1 - t) * startColor.b + t * endColor.b),
+            (unsigned char)((1 - t) * startColor.a + t * endColor.a)
+        };
+
+        // Determine the rounding for the step
+        float rounding = 0.2f;  // Default rounding
+        if (i < 10) {
+            rounding = 1.0f;  // Increased rounding for the top rectangle
+        } else if (i > gradientSteps - 10) {
+            rounding = 1.0f;  // Increased rounding for the bottom rectangle
+        }
+
+        // Draw the gradient rectangle
         DrawRectangleRounded(
-            {rectX, rectY + static_cast<float>(i) * stepHeight, rectWidth, stepHeight + 1}, // Adjust height for smooth overlap
-            0.2f, 10, stepColor);
+            {rectX, rectY + static_cast<float>(i) * stepHeight - overlap, rectWidth, stepHeight + overlap * 2},
+            rounding, 10, stepColor);
     }
 
-    // Draw Stage Name with Shadow
+    // --- Draw Stage Name with Shadow ---
     constexpr int fontSize = 30;
     constexpr int spacing = 1;
 
@@ -541,13 +568,13 @@ void ChangeStageState::draw()
     DrawTextEx(game->getFont(), stageName.c_str(),
                stageTextPos, fontSize, 2, BLUE);
 
-    // Draw Mario's Image (Scaled 2x)
-    float imageScale = 2.0f;
-    float imageX = rectX + 40;
-    float imageY = rectY + (rectHeight - characterTexture.height * imageScale) / 3 * 2;
+    // --- Draw Mario's Image (Scaled 2.5x) ---
+    float imageScale = 2.5f;
+    float imageX = rectX + 120;
+    float imageY = rectY + (rectHeight - characterTexture.height * imageScale) / 2;
     DrawTextureEx(characterTexture, {imageX, imageY}, 0.0f, imageScale, WHITE);
 
-    // Draw Life Count with Shadow
+    // --- Life Count with Shadow ---
     constexpr int lifeFontSize = 24;
     Vector2 lifeTextPos = {imageX + 90, imageY + 10};
 
@@ -559,7 +586,7 @@ void ChangeStageState::draw()
                lifeTextPos, lifeFontSize, 2, WHITE);
 
     // Add a decorative border
-    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.2f, 10, 5, WHITE);
+    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.1f, 10, 5, WHITE);
 }
 
 void ChangeStageState::setLifeRemaining(int life)
@@ -612,6 +639,14 @@ void DeathState::draw() {
 
     // Draw a semi-transparent black overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
+
+    if (Tilemap::getInstance()->GetPlayer()->getBulletSpeed() == 8.0f) {
+        UnloadTexture(characterTexture);
+        characterTexture = LoadTexture("../resources/images/smallluigi/idle.png");
+
+        UnloadTexture(deathTexture);
+        deathTexture = LoadTexture("../resources/images/smallluigi/dead.png");
+    }
 
     // Draw the central rounded rectangle (panel)
     float rectWidth = 400.0f;
