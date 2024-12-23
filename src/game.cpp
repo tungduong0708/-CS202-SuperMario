@@ -34,6 +34,7 @@ Game::Game()
     std::cout << "Initializing Game" << std::endl;
     mainMenuState = std::make_unique<MainMenuState>(this);
     settingsState = std::make_unique<SettingsState>(this);
+    tutorialState = std::make_unique<TutorialState>(this);
     savedGameState = std::make_unique<SavedGameState>(this);
     mapBuilderState = std::make_unique<MapBuilderState>(this);
     gameplayState = std::make_unique<GameplayState>(this);

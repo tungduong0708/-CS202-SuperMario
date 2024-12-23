@@ -7,46 +7,49 @@
 
 void DrawButton(const Button& button, const Game& game)
 {
-    // Define Mario-themed colors
-    Color baseColor = button.isHovered ? Fade(RED, 0.9f) : Fade(GOLD, 0.9f); // Red when hovered, gold otherwise
-    Color borderColor = button.isHovered ? Fade(WHITE, 1.0f) : Fade(DARKBLUE, 0.9f); // Border changes color
-    Color shadowColor = Fade(BLACK, 0.4f);       // Shadow color
-    Color highlightColor = Fade(YELLOW, 0.7f);   // Highlight color on top
+    // --- Customizable Colors ---
+    Color frameColor = (Color){139, 69, 19, 230};           // SaddleBrown-like wooden frame
+    Color insetColor = (Color){255, 223, 128, 230};         // Light golden inset
+    Color hoverInsetColor = (Color){255, 165, 0, 255};      // Orange inset on hover
+    Color shadowColor = (Color){0, 0, 0, 80};               // Semi-transparent black shadow
+    Color borderColor = (Color){92, 51, 23, 255};           // Dark brown for border
+    Color textShadowColor = (Color){0, 0, 0, 100};          // Text shadow for better visibility
+    Color textColor = (Color){255, 255, 255, 255};          // Pure white for text
 
-    // --- Shadow Effect ---
+    // --- Button Shadow (3D Effect) ---
     DrawRectangleRounded(
         {button.rect.x + 4, button.rect.y + 4, button.rect.width, button.rect.height},
-        0.3f, 6, shadowColor);
+        0.25f, 8, shadowColor);
 
-    // --- Button Body ---
-    // Draw main button with rounded corners
-    DrawRectangleRounded(button.rect, 0.3f, 6, baseColor);
+    // --- Button Frame (Outer Rectangle) ---
+    DrawRectangleRounded(button.rect, 0.25f, 8, frameColor);
 
-    // Draw highlight (top gradient effect)
-    Rectangle highlightRect = {button.rect.x, button.rect.y, button.rect.width, button.rect.height / 2};
-    DrawRectangleRounded(highlightRect, 0.3f, 6, highlightColor);
+    // --- Button Inset (Inner Rectangle) ---
+    Rectangle insetRect = {button.rect.x + 6, button.rect.y + 6, button.rect.width - 12, button.rect.height - 12};
+    DrawRectangleRounded(
+        insetRect, 0.25f, 6, button.isHovered ? hoverInsetColor : insetColor);
 
-    // --- Border ---
-    DrawRectangleRoundedLines(button.rect, 0.3f, 6, 4, borderColor);
+    // --- Frame Border ---
+    DrawRectangleRoundedLines(button.rect, 0.25f, 8, 4, borderColor);
 
-    // --- Text with Shadow ---
-    Vector2 textSize = MeasureTextEx(game.getFont(), button.text.c_str(), 20, 1);
+    // --- Button Text ---
+    Vector2 textSize = MeasureTextEx(game.getFont(), button.text.c_str(), 30, 1);
 
-    // Text shadow for depth
+    // Text Shadow
     DrawTextEx(
         game.getFont(),
         button.text.c_str(),
         {button.rect.x + button.rect.width / 2 - textSize.x / 2 + 2,
          button.rect.y + button.rect.height / 2 - textSize.y / 2 + 2},
-        20, 1, shadowColor);
+        30, 1, textShadowColor);
 
-    // Text with vibrant color
+    // Main Text
     DrawTextEx(
         game.getFont(),
         button.text.c_str(),
         {button.rect.x + button.rect.width / 2 - textSize.x / 2,
          button.rect.y + button.rect.height / 2 - textSize.y / 2},
-        20, 1, WHITE);
+        30, 1, textColor);
 }
 
 bool IsButtonClicked(const Button& button)
@@ -68,59 +71,57 @@ T Clamp(T value, T min, T max)
     return value;
 }
 
-// Customization function
+// Customized slider drawing
 void DrawMarioSlider(Rectangle rect, int& value, const float& minValue, const float& maxValue, const Font& font, const char* label)
 {
-    // Colors for slider
-    Color baseColor = Fade(LIGHTGRAY, 0.9f);
-    Color borderColor = DARKGRAY;
-    Color shadowColor = Fade(BLACK, 0.2f);
-    Color knobColor = YELLOW;
-    Color knobShadowColor = Fade(BLACK, 0.3f);
-    Color hoverColor = GOLD;
+    // Define Colors with RGBA for customization
+    Color baseColor = (Color){200, 200, 200, 255};        // Light gray for background
+    Color borderColor = (Color){120, 120, 120, 255};      // Darker gray for border
+    Color shadowColor = (Color){0, 0, 0, 50};             // Semi-transparent black for shadow
+    Color trackColor = (Color){70, 130, 180, 255};        // Steel blue for track
+    Color knobColor = (Color){255, 215, 0, 255};          // Gold for the knob
+    Color hoverColor = (Color){255, 165, 0, 255};         // Orange when hovered
+    Color textColor = (Color){255, 255, 255, 255};        // Pure white for text
+    Color knobShadowColor = (Color){0, 0, 0, 100};        // Dark shadow under the knob
 
-    // --- Background with shadow ---
-    // Draw shadow
+    // --- Shadow for the slider background ---
     DrawRectangleRounded(
-        {rect.x + 4, rect.y + 4, rect.width, rect.height}, 0.3f, 6, shadowColor);
+        {rect.x + 3, rect.y + 3, rect.width, rect.height}, 0.3f, 6, shadowColor);
 
-    // Draw slider background with border
+    // --- Slider Background ---
     DrawRectangleRounded(rect, 0.3f, 6, baseColor);
     DrawRectangleRoundedLines(rect, 0.3f, 6, 2, borderColor);
 
-    // --- Slider bar ---
+    // --- Track Bar ---
     Rectangle bar = {
-        rect.x + 10, rect.y + rect.height / 2 - 5, rect.width - 20, 10};
-    DrawRectangleRounded(bar, 0.5f, 6, BLUE);
+        rect.x + 10, rect.y + rect.height / 2 - 10, rect.width - 30, 20};
+    DrawRectangleRounded(bar, 0.5f, 6, trackColor);
 
     // --- Knob ---
-    // Calculate knob position
     float knobX = bar.x + ((value - minValue) / (maxValue - minValue)) * bar.width;
-
-    // Check for hover
     Vector2 mousePos = GetMousePosition();
     bool isHovered = CheckCollisionPointCircle(mousePos, {knobX, rect.y + rect.height / 2}, 15);
 
     // Draw knob shadow
     DrawCircle(static_cast<int>(knobX) + 3, static_cast<int>(rect.y + rect.height / 2) + 3, 15, knobShadowColor);
 
-    // Draw knob
+    // Draw the knob itself
     DrawCircle(static_cast<int>(knobX), static_cast<int>(rect.y + rect.height / 2), 15, isHovered ? hoverColor : knobColor);
 
-    // Draw star inside the knob
-    DrawText("★", static_cast<int>(knobX) - 6, static_cast<int>(rect.y + rect.height / 2) - 8, 20, WHITE);
+    // Draw a subtle border for the knob
+    DrawCircleLines(static_cast<int>(knobX), static_cast<int>(rect.y + rect.height / 2), 15, borderColor);
 
-    // --- Slider Label and Value Text ---
+    // --- Label and Value ---
     const char* sliderText = TextFormat("%s: %d", label, value);
-    Vector2 textSize = MeasureTextEx(font, sliderText, 20, 1);
+    Vector2 textSize = MeasureTextEx(font, sliderText, 30, 1);
 
     // Draw shadow for text
-    DrawTextEx(font, sliderText, {rect.x + (rect.width - textSize.x) / 2 + 2, rect.y - 30 + 2}, 20, 1, shadowColor);
+    DrawTextEx(font, sliderText, {rect.x + (rect.width - textSize.x) / 2 + 2, rect.y - 30 + 2}, 30, 1, shadowColor);
 
-    // Draw text
-    DrawTextEx(font, sliderText, {rect.x + (rect.width - textSize.x) / 2, rect.y - 30}, 20, 1, WHITE);
+    // Draw main text
+    DrawTextEx(font, sliderText, {rect.x + (rect.width - textSize.x) / 2, rect.y - 30}, 30, 1, textColor);
 
-    // --- Mouse Interaction ---
+    // --- Interaction Logic ---
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointRec(mousePos, bar))
     {
         float mouseX = mousePos.x;
