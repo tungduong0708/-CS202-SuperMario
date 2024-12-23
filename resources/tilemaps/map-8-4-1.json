@@ -43,7 +43,79 @@
          "draworder":"topdown",
          "id":2,
          "name":"Object Layer 1",
-         "objects":[],
+         "objects":[
+                {
+                 "height":0,
+                 "id":1,
+                 "name":"monsterflower",
+                 "point":true,
+                 "rotation":0,
+                 "type":"character",
+                 "visible":true,
+                 "width":0,
+                 "x":311.333333333333,
+                 "y":170.666666666667
+                }, 
+                {
+                 "height":0,
+                 "id":2,
+                 "name":"monsterflower",
+                 "point":true,
+                 "rotation":0,
+                 "type":"character",
+                 "visible":true,
+                 "width":0,
+                 "x":822,
+                 "y":179
+                }, 
+                {
+                 "height":0,
+                 "id":3,
+                 "name":"goomba",
+                 "point":true,
+                 "rotation":0,
+                 "type":"character",
+                 "visible":true,
+                 "width":0,
+                 "x":861.25,
+                 "y":212.75
+                }, 
+                {
+                 "height":0,
+                 "id":4,
+                 "name":"goomba",
+                 "point":true,
+                 "rotation":0,
+                 "type":"character",
+                 "visible":true,
+                 "width":0,
+                 "x":877.75,
+                 "y":213
+                }, 
+                {
+                 "height":0,
+                 "id":5,
+                 "name":"goomba",
+                 "point":true,
+                 "rotation":0,
+                 "type":"character",
+                 "visible":true,
+                 "width":0,
+                 "x":893.75,
+                 "y":212.75
+                }, 
+                {
+                 "height":0,
+                 "id":6,
+                 "name":"horizontalmovingplatform",
+                 "point":true,
+                 "rotation":0,
+                 "type":"object",
+                 "visible":true,
+                 "width":0,
+                 "x":1121.25,
+                 "y":210.25
+                }],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -51,10 +123,10 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":1,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tilesets":[
         {
