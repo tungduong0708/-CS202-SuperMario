@@ -466,7 +466,7 @@ void Princess::Init(b2Vec2 position)
 
 void Princess::Update(Vector2 playerVelocity, float deltaTime)
 {
-
+    setSpeed(0.0f);
 }
 
 void Princess::OnBeginContact(SceneNode* other, b2Vec2 normal)

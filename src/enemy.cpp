@@ -534,16 +534,19 @@ Boss::Boss(string type, float range, bool alive, int health, int score, int leve
         this->health = 100;
         this->strength = 100;
         this->speed = -3.0f;
+        this->bulletFreq = 4.5f;
     }
     else if (level == 2) {
         this->health = 1700;
         this->strength = 100;
         this->speed = -4.0f;
+        this->bulletFreq = 3.5f;
     }
     else if (level == 3) {
         this->health = 2250;
         this->strength = 100;
         this->speed = -5.0f;
+        this->bulletFreq = 2.0f;
     }
 }
 
@@ -625,7 +628,7 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     destRect.y = position.y;
 
     float diff = position.x - playerPos.x;
-    if (abs(diff) > 5.0f and abs(diff) < 30.0f) {
+    if (abs(diff) > 5.0f and abs(diff) < 12.5f) {
         bossState = BossState::BOSS_ATTACK;
     }
     else {
@@ -640,7 +643,7 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     }
 
 
-    if (diff > 1.0f) {
+    if (diff > 1.0f and bossState == BossState::BOSS_WALK) {
         setSpeed(-abs(speed));
     }
     else {
@@ -650,7 +653,7 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
 
     if (bossState == BossState::BOSS_ATTACK) {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
-        if (elapsedTime >= 1.0f) {
+        if (elapsedTime >= bulletFreq) {
             // assemble the attack ball
             AttackBall* atkball = new AttackBall(100.0f, {0.5f, 0.5f}, 5.0f, 0.0f);
             b2Vec2 pos = body->GetPosition();
