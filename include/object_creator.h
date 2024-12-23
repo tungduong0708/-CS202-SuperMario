@@ -6,7 +6,7 @@
 #include <string>
 #include <functional>
 
-// ObjectCreator class handles registering and creating MovingPlatform objects
+// PlatformCreator class handles registering and creating MovingPlatform objects
 class ObjectCreator {
 private:
     // Map for associating platform names with their creation functions

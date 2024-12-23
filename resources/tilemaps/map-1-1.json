@@ -406,10 +406,10 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":118,
+ "nextobjectid":122,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.11.0",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tilesets":[
         {

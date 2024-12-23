@@ -196,7 +196,12 @@ vector<Image>& ImageHandler::setImages(string path) {
         images.push_back(LoadImage("resources/images/monsterflower/close.png"));
         images.push_back(LoadImage("resources/images/monsterflower/open.png"));
     }
-    
+    else if (path == "firebar"){
+        images.push_back(LoadImage("resources/images/firebar/firebar.png"));
+    }
+    else if (path == "rotatingball"){
+         images.push_back(LoadImage("resources/images/rotatingball/rotatingball.png"));
+    }
     // copy vector
     return images;
 }
@@ -435,6 +440,16 @@ vector<Animation>& AnimationHandler::setAnimations(string path) {
     else if (path == "monsterflower") {
         animations = {
             Animation({Frame(0.3f, textures[0]), Frame(0.3f, textures[1])}) // close & open
+        };
+    }
+    else if (path == "firebar") {
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) 
+        };
+    }
+    else if (path== "rotatingball"){
+        animations = {
+            Animation({Frame(0.1f, textures[0])}) 
         };
     }
 

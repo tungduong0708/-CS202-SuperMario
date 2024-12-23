@@ -82,9 +82,11 @@ public:
     Animation getAnimation(bool flag);
 
     void Init(b2Vec2 position);
+  
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
     void Update(Vector2 playerVelocity, float deltaTime);
+
     void HandleInput();
     void ReloadAnimation();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);  
@@ -203,20 +205,36 @@ private:
     Vector2 speed;
     float distance;
     float curDistance = 0;
-    float direction;          
+    float direction;  
+    string type;    
+
+    Vector2 orbitCenter; 
+    float orbitRadius;  
+    float orbitAngle;   
+    float orbitSpeed;    
 public:
     MovingPlatform();
-    MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle = 0.0f);
+    MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle, string _type);
     MovingPlatform(const MovingPlatform &mp);
     virtual ~MovingPlatform();
 
     void Init(b2Vec2 position) override;
+    void InitOrbit(Vector2 center, float radius, float speed);
     void Update(Vector2 playerVelocity, float deltaTime) override;
     void HandleInput() override;
     void OnBeginContact(SceneNode *other, b2Vec2 normal) override;
     void OnEndContact(SceneNode *other) override;
     void Draw() override;
     void Draw(Vector2 position, float angle = 0.0f) override;
+    void SetorbitSpeed(float speed){
+        orbitSpeed = speed;
+    }
+    void SetorbitRadius(float speed){
+        orbitRadius = speed;
+    }
+    void SetorbitCenter(Vector2 center){
+        orbitCenter = center;
+    }
 
     void accept(FileVisitor* visitor) override;
     MovingObject* copy() const override;
