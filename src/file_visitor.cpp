@@ -40,9 +40,8 @@ void ExportFileVisitor::closeFile() {
     }
 }
 
-void ExportFileVisitor::exportMapPath(std::string path)
-{
-    file << path << std::endl;
+void ExportFileVisitor::exportMapInfo(std::string path, int difficulty) {
+    file << path << " " << difficulty << std::endl;
 }
 
 void ExportFileVisitor::VisitFile(StaticTile *obj)

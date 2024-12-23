@@ -9,10 +9,10 @@ Tilemap::Tilemap() {
     player = nullptr;
 }
 
-Tilemap::Tilemap(const std::string& filePath) {
+Tilemap::Tilemap(const std::string& filePath, int difficulty) {
     effectManager = new EffectManager();
     player = nullptr;
-    LoadMapFromJson(filePath);
+    LoadMapFromJson(filePath, difficulty);
     
 }
 
@@ -58,7 +58,7 @@ void Tilemap::changeMap(const std::string &filePath)
         isChangingMap = true;
     }
     else {
-        LoadMapFromJson(filePath);
+        LoadMapFromJson(filePath, difficulty);
         isChangingMap = false;
     }
 }
@@ -88,7 +88,7 @@ void Tilemap::addChangedTile(Tile *tile)
     changedTiles.push_back(tile);
 }
 
-void Tilemap::LoadMapFromJson(const std::string &filePath)
+void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
 {
     std::string mapPath = "resources/tilemaps/" + filePath;
     std::cout << "Loading map " << mapPath << std::endl;
@@ -103,6 +103,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
     file >> j;
     
     this->filePath = filePath;
+    this->difficulty = difficulty;
     width = j["width"];
     height = j["height"];
     tileSize = j["tilewidth"];
@@ -202,6 +203,10 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                     }
                 }
             }
+
+            if (activatedTiles.size() > 0) {
+                activatedTiles.clear();
+            }
         }
         else if (layer["type"] == "objectgroup" && layer.contains("objects")) {
             std::cout << "Object layer found!" << std::endl;
@@ -243,7 +248,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 continue;
                             }
                             std::string enemyName = object["name"].get<std::string>();
-                            Enemy* enemy = EnemyCreator::CreateEnemy(enemyName, Vector2{x, y});
+                            Enemy* enemy = EnemyCreator::CreateEnemy(enemyName, Vector2{x, y}, difficulty);
                             if (enemy != nullptr) {
                                 nodeLayer.push_back(enemy);
                             }
@@ -309,14 +314,15 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                     }
                 }
             }
+
+            if (loadedNodes.size() > 0) {
+                nodes.push_back(loadedNodes);
+                loadedNodes.clear();
+            }
         }
         nodes.push_back(nodeLayer);
     }
-    if (loadedNodes.size() > 0) {
-        nodes.push_back(loadedNodes);
-        loadedNodes.clear();
-        activatedTiles.clear();
-    }
+    
     camera = MyCamera(46.875f, playerPosition, Vector2{ (float)width, (float)height });
     file.close();
     std::cout << "Map loaded successfully!" << std::endl;
@@ -332,7 +338,8 @@ void Tilemap::LoadSaveGame(const std::string &filePath)
     visitor->openFile();
     ifstream& file = visitor->getFile();
     std::string obj, mapPath;
-    file >> mapPath;
+    int difficulty;
+    file >> mapPath >> difficulty;
 
     while (file >> obj) {
         SceneNode* newNode = nullptr;
@@ -423,7 +430,7 @@ void Tilemap::LoadSaveGame(const std::string &filePath)
         } 
     }
     visitor->closeFile();
-    LoadMapFromJson(mapPath);
+    LoadMapFromJson(mapPath, difficulty);
 }
 
 void Tilemap::SaveGame(std::string filePath) const
@@ -431,7 +438,7 @@ void Tilemap::SaveGame(std::string filePath) const
     ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
     visitor->setFilePath(filePath);
     visitor->openFile(true);
-    visitor->exportMapPath(this->filePath);
+    visitor->exportMapInfo(this->filePath, this->difficulty);
     for (auto& tile : changedTiles) {
         StaticTile* staticTile = dynamic_cast<StaticTile*>(tile);
         KinematicTile* kinematicTile = dynamic_cast<KinematicTile*>(tile);

@@ -437,9 +437,6 @@ void SelectPlayerState::update() {
     if (IsButtonClicked(player1.button)) {
         // Set player to Mario
         Tilemap* tilemap = Tilemap::getInstance();
-        tilemap->~Tilemap();
-        tilemap = Tilemap::getInstance();
-        tilemap->LoadMapFromJson("map-1-1.json");
         tilemap->setPlayer("mario");
 
         game->changeState(game->gameplayState.get());
@@ -447,9 +444,6 @@ void SelectPlayerState::update() {
     if (IsButtonClicked(player2.button)) {
         // Set player to Luigi
         Tilemap* tilemap = Tilemap::getInstance();
-        tilemap->~Tilemap();
-        tilemap = Tilemap::getInstance();
-        tilemap->LoadMapFromJson("map-1-1.json");
         tilemap->setPlayer("luigi");
         
         game->changeState(game->gameplayState.get());
@@ -881,8 +875,10 @@ void SelectDifficultyState::update() {
     for (int i = 0; i < 3; ++i)
     {
         if (IsButtonClicked(buttons[i])) {
-            // Set difficulty level
-
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->~Tilemap();
+            tilemap = Tilemap::getInstance();
+            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
             game->changeState(game->selectPlayerState.get());
         }
     }
