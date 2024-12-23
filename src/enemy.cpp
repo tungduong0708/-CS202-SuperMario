@@ -885,7 +885,9 @@ MonsterFlower::~MonsterFlower() {
 }
 
 void MonsterFlower::Init(b2Vec2 position) {
-    Enemy::Init(position + b2Vec2{-0.5f*size.x, size.y});
+    Enemy::Init(position 
+    //+ b2Vec2{-0.5f*size.x, size.y}
+    );
     b2Fixture *fixture = body->GetFixtureList();
     fixture->SetSensor(true);
     initialPosition = position;

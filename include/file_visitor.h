@@ -19,6 +19,7 @@ class MonsterFlower;
 class AttackBall;
 class FireBall;
 class Player;
+class Princess;
 class EffectManager;
 
 class FileVisitor {
@@ -38,6 +39,7 @@ public:
     virtual void VisitFile(AttackBall* obj)     = 0;
     virtual void VisitFile(FireBall* obj)       = 0;
     virtual void VisitFile(Player* obj)         = 0;
+    virtual void VisitFile(Princess* obj)       = 0;
     virtual void VisitFile(EffectManager* obj)  = 0;
 };
 
@@ -69,6 +71,7 @@ public:
     void VisitFile(AttackBall* obj) override;
     void VisitFile(FireBall* obj) override;
     void VisitFile(Player* obj) override;
+    void VisitFile(Princess* obj) override;
     void VisitFile(EffectManager* obj) override;
 };
 
@@ -104,6 +107,7 @@ public:
     void VisitFile(AttackBall* obj) override;
     void VisitFile(FireBall* obj) override;
     void VisitFile(Player* obj) override;
+    void VisitFile(Princess* obj) override;
     void VisitFile(EffectManager* obj) override;
 };
 

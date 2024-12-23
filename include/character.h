@@ -160,6 +160,28 @@ public:
 };
 
 
+class Princess : public Character {
+public:
+    Princess();
+    Princess(string type, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, 
+             float speed = 0.0f, float angle = 0.0f);
+    Princess(const Princess &p);
+    virtual ~Princess();
+
+    void Init(b2Vec2 position);
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    void OnEndContact(SceneNode* other);
+    void HandleInput();
+    void Dead();
+    void Draw();
+    void Draw(Vector2 position, float angle = 0.0f);
+
+    void accept(FileVisitor* visitor);
+    MovingObject* copy() const;
+};
+
+
 class Enemy : public Character {
 protected:
     float range;

@@ -417,6 +417,11 @@ void Tilemap::LoadSaveGame(const std::string &filePath)
             effectManager->accept(visitor);
             effectManager->setLoadedFromMap(true);
         }
+        else if (obj == "Princess") {
+            auto princess = std::make_unique<Princess>();
+            princess->accept(visitor);
+            newNode = princess.release();
+        }
 
         if (newNode) {
             loadedNodes.push_back(newNode);

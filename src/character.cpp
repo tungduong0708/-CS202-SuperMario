@@ -349,3 +349,164 @@ void Character::OnEndContact(SceneNode* other)
 {
 }
 
+Princess::Princess()
+{
+    type = "princess";
+    health = 0;
+    score = 0;
+    level = 0;
+    strength = 0;
+    size = {0.6f, 0.6f};
+    speed = 0.0f;
+    angle = 0.0f;
+    appear = true;
+    invincible = false;
+    immortal = false;
+    isOnGround = false;
+    modeChanged = false;
+    faceLeft = false;
+    blinkTime = 0.0f;
+    immortalTime = 0.0f;
+    appearTimer = 0.0f;
+    colorChangeTimer = 0.0f;
+    frameTime = 0.0f;
+    frameSpeed = 0.0f;
+    currentImage = IDLE;
+    previousImage = IDLE;
+}
+
+Princess::Princess(string type, int health, int score, int level, int strength, Vector2 size, float speed, float angle)
+    : Character(type, health, score, level, strength, size, speed, angle)
+{
+    appear = true;
+    invincible = false;
+    immortal = false;
+    isOnGround = false;
+    modeChanged = false;
+    faceLeft = false;
+    blinkTime = 0.0f;
+    immortalTime = 0.0f;
+    appearTimer = 0.0f;
+    colorChangeTimer = 0.0f;
+    frameTime = 0.0f;
+    frameSpeed = 0.0f;
+    currentImage = IDLE;
+    previousImage = IDLE;
+}
+
+
+Princess::Princess(const Princess &p)
+    : Character(p)
+{
+    appear = p.appear;
+    invincible = p.invincible;
+    immortal = p.immortal;
+    isOnGround = p.isOnGround;
+    modeChanged = p.modeChanged;
+    faceLeft = p.faceLeft;
+    blinkTime = p.blinkTime;
+    immortalTime = p.immortalTime;
+    appearTimer = p.appearTimer;
+    colorChangeTimer = p.colorChangeTimer;
+    frameTime = p.frameTime;
+    frameSpeed = p.frameSpeed;
+    currentImage = p.currentImage;
+    previousImage = p.previousImage;
+}
+
+Princess::~Princess()
+{
+    appear = false;
+    invincible = false;
+    immortal = false;
+    isOnGround = false;
+    modeChanged = false;
+    faceLeft = false;
+    blinkTime = 0.0f;
+    immortalTime = 0.0f;
+    appearTimer = 0.0f;
+    colorChangeTimer = 0.0f;
+    frameTime = 0.0f;
+    frameSpeed = 0.0f;
+    currentImage = IDLE;
+    previousImage = IDLE;
+}
+
+void Princess::Init(b2Vec2 position)
+{
+    this->position = Vector2{position.x, position.y};  
+    alive = true;
+    currentImage = ImageSet::IDLE;
+    animations = AnimationHandler::setAnimations("princess");
+    curAnim = animations[currentImage];
+
+    texture = curAnim.GetFrame();
+
+    frameWidth = texture.width;
+    frameHeight = texture.height;
+    sourceRect = {0, 0, (float)frameWidth, (float)frameHeight};
+
+    size = {(float)frameWidth / IMAGE_WIDTH, (float)frameHeight / IMAGE_WIDTH};
+    destRect = {position.x, position.y, size.x, size.y};
+
+    std::vector<b2Vec2> vertices = {
+        b2Vec2{0.0f, 0.0f},
+        b2Vec2{size.x, 0.0f},
+        b2Vec2{size.x - 0.2f, size.y},
+        b2Vec2{size.x, size.y - 0.05f},
+        b2Vec2{0.0f, size.y - 0.05f},
+        b2Vec2{0.0f + 0.2f, size.y}
+    };
+    MyBoundingBox::createBody(body, b2_dynamicBody, vertices, Vector2{position.x, position.y});
+    b2Fixture* fixture = body->GetFixtureList();
+    fixture->SetFriction(0.3f);
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+}
+
+void Princess::Update(Vector2 playerVelocity, float deltaTime)
+{
+
+}
+
+void Princess::OnBeginContact(SceneNode* other, b2Vec2 normal)
+{
+    if (!other) return;
+    Player* player = dynamic_cast<Player*>(other);
+    if (player) {
+        string type = player->getType();
+        TextHelper::Draw("Thank you " + type + "!", getPosition(), 20, RAYWHITE);
+    }
+}
+
+void Princess::OnEndContact(SceneNode* other)
+{
+}
+
+void Princess::HandleInput()
+{
+}
+
+void Princess::Dead()
+{
+}
+
+void Princess::Draw()
+{
+    if (!appear) return;
+    b2Vec2 pos = body->GetPosition();
+    sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
+    Vector2 drawPosition = { pos.x, pos.y };
+    Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft);
+}
+
+void Princess::Draw(Vector2 position, float angle)
+{
+}
+
+void Princess::accept(FileVisitor* visitor) {
+    visitor->VisitFile(this);
+}
+
+MovingObject* Princess::copy() const {
+    return new Princess(*this);
+}

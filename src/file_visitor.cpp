@@ -148,6 +148,11 @@ void ExportFileVisitor::VisitFile(Player *obj) {
     file << obj->getCurrentMap() << std::endl;
 }
 
+void ExportFileVisitor::VisitFile(Princess *obj) {
+    file << "Princess" << std::endl;
+    file << obj->getPosition().x << " " << obj->getPosition().y << std::endl;
+}
+
 void ExportFileVisitor::VisitFile(EffectManager *obj)
 {
     ofstream file(filePath, ios::app);
@@ -375,6 +380,13 @@ void ImportFileVisitor::VisitFile(Player *obj)
     }
     obj->setTime(time);
     obj->setCurrentMap(currentMap);
+}
+
+void ImportFileVisitor::VisitFile(Princess *obj) {
+    float x, y;
+    file >> x >> y;
+    *obj = Princess("princess", 0, 0, 0, 0, Vector2{1.0f, 1.0f}, 0.0f, 0.0f);
+    obj->Init(b2Vec2{x, y});
 }
 
 void ImportFileVisitor::VisitFile(EffectManager *obj)
