@@ -309,7 +309,7 @@ GameplayState::GameplayState(Game* game)
 
     Physics::Init(); 
     AnimationEffectCreator::InitEffects();
-    EnemyCreator::InitEnemies();
+    CharacterCreator::InitCharacters();
     ObjectCreator::InitObjects();
     TextHelper::loadFont("PressStart2P-Regular", "");
     TilesetHandler::Init();
@@ -836,6 +836,7 @@ void GameOverState::update() {
     }
     if (IsButtonClicked(buttons[1])) {
         // Retry the game
+        game->changeState(game->selectDifficultyState.get());
     }
 }
 
@@ -1015,7 +1016,7 @@ void SelectDifficultyState::update() {
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->~Tilemap();
             tilemap = Tilemap::getInstance();
-            tilemap->LoadMapFromJson("map-1-4.json", i + 1);
+            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
             game->changeState(game->selectPlayerState.get());
         }
     }

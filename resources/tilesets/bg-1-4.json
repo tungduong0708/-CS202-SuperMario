@@ -43,7 +43,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -69,7 +68,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -90,6 +88,10 @@
              "y":0
             },
          "type":"bridge"
+        }, 
+        {
+         "id":2208,
+         "type":"larva"
         }],
  "tilewidth":16,
  "type":"tileset",

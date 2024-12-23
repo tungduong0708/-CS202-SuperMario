@@ -54,5 +54,5 @@
 #include "static_object.h"
 #include "moving_object.h"
 #include "character.h"
-#include "enemy_creator.h"
+#include "character_creator.h"
 #include "object_creator.h"

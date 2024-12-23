@@ -1,3 +1,4 @@
+#include "game.h"
 #include "include.h"
 #include "object.h"
 #include "character.h"
@@ -475,6 +476,9 @@ void Princess::OnBeginContact(SceneNode* other, b2Vec2 normal)
     if (player) {
         string type = player->getType();
         TextHelper::Draw("Thank you " + type + "!", getPosition(), 20, RAYWHITE);
+        playSoundEffect(SoundEffect::WORLD_CLEAR);
+        Game* game = Game::getInstance();
+        game->changeState(game->victoryState.get());
     }
 }
 

@@ -345,6 +345,8 @@ void Player::Dead() {
             if (lives == 0) {
                 // game over
                 playSoundEffect(SoundEffect::GAME_OVER);
+                Game* game = Game::getInstance();
+                game->changeState(game->gameOverState.get());
             }
             else {
                 // reset the player

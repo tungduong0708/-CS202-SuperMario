@@ -243,14 +243,14 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
                                 player->setTime(300.0f);
                             }
                         }
-                        else if (object.contains("type") && object["type"] == "enemy") {
+                        else if (object.contains("type") && object["type"] == "character") {
                             if (!loadedNodes.empty()) {
                                 continue;
                             }
-                            std::string enemyName = object["name"].get<std::string>();
-                            Enemy* enemy = EnemyCreator::CreateEnemy(enemyName, Vector2{x, y}, difficulty);
-                            if (enemy != nullptr) {
-                                nodeLayer.push_back(enemy);
+                            std::string characterName = object["name"].get<std::string>();
+                            Character* character = CharacterCreator::CreateCharacter(characterName, Vector2{x, y}, difficulty);
+                            if (character != nullptr) {
+                                nodeLayer.push_back(character);
                             }
                         }
                         else if (object.contains("type") && object["type"] == "object") {
