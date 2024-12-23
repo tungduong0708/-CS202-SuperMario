@@ -955,7 +955,7 @@ void SelectDifficultyState::update() {
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->~Tilemap();
             tilemap = Tilemap::getInstance();
-            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
+            tilemap->LoadMapFromJson("map-1-4.json", i + 1);
             game->changeState(game->selectPlayerState.get());
         }
     }
