@@ -82,9 +82,11 @@ public:
     Animation getAnimation(bool flag);
 
     void Init(b2Vec2 position);
+  
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
     void Update(Vector2 playerVelocity, float deltaTime);
+
     void HandleInput();
     void ReloadAnimation();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);  
@@ -204,9 +206,12 @@ private:
     float distance;
     float curDistance = 0;
     float direction;  
-    string type;        
-    std::vector<FireBall*> fireballs;
-    float radius = 2.0f; 
+    string type;    
+
+    Vector2 orbitCenter; 
+    float orbitRadius;  
+    float orbitAngle;   
+    float orbitSpeed;    
 public:
     MovingPlatform();
     MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle, string _type);
@@ -214,17 +219,70 @@ public:
     virtual ~MovingPlatform();
 
     void Init(b2Vec2 position) override;
+    void InitOrbit(Vector2 center, float radius, float speed);
     void Update(Vector2 playerVelocity, float deltaTime) override;
     void HandleInput() override;
     void OnBeginContact(SceneNode *other, b2Vec2 normal) override;
     void OnEndContact(SceneNode *other) override;
     void Draw() override;
     void Draw(Vector2 position, float angle = 0.0f) override;
+    void SetorbitSpeed(float speed){
+        orbitSpeed = speed;
+    }
+    void SetorbitRadius(float speed){
+        orbitRadius = speed;
+    }
+    void SetorbitCenter(Vector2 center){
+        orbitCenter = center;
+    }
 
     void accept(FileVisitor* visitor) override;
     MovingObject* copy() const override;
-    void AddFireBall(FireBall* fireball); 
-    void ClearFireBalls();
+};
+
+class Flag : public MovingObject {
+public:
+    Flag();
+    Flag(const Flag &f);
+    virtual ~Flag();
+
+    void setPosition(Vector2 position);
+    void Init(b2Vec2 position);
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void HandleInput();
+    void OnBeginContact(SceneNode *other, b2Vec2 normal);
+    void OnEndContact(SceneNode *other);
+    void Draw();
+    void Draw(Vector2 position, float angle);
+
+    void accept(FileVisitor* visitor);
+    MovingObject* copy() const;
+};
+
+class Axe : public MovingObject {
+private:
+    std::vector<StaticTile*> tiles;
+    Texture2D texture;
+    bool activating = false;
+    bool activated = false;
+    float animationTime = 2.0f;
+    float elapsedTime = 0.0f;
+public:
+    Axe();
+    Axe(const Axe &a);
+    virtual ~Axe() = default;
+
+    void AddBridgeTile(StaticTile* tile);
+    void Init(b2Vec2 position);
+    void Update(Vector2 playerVelocity, float deltaTime);
+    void HandleInput();
+    void OnBeginContact(SceneNode *other, b2Vec2 normal);
+    void OnEndContact(SceneNode *other);
+    void Draw();
+    void Draw(Vector2 position, float angle);
+
+    void accept(FileVisitor* visitor);
+    MovingObject* copy() const;
 };
 
 #endif

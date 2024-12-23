@@ -19,8 +19,19 @@ struct ImageButton
     Rectangle rect;
     Texture2D texture;
     Texture2D hoverTexture;
-    std::string text;
     bool isHovered;
+};
+
+struct PlayerInfo
+{
+    std::string name;
+    Texture2D texture;
+    Texture2D hoverTexture;
+    ImageButton button;
+    int speed;
+    int jumpForce;
+    int bulletSpeed;
+    int bulletFreq;
 };
 
 class GameState
@@ -61,6 +72,18 @@ public:
 
 private:
     std::vector<Button> buttons;
+};
+
+class TutorialState : public GameState
+{
+public:
+    explicit TutorialState(Game* game);
+    void update() override;
+    void draw() override;
+    ~TutorialState() override;
+private:
+    std::vector<Button> buttons;
+    std::vector<Texture2D> tutorialTextures;
 };
 
 class SavedGameState : public GameState
@@ -126,8 +149,8 @@ public:
     void draw() override;
     ~SelectPlayerState() override;
 private:
-    ImageButton player1Button;
-    ImageButton player2Button;
+    PlayerInfo player1;
+    PlayerInfo player2;
 };
 
 class ChangeStageState : public GameState

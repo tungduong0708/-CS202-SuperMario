@@ -13,9 +13,6 @@
 #include <raylib.h> 
 #include "nlohmann/json.hpp" 
 
-const int screenWidth = 800;
-const int screenHeight = 600;
-
 class Tilemap {
 private:
     bool isChangingMap = false;
@@ -55,6 +52,7 @@ public:
     
     void setPlayer(const std::string name);
     void SetNewMapPath(const std::string& path);
+    std::string GetCurrentMapPath() const;
     EffectManager* GetEffectManager();
     Player* GetPlayer();
     Vector2 GetPlayerPosition() const;

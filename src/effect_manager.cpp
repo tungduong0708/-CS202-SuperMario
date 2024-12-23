@@ -73,7 +73,7 @@ bool EffectManager::UpdateEffectCount(std::pair<int, int> pos)
         effectMap.erase(pos);
         return true;
     }
-    return true;
+    return false;
 }
 
 void EffectManager::Update(float deltaTime)

@@ -43,6 +43,9 @@ void AnimationEffectCreator::InitEffects()
     RegisterEffect("dead_goomba", [](Vector2 position) {
         return new DeadGoombaEffect(position);
     });
+    RegisterEffect("dead_boss", [](Vector2 position) {
+        return new DeadBossEffect(position);
+    });
     RegisterEffect("squash_dead_goomba", [](Vector2 position) {
         return new SquashDeadGoombaEffect(position);
     });

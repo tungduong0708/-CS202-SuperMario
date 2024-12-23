@@ -1,7 +1,11 @@
 #ifndef IMAGEHANDLER_H
 #define IMAGEHANDLER_H
 
-#include "include.h"
+#include <raylib.h>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <fstream>
 #include "animation.h"
 
 class ImageHandler {

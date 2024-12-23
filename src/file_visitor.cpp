@@ -1,6 +1,5 @@
 #include "include.h"
 #include "object.h"
-#include "file_visitor.h"
 
 ExportFileVisitor* ExportFileVisitor::instance;
 ImportFileVisitor* ImportFileVisitor::instance;
@@ -111,7 +110,10 @@ void ExportFileVisitor::VisitFile(LarvaBubble *obj) {
 
 void ExportFileVisitor::VisitFile(MonsterFlower *obj) {
     file << "MonsterFlower" << std::endl;
-    file << obj->getPosition().x << " " << obj->getPosition().y << std::endl;
+    b2Vec2 size = {obj->getSize().x, obj->getSize().y};
+    b2Vec2 diff = b2Vec2{-0.5f*size.x, 0};
+    b2Vec2 pos = b2Vec2{obj->getPosition().x, obj->getPosition().y} - diff;
+    file << pos.x  << " " << pos.y << std::endl;
     file << obj->getLevel() << std::endl;
     file << obj->getHealth() << std::endl;
 }
@@ -296,9 +298,10 @@ void ImportFileVisitor::VisitFile(LarvaBubble *obj)
     int level, health;
     file >> x >> y;
     file >> level >> health;
-    delete obj;
-    obj = new LarvaBubble("larvabubble", 0.0f, true, 100, 100, 1, 100, Vector2{0.6f, 0.6f});
+    *obj = LarvaBubble("larvabubble", 0.0f, true, 100, 100, 1, 100, Vector2{0.6f, 0.6f});
     obj->Init(b2Vec2{x, y});
+    obj->setLevel(level);
+    obj->setHealth(health);
 }
 
 void ImportFileVisitor::VisitFile(MonsterFlower *obj)
@@ -307,9 +310,10 @@ void ImportFileVisitor::VisitFile(MonsterFlower *obj)
     int level, health;
     file >> x >> y;
     file >> level >> health;
-    delete obj;
-    obj = new MonsterFlower("monsterflower", 0.0f, true, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f);
+    *obj = MonsterFlower("monsterflower", 0.0f, true, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f);
     obj->Init(b2Vec2{x, y});
+    obj->setLevel(level);
+    obj->setHealth(health);
 }
 
 void ImportFileVisitor::VisitFile(AttackBall *obj)

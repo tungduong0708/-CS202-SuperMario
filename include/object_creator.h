@@ -10,7 +10,7 @@
 class ObjectCreator {
 private:
     // Map for associating platform names with their creation functions
-    std::unordered_map<std::string, std::function<SceneNode*(Vector2)>> ObjectCreator::creators;
+    static std::unordered_map<std::string, std::function<SceneNode*(Vector2)>> creators;
 
 public:
     ObjectCreator() = default;

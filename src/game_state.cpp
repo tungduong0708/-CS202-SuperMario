@@ -161,6 +161,30 @@ void SettingsState::draw() {
     DrawMarioSlider({centerX, 525, 250, 20}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
+TutorialState::TutorialState(Game *game) : GameState(game)
+{
+    // Tutorial here
+}
+
+void TutorialState::update()
+{
+    // Some update code here
+}
+
+void TutorialState::draw()
+{
+    // Some draw code here
+}
+
+TutorialState::~TutorialState()
+{
+    // Some cleanup code here
+    for (const auto& texture : tutorialTextures)
+    {
+        UnloadTexture(texture);
+    }
+}
+
 SavedGameState::SavedGameState(Game* game)
     : GameState(game)
 {
@@ -320,7 +344,7 @@ void PauseGameState::update() {
         game->changeState(game->gameplayState.get());
     }
     if (IsButtonClicked(buttons[3])) {
-        game->changeState(game->mainMenuState.get());
+        game->changeState(game->gameSavingState.get());
     }
 
     float centerX = (game->getScreenWidth() - 250) / 2;
@@ -372,27 +396,37 @@ void MapPauseState::draw()
 
 SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
     // Initialize buttons
-    float buttonWidth = 250;
-    float buttonHeight = 400;
-    float column1X = static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
-    float column2X = 3 * static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
+    float buttonWidth = 500;
+    float buttonHeight = 250;
+    float column1X = 30;
+    float column2X = static_cast<float>(game->getScreenWidth()) - buttonWidth - 30;
 
-    Texture2D player1Texture = LoadTexture("../resources/images/smallmario/idle.png");
-    Texture2D player1HoverTexture = LoadTexture("../resources/images/smallmario/victory.png");
-    player1Button = {{column1X, 100, buttonWidth, buttonHeight}, player1Texture, player1HoverTexture, "Mario", false};
+    player1.name = "Mario";
+    player1.texture = LoadTexture("../resources/images/smallmario/idle.png");
+    player1.hoverTexture = LoadTexture("../resources/images/smallmario/victory.png");
+    player1.button = {{column1X, 30, buttonWidth, buttonHeight}, player1.texture, player1.hoverTexture, false};
+    player1.speed = 85;
+    player1.jumpForce = 90;
+    player1.bulletSpeed = 72;
+    player1.bulletFreq = 60;
 
-    Texture2D player2Texture = LoadTexture("../resources/images/smallluigi/idle.png");
-    Texture2D player2HoverTexture = LoadTexture("../resources/images/smallluigi/victory.png");
-    player2Button = {{column2X, 100, buttonWidth, buttonHeight}, player2Texture, player2HoverTexture, "Luigi", false};
+    player2.name = "Luigi";
+    player2.texture = LoadTexture("../resources/images/smallluigi/idle.png");
+    player2.hoverTexture = LoadTexture("../resources/images/smallluigi/victory.png");
+    player2.button = {{column2X, 330, buttonWidth, buttonHeight}, player2.texture, player2.hoverTexture, false};
+    player2.speed = 75;
+    player2.jumpForce = 84;
+    player2.bulletSpeed = 88;
+    player2.bulletFreq = 80;
 }
 
 void SelectPlayerState::update() {
     // Update button hover states
-    player1Button.isHovered = CheckCollisionPointRec(GetMousePosition(), player1Button.rect);
-    player2Button.isHovered = CheckCollisionPointRec(GetMousePosition(), player2Button.rect);
+    player1.button.isHovered = CheckCollisionPointRec(GetMousePosition(), player1.button.rect);
+    player2.button.isHovered = CheckCollisionPointRec(GetMousePosition(), player2.button.rect);
 
     // Handle button clicks
-    if (IsButtonClicked(player1Button)) {
+    if (IsButtonClicked(player1.button)) {
         // Set player to Mario
         Tilemap* tilemap = Tilemap::getInstance();
         tilemap->LoadMapFromJson("map-1-1.json");
@@ -400,7 +434,7 @@ void SelectPlayerState::update() {
 
         game->changeState(game->gameplayState.get());
     }
-    if (IsButtonClicked(player2Button)) {
+    if (IsButtonClicked(player2.button)) {
         // Set player to Luigi
         Tilemap* tilemap = Tilemap::getInstance();
         tilemap->LoadMapFromJson("map-1-1.json");
@@ -415,19 +449,19 @@ void SelectPlayerState::draw() {
     game->mainMenuState->drawBackground();
 
     // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.6f));
     
     // Draw buttons
-    DrawImageButton(player1Button, *game);
-    DrawImageButton(player2Button, *game);
+    DrawImageButton(*game, player1);
+    DrawImageButton(*game, player2);
 }
 
 SelectPlayerState::~SelectPlayerState()
 {
-    UnloadTexture(player1Button.texture);
-    UnloadTexture(player1Button.hoverTexture);
-    UnloadTexture(player2Button.texture);
-    UnloadTexture(player2Button.hoverTexture);
+    UnloadTexture(player1.button.texture);
+    UnloadTexture(player1.button.hoverTexture);
+    UnloadTexture(player2.button.texture);
+    UnloadTexture(player2.button.hoverTexture);
 }
 
 ChangeStageState::ChangeStageState(Game* game) : GameState(game), elapsedTime(0.0f), lifeRemaining(3)
@@ -447,27 +481,71 @@ void ChangeStageState::update()
 
 void ChangeStageState::draw()
 {
+    setStageName("Stage 1-2");
     // Draw the underlying GameplayState
     game->gameplayState->draw();
 
-    // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    // Draw a semi-transparent black overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
 
-    // Draw the small rectangle with Mario's image and life count
-    float rectWidth = 200.0f;
-    float rectHeight = 100.0f;
+    // Draw the central rounded rectangle (panel)
+    float rectWidth = 300.0f;
+    float rectHeight = 150.0f;
     float rectX = (game->getScreenWidth() - rectWidth) / 2;
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
-    DrawRectangle(rectX, rectY, rectWidth, rectHeight, Fade(BLACK, 0.7f));
 
-    // Draw Mario's image
-    DrawTexture(characterTexture, rectX + 10, rectY + 10, WHITE);
+    // Draw shadow for depth
+    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.2f, 10, Fade(BLACK, 0.4f));
 
-    // Draw life remaining text
-    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining), {rectX + 60, rectY + 20}, 20, 2, WHITE);
+    int gradientSteps = 10;  // Number of steps for the gradient
+    float stepHeight = rectHeight / static_cast<float>(gradientSteps); // Height of each step
 
-    // Draw stage name
-    DrawTextEx(game->getFont(), stageName.c_str(), {rectX + 60, rectY + 60}, 20, 2, WHITE);
+    for (int i = 0; i < gradientSteps; i++)
+    {
+        float alpha = 0.8f - (static_cast<float>(i) * 0.1f); // Gradually decrease alpha for a fade effect
+        Color stepColor = Fade(YELLOW, alpha); // Base color BLUE, fading gradually
+
+        DrawRectangleRounded(
+            {rectX, rectY + static_cast<float>(i) * stepHeight, rectWidth, stepHeight + 1}, // Adjust height for smooth overlap
+            0.2f, 10, stepColor);
+    }
+
+    // Draw Stage Name with Shadow
+    constexpr int fontSize = 30;
+    constexpr int spacing = 1;
+
+    Vector2 stageTextSize = MeasureTextEx(game->getFont(), stageName.c_str(), fontSize, spacing);
+    Vector2 stageTextPos = {
+        rectX + (rectWidth - stageTextSize.x) / 2, // Center horizontally
+        rectY + 20                                // Margin from the top
+    };
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), stageName.c_str(),
+               {stageTextPos.x + 2, stageTextPos.y + 2}, fontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), stageName.c_str(),
+               stageTextPos, fontSize, 2, BLUE);
+
+    // Draw Mario's Image (Scaled 2x)
+    float imageScale = 2.0f;
+    float imageX = rectX + 40;
+    float imageY = rectY + (rectHeight - characterTexture.height * imageScale) / 3 * 2;
+    DrawTextureEx(characterTexture, {imageX, imageY}, 0.0f, imageScale, WHITE);
+
+    // Draw Life Count with Shadow
+    constexpr int lifeFontSize = 24;
+    Vector2 lifeTextPos = {imageX + 90, imageY + 10};
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining),
+               {lifeTextPos.x + 2, lifeTextPos.y + 2}, lifeFontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining),
+               lifeTextPos, lifeFontSize, 2, WHITE);
+
+    // Add a decorative border
+    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.2f, 10, 5, WHITE);
 }
 
 void ChangeStageState::setLifeRemaining(int life)
@@ -514,32 +592,90 @@ void DeathState::update()
     }
 }
 
-void DeathState::draw()
-{
+void DeathState::draw() {
     // Draw the underlying GameplayState
     game->gameplayState->draw();
 
-    // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    // Draw a semi-transparent black overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(BLACK, 0.6f));
 
-    // Draw the small rectangle with Mario's image and life count
-    float rectWidth = 200.0f;
-    float rectHeight = 100.0f;
+    // Draw the central rounded rectangle (panel)
+    float rectWidth = 300.0f;
+    float rectHeight = 150.0f;
     float rectX = (game->getScreenWidth() - rectWidth) / 2;
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
-    DrawRectangle(rectX, rectY, rectWidth, rectHeight, Fade(BLACK, 0.7f));
 
-    // Draw Mario's image
-    DrawTexture(characterTexture, rectX + 10, rectY + 10, WHITE);
+    // Draw shadow for depth
+    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.2f, 10, Fade(BLACK, 0.4f));
 
-    // Draw life remaining text
-    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining), {rectX + 60, rectY + 20}, 20, 2, WHITE);
+    int gradientSteps = 10;  // Number of steps for the gradient
+    float stepHeight = rectHeight / static_cast<float>(gradientSteps); // Height of each step
 
-    if (showDeathImage) {
-        // Draw death image and "life - 1" text
-        DrawTexture(deathTexture, rectX + 10, rectY + 50, WHITE);
-        DrawTextEx(game->getFont(), "life - 1", {rectX + 60, rectY + 60}, 10, 2, WHITE);
+    for (int i = 0; i < gradientSteps; i++) {
+        float alpha = 0.8f - (static_cast<float>(i) * 0.1f); // Gradually decrease alpha for a fade effect
+        Color stepColor = Fade(RED, alpha); // Base color RED, fading gradually
+
+        DrawRectangleRounded(
+            {rectX, rectY + static_cast<float>(i) * stepHeight, rectWidth, stepHeight + 1.5f}, // Adjust height for smooth overlap
+            0.2f, 10, stepColor);
     }
+
+    // Draw "You Died" text with Shadow
+    constexpr int fontSize = 30;
+    constexpr int spacing = 1;
+
+    const char* deathText = "You Died";
+    Vector2 deathTextSize = MeasureTextEx(game->getFont(), deathText, fontSize, spacing);
+    Vector2 deathTextPos = {
+        rectX + (rectWidth - deathTextSize.x) / 2, // Center horizontally
+        rectY + 20                                // Margin from the top
+    };
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), deathText,
+               {deathTextPos.x + 2, deathTextPos.y + 2}, fontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), deathText,
+               deathTextPos, fontSize, 2, ORANGE);
+
+    // Draw Mario's Image (Scaled 2x)
+    float imageScale = 2.0f;
+    float imageX = rectX + 70;
+    float imageY = rectY + (rectHeight - characterTexture.height * imageScale) / 2;
+    DrawTextureEx(characterTexture, {imageX, imageY}, 0.0f, imageScale, WHITE);
+
+    // Draw Life Count with Shadow
+    constexpr int lifeFontSize = 24;
+    Vector2 lifeTextPos = {imageX + 90, imageY + 10};
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining),
+               {lifeTextPos.x + 2, lifeTextPos.y + 2}, lifeFontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), TextFormat("x %d", lifeRemaining),
+               lifeTextPos, lifeFontSize, 2, WHITE);
+
+    // Draw Death Image
+    if (showDeathImage) {
+        float deathImageScale = 1.5f;
+        float deathImageX = rectX + 70;
+        float deathImageY = rectY + (rectHeight - deathTexture.height * deathImageScale) / 6 * 5;
+        DrawTextureEx(deathTexture, {deathImageX, deathImageY}, 0.0f, deathImageScale, WHITE);
+
+        // Write life - 1
+        constexpr int deathFontSize = 18;
+        Vector2 deathTextPos = {deathImageX + 72, deathImageY + 10};
+
+        // Draw text shadow
+        DrawTextEx(game->getFont(), TextFormat("LIFE - %d", 1),
+                   {deathTextPos.x + 2, deathTextPos.y + 2}, deathFontSize, 2, Fade(BLACK, 0.6f));
+        // Draw main text
+        DrawTextEx(game->getFont(), TextFormat("LIFE - %d", 1),
+                   deathTextPos, deathFontSize, 2, WHITE);
+    }
+
+    // Add a decorative border
+    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.2f, 10, 5, WHITE);
 }
 
 void DeathState::reset()
@@ -652,17 +788,48 @@ void VictoryState::draw() {
     DrawTextEx(game->getFont(), TextFormat("Time Remaining: %d", timeRemaining), {10, 70}, 20, 2, WHITE);
 }
 
-// just write the methods' name, and some comments, no need to implement
 GameSavingState::GameSavingState(Game* game) : GameState(game) {
     // Initialize buttons
+    float buttonWidth = 250;
+    float buttonHeight = 50;
+    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
+    for (int i = 0; i < 5; ++i) {
+        buttons.push_back(Button{{centerX, static_cast<float>(100 + i * 75), buttonWidth, buttonHeight}, "Slot " + std::to_string(i + 1), false});
+    }
 }
 
 void GameSavingState::update() {
     // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    // Handle button clicks
+    bool isClicked = false;
+    for (int i = 0; i < 5; ++i) {
+        if (IsButtonClicked(buttons[i])) {
+            // Save the game to the slot
+
+            // Change state to MainMenuState
+            isClicked = true;
+            break;
+        }
+    }
+    if (isClicked) {
+        game->changeState(game->mainMenuState.get());
+    }
 }
 
 void GameSavingState::draw() {
     // Draw the underlying GameplayState
+    game->gameplayState->draw();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
 }
 
 GameSavingState::~GameSavingState() {

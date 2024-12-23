@@ -2,6 +2,7 @@
 #define STATIC_OBJECT_H
 
 #include "file_visitor.h"
+#include "moving_object.h"
 #include "scene_node.h"
 #include "physics.h"
 #include <string>
@@ -36,13 +37,45 @@ public:
 class Gate : public StaticObject {
 private:
     std::string addressNext;
+    float delay;
+    float elapsedTime;
+    float prevVolume;
+    float prevSpeed;
+    bool start;
 public:
+    Gate();
     Gate(b2Body* body, std::string addressNext);
-    virtual ~Gate() = default;
+    virtual ~Gate();
 
     std::string getAddressNext() const;
+    void setAddressNext(std::string addressNext);
+
+    void Init(std::vector<b2Vec2> vertices, Vector2 position, std::string addressNext);
     void Update(Vector2 playerVelocity, float deltaTime);
     void Draw();
+    void OnBeginContact(SceneNode* other, b2Vec2 normal);
+    void OnEndContact(SceneNode* other);
+    void accept(FileVisitor* visitor);
+};
+
+class Pole : public StaticObject {
+private:
+    bool activated;
+    bool activating;
+    bool flagOnGround;
+    bool playerOnGround;
+    float speed;
+    float height;
+    float prevPlayerSpeed;
+    Flag* flag;
+public:
+    Pole();
+    Pole(b2Body* body);
+    virtual ~Pole() = default;
+
+    void addFlag(Flag* flag);  
+    void Init(std::vector<b2Vec2> vertices, b2Vec2 position);
+    void Update(Vector2 playerVelocity, float deltaTime);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
     void accept(FileVisitor* visitor);

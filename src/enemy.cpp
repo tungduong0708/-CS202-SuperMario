@@ -151,6 +151,20 @@ void Enemy::Dead() {}
 
 void Enemy::Draw() {
     if (!body) return;
+
+    Player* player = Tilemap::getInstance()->GetPlayer();
+    float screenWidth = (float)GetScreenWidth() / 16.0f;
+    float diff = 0.0f;
+    if (player->isAlive() and (player->getInitialPosition().x != player->getPosition().x)) {
+        diff = body->GetPosition().x - player->getPosition().x;
+    }
+    if (abs(diff) > screenWidth/4) {
+        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
+        return;
+    }
+    else {
+        setSpeed(speed);
+    }
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Vector2 drawPosition = { pos.x, pos.y };
@@ -504,7 +518,7 @@ Boss::Boss(string type, float range, bool alive, int health, int score, int leve
     attackFire = true;
     
     if (level == 1) {
-        this->health = 1000;
+        this->health = 100;
         this->strength = 100;
         this->speed = -3.0f;
     }
@@ -598,20 +612,25 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     destRect.y = position.y;
 
     float diff = position.x - playerPos.x;
-    if (abs(diff) > 5.0f) {
+    if (abs(diff) > 5.0f and abs(diff) < 30.0f) {
         bossState = BossState::BOSS_ATTACK;
     }
     else {
         bossState = BossState::BOSS_WALK;
     }
 
-
-    if (diff > 0.5f) {
+    if (diff > 0.0f) {
         faceLeft = true;
-        setSpeed(-abs(speed));
     }
     else {
         faceLeft = false;
+    }
+
+
+    if (diff > 1.0f) {
+        setSpeed(-abs(speed));
+    }
+    else {
         setSpeed(abs(speed));
     }
 
@@ -658,20 +677,15 @@ void Boss::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (player) {
         if (player->isImmortal()) return;
         if (player->getMode() == Mode::SMALL) {
+            cout << "die" << endl;
             player->setHealth(player->getHealth() - getStrength());
         }
         else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+            player->changeMode(Mode::SMALL);
+            player->setInvisibleTime(1.5f);
             b2Body* playerBody = player->getBody();
-            Vector2 playerSize = player->getSize();
             Vector2 pos = player->getPosition();
             player->setPositon(b2Vec2{pos.x, pos.y});
-            player->changeMode(Mode::SMALL);
-            player->setImmortal(true);
-            player->setImmortalTime(1.5f);
-
-            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("shrink_mario", Vector2{pos.x, pos.y + playerSize.y}));
-            effectManager->setActivePlayerEffect(true);
             playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
         }
     }
@@ -698,7 +712,14 @@ void Boss::OnEndContact(SceneNode *other) {
 }
 
 void Boss::Dead() {
+    b2Vec2 pos = body->GetPosition();
+    Physics::bodiesToDestroy.push_back(body);
+    body = nullptr;
+    animations.clear();
+    alive = false;
 
+    EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+    effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_boss", Vector2{pos.x, pos.y}));
 }
 
 void Boss::accept(FileVisitor *visitor) {
@@ -741,6 +762,8 @@ void LarvaBubble::Explode() {
 
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_koopa", Vector2{pos.x, pos.y}));
+
+        alive = false;
     }
 }
 
@@ -827,10 +850,14 @@ MovingObject* LarvaBubble::copy() const {
 }
 
 void LarvaBubble::Draw() {
+    if (!body) return;
     if (body->GetPosition().y + size.y > 14.1f) {
     }
     else {
-        Enemy::Draw();
+        b2Vec2 pos = body->GetPosition();
+        sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
+        Vector2 drawPosition = { pos.x, pos.y };
+        Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft, 0.0f, bodySize);
     }
 }
 
@@ -939,7 +966,10 @@ MovingObject* MonsterFlower::copy() const {
 
 void MonsterFlower::Draw() {
     if (!body) return;
-    Enemy::Draw();
+    b2Vec2 pos = body->GetPosition();
+    sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
+    Vector2 drawPosition = { pos.x, pos.y };
+    Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft, 0.0f, bodySize);
     Vector2 pipeSize = {2.0f, 2.0f};
     Vector2 pipePos = {initialPosition.x - 0.5f*pipeSize.x, initialPosition.y + bodySize.y};
     Renderer::DrawPro(pipe, sourceRect, pipePos, pipeSize, true, 0.0f, pipeSize);

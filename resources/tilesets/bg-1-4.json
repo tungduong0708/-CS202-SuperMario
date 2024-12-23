@@ -6,11 +6,40 @@
  "name":"bg-1-4",
  "spacing":0,
  "tilecount":2400,
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tiles":[
         {
          "id":320,
+         "objectgroup":
+            {
+             "draworder":"index",
+             "name":"",
+             "objects":[
+                    {
+                     "height":16,
+                     "id":1,
+                     "name":"",
+                     "rotation":0,
+                     "type":"",
+                     "visible":true,
+                     "width":16,
+                     "x":0,
+                     "y":0
+                    }],
+             "opacity":1,
+             "type":"objectgroup",
+             "visible":true,
+             "x":0,
+             "y":0
+            }
+        }, 
+        {
+         "id":1580,
+         "type":"bridge"
+        }, 
+        {
+         "id":1723,
          "objectgroup":
             {
              "draworder":"index",
@@ -34,6 +63,33 @@
              "x":0,
              "y":0
             }
+        }, 
+        {
+         "id":1728,
+         "objectgroup":
+            {
+             "draworder":"index",
+             "id":2,
+             "name":"",
+             "objects":[
+                    {
+                     "height":16,
+                     "id":2,
+                     "name":"",
+                     "rotation":0,
+                     "type":"",
+                     "visible":true,
+                     "width":16,
+                     "x":0,
+                     "y":0
+                    }],
+             "opacity":1,
+             "type":"objectgroup",
+             "visible":true,
+             "x":0,
+             "y":0
+            },
+         "type":"bridge"
         }],
  "tilewidth":16,
  "type":"tileset",

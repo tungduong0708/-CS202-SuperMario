@@ -43,7 +43,7 @@ public:
 
 class ExportFileVisitor : public FileVisitor {
 private:
-    const std::string filePath = "../resources/save/save1.txt";
+    const std::string filePath = "../resources/save/save.txt";
     std::ofstream file;
     static ExportFileVisitor* instance;
     ExportFileVisitor() = default;

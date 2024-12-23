@@ -21,6 +21,7 @@ protected:
     int colorIndex = 0;
     int frameWidth, frameHeight;
     int currentFrame;
+
     bool alive;
     bool appear = true;
     bool invincible = false;
@@ -28,6 +29,7 @@ protected:
     bool isOnGround;          // Is character on the ground
     bool modeChanged;
     bool faceLeft;            // Is character facing left
+
     float blinkTime;
     float immortalTime;
     float appearTimer = 0.0f;
@@ -52,12 +54,14 @@ public:
     Character(const Character &c);
     virtual ~Character();
 
+    void setCurrentImage(ImageSet image);
     void setHealth(int h);
     void setScore(int s);
     void setLevel(int l);
     void setStrength(int st);
     void setMode(Mode mode);
     void setOnGround(bool og);
+    void setAppear(bool ap);
     void setInvisibleTime(float it);
     void changeMode(Mode mode);
 
@@ -96,6 +100,7 @@ private:
     float bulletSpeed;
     float bulletFreq;
     bool isWalkingOnPlatform;
+    bool allowInput; // allow to handle input
     string name;
     string currentMap;
     Vector2 initialPosition;
@@ -120,10 +125,11 @@ public:
     void setBulletSpeed(float bs);
     void setBulletFreq(float bf);
     void setInitialPosition(Vector2 pos);
+    void setAllowInput(bool state);
     void impulseForce(Vector2 force);
     void updateScore(int s);
     void updateScore();
-     void SetIsOnGround(bool state);
+    void SetIsOnGround(bool state);
     void SetWalkingOnPlatform(bool state);
 
     int getAddScore();
@@ -134,6 +140,7 @@ public:
     float getBulletFreq();
     float getTime();
     bool isImmortal();
+    bool isAllowInput();
     Vector2 getInitialPosition();
     string getCurrentMap();
     string getName();
@@ -266,7 +273,7 @@ public:
     LarvaBubble(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
                 int strength = 0, Vector2 size = {0.6f, 0.6f}, float speed = -15.0f, float angle = 0.0f, float gravity = 15.0f, float waitTime = 1.0f);
     LarvaBubble(const LarvaBubble &lb);
-    ~LarvaBubble();
+    virtual ~LarvaBubble();
 
     void Init(b2Vec2 position);
     void Explode();
@@ -300,7 +307,7 @@ public:
     MonsterFlower(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
                   int strength = 0, Vector2 size = {1.0f, 1.0f}, float speed = -5.0f, float angle = 0.0f, float waitTime = 1.0f, float delayTime = 0.5f);
     MonsterFlower(const MonsterFlower &mf);
-    ~MonsterFlower();
+    virtual ~MonsterFlower();
 
     void Init(b2Vec2 position);
     void Update(Vector2 playerVelocity, float deltaTime);
