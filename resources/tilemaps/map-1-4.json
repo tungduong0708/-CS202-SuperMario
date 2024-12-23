@@ -4,7 +4,7 @@
  "layers":[
         {
          "id":5,
-         "image":"..\/..\/..\/..\/..\/..\/..\/..\/Downloads\/Sprite-0003 (1).png",
+         "image":"..\/background\/bg1-4.png",
          "name":"Image Layer 1",
          "opacity":1,
          "repeatx":true,

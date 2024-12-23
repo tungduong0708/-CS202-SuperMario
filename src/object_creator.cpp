@@ -14,6 +14,8 @@ void ObjectCreator::InitObjects() {
         float boundaries[] = {0.0f, 0.0f, pos.x - 3.0f, pos.x + 3.0f}; // Adjust boundaries as needed
         MovingPlatform* platform = new MovingPlatform(Vector2{1.0f, 4.0f}, Vector2{1.0f, 0.0f}, 2.0f, 0.0f, "movingplatform");
         platform->Init(b2Vec2{pos.x, pos.y});
+        b2Fixture* fixture = platform->getBody()->GetFixtureList();
+        fixture->SetFriction(10.0f);
         return platform;
     });
 

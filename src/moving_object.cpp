@@ -298,8 +298,6 @@ void MovingPlatform::Init(b2Vec2 position) {
     restitution = 0.0f;
     MyBoundingBox::createBody(body, b2_kinematicBody, vertices, Vector2{position.x, position.y}, restitution);
     body->SetLinearVelocity(b2Vec2(speed.x, speed.y));
-    b2Fixture* fixture = body->GetFixtureList();
-    fixture->SetFriction(10.0f);
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 void MovingPlatform::InitOrbit(Vector2 center, float radius, float speed) {
@@ -355,7 +353,7 @@ void MovingPlatform::Update(Vector2 playerVelocity, float deltaTime) {
         if (orbitAngle >= 360.0f) {
             orbitAngle -= 360.0f;
         }
-        float radianAngle = orbitAngle * (M_PI / 180.0f);
+        float radianAngle = orbitAngle * (3.14f / 180.0f);
         body->SetTransform(b2Vec2(orbitCenter.x, orbitCenter.y), radianAngle);
     }
 }
