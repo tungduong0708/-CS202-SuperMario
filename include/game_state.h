@@ -92,9 +92,10 @@ public:
     explicit SavedGameState(Game* game);
     void update() override;
     void draw() override;
-
+    ~SavedGameState() override;
 private:
     std::vector<Button> buttons;
+    Texture2D backgroundTexture;
 };
 
 class MapBuilderState : public GameState
@@ -138,6 +139,7 @@ class MapPauseState : public PauseGameState
 {
 public:
     explicit MapPauseState(Game* game);
+    void update() override;
     void draw() override;
 };
 

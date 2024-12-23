@@ -53,6 +53,10 @@ KinematicTile::KinematicTile(KinematicTile& other)
 
             if (getType() == "coin") {
                 b2Fixture* fixture = body->GetFixtureList();
+                b2Filter filter = fixture->GetFilterData();
+                filter.categoryBits = CATEGORY_COIN;
+                filter.maskBits = CATEGORY_PLAYER;
+                fixture->SetFilterData(filter); 
                 fixture->SetSensor(true);
             }
 
@@ -68,6 +72,14 @@ void KinematicTile::createBody()
     if (!vertices.empty()) {
         b2Body* body = GetBody();
         MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
+        if (getType() == "coin") {
+            b2Fixture* fixture = body->GetFixtureList();
+            fixture->SetSensor(true);
+            b2Filter filter = fixture->GetFilterData();
+            filter.categoryBits = CATEGORY_COIN;
+            filter.maskBits = CATEGORY_PLAYER;
+            fixture->SetFilterData(filter); 
+        }
 
         body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
         SetBody(body);

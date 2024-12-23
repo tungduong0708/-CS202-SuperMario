@@ -148,9 +148,13 @@ void Player::updateScore()
     addScore = 0;
 }
 void Player::SetIsOnGround(bool state) { 
-    isOnGround = state; }
+    isOnGround = state; 
+}
+
 void Player::SetWalkingOnPlatform(bool state){ 
-    isWalkingOnPlatform = state; }
+    isWalkingOnPlatform = state; 
+}
+
 int Player::getAddScore()
 {
     return addScore;
