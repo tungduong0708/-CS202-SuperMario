@@ -141,6 +141,7 @@ void SettingsState::update() {
     }
     if (IsButtonClicked(buttons[1])) {
         game->getSettings().soundEffects = !game->getSettings().soundEffects;
+        SoundEffectHandler::SwitchEnableSoundEffects();  
     }
     if (IsButtonClicked(buttons[2])) {
         game->changeState(game->mainMenuState.get());
@@ -379,6 +380,7 @@ void PauseGameState::update() {
     }
     if (IsButtonClicked(buttons[1])) {
         game->getSettings().soundEffects = !game->getSettings().soundEffects;
+        SoundEffectHandler::SwitchEnableSoundEffects();
     }
     if (IsButtonClicked(buttons[2])) {
         game->changeState(game->gameplayState.get());
@@ -432,6 +434,7 @@ void MapPauseState::update()
     }
     if (IsButtonClicked(buttons[1])) {
         game->getSettings().soundEffects = !game->getSettings().soundEffects;
+        SoundEffectHandler::SwitchEnableSoundEffects();
     }
     if (IsButtonClicked(buttons[2])) {
         game->changeState(game->mapBuilderState.get());

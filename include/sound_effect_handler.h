@@ -31,6 +31,7 @@ public:
     void LoadSoundEffect(SoundEffect effect, const std::string& filePath);
     void PlaySoundEffect(SoundEffect effect);
 
+    static void SwitchEnableSoundEffects();
 private:
     SoundEffectHandler();
     ~SoundEffectHandler();
@@ -41,7 +42,8 @@ private:
     SoundEffectHandler& operator=(const SoundEffectHandler&) = delete;
 
     std::unordered_map<SoundEffect, Sound> soundEffects;
+
+    static bool isEnabled;
 };
 
 void playSoundEffect(SoundEffect effect);
-
