@@ -171,8 +171,20 @@
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":107.5,
-                 "y":160
+                 "x":1309,
+                 "y":191.5
+                }, 
+                {
+                 "height":0,
+                 "id":17,
+                 "name":"larvabubble",
+                 "point":true,
+                 "rotation":0,
+                 "type":"character",
+                 "visible":true,
+                 "width":0,
+                 "x":526,
+                 "y":239
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -208,7 +220,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":17,
+ "nextobjectid":18,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

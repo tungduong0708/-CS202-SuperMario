@@ -284,8 +284,7 @@ MovingPlatform::~MovingPlatform() {
 }
 
 void MovingPlatform::Init(b2Vec2 position) {
-    if (type=="movingplatform") animations = AnimationHandler::setAnimations("movingplatform");
-    else if(type=="rotatingblaze") animations = AnimationHandler::setAnimations("rotatingball");
+    animations = AnimationHandler::setAnimations("movingplatform");
     Texture texture = animations[0].GetFrame();
     size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
 
@@ -300,28 +299,8 @@ void MovingPlatform::Init(b2Vec2 position) {
     body->SetLinearVelocity(b2Vec2(speed.x, speed.y));
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
-void MovingPlatform::InitOrbit(Vector2 center, float radius, float speed) {
-    animations = AnimationHandler::setAnimations("rotatingball");
-    Texture texture = animations[0].GetFrame();
-    size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
 
-    std::vector<b2Vec2> vertices = {
-        b2Vec2{0.0f, 0.0f},
-        b2Vec2{size.x, 0.0f},
-        b2Vec2{size.x, size.y},
-        b2Vec2{0.0f, size.y}
-    };
-    restitution = 0.0f;
-    MyBoundingBox::createBody(body, b2_kinematicBody, vertices, center, restitution);
-    b2Fixture* fixture = body->GetFixtureList();
-    fixture->SetSensor(true);
-    orbitCenter = center;
-    orbitRadius = radius;
-    orbitAngle = 0.0f;    
-    orbitSpeed = speed;   
-}
 void MovingPlatform::Update(Vector2 playerVelocity, float deltaTime) {
-    if(type == "movingplatform") {
     if (!body) return;
     if (speed.x != 0) curDistance += abs(speed.x) * deltaTime;
     else if (speed.y != 0) curDistance += abs(speed.y) * deltaTime;
@@ -345,17 +324,6 @@ void MovingPlatform::Update(Vector2 playerVelocity, float deltaTime) {
             body->SetLinearVelocity(b2Vec2(speed.x, speed.y));
         }
     }
-    }
-    else if (type == "rotatingblaze") {
-       orbitAngle += orbitSpeed * deltaTime;
-
-        // Đảm bảo góc quay không reset, chỉ giới hạn trong khoảng [0, 360)
-        if (orbitAngle >= 360.0f) {
-            orbitAngle -= 360.0f;
-        }
-        float radianAngle = orbitAngle * (3.14f / 180.0f);
-        body->SetTransform(b2Vec2(orbitCenter.x, orbitCenter.y), radianAngle);
-    }
 }
 
 void MovingPlatform::HandleInput() {
@@ -363,38 +331,16 @@ void MovingPlatform::HandleInput() {
 }
 
 void MovingPlatform::OnBeginContact(SceneNode *other, b2Vec2 normal) {
-    if (!other) return;
-    if(type=="rotatingblaze"){
-        Player* player = dynamic_cast<Player*>(other);
-        if (player) {
-            //player->setHealth(player->getHealth() - 1000);
-        }
-    }
 }
 
 void MovingPlatform::OnEndContact(SceneNode *other) {
 }
 
 void MovingPlatform::Draw() {
-    if(type == "movingplatform"){
     b2Vec2 pos = body->GetPosition();
     Texture text = animations[0].GetFrame();
     Rectangle sourceRect = { 0, 0, static_cast<float>(text.width), static_cast<float>(text.height) };
     Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, angle);
-    }
-    else if(type == "rotatingblaze")
-    {
-    if (!body) return;
-
-    b2Vec2 pos = body->GetPosition();
-  
-    //float radianAngle = orbitAngle * (M_PI / 180.0f);
-
-    Texture text = animations[0].GetFrame();
-    Rectangle sourceRect = { 0, 0, static_cast<float>(text.width), static_cast<float>(text.height) };
-
-    Renderer::DrawPro(text, sourceRect, Vector2{pos.x, pos.y}, Vector2{size.x, size.y}, false, orbitAngle);
-    }
 }
 
 void MovingPlatform::Draw(Vector2 position, float angle) {
@@ -443,8 +389,6 @@ void FireBlaze::Init(b2Vec2 position) {
     };
     restitution = 0.0f;
     MyBoundingBox::createBody(body, b2_kinematicBody, vertices, Vector2{position.x, position.y}, restitution);
-    b2Fixture* fixture = body->GetFixtureList();
-    fixture->SetFriction(10.0f);
     body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
 }
 void FireBlaze::InitOrbit(Vector2 center, float radius, float speed){
@@ -466,6 +410,8 @@ void FireBlaze::InitOrbit(Vector2 center, float radius, float speed){
     orbitRadius = radius;
     orbitAngle = 0.0f;    
     orbitSpeed = speed;  
+    body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
+
 }
 void FireBlaze::Update(Vector2 playerVelocity, float deltaTime){
    orbitAngle += orbitSpeed * deltaTime;
@@ -473,7 +419,7 @@ void FireBlaze::Update(Vector2 playerVelocity, float deltaTime){
         if (orbitAngle >= 360.0f) {
             orbitAngle -= 360.0f;
         }
-        float radianAngle = orbitAngle * (M_PI / 180.0f);
+        float radianAngle = orbitAngle * (3.14f / 180.0f);
         body->SetTransform(b2Vec2(orbitCenter.x, orbitCenter.y), radianAngle); 
 }
 void FireBlaze::HandleInput(){
@@ -481,10 +427,11 @@ void FireBlaze::HandleInput(){
 }
 void FireBlaze::OnBeginContact(SceneNode *other, b2Vec2 normal){
     if (!other) return;
-        Player* player = dynamic_cast<Player*>(other);
-        if (player) {
-            //player->setHealth(player->getHealth() - 1000);
-        }
+    Player* player = dynamic_cast<Player*>(other);
+    if (player) {
+        if (player->isImmortal()) return;
+        player->setHealth(player->getHealth() - 1000);
+    }
 }
 void FireBlaze::OnEndContact(SceneNode *other){
         

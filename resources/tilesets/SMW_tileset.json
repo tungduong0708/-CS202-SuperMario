@@ -6,7 +6,7 @@
  "name":"SMW_tileset",
  "spacing":1,
  "tilecount":460,
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tiles":[
         {
@@ -3178,7 +3178,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -4110,10 +4109,11 @@
          "objectgroup":
             {
              "draworder":"index",
+             "id":2,
              "name":"",
              "objects":[
                     {
-                     "height":16,
+                     "height":12.9130434782609,
                      "id":1,
                      "name":"",
                      "rotation":0,
@@ -4121,7 +4121,7 @@
                      "visible":true,
                      "width":16,
                      "x":0,
-                     "y":0
+                     "y":3.08695652173913
                     }],
              "opacity":1,
              "type":"objectgroup",

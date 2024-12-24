@@ -57,6 +57,11 @@ StaticTile::StaticTile(StaticTile& other) : Tile(other)
             MyBoundingBox::createBody(body, b2_staticBody, vertices, getPosition());
             body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
             SetBody(body);
+
+            if (type == "larva") {
+                b2Fixture* fixture = body->GetFixtureList();
+                fixture->SetSensor(true);
+            }
         }
     }
 }
