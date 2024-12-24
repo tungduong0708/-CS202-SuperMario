@@ -3,20 +3,11 @@
  "infinite":false,
  "layers":[
         {
-         "id":7,
-         "image":"..\/background\/b1-color.png",
-         "name":"Background Color",
+         "id":11,
+         "image":"..\/background\/bg1-1.png",
+         "name":"Image Layer 2",
          "opacity":1,
-         "type":"imagelayer",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "id":5,
-         "image":"..\/background\/b1-1-1-1.png",
-         "name":"Background",
-         "opacity":1,
+         "repeatx":true,
          "type":"imagelayer",
          "visible":true,
          "x":0,
@@ -137,8 +128,8 @@
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":3063,
-                 "y":72.4166666666667
+                 "x":59.4999999999995,
+                 "y":187.416666666667
                 }, 
                 {
                  "height":0,
@@ -462,7 +453,7 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":11,
+ "nextlayerid":12,
  "nextobjectid":148,
  "orientation":"orthogonal",
  "renderorder":"right-down",
