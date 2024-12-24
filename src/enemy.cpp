@@ -240,6 +240,21 @@ void Goomba::Dead()
     }
 }
 
+void Goomba::Update(Vector2 playerVelocity, float deltaTime) {
+    if (!body) return;
+    Enemy::Update(playerVelocity, deltaTime);
+    if (state == EnemyState::ENEMY_DEAD) {
+        return;
+    }
+
+    if (speed > 0) {
+        faceLeft = false;
+    }
+    else if (speed < 0) {
+        faceLeft = true;
+    }
+}
+
 void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
 {
     if (!other) return;
@@ -281,11 +296,11 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
             }
         }
         else if (player) {
-            player->setOnGround(true);
+            player->setOnGround(false);
             setHealth(getHealth() - 100);
-            //b2Vec2 vel = player->getBody()->GetLinearVelocity();
-            //cout << vel.y << endl;
-            //player->impulseForce(Vector2{0, -vel.y});
+            b2Vec2 vel = player->getBody()->GetLinearVelocity();
+            cout << vel.y << endl;
+            player->impulseForce(Vector2{0, -vel.y + 15.0f});
             if (!alive) {
                 state = EnemyState::ENEMY_DEAD;
                 if (!deadByPlayer and !deadByFireball) {
@@ -300,11 +315,11 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
         }
     }
     else {
-        if ((normal.x) < -0.9f) {
+        if ((normal.x) < -0.5f) {
             setSpeed(abs(speed));
             faceLeft = false;
         }
-        else if ((normal.x) > 0.9f) {
+        else if ((normal.x) > 0.5f) {
             setSpeed(-abs(speed));
             faceLeft = true;
         }
@@ -337,16 +352,16 @@ Koopa::Koopa(string type, float range, bool alive, bool sit, int health, int sco
     if (level == 1) {
         this->health = 100;
         this->strength = 100;
-        this->speed = -2.0f;
+        this->speed = -2.5f;
     }
     else if (level == 2) {
         this->health = 200;
-        this->strength = 200;
-        this->speed = -3.0f;
+        this->strength = 170;
+        this->speed = -3.5f;
     }
     else if (level == 3) {
         this->health = 350;
-        this->strength = 350;
+        this->strength = 325;
         this->speed = -4.0f;
     }
 }
@@ -398,7 +413,10 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
     if (fireball || (player && player->isImmortal())) {
-        setHealth(getHealth() - 100);
+        if (player && player->isImmortal()) {
+            setHealth(getHealth() - 500);
+        }
+        else setHealth(getHealth() - 100);
         if (!alive) {
             state = EnemyState::ENEMY_DEAD;
             Player* player = Tilemap::getInstance()->GetPlayer();
@@ -693,7 +711,6 @@ void Boss::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (player) {
         if (player->isImmortal()) return;
         if (player->getMode() == Mode::SMALL) {
-            cout << "die" << endl;
             player->setHealth(player->getHealth() - getStrength());
         }
         else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {

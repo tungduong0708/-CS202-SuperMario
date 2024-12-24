@@ -229,6 +229,7 @@ public:
     virtual ~Goomba();
 
     void Dead();
+    void Update(Vector2 playerVelocity, float deltaTime); 
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
 
