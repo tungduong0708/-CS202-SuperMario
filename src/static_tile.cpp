@@ -186,6 +186,9 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 }
             }
         }
+        if (getType() == "larva") {
+            playerPtr->setHealth(playerPtr->getHealth() - 1000);   
+        }
     }
 }
 

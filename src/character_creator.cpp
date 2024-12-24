@@ -37,6 +37,11 @@ void CharacterCreator::InitCharacters() {
         monsterFlower->Init(b2Vec2{pos.x, pos.y});
         return monsterFlower;
     });
+    RegisterCharacter("princess", [](Vector2 pos, int difficulty) { 
+        Princess* princess = new Princess("princess"); 
+        princess->Init(b2Vec2{pos.x, pos.y});
+        return princess;
+    });
 }
 
 Character* CharacterCreator::CreateCharacter(const std::string& name, Vector2 position, int difficulty) {
