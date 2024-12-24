@@ -242,7 +242,7 @@ void Pole::Update(Vector2 playerVelocity, float deltaTime)
         Vector2 playerPos = player->getPosition();
         Vector2 flagPos = flag->getPosition();
         Vector2 polePos = getPosition();
-        if (playerPos.y + player->getSize().y >= polePos.y + height)
+        if (playerPos.y + player->getSize().y + 0.5f >= polePos.y + height)
         {
             playerOnGround = true;
         }
