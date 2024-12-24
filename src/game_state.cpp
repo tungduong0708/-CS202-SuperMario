@@ -135,22 +135,35 @@ void SettingsState::update() {
         button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
     }
 
-    // Handle button clicks
-    if (IsButtonClicked(buttons[0])) {
-        game->getSettings().music = !game->getSettings().music;
-    }
-    if (IsButtonClicked(buttons[1])) {
-        game->getSettings().soundEffects = !game->getSettings().soundEffects;
-        SoundEffectHandler::SwitchEnableSoundEffects();  
-    }
-    if (IsButtonClicked(buttons[2])) {
-        game->changeState(game->mainMenuState.get());
-    }
-
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
     DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
     DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+
+    // Handle button clicks
+    if (IsButtonClicked(buttons[0])) {
+        game->getSettings().music = !game->getSettings().music;
+    }
+    else if (IsButtonClicked(buttons[1])) {
+        game->getSettings().soundEffects = !game->getSettings().soundEffects;
+        SoundEffectHandler::SwitchEnableSoundEffects();  
+    }
+    else if (IsButtonClicked(buttons[2])) {
+        game->changeState(game->mainMenuState.get());
+    }
+    // Handle get back when clicking empty space
+    else if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (CheckCollisionPointRec(GetMousePosition(), {centerX, 500, 400, 50}) || CheckCollisionPointRec(GetMousePosition(), {centerX, 600, 400, 50}))
+            MouseClickToEmptySpaceHandler::SetIsTrue(false);
+        else if (CheckCollisionPointRec(GetMousePosition(), buttons[0].rect) || CheckCollisionPointRec(GetMousePosition(), buttons[1].rect))
+            MouseClickToEmptySpaceHandler::SetIsTrue(false);
+        else {
+            MouseClickToEmptySpaceHandler::SetIsTrue(true);
+        }
+    }
+    else if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && MouseClickToEmptySpaceHandler::GetIsTrue()) {
+        game->changeState(game->mainMenuState.get());
+    }
 }
 
 void SettingsState::draw() {
@@ -393,6 +406,21 @@ void PauseGameState::update() {
     // Update sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
     DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+
+    // Handle get back when clicking empty space
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (CheckCollisionPointRec(GetMousePosition(), {centerX, 525, 400, 50}) || CheckCollisionPointRec(GetMousePosition(), {centerX, 625, 400, 50}))
+            MouseClickToEmptySpaceHandler::SetIsTrue(false);
+        else if (CheckCollisionPointRec(GetMousePosition(), buttons[0].rect) || CheckCollisionPointRec(GetMousePosition(), buttons[1].rect)
+            || CheckCollisionPointRec(GetMousePosition(), buttons[2].rect) || CheckCollisionPointRec(GetMousePosition(), buttons[3].rect))
+            MouseClickToEmptySpaceHandler::SetIsTrue(false);
+        else {
+            MouseClickToEmptySpaceHandler::SetIsTrue(true);
+        }
+    }
+    else if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && MouseClickToEmptySpaceHandler::GetIsTrue()) {
+        game->changeState(game->gameplayState.get());
+    }
 }
 
 void PauseGameState::draw() {
@@ -447,6 +475,21 @@ void MapPauseState::update()
     // Update sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
     DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+
+    // Handle get back when clicking empty space
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (CheckCollisionPointRec(GetMousePosition(), {centerX, 525, 400, 50}) || CheckCollisionPointRec(GetMousePosition(), {centerX, 625, 400, 50}))
+            MouseClickToEmptySpaceHandler::SetIsTrue(false);
+        else if (CheckCollisionPointRec(GetMousePosition(), buttons[0].rect) || CheckCollisionPointRec(GetMousePosition(), buttons[1].rect)
+            || CheckCollisionPointRec(GetMousePosition(), buttons[2].rect) || CheckCollisionPointRec(GetMousePosition(), buttons[3].rect))
+            MouseClickToEmptySpaceHandler::SetIsTrue(false);
+        else {
+            MouseClickToEmptySpaceHandler::SetIsTrue(true);
+        }
+    }
+    else if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && MouseClickToEmptySpaceHandler::GetIsTrue()) {
+        game->changeState(game->mapBuilderState.get());
+    }
 }
 
 void MapPauseState::draw()
@@ -514,6 +557,18 @@ void SelectPlayerState::update() {
         tilemap->setPlayer("luigi");
         
         game->changeState(game->gameplayState.get());
+    }
+
+    // Handle get back when clicking empty space
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (CheckCollisionPointRec(GetMousePosition(), player1.button.rect) || CheckCollisionPointRec(GetMousePosition(), player2.button.rect))
+            MouseClickToEmptySpaceHandler::SetIsTrue(false);
+        else {
+            MouseClickToEmptySpaceHandler::SetIsTrue(true);
+        }
+    }
+    else if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && MouseClickToEmptySpaceHandler::GetIsTrue()) {
+        game->changeState(game->selectDifficultyState.get());
     }
 }
 
@@ -1030,6 +1085,18 @@ void SelectDifficultyState::update() {
             tilemap->LoadMapFromJson("map-1-5-3.json", i + 1);
             game->changeState(game->selectPlayerState.get());
         }
+    }
+
+    // Handle get back when clicking empty space
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (CheckCollisionPointRec(GetMousePosition(), buttons[0].rect) || CheckCollisionPointRec(GetMousePosition(), buttons[1].rect) ||  CheckCollisionPointRec(GetMousePosition(), buttons[2].rect))
+            MouseClickToEmptySpaceHandler::SetIsTrue(false);
+        else {
+            MouseClickToEmptySpaceHandler::SetIsTrue(true);
+        }
+    }
+    else if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && MouseClickToEmptySpaceHandler::GetIsTrue()) {
+        game->changeState(game->mainMenuState.get());
     }
 }
 

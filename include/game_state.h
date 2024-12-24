@@ -4,6 +4,7 @@
 #include <string>
 #include "object.h"
 #include "raylib.h"
+#include "mouse_click_to_empty_space_handler.h"
 
 class Game;
 

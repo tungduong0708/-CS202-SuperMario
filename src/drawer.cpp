@@ -73,7 +73,7 @@ T Clamp(T value, T min, T max)
     return value;
 }
 
-// Customized slider drawing
+// Customized slider drawing, returns true if the slider value was changed
 void DrawMarioSlider(Rectangle rect, int& value, const float& minValue, const float& maxValue, const Font& font, const char* label)
 {
     // Define Colors with RGBA for customization
