@@ -30,20 +30,23 @@ Player::Player(string type, string name, float coins, int lives, int health,
     this->alive = true;
     this->mode = Mode::SMALL;
     this->elapsedTime = 0.0f;
-    this->time = 300.0f;
     this->allowInput = true;
 
     if (type == "mario") {
-        this->speed = 8.5f;
+        this->time = 300.0f;
+        this->speed = 8.0f;
         force = -26.0f;
         bulletSpeed = 9.0f;
-        bulletFreq = 0.40f;
+        bulletFreq = 0.37f;
+        lives = 10;
     }
     else {
-        this->speed = 6.5f;
-        force = -30.0f;
+        this->time = 300.0f;
+        this->speed = 9.5f;
+        force = -29.0f;
         bulletSpeed = 8.0f;
         bulletFreq = 0.30f;
+        lives = 8;
     }
 
 }

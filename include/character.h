@@ -161,6 +161,8 @@ public:
 
 
 class Princess : public Character {
+private:
+    bool isFree;
 public:
     Princess();
     Princess(string type, int health = 0, int score = 0, int level = 0, int strength = 0, Vector2 size = {0, 0}, 

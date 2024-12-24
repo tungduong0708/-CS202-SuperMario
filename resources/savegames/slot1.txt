@@ -1,22 +1,66 @@
-map-1-5-3.json 2
+map-1-1.json 2
+KinematicTile 2
+resources/tilesets/OverWorld.json
+13 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+15 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+42 3
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+62 9
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+58 9
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+60 9
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+94 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+95 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+96.015 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+97 10
+0
+1
+2 0
 MonsterFlower
-16.0833 9.22572
-2
-100
-MonsterFlower
-24.0833 8.14239
-2
-100
-MonsterFlower
-40.125 9.07989
-2
-100
-MonsterFlower
-71.0417 12.2049
-2
-100
-MonsterFlower
-78.125 12.2257
+183.094 12.2191
 2
 100
 LarvaBubble
@@ -28,31 +72,36 @@ Boss
 2
 1700
 Koopa
-90.0999 14.2975
+35.3745 12.9225
 2
 200
-MonsterFlower
-54 11.1841
+Goomba
+120.377 13.0475
 2
-100
-LarvaBubble
-90.9645 9.72816
+200
+Goomba
+118.793 13.0475
 2
-100
-LarvaBubble
-32.875 9.47305
+200
+Goomba
+118.252 13.0475
 2
-100
+200
+Star
+95 9
 Player
-74.4683 12.735
-81.8125 11.9688
+8.63008 12.7975
+3.71875 11.7135
 0
-luigi
-0
-0
-3
-287.617
-1-5
+mario
+5800
+7
+2
+242.711
+1-1
 EffectManager
-0
-0
+2
+14 9 
+173 9 coin
+11
+173 9 1

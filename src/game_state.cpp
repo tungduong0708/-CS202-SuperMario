@@ -479,9 +479,9 @@ SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
     player1.texture = LoadTexture("../resources/images/smallmario/idle.png");
     player1.hoverTexture = LoadTexture("../resources/images/smallmario/victory.png");
     player1.button = {{column1X, 50, buttonWidth, buttonHeight}, player1.texture, player1.hoverTexture, false};
-    player1.speed = 85;
-    player1.jumpForce = 90;
-    player1.bulletSpeed = 72;
+    player1.speed = 80;
+    player1.jumpForce = 80;
+    player1.bulletSpeed = 85;
     player1.bulletFreq = 60;
 
     player2.name = "Luigi";
@@ -490,9 +490,9 @@ SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
     player2.button = {{column2X, game->getScreenHeight() - buttonHeight - 50, buttonWidth, buttonHeight}, 
                        player2.texture, player2.hoverTexture, false};
     player2.speed = 75;
-    player2.jumpForce = 84;
-    player2.bulletSpeed = 88;
-    player2.bulletFreq = 80;
+    player2.jumpForce = 90;
+    player2.bulletSpeed = 80;
+    player2.bulletFreq = 74;
 }
 
 void SelectPlayerState::update() {

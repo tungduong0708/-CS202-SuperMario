@@ -297,10 +297,11 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
         }
         else if (player) {
             player->setOnGround(false);
-            setHealth(getHealth() - 100);
+            setHealth(getHealth() - 1000);
             b2Vec2 vel = player->getBody()->GetLinearVelocity();
             cout << vel.y << endl;
-            player->impulseForce(Vector2{0, -vel.y + 15.0f});
+            if (getMode() == SMALL) player->impulseForce(Vector2{0, -vel.y - 15.0f});
+            else player->impulseForce(Vector2{0, -vel.y - 38.0f});
             if (!alive) {
                 state = EnemyState::ENEMY_DEAD;
                 if (!deadByPlayer and !deadByFireball) {
