@@ -12,6 +12,7 @@
 #include <set>
 #include <raylib.h> 
 #include "nlohmann/json.hpp" 
+#include "multiplayer_player_handler.h"
 
 const int screenWidth = 800;
 const int screenHeight = 600;
@@ -25,6 +26,7 @@ private:
     MyCamera camera;
     Vector2 playerPosition;
     Player* player;
+    Player* player2;
     EffectManager* effectManager;
     std::vector<std::vector<SceneNode*>> nodes;
     std::vector<std::pair<std::string, int>> tilesets;
@@ -54,14 +56,22 @@ public:
     void Draw() const;
     
     void setPlayer(const std::string name);
+    void setPlayer2(const std::string name);
     void SetNewMapPath(const std::string& path);
     std::string GetCurrentMapPath() const;
     EffectManager* GetEffectManager();
     Player* GetPlayer();
-    Vector2 GetPlayerPosition() const;
+    Player* GetPlayer2();
+    Player* GetLeadingPlayer();
+    Vector2 GetplayerPosition() const;
     int GetWidth() const;
     int GetHeight() const;
     int GetTileSize() const;
+
+    void UpdateMultiPlayer();
 };
+
+
+
 
 #endif

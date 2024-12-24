@@ -4,6 +4,7 @@
 #include "imagehandler.h"
 #include "file_visitor.h"
 #include "moving_object.h"
+#include "multiplayer_player_handler.h"
 
 #ifndef CHARACTER_H
 #define CHARACTER_H
@@ -104,6 +105,9 @@ private:
     string name;
     string currentMap;
     Vector2 initialPosition;
+    Vector2 spawnPosition;
+
+    vector<int> inputSet; 
 public:
     Player();
     Player(string type, string name = "", float coins = 0.0f, int lives = 3, int health = 100, 
@@ -132,6 +136,10 @@ public:
     void SetIsOnGround(bool state);
     void SetWalkingOnPlatform(bool state);
 
+    void SetSpawnPosition(Vector2 spawnPosition);
+
+    void SetInputSet(vector<int> inputSet);
+
     int getAddScore();
     int getLives();
     float getCoins();
@@ -156,6 +164,7 @@ public:
     void Draw(Vector2 position, float angle = 0.0f);
 
     void accept(FileVisitor* visitor);
+    void accept(MultiplayerHandlerVisitor* visitor);
     MovingObject* copy() const;
 };
 
@@ -193,6 +202,8 @@ public:
     virtual void Draw();
     virtual void Draw(Vector2 position, float angle = 0.0f);
 
+    virtual void ContactPlayer(Player* player, b2Vec2 normal) = 0;
+
     virtual void accept(FileVisitor* visitor) = 0;
     virtual MovingObject* copy() const = 0;
 };
@@ -209,6 +220,8 @@ public:
     void Dead();
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
+
+    void ContactPlayer(Player* player, b2Vec2 normal);
 
     void accept(FileVisitor* visitor);
     MovingObject* copy() const;
@@ -229,6 +242,8 @@ public:
     void Update(Vector2 playerVelocity, float deltaTime);
     void OnBeginContact(SceneNode* other, b2Vec2 normal);
     void OnEndContact(SceneNode* other);
+
+    void ContactPlayer(Player* player, b2Vec2 normal);
 
     void accept(FileVisitor* visitor);
     MovingObject* copy() const; 
@@ -263,6 +278,8 @@ public:
     void OnEndContact(SceneNode* other);
     void Dead();
 
+    void ContactPlayer(Player* player, b2Vec2 normal);
+
     void accept(FileVisitor* visitor);
     MovingObject* copy() const;
 };
@@ -281,6 +298,8 @@ public:
     void Update(Vector2 playerVelocity, float deltaTime);
     void OnBeginContact(SceneNode *other, b2Vec2 normal);
     void OnEndContact(SceneNode *other);
+
+    void ContactPlayer(Player* player, b2Vec2 normal);
 
     void accept(FileVisitor *visitor);
     MovingObject* copy() const;
@@ -313,6 +332,8 @@ public:
     void Update(Vector2 playerVelocity, float deltaTime);
     void OnBeginContact(SceneNode *other, b2Vec2 normal);
     void OnEndContact(SceneNode *other);
+
+    void ContactPlayer(Player* player, b2Vec2 normal);
 
     void accept(FileVisitor *visitor);
     MovingObject* copy() const;

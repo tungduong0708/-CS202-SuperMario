@@ -106,6 +106,7 @@ float MovingObject::getRestitution() {
 
 Vector2 MovingObject::getPosition()
 {
+    if (body == nullptr) return Vector2{0, 0};
     b2Vec2 pos = body->GetPosition();
     return Vector2{pos.x, pos.y};
 }
@@ -173,6 +174,14 @@ void FireBall::accept(FileVisitor *visitor) {
 MovingObject *FireBall::copy() const
 {
     return new FireBall(*this);
+}
+
+void FireBall::setPlayerShot(Player* player){
+    playerShot = player;
+}
+
+Player* FireBall::getPlayerShot(){
+    return playerShot;
 }
 
 void FireBall::Init(b2Vec2 position) {
@@ -615,6 +624,10 @@ void Axe::Update(Vector2 playerVelocity, float deltaTime)
         Tilemap *tilemap = Tilemap::getInstance();
         Player *player = tilemap->GetPlayer();
         b2Body *playerBody = player->getBody();
+        playerBody->SetGravityScale(1.0f);
+        player->setSpeed(8.5f);
+        player = tilemap->GetPlayer2();
+        playerBody = player->getBody();
         playerBody->SetGravityScale(1.0f);
         player->setSpeed(8.5f);
     }

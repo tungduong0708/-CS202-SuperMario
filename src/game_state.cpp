@@ -265,7 +265,6 @@ void GameplayState::update() {
 
     Tilemap* tilemap = Tilemap::getInstance();
     tilemap->Update(deltaTime);
-
     // Update pause button hover state
     pauseButton.isHovered = CheckCollisionPointRec(GetMousePosition(), pauseButton.rect);
 
@@ -407,6 +406,7 @@ void SelectPlayerState::update() {
         Tilemap* tilemap = Tilemap::getInstance();
         tilemap->LoadMapFromJson("map-1-1.json");
         tilemap->setPlayer("mario");
+        tilemap->setPlayer2("luigi");
 
         game->changeState(game->gameplayState.get());
     }
@@ -415,7 +415,7 @@ void SelectPlayerState::update() {
         Tilemap* tilemap = Tilemap::getInstance();
         tilemap->LoadMapFromJson("map-1-1.json");
         tilemap->setPlayer("luigi");
-        
+        tilemap->setPlayer2("mario");
         game->changeState(game->gameplayState.get());
     }
 }

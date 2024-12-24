@@ -64,6 +64,15 @@ enum MaskBits {
     // Add more masks as needed
 };
 
+enum PlayerInput{
+    LEFT,
+    RIGHT,
+    UP,
+    SIT,
+    SHOOT    
+};
+
+
 // bool collide = (nodeA.getCategoryBits() & nodeB.getMaskBits()) != 0 &&
 //               (nodeA.getMaskBits() & nodeB.getCategoryBits()) != 0;
 

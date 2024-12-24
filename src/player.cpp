@@ -128,6 +128,7 @@ void Player::setBulletFreq(float bf) {
 void Player::setInitialPosition(Vector2 pos)
 {
     initialPosition = pos;
+    spawnPosition = initialPosition;
 }
 
 void Player::setAllowInput(bool state) {
@@ -205,7 +206,7 @@ void Player::HandleInput() {
     if (!isAlive() or !allowInput) {
         return;
     }
-    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
+    if (IsKeyDown(inputSet[PlayerInput::RIGHT])) {
         body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
@@ -214,7 +215,7 @@ void Player::HandleInput() {
         faceLeft = false;
 
     } else 
-    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
+    if (IsKeyDown(inputSet[PlayerInput::LEFT])) {
         body->SetLinearVelocity(b2Vec2(-speed, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
@@ -224,7 +225,7 @@ void Player::HandleInput() {
 
     }
     else 
-    if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
+    if (IsKeyDown(inputSet[PlayerInput::SIT])) {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
@@ -245,7 +246,7 @@ void Player::HandleInput() {
         currentImage = IDLE;
     }
     
-    if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
+    if (IsKeyPressed(inputSet[PlayerInput::UP])) {
         if (isOnGround) {
             if (mode == SMALL) {
                 playSoundEffect(SoundEffect::JUMP);
@@ -256,13 +257,13 @@ void Player::HandleInput() {
                 body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force * 1.5f), true);
             }
             previousImage = currentImage;
-            currentImage = JUMP;
+            currentImage = ImageSet::JUMP;
             isOnGround = false;
         }
     }
 
     // default frequency of the bullet: 0.4 seconds
-    if ((IsKeyPressed(KEY_E) || IsKeyPressed(KEY_ENTER)) && mode == FIRE) {
+    if (IsKeyPressed(inputSet[PlayerInput::SHOOT]) && mode == Mode::FIRE) {
         previousImage = currentImage;
         currentImage = HOLD;
         animations[currentImage].setTimer();
@@ -279,12 +280,14 @@ void Player::HandleInput() {
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->addNode(fireball);
             elapsedTime = 0.0f;
+
+            fireball->setPlayerShot(this);
         }
     }
 
     if (!isOnGround) {
         previousImage = currentImage;
-        currentImage = JUMP;
+        currentImage = ImageSet::JUMP;
     }
 }
 
@@ -351,7 +354,7 @@ void Player::Dead() {
                 playSoundEffect(SoundEffect::PLAYER_DIE);
                 Game* game = Game::getInstance();
                 game->changeState(game->deathState.get());
-                Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
+                Character::Init(b2Vec2{spawnPosition.x, spawnPosition.y});
 
                 // Tilemap* tilemap = Tilemap::getInstance();
                 // setLives(lives);
@@ -399,6 +402,7 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
 
     FireFlower* fireFlower = dynamic_cast<FireFlower*>(other);
     Mushroom* mushroom = dynamic_cast<Mushroom*>(other);
+    Enemy* enemy = dynamic_cast<Enemy*>(other);
     if (fireFlower || mushroom) {
         if (fireFlower) {
             if (mode == BIG) mode = FIRE;
@@ -435,4 +439,16 @@ void Player::accept(FileVisitor *visitor) {
 MovingObject *Player::copy() const
 {
     return new Player(*this);
+}
+
+void Player::SetInputSet(vector<int> inputSet) {
+    this->inputSet = inputSet;
+}
+
+void Player::SetSpawnPosition(Vector2 spawnPos) {
+    spawnPosition = spawnPos;
+}
+
+void Player::accept(MultiplayerHandlerVisitor *visitor) {
+    visitor->VisitPlayer(this);
 }

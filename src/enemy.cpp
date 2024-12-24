@@ -152,7 +152,7 @@ void Enemy::Dead() {}
 void Enemy::Draw() {
     if (!body) return;
 
-    Player* player = Tilemap::getInstance()->GetPlayer();
+    Player* player = Tilemap::getInstance()->GetLeadingPlayer();
     float screenWidth = (float)GetScreenWidth() / 16.0f;
     float diff = 0.0f;
     if (player->isAlive() and (player->getInitialPosition().x != player->getPosition().x)) {
@@ -165,6 +165,7 @@ void Enemy::Draw() {
     else {
         setSpeed(speed);
     }
+
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Vector2 drawPosition = { pos.x, pos.y };
@@ -236,11 +237,43 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
     Player* player = dynamic_cast<Player*>(other);
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
-    if (fireball || (player && player->isImmortal())) {
+    if (player) {
+        ContactPlayer(player, normal);
+    }
+    else if (fireball) {
         setHealth(getHealth() - 100);
         if (!alive) {
             state = EnemyState::ENEMY_DEAD;
-            Player* player = Tilemap::getInstance()->GetPlayer();
+            fireball->getPlayerShot()->setAddScore(100);
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+            player->updateScore();
+            if (!deadByPlayer and !deadByFireball) {
+                deadByFireball = true;
+                Dead();
+            }
+        }
+    }
+    else if (enemy){
+        return;
+    }
+    else {
+        if ((normal.x) < -0.9f) {
+            setSpeed(abs(speed));
+            faceLeft = false;
+        }
+        else if ((normal.x) > 0.9f) {
+            setSpeed(-abs(speed));
+            faceLeft = true;
+        }
+    }
+}
+
+void Goomba::ContactPlayer(Player* player, b2Vec2 normal){
+    if (player->isImmortal()) {
+        setHealth(getHealth() - 100);
+        if (!alive) {
+            state = EnemyState::ENEMY_DEAD;
             player->setAddScore(100);
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
@@ -251,52 +284,37 @@ void Goomba::OnBeginContact(SceneNode *other, b2Vec2 normal)
             }
         }
     }
-    else if (player || enemy) {
-        if (abs(normal.x) > 0.75f) {
-            if (player) {
-                if (player->isInvisible()) {
-                    return;
-                }
-                else if (player->getMode() == Mode::SMALL) {
-                    player->setHealth(player->getHealth() - getStrength());
-                }
-                else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
-                    player->changeMode(Mode::SMALL);
-                    player->setInvisibleTime(1.5f);
-                    b2Body* playerBody = player->getBody();
-                    Vector2 pos = player->getPosition();
-                    player->setPositon(b2Vec2{pos.x, pos.y});
-                    playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-                }
-            }
-            else if (enemy) {
+    else if (abs(normal.x) > 0.75f) {
+        if (player) {
+            if (player->isInvisible()) {
                 return;
             }
-        }
-        else if (player) {
-            setHealth(getHealth() - 100);
-            player->impulseForce(Vector2{0, -20.0f});
-            if (!alive) {
-                state = EnemyState::ENEMY_DEAD;
-                if (!deadByPlayer and !deadByFireball) {
-                    size = Vector2{size.x, size.y/4};
-                    deadByPlayer = true; 
-                }
-                player->setAddScore(100);
-                EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-                effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
-                player->updateScore();
+            else if (player->getMode() == Mode::SMALL) {
+                player->setHealth(player->getHealth() - getStrength());
+            }
+            else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+                player->changeMode(Mode::SMALL);
+                player->setInvisibleTime(1.5f);
+                b2Body* playerBody = player->getBody();
+                Vector2 pos = player->getPosition();
+                player->setPositon(b2Vec2{pos.x, pos.y});
+                playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
             }
         }
     }
     else {
-        if ((normal.x) < -0.9f) {
-            setSpeed(abs(speed));
-            faceLeft = false;
-        }
-        else if ((normal.x) > 0.9f) {
-            setSpeed(-abs(speed));
-            faceLeft = true;
+        setHealth(getHealth() - 100);
+        player->impulseForce(Vector2{0, -20.0f});
+        if (!alive) {
+            state = EnemyState::ENEMY_DEAD;
+            if (!deadByPlayer and !deadByFireball) {
+                size = Vector2{size.x, size.y/4};
+                deadByPlayer = true; 
+            }
+            player->setAddScore(100);
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+            player->updateScore();
         }
     }
 }
@@ -387,93 +405,34 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
     Player* player = dynamic_cast<Player*>(other);
     Enemy* enemy = dynamic_cast<Enemy*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
-    if (fireball || (player && player->isImmortal())) {
+    if (player) {
+        ContactPlayer(player, normal);
+    }
+    else if (fireball) {
         setHealth(getHealth() - 100);
         if (!alive) {
             state = EnemyState::ENEMY_DEAD;
-            Player* player = Tilemap::getInstance()->GetPlayer();
-            player->setAddScore(100);
+            fireball->getPlayerShot()->setAddScore(100);
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
-            player->updateScore();
+            fireball->getPlayerShot()->updateScore();
             Dead();
         }
     }
-    else if (player || enemy) {
-        if (abs(normal.x) > 0.75f) {
-            if (player) {
-                if (player->isInvisible()) {
-                    return;
-                }
-                else if (player->getMode() == Mode::SMALL) {
-                    player->setHealth(player->getHealth() - getStrength());
-                }
-                else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
-                    player->changeMode(Mode::SMALL);
-                    player->setInvisibleTime(1.5f);
-                    b2Body* playerBody = player->getBody();
-                    Vector2 pos = player->getPosition();
-                    player->setPositon(b2Vec2{pos.x, pos.y});
-                    playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-                }
-            }
-            else if (enemy) {
-                if (state == ENEMY_SPIN) {
-                    enemy->setHealth(enemy->getHealth() - 100);
-                    if (!enemy->isAlive()) {
-                        enemy->setState(EnemyState::ENEMY_DEAD);
-                        Player* player = Tilemap::getInstance()->GetPlayer();
-                        player->setAddScore(100);
-                        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-                        effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
-                        player->updateScore();
-                        enemy->Dead();
-                    }
-                }
-                else {
-                    return;
-                }
-            }
-        }
-        else {
-            player->setOnGround(true);
-            // player->impulseForce(Vector2{0, -30.0f});
-            if (state == EnemyState::ENEMY_WALK) {
-                playSoundEffect(SoundEffect::HIT_ENEMY);
-                state = EnemyState::ENEMY_SHELL;
-                fixtureChange = true;
-                texture = animations[state].GetFrame();
-                size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
-                setSpeed(0.0f);
-                isDelay = true;
+    else if (enemy) {
+        if (state == ENEMY_SPIN) {
+            enemy->setHealth(enemy->getHealth() - 100);
+            if (!enemy->isAlive()) {
+                enemy->setState(EnemyState::ENEMY_DEAD);
                 player->setAddScore(100);
                 EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
                 effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
                 player->updateScore();
-                return;
+                enemy->Dead();
             }
-            if (state == EnemyState::ENEMY_SHELL) {
-                playSoundEffect(SoundEffect::HIT_ENEMY);
-                state = EnemyState::ENEMY_SPIN;
-                b2Fixture* fixture = body->GetFixtureList();
-                b2Filter filter = fixture->GetFilterData();
-                filter.categoryBits = CATEGORY_DEFAULT;
-                filter.maskBits = MASK_DEFAULT;
-                fixture->SetFilterData(filter);
-                setSpeed(15.0f);
-                return;
-            }
-            if (state == EnemyState::ENEMY_SPIN) {
-                playSoundEffect(SoundEffect::HIT_ENEMY);
-                state = EnemyState::ENEMY_SHELL;
-                b2Fixture* fixture = body->GetFixtureList();
-                b2Filter filter = fixture->GetFilterData();
-                filter.categoryBits = CATEGORY_ENEMY;
-                filter.maskBits = MASK_ENEMY;   
-                fixture->SetFilterData(filter);
-                setSpeed(0);
-                return;
-            }
+        }
+        else {
+            return;
         }
     }
     else {
@@ -484,6 +443,77 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
         if (normal.x < -0.9f) {
             setSpeed(+abs(speed));
             faceLeft = false;
+        }
+    }
+}
+
+void Koopa::ContactPlayer(Player* player, b2Vec2 normal){
+    if (player->isImmortal()) {
+        setHealth(getHealth() - 100);
+        if (!alive) {
+            state = EnemyState::ENEMY_DEAD;
+            player->setAddScore(100);
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+            player->updateScore();
+            Dead();
+        }
+    }
+    else if (abs(normal.x) > 0.75f) {
+        if (player) {
+            if (player->isInvisible()) {
+                return;
+            }
+            else if (player->getMode() == Mode::SMALL) {
+                player->setHealth(player->getHealth() - getStrength());
+            }
+            else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+                player->changeMode(Mode::SMALL);
+                player->setInvisibleTime(1.5f);
+                b2Body* playerBody = player->getBody();
+                Vector2 pos = player->getPosition();
+                player->setPositon(b2Vec2{pos.x, pos.y});
+                playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+            }
+        }
+    }
+    else {
+        player->setOnGround(true);
+        if (state == EnemyState::ENEMY_WALK) {
+            playSoundEffect(SoundEffect::HIT_ENEMY);
+            state = EnemyState::ENEMY_SHELL;
+            fixtureChange = true;
+            texture = animations[state].GetFrame();
+            size = {(float)texture.width / IMAGE_WIDTH, (float)texture.height / IMAGE_WIDTH};
+            setSpeed(0.0f);
+            isDelay = true;
+            player->setAddScore(100);
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+            player->updateScore();
+            return;
+        }
+        if (state == EnemyState::ENEMY_SHELL) {
+            playSoundEffect(SoundEffect::HIT_ENEMY);
+            state = EnemyState::ENEMY_SPIN;
+            b2Fixture* fixture = body->GetFixtureList();
+            b2Filter filter = fixture->GetFilterData();
+            filter.categoryBits = CATEGORY_DEFAULT;
+            filter.maskBits = MASK_DEFAULT;
+            fixture->SetFilterData(filter);
+            setSpeed(15.0f);
+            return;
+        }
+        if (state == EnemyState::ENEMY_SPIN) {
+            playSoundEffect(SoundEffect::HIT_ENEMY);
+            state = EnemyState::ENEMY_SHELL;
+            b2Fixture* fixture = body->GetFixtureList();
+            b2Filter filter = fixture->GetFilterData();
+            filter.categoryBits = CATEGORY_ENEMY;
+            filter.maskBits = MASK_ENEMY;   
+            fixture->SetFilterData(filter);
+            setSpeed(0);
+            return;
         }
     }
 }
@@ -603,7 +633,7 @@ void Boss::Init(b2Vec2 position) {
 }
 
 void Boss::Update(Vector2 playerVelocity, float deltaTime) {
-    Player* player = Tilemap::getInstance()->GetPlayer();
+    Player* player = Tilemap::getInstance()->GetLeadingPlayer();
     if (!body || !player->isAlive()) return;
     Vector2 playerPos = player->getPosition();
     elapsedTime += deltaTime;
@@ -675,24 +705,16 @@ void Boss::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     Player* player = dynamic_cast<Player*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
     if (player) {
-        if (player->isImmortal()) return;
-        if (player->getMode() == Mode::SMALL) {
-            cout << "die" << endl;
-            player->setHealth(player->getHealth() - getStrength());
-        }
-        else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
-            player->changeMode(Mode::SMALL);
-            player->setInvisibleTime(1.5f);
-            b2Body* playerBody = player->getBody();
-            Vector2 pos = player->getPosition();
-            player->setPositon(b2Vec2{pos.x, pos.y});
-            playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-        }
+        ContactPlayer(player, normal);
     }
     else if (fireball) {
         setHealth(getHealth() - 100);
         if (!alive) {
             bossState = BossState::BOSS_DEAD;
+            fireball->getPlayerShot()->setAddScore(100);
+            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+            fireball->getPlayerShot()->updateScore();
             Dead();
         }
     }
@@ -705,6 +727,21 @@ void Boss::OnBeginContact(SceneNode *other, b2Vec2 normal) {
             setSpeed(+abs(speed));
             faceLeft = false;
         }
+    }
+}
+
+void Boss::ContactPlayer(Player* player, b2Vec2 normal) {
+    if (player->isImmortal()) return;
+    if (player->getMode() == Mode::SMALL) {
+        player->setHealth(player->getHealth() - getStrength());
+    }
+    else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+        player->changeMode(Mode::SMALL);
+        player->setInvisibleTime(1.5f);
+        b2Body* playerBody = player->getBody();
+        Vector2 pos = player->getPosition();
+        player->setPositon(b2Vec2{pos.x, pos.y});
+        playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
     }
 }
 
@@ -756,9 +793,6 @@ void LarvaBubble::Init(b2Vec2 position) {
 void LarvaBubble::Explode() {
     if (body) {
         b2Vec2 pos = body->GetPosition();
-        Physics::bodiesToDestroy.push_back(body);
-        body = nullptr;
-        animations.clear();
 
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("dead_koopa", Vector2{pos.x, pos.y}));
@@ -811,32 +845,37 @@ void LarvaBubble::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     Player* player = dynamic_cast<Player*>(other);
     StaticTile* tile = dynamic_cast<StaticTile*>(other);
     if (player) {
-        if (player->isImmortal()){
-            Explode();
-        }
-        else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
-            b2Body* playerBody = player->getBody();
-            Vector2 playerSize = player->getSize();
-            Vector2 pos = player->getPosition();
-            player->setPositon(b2Vec2{pos.x, pos.y});
-            player->changeMode(Mode::SMALL);
-            player->setImmortal(true);
-            player->setImmortalTime(2.0f);
-            Explode();
-
-            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("shrink_mario", Vector2{pos.x, pos.y + playerSize.y}));
-            effectManager->setActivePlayerEffect(true);
-            playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-        }
-        else if (player->getMode() == Mode::SMALL) {
-            player->setHealth(player->getHealth() - getStrength());
-        }
+        ContactPlayer(player, normal);
     }
     else if (tile) {
         Splash();
     }
 }
+
+void LarvaBubble::ContactPlayer(Player* player, b2Vec2 normal) {
+    if (player->isImmortal()){
+        Explode();
+    }
+    else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+        b2Body* playerBody = player->getBody();
+        Vector2 playerSize = player->getSize();
+        Vector2 pos = player->getPosition();
+        player->setPositon(b2Vec2{pos.x, pos.y});
+        player->changeMode(Mode::SMALL);
+        player->setImmortal(true);
+        player->setImmortalTime(2.0f);
+        Explode();
+
+        EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+        effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("shrink_mario", Vector2{pos.x, pos.y + playerSize.y}));
+        effectManager->setActivePlayerEffect(true);
+        playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+    }
+    else if (player->getMode() == Mode::SMALL) {
+        player->setHealth(player->getHealth() - getStrength());
+    }
+}
+
 
 void LarvaBubble::OnEndContact(SceneNode *other) {
 }
@@ -934,21 +973,25 @@ void MonsterFlower::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!alive) return;
     Player* player = dynamic_cast<Player*>(other);
     if (player) {
-        Vector2 playerPos = player->getPosition();
-        Vector2 flowerPos = {body->GetPosition().x, body->GetPosition().y};
-        if (playerPos.y + player->getSize().y >= flowerPos.y && playerPos.y <= initialPosition.y + size.y) {
-            if (player->isImmortal()) return;
-            if (player->getMode() == Mode::SMALL) {
-                player->setHealth(player->getHealth() - getStrength());
-            }
-            else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
-                player->changeMode(Mode::SMALL);
-                player->setInvisibleTime(1.5f);
-                b2Body* playerBody = player->getBody();
-                Vector2 pos = player->getPosition();
-                player->setPositon(b2Vec2{pos.x, pos.y});
-                playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-            }
+        ContactPlayer(player, normal);
+    }
+}
+
+void MonsterFlower::ContactPlayer(Player* player, b2Vec2 normal) {
+    Vector2 playerPos = player->getPosition();
+    Vector2 flowerPos = {body->GetPosition().x, body->GetPosition().y};
+    if (playerPos.y + player->getSize().y >= flowerPos.y && playerPos.y <= initialPosition.y + size.y) {
+        if (player->isImmortal()) return;
+        if (player->getMode() == Mode::SMALL) {
+            player->setHealth(player->getHealth() - getStrength());
+        }
+        else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+            player->changeMode(Mode::SMALL);
+            player->setInvisibleTime(1.5f);
+            b2Body* playerBody = player->getBody();
+            Vector2 pos = player->getPosition();
+            player->setPositon(b2Vec2{pos.x, pos.y});
+            playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
         }
     }
 }
@@ -971,6 +1014,6 @@ void MonsterFlower::Draw() {
     Vector2 drawPosition = { pos.x, pos.y };
     Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft, 0.0f, bodySize);
     Vector2 pipeSize = {2.0f, 2.0f};
-    Vector2 pipePos = {initialPosition.x - 0.5f*pipeSize.x, initialPosition.y + bodySize.y};
-    Renderer::DrawPro(pipe, sourceRect, pipePos, pipeSize, true, 0.0f, pipeSize);
+    Vector2 pipePos = {initialPosition.x - 0.52f*pipeSize.x, initialPosition.y + bodySize.y};
+    // Renderer::DrawPro(pipe, sourceRect, pipePos, pipeSize, true, 0.0f, pipeSize);
 }

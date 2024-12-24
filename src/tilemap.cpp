@@ -7,11 +7,13 @@ Tilemap* Tilemap::instance = nullptr;
 Tilemap::Tilemap() {
     effectManager = new EffectManager();
     player = nullptr;
+    player2 = nullptr;
 }
 
 Tilemap::Tilemap(const std::string& filePath) {
     effectManager = new EffectManager();
     player = nullptr;
+    player2 = nullptr;
     LoadMapFromJson(filePath);
     
 }
@@ -20,6 +22,7 @@ Tilemap::~Tilemap() {
     clearMap();
     delete effectManager;
     delete player;
+    delete player2;
 }
 
 Tilemap* Tilemap::getInstance()
@@ -228,6 +231,15 @@ void Tilemap::LoadMapFromJson(const std::string &filePath)
                                 player->setElapsedTime(0.0f);
                                 player->setTime(300.0f);
                             }
+
+                            if (player2 != nullptr) {
+                                player2->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
+                                player2->setInitialPosition(playerPosition);
+                                string fPath = filePath.substr(4,3);
+                                player2->setCurrentMap(fPath);
+                                player2->setElapsedTime(0.0f);
+                                player2->setTime(300.0f);
+                            }
                         }
                         else if (object.contains("type") && object["type"] == "enemy") {
                             std::string enemyName = object["name"].get<std::string>();
@@ -378,6 +390,9 @@ void Tilemap::LoadSaveGame(const std::string &filePath)
         else if (obj == "Player") {
             player = new Player();
             player->accept(visitor);
+
+            // player2 = new Player();
+            // player2->accept(visitor);
         } 
         else if (obj == "LarvaBubble") {
             auto lbubble = std::make_unique<LarvaBubble>();
@@ -418,6 +433,7 @@ void Tilemap::SaveGame()
         }
     }
     player->accept(visitor);
+    player2->accept(visitor);
     effectManager->accept(visitor);
     visitor->closeFile();
 }
@@ -428,18 +444,41 @@ void Tilemap::Update(float deltaTime) {
         if (!isChangingMap) newMapPath = "";
     }
     else {
-        b2Vec2 playerVelocity = player->getVelocity();
+        Player* leadingPlayer = player;
+        b2Vec2 playerVelocity = b2Vec2{0.0f, 0.0f};
+        if (player2 && player2->getPosition().x > player->getPosition().x) {
+            leadingPlayer = player2;
+        }
+        playerVelocity = leadingPlayer->getVelocity();
+
+
         for (int i = 0; i < nodes.size(); ++i) {
             for (int j = 0; j < nodes[i].size(); ++j) {
-                nodes[i][j]->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
+                if (nodes[i][j] == player) {
+                    nodes[i][j]->Update(Vector2{player->getVelocity().x, player->getVelocity().y}, deltaTime);
+                }
+                else if (player2 && nodes[i][j] == player2) {
+                    nodes[i][j]->Update(Vector2{player2->getVelocity().x, player2->getVelocity().y}, deltaTime);
+                }
+                else {
+                    nodes[i][j]->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
+                } 
             }
         }
+        
         effectManager->Update(deltaTime);
         if (!effectManager->isActivePlayerEffect()) {
-            if (player->isAlive()) camera.Update(player->getPosition());  
+            if (leadingPlayer->isAlive())  
+            camera.Update(leadingPlayer->getPosition());  
             player->HandleInput();
-            player->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
+            player->Update(Vector2{player->getVelocity().x, player->getVelocity().y}, deltaTime);
+            if (player2) {
+                player2->HandleInput();
+                player2->Update(Vector2{player2->getVelocity().x, player2->getVelocity().y}, deltaTime);
+            }
         }
+
+        UpdateMultiPlayer();
     }
 }
 
@@ -459,8 +498,16 @@ void Tilemap::Draw() const {
         }
     }
     Vector2 cameraTarget = camera.GetCameraTarget();
-    if (!effectManager->isActivePlayerEffect()) player->Draw();
+    if (!effectManager->isActivePlayerEffect()){
+        player->Draw();
+        if (player2) {
+            player2->Draw();
+        }
+    } 
     player->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
+    if (player2) {
+        player2->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
+    }
     effectManager->DrawUpper();
     EndMode2D();
 
@@ -475,6 +522,7 @@ void Tilemap::setPlayer(const std::string name)
     player->setInitialPosition(playerPosition);
     string fPath = filePath.substr(4,3);
     player->setCurrentMap(fPath);
+    player->SetInputSet({KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, KEY_ENTER});
 }
 
 void Tilemap::SetNewMapPath(const std::string &path)
@@ -497,7 +545,7 @@ Player *Tilemap::GetPlayer()
     return player;
 }
 
-Vector2 Tilemap::GetPlayerPosition() const
+Vector2 Tilemap::GetplayerPosition() const
 {
     return player->getPosition();
 }
@@ -513,4 +561,37 @@ int Tilemap::GetHeight() const {
 
 int Tilemap::GetTileSize() const {
     return tileSize;
+}
+
+Player *Tilemap::GetPlayer2()
+{
+    return player2;
+}
+
+Player *Tilemap::GetLeadingPlayer()
+{
+    if (player2 && player->getPosition().x < player2->getPosition().x) {
+        return player2;
+    }
+    return player;
+}
+
+void Tilemap::setPlayer2(const std::string name)
+{
+    player2 = new Player(name);
+    TextHelper::loadTexture("coin", "small" + name);
+    player2->Init(b2Vec2{playerPosition.x, playerPosition.y});
+    player2->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
+    player2->setInitialPosition(playerPosition);
+    string fPath = filePath.substr(4,3);
+    player2->setCurrentMap(fPath);
+    player2->SetInputSet({KEY_A, KEY_D, KEY_W, KEY_S, KEY_TWO});
+}
+
+void Tilemap::UpdateMultiPlayer()
+{
+    player->accept(new MultiplayerUpdatePosition(&camera));
+    player->accept(new MultiplayerUpdateSpawnPosition(&camera));
+    player2->accept(new MultiplayerUpdatePosition(&camera));
+    player2->accept(new MultiplayerUpdateSpawnPosition(&camera));
 }

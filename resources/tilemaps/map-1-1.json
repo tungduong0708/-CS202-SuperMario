@@ -39,15 +39,15 @@
          "objects":[
                 {
                  "height":0,
-                 "id":64,
-                 "name":"mario",
+                 "id":122,
+                 "name":"mario1",
                  "point":true,
                  "rotation":0,
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":173.333333333333,
-                 "y":151.25
+                 "x":135.937211449677,
+                 "y":186.153047091413
                 }, 
                 {
                  "height":0,
@@ -316,7 +316,7 @@
                  "visible":true,
                  "width":0,
                  "x":448.053788356878,
-                 "y":167.972913723872
+                 "y":168.80393865462
                 }, 
                 {
                  "height":27.5,
@@ -406,7 +406,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":118,
+ "nextobjectid":124,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",
