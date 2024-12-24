@@ -142,6 +142,12 @@ void StaticTile::Draw()
     
     Rectangle srcRect = { static_cast<float>(src_x), static_cast<float>(src_y), 
                         static_cast<float>(TILE_SIZE), static_cast<float>(TILE_SIZE) };
+
+    srcRect.x += 0.1f;
+    srcRect.y += 0.1f;
+    srcRect.width -= 0.1f;
+    srcRect.height -= 0.1f;
+    
     Renderer::DrawPro(TilesetHandler::getTexture(tilesetPath), srcRect, getPosition(), Vector2{ 1, 1 }, true);
 	// Physics::DebugDraw();
 }

@@ -19,6 +19,7 @@ Tileset::Tileset(const std::string& tilesetPath, const std::string& tilesetImage
 void Tileset::load(const std::string& tilesetPath, const std::string& tilesetImagePath) {
     std::cout << "loading tileset " << tilesetPath << std::endl;
     tilesetTexture = LoadTexture(tilesetImagePath.c_str());
+    SetTextureFilter(tilesetTexture, TEXTURE_FILTER_POINT);
 
     std::ifstream file(tilesetPath);
     if (!file.is_open()) {
