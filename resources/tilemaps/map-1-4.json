@@ -27,8 +27,8 @@
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":14.6666666666699,
-                 "y":101
+                 "x":10.3333333333369,
+                 "y":102
                 }, 
                 {
                  "height":0,
@@ -51,8 +51,8 @@
                  "type":"character",
                  "visible":true,
                  "width":0,
-                 "x":2168.5,
-                 "y":134.25
+                 "x":2166.16666666667,
+                 "y":141.583333333333
                 }, 
                 {
                  "height":0,
@@ -153,14 +153,14 @@
                 {
                  "height":0,
                  "id":34,
-                 "name":"verticalmovingplatform",
+                 "name":"horizontalmovingplatform",
                  "point":true,
                  "rotation":0,
                  "type":"object",
                  "visible":true,
                  "width":0,
-                 "x":2178.66666666667,
-                 "y":115.333333333333
+                 "x":2092,
+                 "y":117.333333333333
                 }, 
                 {
                  "height":29.8181818181818,

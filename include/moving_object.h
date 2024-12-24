@@ -219,7 +219,6 @@ public:
     virtual ~MovingPlatform();
 
     void Init(b2Vec2 position) override;
-    void InitOrbit(Vector2 center, float radius, float speed);
     void Update(Vector2 playerVelocity, float deltaTime) override;
     void HandleInput() override;
     void OnBeginContact(SceneNode *other, b2Vec2 normal) override;
