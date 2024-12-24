@@ -393,6 +393,7 @@ Princess::Princess(string type, int health, int score, int level, int strength, 
     frameSpeed = 0.0f;
     currentImage = IDLE;
     previousImage = IDLE;
+    isFree = false;
 }
 
 
@@ -466,7 +467,11 @@ void Princess::Init(b2Vec2 position)
 
 void Princess::Update(Vector2 playerVelocity, float deltaTime)
 {
+    if (!body) return;
     setSpeed(0.0f);
+    if (isFree) {
+        elapsedTime += deltaTime;
+    }
 }
 
 void Princess::OnBeginContact(SceneNode* other, b2Vec2 normal)
@@ -474,6 +479,9 @@ void Princess::OnBeginContact(SceneNode* other, b2Vec2 normal)
     if (!other) return;
     Player* player = dynamic_cast<Player*>(other);
     if (player) {
+        player->setAllowInput(false);
+        player->setSpeed(0.0f);
+        elapsedTime = 0.0f;
         string type = player->getType();
         TextHelper::Draw("Thank you " + type + "!", getPosition(), 20, RAYWHITE);
         playSoundEffect(SoundEffect::WORLD_CLEAR);

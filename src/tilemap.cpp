@@ -135,6 +135,13 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
     edge.SetTwoSided(vertices[0], vertices[3]);
     deadLine->CreateFixture(&edge, 0.0f);
     DeadLine* deadLineNode = new DeadLine(deadLine);
+    
+    b2Fixture* fixture = deadLine->GetFixtureList();
+    b2Filter filter = fixture->GetFilterData();
+    filter.categoryBits = CATEGORY_ENEMY;
+    filter.maskBits = MASK_ENEMY;
+    fixture->SetFilterData(filter);
+
     deadLine->GetUserData().pointer = reinterpret_cast<uintptr_t>(deadLineNode);   
 
     std::vector<SceneNode*> boundaryLayer;

@@ -378,6 +378,7 @@ void ImportFileVisitor::VisitFile(Player *obj)
         obj->changeMode(Mode::FIRE);
     }
     obj->setTime(time);
+    obj->setLives(lives);   
     obj->setCurrentMap(currentMap);
 }
 
