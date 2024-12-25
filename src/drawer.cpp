@@ -312,18 +312,39 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
     // --- Border ---
     DrawRectangleRoundedLines(button.rect, 0.2f, 6, 3, borderColor);
 
-    // --- Texture/Icon on the Left ---
     float texturePadding = 10.0f; // Padding for the texture
     float textureSize = button.rect.height - texturePadding * 2; // Fit texture vertically
-    Rectangle textureDest = {button.rect.x + texturePadding, button.rect.y + texturePadding, textureSize, textureSize};
 
-    DrawTexturePro(
-        isHovered ? button.hoverTexture : button.texture,   // Use hover texture if hovered
-        {0, 0, static_cast<float>(button.texture.width), static_cast<float>(button.texture.height)}, // Source rectangle
-        textureDest,                                        // Destination rectangle
-        {0, 0},                                             // Origin point
-        0.0f,                                               // No rotation
-        WHITE);
+    if (isHovered) {
+        // --- Texture/Icon on the Left ---
+        float ratio = button.rect.height / button.hoverTexture.height * 4 / 5; // Scale texture to button height
+        float textureSizeX = button.hoverTexture.width * ratio;
+        float textureSizeY = button.hoverTexture.height * ratio;
+        Rectangle textureDest = {button.rect.x + texturePadding, button.rect.y + texturePadding, textureSizeX, textureSizeY};
+
+        DrawTexturePro(
+            button.hoverTexture,   // Use hover texture if hovered
+            {0, 0, static_cast<float>(button.hoverTexture.width), static_cast<float>(button.hoverTexture.height)}, // Source rectangle
+            textureDest,                                        // Destination rectangle
+            {0, 0},                                             // Origin point
+            0.0f,                                               // No rotation
+            WHITE);
+    }
+    else {
+        // --- Texture/Icon on the Left ---
+        float ratio = button.rect.height / button.texture.height * 4 / 5; // Scale texture to button height
+        float textureSizeX = button.texture.width * ratio;
+        float textureSizeY = button.texture.height * ratio;
+        Rectangle textureDest = {button.rect.x + texturePadding, button.rect.y + texturePadding, textureSizeX, textureSizeY};
+
+        DrawTexturePro(
+            button.texture,   // Use hover texture if hovered
+            {0, 0, static_cast<float>(button.texture.width), static_cast<float>(button.texture.height)}, // Source rectangle
+            textureDest,                                        // Destination rectangle
+            {0, 0},                                             // Origin point
+            0.0f,                                               // No rotation
+            WHITE);
+    }
 
     // --- Difficulty Name Centered ---
     float textX = button.rect.x + textureSize + texturePadding * 3; // Start text to the right of the texture
