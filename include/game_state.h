@@ -230,6 +230,14 @@ private:
     std::vector<Texture2D> difficultyTextures;
 };
 
+class AreYouSureState : public GameState
+{
+public:
+    explicit AreYouSureState(Game* game);
+    void update() override;
+    void draw() override;
+    ~AreYouSureState() override;
+};
 class WannaSaveState : public AreYouSureState
 {
 public:
@@ -268,5 +276,5 @@ private:
     std::vector<Button> buttons;
     std::vector<Texture2D> tutorialTextures;
 
-    
+
 };

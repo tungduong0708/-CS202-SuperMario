@@ -1124,7 +1124,23 @@ SelectDifficultyState::~SelectDifficultyState() {
     }
 }
 
-WannaSaveState::WannaSaveState(Game* game) : GameState(game) {
+AreYouSureState::AreYouSureState(Game* game) : GameState(game) {
+    // Initialize buttons
+}
+
+void AreYouSureState::update() {
+    // Update button hover states
+}
+
+void AreYouSureState::draw() {
+    // Draw the underlying MainMenuState
+}
+
+AreYouSureState::~AreYouSureState() {
+    // Unload textures
+}
+
+WannaSaveState::WannaSaveState(Game* game) : AreYouSureState(game) {
     // Initialize buttons
 }
 
@@ -1197,12 +1213,14 @@ void TutorialState::update() {
         game->changeState(game->pauseGameState.get());
     }    
 
-    if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD || StageStateHandler::GetInstance().GetState() == StageState::GAME_OVER) {
+    if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD) {
+        Tilemap::getInstance()->GetPlayer()->setLives(Tilemap::getInstance()->GetPlayer()->getLives() + 1);
+    }
+    else if (StageStateHandler::GetInstance().GetState() == StageState::GAME_OVER) {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         //No need to do anything
     }
-
-    if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR || StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
+    else if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR || StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         game->changeState(game->mainMenuState.get());
     }
