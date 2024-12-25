@@ -356,12 +356,12 @@ void Player::Dead() {
                 StageStateHandler::GetInstance().SetState(StageState::GAME_OVER);
             }
             else if (StageStateHandler::GetInstance().GetState() == StageState::NORMAL_STATE) {
-                // reset the player
                 playSoundEffect(SoundEffect::PLAYER_DIE);
                 StageStateHandler::GetInstance().SetState(StageState::PLAYER_DEAD);
             }
             else if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD) {
                 Init(b2Vec2{initialPosition.x, initialPosition.y});
+                StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
             }
         }
     }
