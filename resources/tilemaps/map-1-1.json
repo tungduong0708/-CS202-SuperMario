@@ -4,7 +4,7 @@
  "layers":[
         {
          "id":11,
-         "image":"..\/background\/bg.png",
+         "image":"..\/background\/bg2.png",
          "name":"Image Layer 2",
          "opacity":1,
          "repeatx":true,
@@ -441,7 +441,7 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":12,
+ "nextlayerid":13,
  "nextobjectid":148,
  "orientation":"orthogonal",
  "renderorder":"right-down",
