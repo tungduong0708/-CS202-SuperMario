@@ -275,6 +275,13 @@ public:
 private:
     std::vector<Button> buttons;
     std::vector<Texture2D> tutorialTextures;
+};
 
-
+class PauseTutorialState : public PauseGameState
+{
+public:
+    explicit PauseTutorialState(Game* game);
+    void update() override;
+    void draw() override;
+    ~PauseTutorialState() override;
 };

@@ -1233,3 +1233,61 @@ void TutorialState::draw() {
 TutorialState::~TutorialState() {
 }
 
+PauseTutorialState::PauseTutorialState(Game* game) : PauseGameState(game)
+{
+}
+
+void PauseTutorialState::update() {
+    // Update button texts based on settings
+    buttons[0].text = game->getSettings().music ? "Music: On" : "Music: Off";
+    buttons[1].text = game->getSettings().soundEffects ? "Sound Effects: On" : "Sound Effects: Off";
+
+    // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    // Handle button clicks
+    if (IsButtonClicked(buttons[0])) {
+        game->getSettings().music = !game->getSettings().music;
+    }
+    if (IsButtonClicked(buttons[1])) {
+        game->getSettings().soundEffects = !game->getSettings().soundEffects;
+        SoundEffectHandler::SwitchEnableSoundEffects();
+    }
+    if (IsButtonClicked(buttons[2])) {
+        game->changeState(game->gameplayState.get());
+    }
+    if (IsButtonClicked(buttons[3])) {
+        game->changeState(game->mainMenuState.get());
+    }
+
+    float centerX = (game->getScreenWidth() - 400) / 2;
+    // Update sliders
+    DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
+    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
+
+    // Handle get back when clicking empty space
+    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        if (CheckCollisionPointRec(GetMousePosition(), {centerX, 525, 400, 50}) || CheckCollisionPointRec(GetMousePosition(), {centerX, 625, 400, 50}))
+            MouseClickToEmptySpaceHandler::SetIsTrue(false);
+        else if (CheckCollisionPointRec(GetMousePosition(), buttons[0].rect) || CheckCollisionPointRec(GetMousePosition(), buttons[1].rect)
+            || CheckCollisionPointRec(GetMousePosition(), buttons[2].rect) || CheckCollisionPointRec(GetMousePosition(), buttons[3].rect))
+            MouseClickToEmptySpaceHandler::SetIsTrue(false);
+        else {
+            MouseClickToEmptySpaceHandler::SetIsTrue(true);
+        }
+    }
+    else if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && MouseClickToEmptySpaceHandler::GetIsTrue()) {
+        game->changeState(game->gameplayState.get());
+    }
+}
+
+void PauseTutorialState::draw()
+{
+    PauseGameState::draw();
+}
+
+PauseTutorialState::~PauseTutorialState()
+{
+}
