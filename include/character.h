@@ -332,7 +332,6 @@ private:
     float waitTime;
     float elapsedTime = 0.0f;
     float delayTime;
-    Texture2D pipe;
     b2Vec2 initialPosition;
 public:
     MonsterFlower();

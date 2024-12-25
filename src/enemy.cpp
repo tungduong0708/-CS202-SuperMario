@@ -903,24 +903,18 @@ MonsterFlower::MonsterFlower(string type, float range, bool alive, int health, i
     Enemy(type, range, alive, health, score, level, strength, size, speed, angle), waitTime(waitTime), delayTime(delayTime)
 {
     elapsedTime = 0.0f;
-    Image pipeImage = LoadImage("resources/images/monsterflower/pipe.png");
-    pipe = LoadTextureFromImage(pipeImage);
 }
 
 MonsterFlower::MonsterFlower(const MonsterFlower &mf): Enemy(mf) {
     waitTime = mf.waitTime;
     elapsedTime = mf.elapsedTime;
-    pipe = mf.pipe;
 }
 
 MonsterFlower::~MonsterFlower() {
-    UnloadTexture(pipe);
 }
 
 void MonsterFlower::Init(b2Vec2 position) {
-    Enemy::Init(position 
-    //+ b2Vec2{-0.5f*size.x, size.y}
-    ); 
+    Enemy::Init(position + b2Vec2{-0.1f*size.x, size.y}); 
     b2Fixture *fixture = body->GetFixtureList();
     fixture->SetSensor(true);
     initialPosition = position;
@@ -1018,7 +1012,4 @@ void MonsterFlower::Draw() {
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Vector2 drawPosition = { pos.x, pos.y };
     Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft, 0.0f, bodySize);
-    Vector2 pipeSize = {2.0f, 2.0f};
-    Vector2 pipePos = {initialPosition.x - 0.5f*pipeSize.x, initialPosition.y + bodySize.y};
-    Renderer::DrawPro(pipe, sourceRect, pipePos, pipeSize, true, 0.0f, pipeSize);
 }
