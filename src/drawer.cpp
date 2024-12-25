@@ -171,54 +171,64 @@ void DrawImageButton(const Game& game, const PlayerInfo& player)
     // --- Texture on the Left ---
     float texturePaddingX = 50.0f; // Padding for the texture
     float texturePaddingY = 20.0f; // Padding for the texture
-    float ratio = player.button.rect.height / player.texture.height * 5 / 6; // Scale texture to button height
-    float textureSizeX = player.texture.width * ratio;
-    float textureSizeY = player.texture.height * ratio;
-    Rectangle textureDest = {player.button.rect.x + texturePaddingX, player.button.rect.y + texturePaddingY, textureSizeX, textureSizeY};
 
-    // Draw the player's texture
-    DrawTexturePro(
-        isHovered ? player.hoverTexture : player.texture,   // Use hover texture if hovered
-        {0, 0, static_cast<float>(player.texture.width), static_cast<float>(player.texture.height)}, // Source rectangle
-        textureDest,                                        // Destination rectangle
-        {0, 0},                                             // Origin point
-        0.0f,                                               // No rotation
-        WHITE);
+    float textureSize = 0;
+
+    if (isHovered)
+    {
+        float ratio = player.button.rect.height / player.hoverTexture.height * 5 / 6; // Scale texture to button height
+        float textureSizeX = player.hoverTexture.width * ratio;
+        float textureSizeY = player.hoverTexture.height * ratio;
+        Rectangle textureDest = {player.button.rect.x + texturePaddingX, player.button.rect.y + texturePaddingY, textureSizeX, textureSizeY};
+
+        // Draw the player's texture
+        DrawTexturePro(
+            player.hoverTexture,   // Use hover texture if hovered
+            {0, 0, static_cast<float>(player.hoverTexture.width), static_cast<float>(player.hoverTexture.height)}, // Source rectangle
+            textureDest,                                        // Destination rectangle
+            {0, 0},                                             // Origin point
+            0.0f,                                               // No rotation
+            WHITE);
+
+        textureSize = textureSizeX;
+    }
+    else
+    {
+        float ratio = player.button.rect.height / player.texture.height * 5 / 6; // Scale texture to button height
+        float textureSizeX = player.texture.width * ratio;
+        float textureSizeY = player.texture.height * ratio;
+        Rectangle textureDest = {player.button.rect.x + texturePaddingX, player.button.rect.y + texturePaddingY, textureSizeX, textureSizeY};
+
+        // Draw the player's texture
+        DrawTexturePro(
+            player.texture,   // Use hover texture if hovered
+            {0, 0, static_cast<float>(player.texture.width), static_cast<float>(player.texture.height)}, // Source rectangle
+            textureDest,                                        // Destination rectangle
+            {0, 0},                                             // Origin point
+            0.0f,                                               // No rotation
+            WHITE);
+
+        textureSize = textureSizeX;
+    }
 
     // --- Text on the Right ---
-    float textX = player.button.rect.x + textureSizeX + texturePaddingX * 2; // Start text to the right of the texture
+    float textX = player.button.rect.x + textureSize + texturePaddingX * 2; // Start text to the right of the texture
     float textY = player.button.rect.y + player.button.rect.height / 2 - 50; // Center vertically
 
     // Player name (large text)
-    constexpr int nameFontSize = 35;
+    constexpr int nameFontSize = 40;
     Color textColor = player.name == "Mario" ? RED : GREEN; // Diiferent color for each player
-    // Draw shadow for player name
-    DrawTextEx(
-        game.getFont(),
-        player.name.c_str(),
-        {textX + 2, textY + 2},
-        nameFontSize, 2, shadowColor);
 
     // Draw border for player name
     DrawTextEx(
         game.getFont(),
         player.name.c_str(),
-        {textX - 1, textY - 1},
+        {textX + 3, textY},
         nameFontSize, 2, BLACK);
     DrawTextEx(
         game.getFont(),
         player.name.c_str(),
-        {textX + 1, textY - 1},
-        nameFontSize, 2, BLACK);
-    DrawTextEx(
-        game.getFont(),
-        player.name.c_str(),
-        {textX - 1, textY + 1},
-        nameFontSize, 2, BLACK);
-    DrawTextEx(
-        game.getFont(),
-        player.name.c_str(),
-        {textX + 1, textY + 1},
+        {textX, textY + 3},
         nameFontSize, 2, BLACK);
     DrawTextEx(
         game.getFont(),
@@ -243,14 +253,6 @@ void DrawImageButton(const Game& game, const PlayerInfo& player)
     }
 
     Color descColor = isHovered ? GOLD : WHITE;
-
-    // Draw the description/stats text with border
-    // Draw shadow for description
-    DrawTextEx(
-        game.getFont(),
-        description.c_str(),
-        {textX + 2, textY + nameFontSize + 22},
-        descFontSize, 1, shadowColor);
 
     // Draw border for description
     DrawTextEx(
