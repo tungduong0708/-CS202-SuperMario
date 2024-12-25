@@ -277,18 +277,18 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
     Color hoverColor;
     if (difficulty == "Easy")
     {
-        baseColor = GREEN;
-        hoverColor = DARKGREEN;
+        hoverColor = (Color){80, 141, 105, 255};
+        baseColor = (Color){54, 126, 24, 255};
     }
     else if (difficulty == "Medium")
     {
-        baseColor = YELLOW;
-        hoverColor = ORANGE;
+        hoverColor = (Color){255, 164, 71, 255};
+        baseColor = (Color){245, 115, 40, 255};
     }
     else if (difficulty == "Hard")
     {
-        baseColor = RED;
-        hoverColor = MAROON;
+        hoverColor = (Color){255, 109, 96, 255};
+        baseColor = (Color){204, 54, 54, 255};
     }
 
     // Check hover state
@@ -351,19 +351,34 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
     float textY = button.rect.y + button.rect.height / 2 - 40; // Center text vertically
     constexpr int fontSize = 36; // Font size for difficulty name
 
-    // Draw shadow for text
+    // Draw border for text
     DrawTextEx(
         font, // Replace with your custom font if available
         difficulty.c_str(),
-        {textX + 2, textY + 2},
-        fontSize, 2, Fade(BLACK, 0.6f));
+        {textX + 2, textY},
+        fontSize, 2, BLACK);
+    DrawTextEx(
+        font, // Replace with your custom font if available
+        difficulty.c_str(),
+        {textX - 2, textY},
+        fontSize, 2, BLACK);
+    DrawTextEx(
+        font, // Replace with your custom font if available
+        difficulty.c_str(),
+        {textX, textY + 2},
+        fontSize, 2, BLACK);
+    DrawTextEx(
+        font, // Replace with your custom font if available
+        difficulty.c_str(),
+        {textX, textY - 2},
+        fontSize, 2, BLACK);
 
     // Draw main text
     DrawTextEx(
         font, // Replace with your custom font if available
         difficulty.c_str(),
-        {textX, textY},
-        fontSize, 2, BROWN);
+        {textX - 2, textY - 2},
+        fontSize, 2, (Color){252, 199, 55, 255});
 
     constexpr int descFontSize = 20;
     std::string description;
@@ -381,17 +396,32 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
         description = "Intense gameplay, only for \n\nthe bravest of heroes!";
     }
 
-    // // Draw shadow for description
+    // Draw border for description
     DrawTextEx(
         font,
         description.c_str(),
         {textX + 2, textY + fontSize + 10},
-        descFontSize, 1, Fade(BLACK, 0.6f));
+        descFontSize, 1, BLACK);
+    DrawTextEx(
+        font,
+        description.c_str(),
+        {textX - 2, textY + fontSize + 10},
+        descFontSize, 1, BLACK);
+    DrawTextEx(
+        font,
+        description.c_str(),
+        {textX, textY + fontSize + 8},
+        descFontSize, 1, BLACK);
+    DrawTextEx(
+        font,
+        description.c_str(),
+        {textX, textY + fontSize + 12},
+        descFontSize, 1, BLACK);
 
     // Draw main text
     DrawTextEx(
         font,
         description.c_str(),
-        {textX, textY + fontSize + 8},
-        descFontSize, 1, BLUE);
+        {textX, textY + fontSize + 10},
+        descFontSize, 1, (Color){255, 233, 160, 255});
 }

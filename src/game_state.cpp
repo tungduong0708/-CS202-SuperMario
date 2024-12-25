@@ -1072,10 +1072,12 @@ SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game)
     float buttonHeight = 150;
     float centerX = (game->getScreenWidth() - buttonWidth) / 2;
 
+    difficultyTextures.push_back(LoadTexture("../resources/images/beetle/walk.png"));
+    difficultyTextures.push_back(LoadTexture("../resources/images/beetle/idle.png"));
+
     difficultyTextures.push_back(LoadTexture("../resources/images/goomba/walk.png"));
     difficultyTextures.push_back(LoadTexture("../resources/images/goomba/dead.png"));
-    difficultyTextures.push_back(LoadTexture("../resources/images/koopa/idle.png"));
-    difficultyTextures.push_back(LoadTexture("../resources/images/koopa/fly1.png"));
+    
     difficultyTextures.push_back(LoadTexture("../resources/images/boss/walk2.png"));
     difficultyTextures.push_back(LoadTexture("../resources/images/boss/blow3.png"));
 
