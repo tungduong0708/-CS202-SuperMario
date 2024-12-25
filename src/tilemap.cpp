@@ -545,6 +545,11 @@ std::string Tilemap::GetCurrentMapPath() const
     return filePath;
 }
 
+std::string Tilemap::GetNewMapPath() const
+{
+    return newMapPath;
+}
+
 EffectManager* Tilemap::GetEffectManager()
 {
     return effectManager;
