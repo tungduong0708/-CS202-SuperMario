@@ -58,6 +58,7 @@ public:
     void SetNewMapPath(const std::string& path);
     std::string GetCurrentMapPath() const;
     std::string GetNewMapPath() const;
+    Camera2D getCamera() const;
     EffectManager* GetEffectManager();
     Player* GetPlayer();
     Vector2 GetPlayerPosition() const;

@@ -550,6 +550,11 @@ std::string Tilemap::GetNewMapPath() const
     return newMapPath;
 }
 
+Camera2D Tilemap::getCamera() const
+{
+    return camera.GetCamera();
+}
+
 EffectManager* Tilemap::GetEffectManager()
 {
     return effectManager;
