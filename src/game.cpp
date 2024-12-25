@@ -68,7 +68,6 @@ void Game::run() {
         update();
         draw();
     }
-    gameplayState->cleanup();
     CloseAudioDevice();
     CloseWindow();
 }

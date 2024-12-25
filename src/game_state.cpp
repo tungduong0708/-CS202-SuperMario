@@ -183,30 +183,6 @@ void SettingsState::draw() {
     DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
-TutorialState::TutorialState(Game *game) : GameState(game)
-{
-    // Tutorial here
-}
-
-void TutorialState::update()
-{
-    // Some update code here
-}
-
-void TutorialState::draw()
-{
-    // Some draw code here
-}
-
-TutorialState::~TutorialState()
-{
-    // Some cleanup code here
-    for (const auto& texture : tutorialTextures)
-    {
-        UnloadTexture(texture);
-    }
-}
-
 SavedGameState::SavedGameState(Game* game)
     : GameState(game)
 {
@@ -349,10 +325,10 @@ void GameplayState::update() {
         game->changeState(game->pauseGameState.get());
     }
 
-    if (tilemap->GetPlayer()->GetDeadFlag()){
+    if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD){
         game->changeState(game->deathState.get());
     }
-    else if (tilemap->GetPlayer()->GetGameOverFlag()){
+    else if (StageStateHandler::GetInstance().GetState() == StageState::GAME_OVER){
         game->changeState(game->gameOverState.get());
     }
 }
@@ -364,7 +340,7 @@ void GameplayState::draw() {
     DrawButton(pauseButton, *game);
 }
 
-void GameplayState::cleanup() {
+GameplayState::~GameplayState() {
     TilesetHandler::Clear();
 }
 
@@ -1205,4 +1181,31 @@ void BackToMenuState::draw()
 BackToMenuState::~BackToMenuState()
 {
     // Unload textures
+}
+
+TutorialState::TutorialState(Game* game) : GameplayState(game) {
+    Tilemap::getInstance()->LoadMapFromJson("map-tutorial.json", 1);
+    Tilemap::getInstance()->setPlayer("mario");
+}
+
+void TutorialState::update() {
+    float deltaTime = GetFrameTime();
+    Physics::Update(deltaTime); 
+
+    Tilemap* tilemap = Tilemap::getInstance();
+    tilemap->Update(deltaTime);
+
+    // Update pause button hover state
+    pauseButton.isHovered = CheckCollisionPointRec(GetMousePosition(), pauseButton.rect);
+
+    if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD || StageStateHandler::GetInstance().GetState() == StageState::GAME_OVER) {
+        //No need to do anything
+    }
+}
+
+void TutorialState::draw() {
+    GameplayState::draw();
+}
+
+TutorialState::~TutorialState() {
 }

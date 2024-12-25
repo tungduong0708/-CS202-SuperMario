@@ -4,6 +4,7 @@
 #include "imagehandler.h"
 #include "file_visitor.h"
 #include "moving_object.h"
+#include "stage_state_handler.h"
 
 #ifndef CHARACTER_H
 #define CHARACTER_H
@@ -105,9 +106,6 @@ private:
     string currentMap;
     Vector2 initialPosition;
 
-    bool isDeadFlag;
-    bool isGameOverFlag;
-
 public:
     Player();
     Player(string type, string name = "", float coins = 0.0f, int lives = 3, int health = 100, 
@@ -158,9 +156,6 @@ public:
     void UpdateAnimation();
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
-
-    bool GetDeadFlag() const;
-    bool GetGameOverFlag() const;
 
     void accept(FileVisitor* visitor);
     MovingObject* copy() const;
