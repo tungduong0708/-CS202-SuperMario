@@ -329,6 +329,7 @@ void GameplayState::update() {
         game->changeState(game->deathState.get());
     }
     else if (StageStateHandler::GetInstance().GetState() == StageState::GAME_OVER){
+        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         game->changeState(game->gameOverState.get());
     }
 }
@@ -1181,7 +1182,7 @@ void BackToMenuState::draw()
     // Draw the underlying MainMenuState
 }
 
-BackToMenuState::~BackToMenuState()
+BackToMenuState::~BackToMenuState() 
 {
     // Unload textures
 }

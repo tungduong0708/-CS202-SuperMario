@@ -276,7 +276,9 @@ public:
     void update() override;
     void draw() override;
     ~TutorialState() override;
-protected:
+private:
     std::vector<Button> buttons;
     std::vector<Texture2D> tutorialTextures;
+
+    
 };
