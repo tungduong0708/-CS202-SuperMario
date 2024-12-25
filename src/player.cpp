@@ -353,15 +353,14 @@ void Player::Dead() {
                 // game over
                 playSoundEffect(SoundEffect::GAME_OVER);
                 Game* game = Game::getInstance();
-                isGameOverFlag = true;
+                StageStateHandler::GetInstance().SetState(StageState::GAME_OVER);
             }
-            else if (isDeadFlag == false){
+            else if (StageStateHandler::GetInstance().GetState() == StageState::NORMAL_STATE) {
                 // reset the player
                 playSoundEffect(SoundEffect::PLAYER_DIE);
-                Game* game = Game::getInstance();
-                isDeadFlag = true;
+                StageStateHandler::GetInstance().SetState(StageState::PLAYER_DEAD);
             }
-            else if (isDeadFlag == true){
+            else if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD) {
                 Init(b2Vec2{initialPosition.x, initialPosition.y});
             }
         }
@@ -428,8 +427,6 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
 
 void Player::Init(b2Vec2 position) {
     Character::Init(position);
-    isDeadFlag = false;
-    isGameOverFlag = false;
 }
 
 void Player::OnEndContact(SceneNode *other) {
@@ -442,12 +439,4 @@ void Player::accept(FileVisitor *visitor) {
 MovingObject *Player::copy() const
 {
     return new Player(*this);
-}
-
-bool Player::GetDeadFlag() const {
-    return isDeadFlag;
-}
-
-bool Player::GetGameOverFlag() const {
-    return isGameOverFlag;
 }

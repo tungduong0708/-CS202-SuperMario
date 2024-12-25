@@ -75,18 +75,6 @@ private:
     std::vector<Button> buttons;
 };
 
-class TutorialState : public GameState
-{
-public:
-    explicit TutorialState(Game* game);
-    void update() override;
-    void draw() override;
-    ~TutorialState() override;
-private:
-    std::vector<Button> buttons;
-    std::vector<Texture2D> tutorialTextures;
-};
-
 class SavedGameState : public GameState
 {
 public:
@@ -118,9 +106,9 @@ public:
     explicit GameplayState(Game* game);
     void update() override;
     void draw() override;
-    void cleanup() override;
+    ~GameplayState() override;
 
-private:
+protected:
     std::vector<MovingObject*> movingObjects;
     Button pauseButton;
 };
@@ -279,4 +267,16 @@ public:
     void update() override;
     void draw() override;
     ~BackToMenuState() override;
+};
+
+class TutorialState : public GameplayState
+{
+public:
+    explicit TutorialState(Game* game);
+    void update() override;
+    void draw() override;
+    ~TutorialState() override;
+protected:
+    std::vector<Button> buttons;
+    std::vector<Texture2D> tutorialTextures;
 };
