@@ -178,6 +178,14 @@ MovingObject *FireBall::copy() const
     return new FireBall(*this);
 }
 
+void FireBall::setPlayerShot(Player* player){
+    playerShot = player;
+}
+
+Player* FireBall::getPlayerShot(){
+    return playerShot;
+}
+
 void FireBall::Init(b2Vec2 position) {
     span = 0.0f;
     animations = AnimationHandler::setAnimations("fireball");
