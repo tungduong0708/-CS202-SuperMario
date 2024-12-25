@@ -174,7 +174,7 @@ void Enemy::Draw() {
         return;
     }
     else {
-        setSpeed(speed);
+        body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
     }
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };

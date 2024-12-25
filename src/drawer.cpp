@@ -7,51 +7,64 @@
 
 void DrawButton(const Button& button, const Game& game)
 {
-    // --- Updated Customizable Colors ---
-    Color frameColor = (Color){0, 0, 0, 255};       // SaddleBrown-like for the wooden frame
-    Color insetColor = (Color){212, 130, 83, 204};      // DarkGoldenRod for inset (matches the icon's interior border)
-    Color hoverInsetColor = (Color){210, 180, 140, 255}; // Tan color for hover inset (softer highlight)
-    Color shadowColor = (Color){0, 0, 0, 80};           // Semi-transparent black shadow
-    Color borderColor = (Color){0, 0, 0, 255};          // Pure black for button border
-    Color textShadowColor = (Color){0, 0, 0, 100};      // Text shadow for better visibility
-    Color textColor = (Color){255, 255, 255, 255};         // Dark brown for text (matches the icon)
+    // Define Mario-themed colors
+    Color baseColor = button.isHovered ? Fade(RED, 0.9f) : Fade(GOLD, 0.9f); // Red when hovered, gold otherwise
+    Color borderColor = button.isHovered ? Fade(WHITE, 1.0f) : Fade(DARKBLUE, 0.9f); // Border changes color
+    Color shadowColor = (Color){242, 107, 15, 255};       // Shadow color
+    Color highlightColor = Fade(YELLOW, 0.7f);   // Highlight color on top
 
-
-
-    // --- Button Shadow (3D Effect) ---
+    // --- Shadow Effect ---
     DrawRectangleRounded(
         {button.rect.x + 4, button.rect.y + 4, button.rect.width, button.rect.height},
-        0.25f, 8, shadowColor);
+        0.3f, 6, shadowColor);
 
-    // --- Button Frame (Outer Rectangle) ---
-    DrawRectangleRounded(button.rect, 0.25f, 8, frameColor);
+    // --- Button Body ---
+    // Draw main button with rounded corners
+    DrawRectangleRounded(button.rect, 0.3f, 6, baseColor);
 
-    // --- Button Inset (Inner Rectangle) ---
-    Rectangle insetRect = {button.rect.x + 6, button.rect.y + 6, button.rect.width - 12, button.rect.height - 12};
-    DrawRectangleRounded(
-        insetRect, 0.25f, 6, button.isHovered ? hoverInsetColor : insetColor);
+    // Draw highlight (top gradient effect)
+    Rectangle highlightRect = {button.rect.x, button.rect.y, button.rect.width, button.rect.height / 2};
+    DrawRectangleRounded(highlightRect, 0.3f, 6, highlightColor);
 
-    // --- Frame Border ---
-    DrawRectangleRoundedLines(button.rect, 0.25f, 8, 4, borderColor);
+    // --- Border ---
+    DrawRectangleRoundedLines(button.rect, 0.3f, 6, 6, borderColor);
 
-    // --- Button Text ---
+    // --- Text with Shadow ---
     Vector2 textSize = MeasureTextEx(game.getFont(), button.text.c_str(), 30, 1);
 
-    // Text Shadow
+    // Text shadow for depth
     DrawTextEx(
         game.getFont(),
         button.text.c_str(),
-        {button.rect.x + button.rect.width / 2 - textSize.x / 2 + 2,
-         button.rect.y + button.rect.height / 2 - textSize.y / 2 + 2},
-        30, 1, textShadowColor);
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2 + 2.5f,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2},
+        30, 1, shadowColor);
+    DrawTextEx(
+        game.getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2 - 2.5f,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2},
+        30, 1, shadowColor);
+    DrawTextEx(
+        game.getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2 + 2.5f},
+        30, 1, shadowColor);
+    DrawTextEx(
+        game.getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2 - 2.5f},
+        30, 1, shadowColor);
 
-    // Main Text
+    // Text with vibrant color
     DrawTextEx(
         game.getFont(),
         button.text.c_str(),
         {button.rect.x + button.rect.width / 2 - textSize.x / 2,
          button.rect.y + button.rect.height / 2 - textSize.y / 2},
-        30, 1, textColor);
+        30, 1, WHITE);
 }
 
 bool IsButtonClicked(const Button& button)
