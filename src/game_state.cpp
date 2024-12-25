@@ -332,6 +332,13 @@ void GameplayState::update() {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         game->changeState(game->gameOverState.get());
     }
+    else if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR){
+        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+    }
+    else if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR){
+        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        game->changeState(game->changeStageState.get());
+    }
 }
 
 void GameplayState::draw() {
@@ -1117,23 +1124,7 @@ SelectDifficultyState::~SelectDifficultyState() {
     }
 }
 
-AreYouSureState::AreYouSureState(Game* game) : GameState(game) {
-    // Initialize buttons
-}
-
-void AreYouSureState::update() {
-    // Update button hover states
-}
-
-void AreYouSureState::draw() {
-    // Draw the underlying MainMenuState
-}
-
-AreYouSureState::~AreYouSureState() {
-    // Unload textures
-}
-
-WannaSaveState::WannaSaveState(Game* game) : AreYouSureState(game) {
+WannaSaveState::WannaSaveState(Game* game) : GameState(game) {
     // Initialize buttons
 }
 
@@ -1202,8 +1193,18 @@ void TutorialState::update() {
     // Update pause button hover state
     pauseButton.isHovered = CheckCollisionPointRec(GetMousePosition(), pauseButton.rect);
 
+    if (IsButtonClicked(pauseButton)) {
+        game->changeState(game->pauseGameState.get());
+    }    
+
     if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD || StageStateHandler::GetInstance().GetState() == StageState::GAME_OVER) {
+        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         //No need to do anything
+    }
+
+    if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR || StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
+        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        game->changeState(game->mainMenuState.get());
     }
 }
 
