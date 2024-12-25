@@ -129,7 +129,7 @@ void Gate::Update(Vector2 playerVelocity, float deltaTime)
     if (elapsedTime > delay) {
         elapsedTime = 0.0f;
         Tilemap::getInstance()->SetNewMapPath(addressNext);
-        Game::getInstance()->changeState(Game::getInstance()->changeStageState.get());
+        StageStateHandler::GetInstance().SetState(StageState::WORLD_CLEAR);
 
         player->setAllowInput(true);
         player->setAppear(true);
@@ -158,6 +158,7 @@ void Gate::OnBeginContact(SceneNode *other, b2Vec2 normal)
         Tilemap* tilemap = Tilemap::getInstance();
         if (addressNext[7] == '-' && tilemap->GetCurrentMapPath()[7] == '-') {
             tilemap->SetNewMapPath(addressNext);
+            StageStateHandler::GetInstance().SetState(StageState::STAGE_CLEAR);
         } else {
             start = true;
             elapsedTime = 0.0f;
