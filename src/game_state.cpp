@@ -1124,23 +1124,7 @@ SelectDifficultyState::~SelectDifficultyState() {
     }
 }
 
-AreYouSureState::AreYouSureState(Game* game) : GameState(game) {
-    // Initialize buttons
-}
-
-void AreYouSureState::update() {
-    // Update button hover states
-}
-
-void AreYouSureState::draw() {
-    // Draw the underlying MainMenuState
-}
-
-AreYouSureState::~AreYouSureState() {
-    // Unload textures
-}
-
-WannaSaveState::WannaSaveState(Game* game) : AreYouSureState(game) {
+WannaSaveState::WannaSaveState(Game* game) : GameState(game) {
     // Initialize buttons
 }
 
