@@ -128,8 +128,8 @@ void Gate::Update(Vector2 playerVelocity, float deltaTime)
     Player* player = Tilemap::getInstance()->GetPlayer();
     if (elapsedTime > delay) {
         elapsedTime = 0.0f;
-        Game::getInstance()->changeState(Game::getInstance()->changeStageState.get());
         Tilemap::getInstance()->SetNewMapPath(addressNext);
+        Game::getInstance()->changeState(Game::getInstance()->changeStageState.get());
 
         player->setAllowInput(true);
         player->setAppear(true);

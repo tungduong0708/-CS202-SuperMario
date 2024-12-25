@@ -592,8 +592,9 @@ void ChangeStageState::update()
 }
 
 void ChangeStageState::draw() {
-    setStageName("Stage 1-2");
-
+    std::string mapPath = Tilemap::getInstance()->GetNewMapPath();
+    std::string mapName = "World " + mapPath.substr(4, 3); 
+    setStageName(mapName);
     // Draw the underlying GameplayState
     game->gameplayState->draw();
 
@@ -1078,7 +1079,7 @@ void SelectDifficultyState::update() {
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->~Tilemap();
             tilemap = Tilemap::getInstance();
-            tilemap->LoadMapFromJson("map-1-5-3.json", i + 1);
+            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
             game->changeState(game->selectPlayerState.get());
         }
     }
