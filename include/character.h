@@ -104,6 +104,10 @@ private:
     string name;
     string currentMap;
     Vector2 initialPosition;
+
+    bool isDeadFlag;
+    bool isGameOverFlag;
+
 public:
     Player();
     Player(string type, string name = "", float coins = 0.0f, int lives = 3, int health = 100, 
@@ -154,6 +158,9 @@ public:
     void UpdateAnimation();
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
+
+    bool GetDeadFlag() const;
+    bool GetGameOverFlag() const;
 
     void accept(FileVisitor* visitor);
     MovingObject* copy() const;

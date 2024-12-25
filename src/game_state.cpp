@@ -348,6 +348,13 @@ void GameplayState::update() {
     if (IsButtonClicked(pauseButton)) {
         game->changeState(game->pauseGameState.get());
     }
+
+    if (tilemap->GetPlayer()->GetDeadFlag()){
+        game->changeState(game->deathState.get());
+    }
+    else if (tilemap->GetPlayer()->GetGameOverFlag()){
+        game->changeState(game->gameOverState.get());
+    }
 }
 
 void GameplayState::draw() {
@@ -751,6 +758,16 @@ void DeathState::update()
     if (elapsedTime > 4.0f) {
         game->changeState(game->gameplayState.get());
         reset();
+    }
+
+    //Handle get back when clicking outside noti rectangle
+    float rectWidth = 400.0f;
+    float rectHeight = 200.0f;
+    float rectX = (game->getScreenWidth() - rectWidth) / 2;
+    float rectY = (game->getScreenHeight() - rectHeight) / 2;
+
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && !CheckCollisionPointRec(GetMousePosition(), {rectX, rectY, rectWidth, rectHeight})){
+        game->changeState(game->gameplayState.get());
     }
 }
 
