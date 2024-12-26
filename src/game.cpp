@@ -77,14 +77,14 @@ void Game::run() {
         draw();
     }
 
-    // if (WindowShouldClose() && !shouldExit) {
-    //     setNextState(quitState.get());
-    //     changeState(wannaSaveState.get());
-    //     while (!shouldExit) {
-    //         update();
-    //         draw();
-    //     }
-    // }
+    if (WindowShouldClose() && !shouldExit) {
+        setNextState(quitState.get());
+        changeState(wannaSaveState.get());
+        while (!shouldExit) {
+            update();
+            draw();
+        }
+    }
 
     CloseAudioDevice();
     CloseWindow();

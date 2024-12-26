@@ -790,7 +790,7 @@ void DeathState::draw() {
 
     // Draw the central rounded rectangle (panel)
     float rectWidth = 400.0f;
-    float rectHeight = 300.0f;
+    float rectHeight = 200.0f;
     float rectX = (game->getScreenWidth() - rectWidth) / 2;
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
 
@@ -803,8 +803,8 @@ void DeathState::draw() {
     float overlap = 0.1f;  // Overlap amount to ensure smooth transitions
 
     // Start and end colors for the gradient (RGBA)
-    Color startColor = (Color){255, 245, 116, 255};  
-    Color endColor = (Color){252, 199, 55, 255};    
+    Color startColor = (Color){255, 0, 0, 200};  // Bright red
+    Color endColor = (Color){100, 0, 0, 230};    // Dark red (close to crimson)  
 
     for (int i = 0; i < gradientSteps; i++) {
         float t = static_cast<float>(i) / (gradientSteps - 1);  // Interpolation factor (0 to 1)
@@ -1200,8 +1200,8 @@ void WannaSaveState::draw() {
     float overlap = 0.1f;  // Overlap amount to ensure smooth transitions
 
     // Start and end colors for the gradient (RGBA)
-    Color startColor = (Color){255, 0, 0, 200};  // Bright red
-    Color endColor = (Color){100, 0, 0, 230};    // Dark red (close to crimson)
+    Color startColor = (Color){255, 245, 116, 255};  
+    Color endColor = (Color){252, 199, 55, 255};
 
     for (int i = 0; i < gradientSteps; i++) {
         float t = static_cast<float>(i) / (gradientSteps - 1);  // Interpolation factor (0 to 1)
@@ -1248,6 +1248,26 @@ void WannaSaveState::draw() {
         rectX + (rectWidth - textSize.x) / 2, // Center horizontally
         rectY + 10                             // Margin from the top
     };
+
+    // Draw border for text
+    DrawTextEx(game->getFont(), 
+        message.c_str(), 
+        {textPos.x + 2, textPos.y}, 
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(), 
+        message.c_str(), 
+        {textPos.x - 2, textPos.y }, 
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message.c_str(),
+        {textPos.x, textPos.y + 2},
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message.c_str(),
+        {textPos.x, textPos.y - 2},
+        fontSize, 2, BLACK);
+
+
     DrawTextEx(game->getFont(), message.c_str(), textPos, fontSize, 2, WHITE);
 
     // Draw buttons
@@ -1286,7 +1306,35 @@ void QuitState::draw()
         (game->getScreenWidth() - textSize.x) / 2, // Center horizontally
         static_cast<float>(game->getScreenHeight()) / 2 // Center vertically
     };
+
+    // Draw border for text
+    DrawTextEx(game->getFont(), 
+        message.c_str(), 
+        {textPos.x + 2, textPos.y}, 
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message.c_str(),
+        {textPos.x, textPos.y + 2},
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message.c_str(),
+        {textPos.x - 2, textPos.y},
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message.c_str(),
+        {textPos.x, textPos.y - 2},
+        fontSize, 2, BLACK);
+        
     DrawTextEx(game->getFont(), message.c_str(), textPos, fontSize, 2, YELLOW);
+    
+    // Draw a loading bar
+    float barWidth = 400.0f;
+    float barHeight = 50.0f;
+    float barX = (game->getScreenWidth() - barWidth) / 2;
+    float barY = textPos.y + 100;
+    float progress = elapsedTime / 3.0f;
+    DrawRectangle(barX, barY, barWidth * progress, barHeight, YELLOW);
+    DrawRectangleLines(barX, barY, barWidth, barHeight, WHITE);
 }
 
 
@@ -1322,6 +1370,25 @@ void BackToMenuState::draw()
         (game->getScreenWidth() - textSize1.x) / 2, // Center horizontally
         static_cast<float>(game->getScreenHeight()) / 2 - 50                             // Margin from the top
     };
+
+    // Draw border for text
+    DrawTextEx(game->getFont(), 
+        message1.c_str(), 
+        {textPos1.x + 2, textPos1.y}, 
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message1.c_str(),
+        {textPos1.x, textPos1.y + 2},
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message1.c_str(),
+        {textPos1.x - 2, textPos1.y},
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message1.c_str(),
+        {textPos1.x, textPos1.y - 2},
+        fontSize, 2, BLACK);
+
     DrawTextEx(game->getFont(), message1.c_str(), textPos1, fontSize, 2, YELLOW);
 
     Vector2 textSize2 = MeasureTextEx(game->getFont(), message2.c_str(), fontSize, spacing);
@@ -1329,7 +1396,35 @@ void BackToMenuState::draw()
         (game->getScreenWidth() - textSize2.x) / 2, // Center horizontally
         static_cast<float>(game->getScreenHeight()) / 2 + 50                             // Margin from the top
     };
+
+    // Draw border for text
+    DrawTextEx(game->getFont(), 
+        message2.c_str(), 
+        {textPos2.x + 2, textPos2.y}, 
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message2.c_str(),
+        {textPos2.x, textPos2.y + 2},
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message2.c_str(),
+        {textPos2.x - 2, textPos2.y},
+        fontSize, 2, BLACK);
+    DrawTextEx(game->getFont(),
+        message2.c_str(),
+        {textPos2.x, textPos2.y - 2},
+        fontSize, 2, BLACK);
+
     DrawTextEx(game->getFont(), message2.c_str(), textPos2, fontSize, 2, YELLOW);
+
+    // Draw a loading bar
+    float barWidth = 400.0f;
+    float barHeight = 50.0f;
+    float barX = (game->getScreenWidth() - barWidth) / 2;
+    float barY = textPos2.y + 100;
+    float progress = elapsedTime / 1.5f;
+    DrawRectangle(barX, barY, barWidth * progress, barHeight, YELLOW);
+    DrawRectangleLines(barX, barY, barWidth, barHeight, WHITE);
 }
 
 void BackToMenuState::reset()
