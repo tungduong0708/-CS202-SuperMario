@@ -43,9 +43,18 @@ void MainMenuState::update() {
         game->changeState(game->selectDifficultyState.get());
     }
     if (IsButtonClicked(buttons[1])) {
-        game->changeState(game->gameplayState.get());
+        Tilemap::getInstance()->~Tilemap();
+        Tilemap::SetMapType(TILEMAP_2P);
+        Tilemap::getInstance()->LoadMapFromJson("map-1-1.json", 1);
+        Tilemap::getInstance()->setPlayer("mario");
+        Tilemap::getInstance()->setPlayer2("luigi");
+        game->changeState(game->gameplay2PState.get());
     }
     if (IsButtonClicked(buttons[2])) {
+        Tilemap::getInstance()->~Tilemap();
+        Tilemap::SetMapType(TILEMAP_1P);
+        Tilemap::getInstance()->LoadMapFromJson("map-tutorial.json", 1);
+        Tilemap::getInstance()->setPlayer("mario");
         game->changeState(game->tutorialState.get());
     }
     if (IsButtonClicked(buttons[3])) {
@@ -326,9 +335,11 @@ void GameplayState::update() {
     }
 
     if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD){
+        playSoundEffect(SoundEffect::PLAYER_DIE);
         game->changeState(game->deathState.get());
     }
     else if (StageStateHandler::GetInstance().GetState() == StageState::GAME_OVER){
+        playSoundEffect(SoundEffect::GAME_OVER);
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         game->changeState(game->gameOverState.get());
     }
@@ -1085,6 +1096,7 @@ void SelectDifficultyState::update() {
         if (IsButtonClicked(buttons[i])) {
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->~Tilemap();
+            Tilemap::SetMapType(TilemapType::TILEMAP_1P);
             tilemap = Tilemap::getInstance();
             tilemap->LoadMapFromJson("map-1-1.json", i + 1);
             game->changeState(game->selectPlayerState.get());
@@ -1195,8 +1207,6 @@ BackToMenuState::~BackToMenuState()
 }
 
 TutorialState::TutorialState(Game* game) : GameplayState(game) {
-    Tilemap::getInstance()->LoadMapFromJson("map-tutorial.json", 1);
-    Tilemap::getInstance()->setPlayer("mario");
 }
 
 void TutorialState::update() {
@@ -1210,10 +1220,11 @@ void TutorialState::update() {
     pauseButton.isHovered = CheckCollisionPointRec(GetMousePosition(), pauseButton.rect);
 
     if (IsButtonClicked(pauseButton)) {
-        game->changeState(game->pauseGameState.get());
+        game->changeState(game->pauseTutorialState.get());
     }    
 
     if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD) {
+        playSoundEffect(SoundEffect::PLAYER_DIE);
         Tilemap::getInstance()->GetPlayer()->setLives(Tilemap::getInstance()->GetPlayer()->getLives() + 1);
     }
     else if (StageStateHandler::GetInstance().GetState() == StageState::GAME_OVER) {
@@ -1279,7 +1290,7 @@ void PauseTutorialState::update() {
         }
     }
     else if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && MouseClickToEmptySpaceHandler::GetIsTrue()) {
-        game->changeState(game->gameplayState.get());
+        game->changeState(game->tutorialState.get());
     }
 }
 
@@ -1290,4 +1301,45 @@ void PauseTutorialState::draw()
 
 PauseTutorialState::~PauseTutorialState()
 {
+}
+
+Gameplay2PState::Gameplay2PState(Game* game) : GameplayState(game) {
+}
+
+Gameplay2PState::~Gameplay2PState() {
+}
+
+void Gameplay2PState::update() {
+    float deltaTime = GetFrameTime();
+    Physics::Update(deltaTime); 
+
+    Tilemap* tilemap = Tilemap::getInstance();
+    tilemap->Update(deltaTime);
+
+    // Update pause button hover state
+    pauseButton.isHovered = CheckCollisionPointRec(GetMousePosition(), pauseButton.rect);
+
+    if (IsButtonClicked(pauseButton)) {
+        game->changeState(game->pauseGameState.get());
+    }    
+
+    if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD) {
+        //Do nothing
+    }
+    else if (StageStateHandler::GetInstance().GetState() == StageState::GAME_OVER) {
+        playSoundEffect(SoundEffect::GAME_OVER);
+        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        game->changeState(game->gameOverState.get());
+    }
+    else if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
+        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+    }
+    else if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR) {
+        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        game->changeState(game->changeStageState.get());
+    }
+}
+
+void Gameplay2PState::draw() {
+    GameplayState::draw();
 }

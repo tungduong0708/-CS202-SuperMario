@@ -6,6 +6,7 @@
 #include "moving_object.h"
 #include "stage_state_handler.h"
 #include "player_input_set.h"
+#include "multiplayer_position_handler.h"
 
 #ifndef CHARACTER_H
 #define CHARACTER_H
@@ -167,6 +168,10 @@ public:
 
     void accept(FileVisitor* visitor);
     MovingObject* copy() const;
+
+    void accept(MultiplayerHandlerVisitor* visitor);
+
+    b2Body* getBody();
 };
 
 

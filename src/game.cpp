@@ -47,6 +47,8 @@ Game::Game()
     changeStageState = std::make_unique<ChangeStageState>(this);
     gameOverState = std::make_unique<GameOverState>(this);
     victoryState = std::make_unique<VictoryState>(this);
+    pauseTutorialState = std::make_unique<PauseTutorialState>(this);
+    gameplay2PState = std::make_unique<Gameplay2PState>(this);
     currentState = mainMenuState.get();
     std::cout << "All states initialized" << std::endl;
 }

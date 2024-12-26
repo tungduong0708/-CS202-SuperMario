@@ -285,3 +285,12 @@ public:
     void draw() override;
     ~PauseTutorialState() override;
 };
+
+class Gameplay2PState : public GameplayState
+{
+public:
+    explicit Gameplay2PState(Game* game);
+    void update() override;
+    void draw() override;
+    ~Gameplay2PState() override;
+};

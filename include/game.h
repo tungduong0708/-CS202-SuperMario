@@ -52,6 +52,8 @@ public:
     std::unique_ptr<GameState> changeStageState;
     std::unique_ptr<GameState> gameOverState;
     std::unique_ptr<GameState> victoryState;
+    std::unique_ptr<GameState> pauseTutorialState;
+    std::unique_ptr<GameState> gameplay2PState;
 
 private:
     static Game* instance;

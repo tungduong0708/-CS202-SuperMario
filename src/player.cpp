@@ -353,12 +353,10 @@ void Player::Dead() {
         else {
             if (lives == 0) {
                 // game over
-                playSoundEffect(SoundEffect::GAME_OVER);
                 Game* game = Game::getInstance();
                 StageStateHandler::GetInstance().SetState(StageState::GAME_OVER);
             }
             else if (StageStateHandler::GetInstance().GetState() == StageState::NORMAL_STATE) {
-                playSoundEffect(SoundEffect::PLAYER_DIE);
                 StageStateHandler::GetInstance().SetState(StageState::PLAYER_DEAD);
             }
             else if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD) {
@@ -429,6 +427,7 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
 
 void Player::Init(b2Vec2 position) {
     Character::Init(position);
+    cout << "Player spawned at: " << position.x << ", " << position.y << endl;
     SetSpawnPosition(Vector2{position.x, position.y});
 }
 
@@ -450,4 +449,12 @@ void Player::SetInputSet(vector<int> inputSet) {
 
 void Player::SetSpawnPosition(Vector2 spawnPos) {
     spawnPosition = spawnPos;
+}
+
+void Player::accept(MultiplayerHandlerVisitor *visitor) {
+    visitor->VisitPlayer(this);
+}
+
+b2Body* Player::getBody() {
+    return body;
 }
