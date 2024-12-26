@@ -15,15 +15,13 @@ MainMenuState::MainMenuState(Game* game): GameState(game)
     float buttonHeight = 75;
     float column1X = static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
     float column2X = 3 * static_cast<float>(Game::getScreenWidth()) / 4 - buttonWidth / 2;
-    float firstButtonWidth = column2X - column1X + buttonWidth;
 
-    buttons.push_back({{column1X, 340, firstButtonWidth, buttonHeight}, "New Game", false});
-    buttons.push_back({{column1X, 440, buttonWidth, buttonHeight}, "2 Players", false});
+    buttons.push_back({{column1X, 340, buttonWidth, buttonHeight}, "1 Player", false});
+    buttons.push_back({{column2X, 340, buttonWidth, buttonHeight}, "2 Players", false});
+    buttons.push_back({{column1X, 440, buttonWidth, buttonHeight}, "Load Games", false});
     buttons.push_back({{column2X, 440, buttonWidth, buttonHeight}, "Tutorial", false});
     buttons.push_back({{column1X, 540, buttonWidth, buttonHeight}, "Settings", false});
-    buttons.push_back({{column2X, 540, buttonWidth, buttonHeight}, "Saved Games", false});
-    buttons.push_back({{column1X, 640, buttonWidth, buttonHeight}, "Map Builder", false});
-    buttons.push_back({{column2X, 640, buttonWidth, buttonHeight}, "Exit", false});
+    buttons.push_back({{column2X, 540, buttonWidth, buttonHeight}, "Exit", false});
 
     // Load background image
     backgroundTexture = LoadTexture("../resources/background/menuBackground2.png");
@@ -51,6 +49,9 @@ void MainMenuState::update() {
         game->changeState(game->gameplay2PState.get());
     }
     if (IsButtonClicked(buttons[2])) {
+        game->changeState(game->savedGameState.get());
+    }
+    if (IsButtonClicked(buttons[3])) {
         Tilemap* tilemap = Tilemap::getInstance();
         tilemap->~Tilemap();
         tilemap = Tilemap::getInstance();
@@ -59,16 +60,10 @@ void MainMenuState::update() {
         Tilemap::getInstance()->setPlayer("mario");
         game->changeState(game->tutorialState.get());
     }
-    if (IsButtonClicked(buttons[3])) {
+    if (IsButtonClicked(buttons[4])) {
         game->changeState(game->settingsState.get());
     }
-    if (IsButtonClicked(buttons[4])) {
-        game->changeState(game->savedGameState.get());
-    }
     if (IsButtonClicked(buttons[5])) {
-        game->changeState(game->mapBuilderState.get());
-    }
-    if (IsButtonClicked(buttons[6])) {
         game->exitGame(); // Exit the game
     }
 }
@@ -87,12 +82,12 @@ void MainMenuState::draw() {
     // Draw logo inside the rectangle of size 300x(logoHeight * 300 / logoWidth), remove the image's background
     float logoWidth = logoTexture.width;
     float logoHeight = logoTexture.height;
-    float logoRectWidth = 400.0f;
+    float logoRectWidth = 500.0f;
     float logoRectHeight = logoRectWidth * logoHeight / logoWidth;
     DrawTexturePro(
         logoTexture,
         {0, 0, static_cast<float>(logoTexture.width), static_cast<float>(logoTexture.height)},
-        {game->getScreenWidth() / 2 - logoRectWidth / 2, 100, logoRectWidth, logoRectHeight},
+        {game->getScreenWidth() / 2 - logoRectWidth / 2, 50, logoRectWidth, logoRectHeight},
         {0, 0},
         0.0f,
         WHITE
