@@ -25,6 +25,8 @@ public:
     Camera2D GetCamera() const;
     Vector2 GetCameraTarget() const;
     ~MyCamera() = default;
+
+    float GetLeftEdge() const;
 };
 
 #endif

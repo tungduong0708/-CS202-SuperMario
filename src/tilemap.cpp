@@ -2,6 +2,7 @@
 #include "object.h"
 #include "tilemap.h"
 
+TilemapType Tilemap::mapType = TILEMAP_1P;
 Tilemap* Tilemap::instance = nullptr;
 
 Tilemap::Tilemap() {
@@ -27,10 +28,19 @@ Tilemap::~Tilemap() {
     std::cout << Physics::world.GetBodyCount() << " bodies in the world after destruction.\n";
 }
 
+void Tilemap::SetMapType(TilemapType type) {
+    mapType = type;
+}
+
 Tilemap* Tilemap::getInstance()
  {
     if (instance == nullptr) {
-        instance = new Tilemap();
+        if (mapType == TilemapType::TILEMAP_1P) {
+            instance = new Tilemap1P();
+        }
+        else {
+            instance = new Tilemap2P();
+        }
     }
     return instance;
 }
@@ -344,6 +354,8 @@ void Tilemap::LoadSaveGame(const std::string &filePath)
     visitor->setFilePath(filePath);
     visitor->openFile();
     ifstream& file = visitor->getFile();
+    std::string mapType;
+    getline(file, mapType);
     std::string obj, mapPath;
     int difficulty;
     file >> mapPath >> difficulty;
@@ -450,6 +462,7 @@ void Tilemap::SaveGame(std::string filePath) const
     ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
     visitor->setFilePath(filePath);
     visitor->openFile(true);
+    visitor->exportMapType("1 player");
     visitor->exportMapInfo(this->filePath, this->difficulty);
     for (auto& tile : changedTiles) {
         StaticTile* staticTile = dynamic_cast<StaticTile*>(tile);
@@ -492,7 +505,8 @@ void Tilemap::Update(float deltaTime) {
         }
         effectManager->Update(deltaTime);
         if (!effectManager->isActivePlayerEffect()) {
-            if (player->isAlive()) camera.Update(player->getPosition());  
+            if (player->isAlive()) 
+                camera.Update(player->getPosition());  
             player->HandleInput();
             player->Update(Vector2{playerVelocity.x, playerVelocity.y}, deltaTime);
         }
@@ -533,6 +547,7 @@ void Tilemap::setPlayer(const std::string name)
     player->setInitialPosition(playerPosition);
     string fPath = filePath.substr(4,3);
     player->setCurrentMap(fPath);
+    player->SetInputSet(PlayerInputSet::GetPlayer1Input());
 }
 
 void Tilemap::SetNewMapPath(const std::string &path)
@@ -543,6 +558,16 @@ void Tilemap::SetNewMapPath(const std::string &path)
 std::string Tilemap::GetCurrentMapPath() const
 {
     return filePath;
+}
+
+std::string Tilemap::GetNewMapPath() const
+{
+    return newMapPath;
+}
+
+Camera2D Tilemap::getCamera() const
+{
+    return camera.GetCamera();
 }
 
 EffectManager* Tilemap::GetEffectManager()
@@ -571,4 +596,385 @@ int Tilemap::GetHeight() const {
 
 int Tilemap::GetTileSize() const {
     return tileSize;
+}
+
+
+Tilemap1P::Tilemap1P() : Tilemap() {
+}
+
+Tilemap1P::Tilemap1P(const std::string& filePath, int difficulty) : Tilemap(filePath, difficulty) {
+}
+
+Tilemap1P::~Tilemap1P() {
+}
+
+// Tilemap1P* Tilemap1P::getInstance() {
+//     if (instance == nullptr) {
+//         instance = new Tilemap1P();
+//     }
+//     return static_cast<Tilemap1P*>(instance);
+// }
+
+void Tilemap1P::LoadSaveGame(const std::string& filePath) {
+    Tilemap::LoadSaveGame(filePath);
+}
+
+void Tilemap1P::SaveGame(std::string filePath) const {
+    std::fstream file(filePath, ios::out);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open save file!" << std::endl;
+        return;
+    }
+    file << "1 player" << std::endl;
+    Tilemap::SaveGame(filePath);
+}
+
+void Tilemap1P::Update(float deltaTime) {
+    Tilemap::Update(deltaTime);
+}
+
+void Tilemap1P::Draw() const {
+    Tilemap::Draw();
+}
+
+void Tilemap1P::setPlayer(const std::string name) {
+    Tilemap::setPlayer(name);
+}
+
+Player* Tilemap1P::GetPlayer() {
+    return Tilemap::GetPlayer();
+}
+
+Vector2 Tilemap1P::GetPlayerPosition() const {
+    return Tilemap::GetPlayerPosition();
+}
+
+Player* Tilemap1P::GetLeadingPlayer() const {
+    return player;
+}
+
+Player* Tilemap1P::GetFollowingPlayer() const {
+    return player;
+}
+
+Vector2 Tilemap1P::GetLeadingPlayerPosition() const {
+    return playerPosition;
+}
+
+Tilemap2P::Tilemap2P() : Tilemap() {
+    player2 = nullptr;
+}
+
+Tilemap2P::Tilemap2P(const std::string& filePath, int difficulty) : Tilemap(filePath, difficulty) {
+    player2 = nullptr;
+}
+
+Tilemap2P::~Tilemap2P() {
+    delete player2;
+    player2 = nullptr;
+}
+
+void Tilemap2P::LoadSaveGame(const std::string &filePath)
+{
+    std::cout << "Loading save " << filePath << std::endl;
+    ImportFileVisitor* visitor = ImportFileVisitor::getInstance();
+    visitor->setFilePath(filePath);
+    visitor->openFile();
+    ifstream& file = visitor->getFile();
+    std::string mapType;
+    getline(file, mapType);
+    std::string obj, mapPath;
+    int difficulty;
+    file >> mapPath >> difficulty;
+
+    while (file >> obj) {
+        SceneNode* newNode = nullptr;
+
+        if (obj == "StaticTile") {
+            auto tile = std::make_unique<StaticTile>();
+            tile->accept(visitor);
+            changedTiles.push_back(tile.get());
+            Vector2 pos = tile->getPosition();
+            activatedTiles.insert({static_cast<int>(pos.x), static_cast<int>(pos.y)});
+            newNode = tile.release();
+        } 
+        else if (obj == "KinematicTile") {
+            auto tile = std::make_unique<KinematicTile>();
+            tile->accept(visitor);
+            changedTiles.push_back(tile.get());
+            Vector2 pos = tile->getPosition();
+            activatedTiles.insert({static_cast<int>(pos.x), static_cast<int>(pos.y)});
+            newNode = tile.release();
+        } 
+        else if (obj == "MovingPlatform") {
+            auto platform = std::make_unique<MovingPlatform>();
+            platform->accept(visitor);
+            newNode = platform.release();
+        } 
+        else if (obj == "Mushroom") {
+            auto mushroom = std::make_unique<Mushroom>();
+            mushroom->accept(visitor);
+            newNode = mushroom.release();
+        } 
+        else if (obj == "Star") {
+            auto star = std::make_unique<Star>();
+            star->accept(visitor);
+            newNode = star.release();
+        } 
+        else if (obj == "FireFlower") {
+            auto flower = std::make_unique<FireFlower>();
+            flower->accept(visitor);
+            newNode = flower.release();
+        } 
+        else if (obj == "Goomba") {
+            auto goomba = std::make_unique<Goomba>();
+            goomba->accept(visitor);
+            newNode = goomba.release();
+        } 
+        else if (obj == "Koopa") {
+            auto koopa = std::make_unique<Koopa>();
+            koopa->accept(visitor);
+            newNode = koopa.release();
+        } 
+        else if (obj == "Boss") {
+            auto boss = std::make_unique<Boss>();
+            boss->accept(visitor);
+            newNode = boss.release();
+        } 
+        else if (obj == "AttackBall") {
+            auto ball = std::make_unique<AttackBall>();
+            ball->accept(visitor);
+            newNode = ball.release();
+        } 
+        else if (obj == "FireBall") {
+            auto ball = std::make_unique<FireBall>();
+            ball->accept(visitor);
+            newNode = ball.release();
+        } 
+        else if (obj == "Player" && !playerLoaded) {
+            player = new Player();
+            player->accept(visitor);
+            playerLoaded = true;
+        }
+        else if (obj == "Player" && playerLoaded) {
+            player2 = new Player();
+            player2->accept(visitor);
+            player2Loaded = true;
+        } 
+        else if (obj == "LarvaBubble") {
+            auto lbubble = std::make_unique<LarvaBubble>();
+            lbubble->accept(visitor);
+            newNode = lbubble.release();
+        }
+        else if (obj == "MonsterFlower") {
+            auto mflower = std::make_unique<MonsterFlower>();
+            mflower->accept(visitor);
+            newNode = mflower.release();
+        }
+        else if (obj == "EffectManager") {
+            effectManager->accept(visitor);
+            effectManager->setLoadedFromMap(true);
+        }
+        else if (obj == "Princess") {
+            auto princess = std::make_unique<Princess>();
+            princess->accept(visitor);
+            newNode = princess.release();
+        }
+
+        if (newNode) {
+            loadedNodes.push_back(newNode);
+        } 
+    }
+    visitor->closeFile();
+    LoadMapFromJson(mapPath, difficulty);
+
+    player->SetInputSet(PlayerInputSet::GetPlayer1Input());
+    player2->SetInputSet(PlayerInputSet::GetPlayer2Input());
+}
+
+void Tilemap2P::SaveGame(std::string filePath) const
+{
+    ExportFileVisitor* visitor = ExportFileVisitor::getInstance();
+    visitor->setFilePath(filePath);
+    visitor->openFile(true);
+    visitor->exportMapType("2 players");
+    visitor->exportMapInfo(this->filePath, this->difficulty);
+    for (auto& tile : changedTiles) {
+        StaticTile* staticTile = dynamic_cast<StaticTile*>(tile);
+        KinematicTile* kinematicTile = dynamic_cast<KinematicTile*>(tile);
+        if (staticTile) {
+            staticTile->accept(visitor);
+        }
+        else if (kinematicTile) {
+            kinematicTile->accept(visitor);
+        }
+    }
+    for (auto& layer : nodes) {
+        for (auto& node : layer) {
+            Enemy* enemy = dynamic_cast<Enemy*>(node);
+            ActiveItem* item = dynamic_cast<ActiveItem*>(node);
+            if (enemy && enemy->isAlive()) {
+                enemy->accept(visitor);
+            }
+            else if (item && item->isAvailable()) {
+                item->accept(visitor);
+            }
+        }
+    }
+    player->accept(visitor);
+    player2->accept(visitor);
+    effectManager->accept(visitor);
+    visitor->closeFile();
+}
+
+void Tilemap2P::Update(float deltaTime) {
+    if (newMapPath != "") {
+        changeMap(newMapPath);
+        if (!isChangingMap) newMapPath = "";
+    }
+    else {
+        b2Vec2 leadingPlayerVelocity = {0.0f, 0.0f};
+        if (GetLeadingPlayer()) 
+            leadingPlayerVelocity = GetLeadingPlayer()->getVelocity();
+        for (int i = 0; i < nodes.size(); ++i) {
+            for (int j = 0; j < nodes[i].size(); ++j) {
+                if (nodes[i][j] == player) {
+                    nodes[i][j]->Update(Vector2{player->getVelocity().x, player->getVelocity().y}, deltaTime);
+                }
+                else if (nodes[i][j] == player2) {
+                    nodes[i][j]->Update(Vector2{player2->getVelocity().x, player2->getVelocity().y}, deltaTime);
+                }
+                else {
+                    nodes[i][j]->Update(Vector2{leadingPlayerVelocity.x, leadingPlayerVelocity.y}, deltaTime);
+                }
+            }
+        }
+        effectManager->Update(deltaTime);
+        if (!effectManager->isActivePlayerEffect()) {
+            if (GetLeadingPlayer() && GetLeadingPlayer()->getPosition().x > camera.GetCameraTarget().x) 
+                camera.Update(GetLeadingPlayer()->getPosition());  
+
+            player->HandleInput();
+            player->Update(Vector2{player->getVelocity().x, player->getVelocity().y}, deltaTime);
+
+            player2->HandleInput();
+            player2->Update(Vector2{player2->getVelocity().x, player2->getVelocity().y}, deltaTime);
+
+        }
+        UpdateMultiplayerPosition();
+    }
+}
+
+void Tilemap2P::Draw() const {
+    if (isChangingMap) {
+        return;
+    }
+    BeginMode2D(camera.GetCamera());
+
+    for (int i = 0; i < nodes.size(); ++i) {
+        if (nodes[i].empty()) {
+            effectManager->DrawLower();
+            continue;
+        }
+        for (auto& node : nodes[i]) {
+            node->Draw();
+        }
+    }
+    Vector2 cameraTarget = camera.GetCameraTarget();
+    if (!effectManager->isActivePlayerEffect()) {
+        player->Draw();
+        player2->Draw();
+    }
+    player->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
+    player2->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 5.0f}, 0.0f);
+    effectManager->DrawUpper();
+    EndMode2D();
+}
+
+void Tilemap2P::setPlayer(const std::string name) {
+    player = new Player(name);
+    TextHelper::loadTexture("coin", "small" + name);
+    player->Init(b2Vec2{playerPosition.x, playerPosition.y});
+    player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
+    player->setInitialPosition(playerPosition);
+    string fPath = filePath.substr(4,3);
+    player->setCurrentMap(fPath);
+    player->setElapsedTime(0.0f);
+    player->setTime(300.0f);
+}
+
+Player* Tilemap2P::GetPlayer() {
+    return player;
+}
+
+Player* Tilemap2P::GetLeadingPlayer() const {
+    if (!player->isAlive() && !player2->isAlive()) {
+        return NULL;
+    }
+    if (!player->isAlive()) {
+        return player2;
+    }
+    if (!player2->isAlive()) {
+        return player;
+    }
+    if (player->getPosition().x > player2->getPosition().x) {
+        return player;
+    }
+    return player2;
+}
+
+Player* Tilemap2P::GetFollowingPlayer() const {
+    if (player->getPosition().x > player2->getPosition().x) {
+        return player2;
+    }
+    return player;
+}
+
+Vector2 Tilemap2P::GetPlayerPosition() const {
+    return player->getPosition();
+}
+
+Vector2 Tilemap2P::GetLeadingPlayerPosition() const {
+    return GetLeadingPlayer()->getPosition();
+}
+
+Player* Tilemap2P::GetPlayer2() {
+    return player2;
+}
+
+Vector2 Tilemap2P::GetPlayer2Position() const {
+    return player2->getPosition();
+}
+
+void Tilemap2P::setPlayer2(const std::string name) {
+    player2 = new Player(name);
+    TextHelper::loadTexture("coin", "small" + name);
+    player2->Init(b2Vec2{playerPosition.x, playerPosition.y});
+    player2->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
+    player2->setInitialPosition(playerPosition);
+    string fPath = filePath.substr(4,3);
+    player2->setCurrentMap(fPath);
+    player2->setElapsedTime(0.0f);
+    player2->setTime(300.0f);
+    player2->SetInputSet(PlayerInputSet::GetPlayer2Input());
+}
+
+void Tilemap2P::UpdateMultiplayerPosition(){
+    player->accept(new MultiplayerUpdatePosition(&camera, player2->getVelocity()));
+    player->accept(new MultiplayerUpdateSpawnPosition(&camera));
+    player2->accept(new MultiplayerUpdatePosition(&camera, player->getVelocity()));
+    player2->accept(new MultiplayerUpdateSpawnPosition(&camera));
+}
+
+
+
+void Tilemap::setPlayer2(const std::string name) {
+}
+
+Player* Tilemap::GetPlayer2() {
+    return nullptr;
+}
+
+Vector2 Tilemap::GetPlayer2Position() const {
+    return Vector2{0.0f, 0.0f};
 }
