@@ -14,6 +14,17 @@
          "y":0
         }, 
         {
+         "id":8,
+         "image":"..\/background\/5.png",
+         "name":"Image Layer 3",
+         "opacity":1,
+         "repeatx":true,
+         "type":"imagelayer",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
          "id":6,
          "image":"",
          "name":"Effect",
@@ -173,7 +184,7 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":8,
+ "nextlayerid":9,
  "nextobjectid":35,
  "orientation":"orthogonal",
  "renderorder":"right-down",
