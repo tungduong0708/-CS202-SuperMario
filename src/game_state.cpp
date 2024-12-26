@@ -602,6 +602,8 @@ ChangeStageState::ChangeStageState(Game* game) : GameState(game), elapsedTime(0.
 void ChangeStageState::update()
 {
     elapsedTime += GetFrameTime();
+    Player* player = Tilemap::getInstance()->GetPlayer();
+    lifeRemaining = player->getLives();
 
     if (elapsedTime > 3.0f) {
         game->changeState(game->gameplayState.get());
