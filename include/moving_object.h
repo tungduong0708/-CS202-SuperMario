@@ -69,9 +69,7 @@ private:
     bool flag; // indicate that the fireball is active or not
 
     // angle = initial angle of the fire flower
-    // other attributes are inherited from the moving object class --- 
-    Player* playerShot;
-
+    // other attributes are inherited from the moving object class ---
 public:
     FireBall();
     FireBall(float d, Vector2 size = {0, 0}, float s = 0, float a = 0);
@@ -82,9 +80,6 @@ public:
     float getDamage();
     bool isActive();
     Animation getAnimation(bool flag);
-
-    void setPlayerShot(Player* player);
-    Player* getPlayerShot();
 
     void Init(b2Vec2 position);
   

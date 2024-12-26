@@ -31,8 +31,7 @@ void TilesetHandler::Init()
                                               "resources/tilesets/bg-3-3",
                                               "resources/tilesets/bg-3-4",
                                               "resources/tilesets/Re_draw",
-                                              "resources/tilesets/ghosthouse",
-                                              "resources/tilesets/tree"};
+                                              "resources/tilesets/ghosthouse"};
     for (const auto& tilesetPath : tilesetPaths) {
         addTileSet(tilesetPath + ".json", tilesetPath + ".png");
     }

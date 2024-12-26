@@ -415,23 +415,3 @@ void ImportFileVisitor::VisitFile(EffectManager *obj)
         *obj = EffectManager();
     }
 }
-
-
-void ExportFileVisitor::exportMapType(std::string type)
-{
-    file << type << std::endl;
-}
-
-MapType ImportFileVisitor::importMapType(){
-    string type;
-    getline(file, type);
-    if (type == "1 player") {
-        return MapType::ONE_PLAYER;
-    }
-    else if (type == "2 players") {
-        return MapType::TWO_PLAYER;
-    }
-    else {
-        return MapType::UNKNOWN;
-    }
-}

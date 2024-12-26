@@ -212,7 +212,7 @@ void Player::HandleInput() {
     if (!isAlive() or !allowInput) {
         return;
     }
-    if (IsKeyDown(inputSet[PlayerInput::RIGHT])) {
+    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D)) {
         body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
@@ -221,7 +221,7 @@ void Player::HandleInput() {
         faceLeft = false;
 
     } else 
-    if (IsKeyDown(inputSet[PlayerInput::LEFT])) {
+    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A)) {
         body->SetLinearVelocity(b2Vec2(-speed, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
@@ -231,7 +231,7 @@ void Player::HandleInput() {
 
     }
     else 
-    if (IsKeyDown(inputSet[PlayerInput::DOWN])) {
+    if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S)) {
         body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
             previousImage = currentImage;
@@ -252,7 +252,7 @@ void Player::HandleInput() {
         currentImage = IDLE;
     }
     
-    if (IsKeyPressed(inputSet[PlayerInput::UP])) {
+    if (IsKeyPressed(KEY_SPACE) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)) {
         if (isOnGround) {
             if (mode == SMALL) {
                 playSoundEffect(SoundEffect::JUMP);
@@ -263,13 +263,13 @@ void Player::HandleInput() {
                 body->ApplyLinearImpulseToCenter(b2Vec2(0.0f, force * 1.5f), true);
             }
             previousImage = currentImage;
-            currentImage = ImageSet::JUMP;
+            currentImage = JUMP;
             isOnGround = false;
         }
     }
 
     // default frequency of the bullet: 0.4 seconds
-    if (IsKeyPressed(inputSet[PlayerInput::SHOOT]) && mode == Mode::FIRE) {
+    if ((IsKeyPressed(KEY_E) || IsKeyPressed(KEY_ENTER)) && mode == FIRE) {
         previousImage = currentImage;
         currentImage = HOLD;
         animations[currentImage].setTimer();
@@ -286,14 +286,12 @@ void Player::HandleInput() {
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->addNode(fireball);
             elapsedTime = 0.0f;
-
-            fireball->setPlayerShot(this);
         }
     }
 
     if (!isOnGround) {
         previousImage = currentImage;
-        currentImage = ImageSet::JUMP;
+        currentImage = JUMP;
     }
 }
 
@@ -353,15 +351,16 @@ void Player::Dead() {
         else {
             if (lives == 0) {
                 // game over
+                playSoundEffect(SoundEffect::GAME_OVER);
                 Game* game = Game::getInstance();
-                StageStateHandler::GetInstance().SetState(StageState::GAME_OVER);
+                game->changeState(game->gameOverState.get());
             }
-            else if (StageStateHandler::GetInstance().GetState() == StageState::NORMAL_STATE) {
-                StageStateHandler::GetInstance().SetState(StageState::PLAYER_DEAD);
-            }
-            else if (StageStateHandler::GetInstance().GetState() == StageState::PLAYER_DEAD) {
-                Init(b2Vec2{spawnPosition.x, spawnPosition.y});
-                StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+            else {
+                // reset the player
+                playSoundEffect(SoundEffect::PLAYER_DIE);
+                Game* game = Game::getInstance();
+                game->changeState(game->deathState.get());
+                Character::Init(b2Vec2{initialPosition.x, initialPosition.y});
             }
         }
     }
@@ -382,7 +381,7 @@ void Player::UpdateAnimation() {
 void Player::Draw() {
     if (body) {
         Vector2 position = Vector2{body->GetPosition().x, body->GetPosition().y};
-        if (position.x == spawnPosition.x && position.y == spawnPosition.y) {
+        if (position.x == initialPosition.x && position.y == initialPosition.y) {
             return;
         }
         Character::Draw();
@@ -427,8 +426,6 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
 
 void Player::Init(b2Vec2 position) {
     Character::Init(position);
-    cout << "Player spawned at: " << position.x << ", " << position.y << endl;
-    SetSpawnPosition(Vector2{position.x, position.y});
 }
 
 void Player::OnEndContact(SceneNode *other) {
@@ -441,20 +438,4 @@ void Player::accept(FileVisitor *visitor) {
 MovingObject *Player::copy() const
 {
     return new Player(*this);
-}
-
-void Player::SetInputSet(vector<int> inputSet) {
-    this->inputSet = inputSet;
-}
-
-void Player::SetSpawnPosition(Vector2 spawnPos) {
-    spawnPosition = spawnPos;
-}
-
-void Player::accept(MultiplayerHandlerVisitor *visitor) {
-    visitor->VisitPlayer(this);
-}
-
-b2Body* Player::getBody() {
-    return body;
 }

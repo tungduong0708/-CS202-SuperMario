@@ -4,7 +4,6 @@
 #include <string>
 #include "object.h"
 #include "raylib.h"
-#include "mouse_click_to_empty_space_handler.h"
 
 class Game;
 
@@ -75,6 +74,18 @@ private:
     std::vector<Button> buttons;
 };
 
+class TutorialState : public GameState
+{
+public:
+    explicit TutorialState(Game* game);
+    void update() override;
+    void draw() override;
+    ~TutorialState() override;
+private:
+    std::vector<Button> buttons;
+    std::vector<Texture2D> tutorialTextures;
+};
+
 class SavedGameState : public GameState
 {
 public:
@@ -106,9 +117,9 @@ public:
     explicit GameplayState(Game* game);
     void update() override;
     void draw() override;
-    ~GameplayState() override;
+    void cleanup() override;
 
-protected:
+private:
     std::vector<MovingObject*> movingObjects;
     Button pauseButton;
 };
@@ -187,9 +198,13 @@ public:
 
     // Setters
     void setScore(int score);
+    void setHighScore(int highScore);
+    void setTimeRemaining(int timeRemaining);
 protected:
     std::vector<Button> buttons;
     int score;
+    int highScore;
+    int timeRemaining;
 };
 
 class VictoryState : public GameOverState
@@ -213,6 +228,7 @@ private:
     Texture2D backgroundTexture;
 };
 
+
 class SelectDifficultyState : public GameState
 {
 public:
@@ -225,14 +241,25 @@ private:
     std::vector<Texture2D> difficultyTextures;
 };
 
-class WannaSaveState : public GameState
+class AreYouSureState : public GameState
+{
+public:
+    explicit AreYouSureState(Game* game);
+    void update() override;
+    void draw() override;
+    ~AreYouSureState() override;
+protected:
+    std::vector<Button> buttons;
+    Texture2D backgroundTexture;
+};
+
+class WannaSaveState : public AreYouSureState
 {
 public:
     explicit WannaSaveState(Game* game);
     void update() override;
     void draw() override;
-private:
-    std::vector<Button> buttons;
+    ~WannaSaveState() override;
 };
 
 class QuitState : public GameState {
@@ -240,8 +267,9 @@ public:
     explicit QuitState(Game* game);
     void update() override;
     void draw() override;
+    ~QuitState() override;
 protected:
-    float elapsedTime = 0;
+    std::vector<Button> buttons;
 };
 
 class BackToMenuState : public QuitState {
@@ -249,35 +277,5 @@ public:
     explicit BackToMenuState(Game* game);
     void update() override;
     void draw() override;
-    void reset();
-};
-
-class TutorialState : public GameplayState
-{
-public:
-    explicit TutorialState(Game* game);
-    void update() override;
-    void draw() override;
-    ~TutorialState() override;
-private:
-    std::vector<Button> buttons;
-    std::vector<Texture2D> tutorialTextures;
-};
-
-class PauseTutorialState : public PauseGameState
-{
-public:
-    explicit PauseTutorialState(Game* game);
-    void update() override;
-    void draw() override;
-    ~PauseTutorialState() override;
-};
-
-class Gameplay2PState : public GameplayState
-{
-public:
-    explicit Gameplay2PState(Game* game);
-    void update() override;
-    void draw() override;
-    ~Gameplay2PState() override;
+    ~BackToMenuState() override;
 };

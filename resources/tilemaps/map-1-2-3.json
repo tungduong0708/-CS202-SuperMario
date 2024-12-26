@@ -4,18 +4,7 @@
  "layers":[
         {
          "id":6,
-         "image":"..\/background\/5.png",
-         "name":"Image Layer 3",
-         "opacity":1,
-         "repeatx":true,
-         "type":"imagelayer",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "id":6,
-         "image":"..\/background\/bg2.png",
+         "image":"..\/background\/bg1-1.png",
          "name":"Background",
          "opacity":1,
          "repeatx":true,
@@ -124,7 +113,7 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":7,
+ "nextlayerid":6,
  "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"right-down",

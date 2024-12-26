@@ -39,8 +39,3 @@ Vector2 MyCamera::GetCameraTarget() const
 {
     return camera.target;
 }
-
-float MyCamera::GetLeftEdge() const
-{
-    return camera.target.x - screenWidth / 2.0f / camera.zoom;
-}

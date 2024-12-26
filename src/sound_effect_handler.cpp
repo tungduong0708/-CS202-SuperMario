@@ -1,7 +1,5 @@
 #include "sound_effect_handler.h"
 
-bool SoundEffectHandler::isEnabled = true;
-
 SoundEffectHandler& SoundEffectHandler::GetInstance() {
     static SoundEffectHandler instance;
     return instance;
@@ -22,9 +20,6 @@ void SoundEffectHandler::LoadSoundEffect(SoundEffect effect, const std::string& 
 }
 
 void SoundEffectHandler::PlaySoundEffect(SoundEffect effect) {
-    if (!isEnabled) {
-        return;
-    }
     if (soundEffects.find(effect) != soundEffects.end()) {
         cout << "Playing sound effect" << endl;
         PlaySound(soundEffects[effect]);
@@ -54,10 +49,6 @@ void SoundEffectHandler::InitializeSoundEffects() {
     LoadSoundEffect(SoundEffect::PIPE_DOWN, "resources/audio/pipe_down_sound.wav");
     LoadSoundEffect(SoundEffect::FLAG_POLE_DOWN, "resources/audio/flag_pole_down_sound.wav");
     LoadSoundEffect(SoundEffect::OUT_OF_TIME_WARNING, "resources/audio/out_of_time_warning_sound.wav");
-}
-
-void SoundEffectHandler::SwitchEnableSoundEffects() {
-    isEnabled = !isEnabled;
 }
 
 void playSoundEffect(SoundEffect effect) {
