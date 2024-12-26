@@ -827,6 +827,7 @@ void Tilemap2P::Update(float deltaTime) {
             player2->Update(Vector2{player2->getVelocity().x, player2->getVelocity().y}, deltaTime);
 
         }
+        UpdatePlayersInfo();
         UpdateMultiplayerPosition();
     }
 }
@@ -851,8 +852,8 @@ void Tilemap2P::Draw() const {
         player->Draw();
         player2->Draw();
     }
-    player->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
-    player2->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 5.0f}, 0.0f);
+
+    DrawPlayersInfo(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f); 
     effectManager->DrawUpper();
     EndMode2D();
 }
@@ -931,6 +932,29 @@ void Tilemap2P::UpdateMultiplayerPosition(){
     player2->accept(new MultiplayerUpdatePosition(&camera, player->getVelocity()));
     player2->accept(new MultiplayerUpdateSpawnPosition(&camera));
 }
+
+void Tilemap2P::UpdatePlayersInfo(){
+    player->setLives(min(player->getLives(), player2->getLives()));
+    player2->setLives(min(player->getLives(), player2->getLives()));
+
+    player->setScore(max(player->getScore(), player2->getScore()));
+    player2->setScore(max(player->getScore(), player2->getScore()));
+
+    player->setCoins(max(player->getCoins(), player2->getCoins()));
+    player2->setCoins(max(player->getCoins(), player2->getCoins()));
+}
+
+void Tilemap2P::DrawPlayersInfo(Vector2 position, float angle) const {
+    player->DrawImageIcon(position);
+    player2->Draw({position.x + player->getSize().x + 0.2f, position.y}, angle);
+}
+
+
+
+
+
+
+
 
 
 

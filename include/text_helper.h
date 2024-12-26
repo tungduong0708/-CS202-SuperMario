@@ -20,6 +20,9 @@ public:
     static void Draw(const string &text, Vector2 position, int fontSize, Color color, string fontPath);
 
     static void DrawPackage(int lives, int score, int coins, string currentMap, float timeLeft, Vector2 position, int fontSize, Color color);
+
+    static void DrawPlayerImageIcon(Texture playerTexture, Vector2 position);  //Draw only the player image
+
 private:
     static Font font;
     static Texture coin;

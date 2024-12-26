@@ -15,3 +15,5 @@ void DrawYesNoButton(const Button& button); // Draw Yes and No buttons
 bool IsButtonClicked(const Button& button);             // Handle button click detection
 bool IsButtonClicked(const ImageButton& button);         // Handle image button click detection
 void DrawMarioSlider(Rectangle rect, int& value, const float& minValue, const float& maxValue, const Font& font, const char* label); // Customized slider drawing
+
+void DrawPlayerImageIcon(Player* player, Vector2 position);  // Draw only the player image

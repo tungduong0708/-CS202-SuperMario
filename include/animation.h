@@ -8,6 +8,10 @@ struct Frame {
     Texture texture;
 
     Frame(float time, Texture texture) : time(time), texture(texture) {}
+
+    Texture getTexture() const{
+        return texture;
+    }
 };
 
 class Animation {

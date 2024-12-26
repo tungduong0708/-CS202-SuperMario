@@ -131,6 +131,9 @@ public:
     Vector2 GetLeadingPlayerPosition() const override;
 
     void UpdateMultiplayerPosition();
+
+    void UpdatePlayersInfo();
+    void DrawPlayersInfo(Vector2 position, float angle = 0.0f) const;
 };
 
 #endif
