@@ -440,3 +440,56 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
         {textX, textY + fontSize + 10},
         descFontSize, 1, (Color){255, 233, 160, 255});
 }
+
+void DrawYesNoButton(const Button& button) {
+    // Green for Yes, Red for No
+    Color baseColor = button.text == "Yes" ? GREEN : RED;
+    Color hoverColor = button.isHovered ? Fade(baseColor, 0.8f) : baseColor;
+    Color borderColor = button.isHovered ? WHITE : DARKBLUE;
+
+    // --- Shadow Effect ---
+    DrawRectangleRounded(
+        {button.rect.x + 4, button.rect.y + 4, button.rect.width, button.rect.height},
+        0.3f, 6, Fade(BLACK, 0.4f));
+    
+    // --- Button Background ---
+    DrawRectangleRounded(button.rect, 0.3f, 6, baseColor);
+    DrawRectangleRoundedLines(button.rect, 0.3f, 6, 2, borderColor);
+
+    // --- Text with Shadow ---
+    Vector2 textSize = MeasureTextEx(Game::getInstance()->getFont(), button.text.c_str(), 30, 1);
+
+    // Text shadow for depth
+    DrawTextEx(
+        Game::getInstance()->getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2 + 2.5f,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2},
+        30, 1, Fade(BLACK, 0.6f));
+    DrawTextEx(
+        Game::getInstance()->getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2 - 2.5f,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2},
+        30, 1, Fade(BLACK, 0.6f));
+    DrawTextEx(
+        Game::getInstance()->getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2 + 2.5f},
+        30, 1, Fade(BLACK, 0.6f));
+    DrawTextEx(
+        Game::getInstance()->getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2 - 2.5f},
+        30, 1, Fade(BLACK, 0.6f));
+    
+    // Text with vibrant color
+    DrawTextEx(
+        Game::getInstance()->getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2},
+        30, 1, WHITE);
+}
