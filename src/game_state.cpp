@@ -768,6 +768,7 @@ void DeathState::update()
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
 
     if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && !CheckCollisionPointRec(GetMousePosition(), {rectX, rectY, rectWidth, rectHeight})){
+        lifeRemaining = player->getLives();
         game->changeState(game->gameplayState.get());
     }
 }
@@ -935,7 +936,7 @@ void GameOverState::draw() {
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.7f));
 
     // Draw very big "Game Over" text
-    constexpr int fontSize = 80;
+    constexpr int fontSize = 96;
     constexpr int spacing = 2;
     string gameOverText = "Game Over";
     Vector2 gameOverTextSize = MeasureTextEx(game->getFont(), gameOverText.c_str(), fontSize, spacing);
@@ -950,6 +951,8 @@ void GameOverState::draw() {
     // Draw main text
     DrawTextEx(game->getFont(), gameOverText.c_str(),
                gameOverTextPos, fontSize, 2, RED);
+
+    score = Tilemap::getInstance()->GetPlayer()->getScore();
 
     // Draw score in the middle of the screen below "Game Over"
     constexpr int scoreFontSize = 40;
@@ -1033,7 +1036,7 @@ void VictoryState::draw() {
     }
 
     // Draw very big "Victory" text
-    constexpr int fontSize = 80;
+    constexpr int fontSize = 96;
     constexpr int spacing = 2;
     string gameOverText = "Victory";
     Vector2 gameOverTextSize = MeasureTextEx(game->getFont(), gameOverText.c_str(), fontSize, spacing);
@@ -1047,7 +1050,9 @@ void VictoryState::draw() {
                {gameOverTextPos.x + 2, gameOverTextPos.y + 2}, fontSize, 2, Fade(BLACK, 0.6f));
     // Draw main text
     DrawTextEx(game->getFont(), gameOverText.c_str(),
-               gameOverTextPos, fontSize, 2, RED);
+               gameOverTextPos, fontSize, 2, YELLOW);
+
+    score = Tilemap::getInstance()->GetPlayer()->getScore();
 
     // Draw score in the middle of the screen below "Game Over"
     constexpr int scoreFontSize = 40;
@@ -1123,8 +1128,8 @@ void GameSavingState::update() {
         }
     }
     if (isClicked) {
-        if (game->getNextState() == game->mainMenuState.get()) {
-            game->changeState(game->mainMenuState.get());
+        if (game->getNextState() == game->backToMenuState.get()) {
+            game->changeState(game->backToMenuState.get());
         }
         else {
             game->changeState(game->quitState.get());
@@ -1258,10 +1263,10 @@ void WannaSaveState::update() {
     }
     if (IsButtonClicked(buttons[1])) {
         if (game->getNextState() == game->backToMenuState.get()) {
-            game->changeState(game->backToMenuState.get());
+            game->changeState(game->mainMenuState.get());
         }
         else if (game->getNextState() == game->quitState.get()) {
-            game->changeState(game->quitState.get());
+            game->exitGame();
         }
     }
 }
@@ -1334,7 +1339,7 @@ void WannaSaveState::draw() {
     Vector2 textSize = MeasureTextEx(game->getFont(), message.c_str(), fontSize, spacing);
     Vector2 textPos = {
         rectX + (rectWidth - textSize.x) / 2, // Center horizontally
-        rectY + 10                             // Margin from the top
+        rectY + 40                             // Margin from the top
     };
 
     // Draw border for text
