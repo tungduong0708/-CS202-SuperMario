@@ -695,9 +695,15 @@ void ChangeStageState::draw() {
         rectY + 20                                // Margin from the top
     };
 
-    // Draw text shadow
+    // Draw text border
     DrawTextEx(game->getFont(), stageName.c_str(),
-               {stageTextPos.x + 2, stageTextPos.y + 2}, fontSize, 2, Fade(BLACK, 0.6f));
+               {stageTextPos.x + 2, stageTextPos.y}, fontSize, 2, WHITE);
+    DrawTextEx(game->getFont(), stageName.c_str(),
+                {stageTextPos.x - 2, stageTextPos.y}, fontSize, 2, WHITE);
+    DrawTextEx(game->getFont(), stageName.c_str(),
+                {stageTextPos.x, stageTextPos.y + 2}, fontSize, 2, WHITE);
+    DrawTextEx(game->getFont(), stageName.c_str(),
+                {stageTextPos.x, stageTextPos.y - 2}, fontSize, 2, WHITE);
     // Draw main text
     DrawTextEx(game->getFont(), stageName.c_str(),
                stageTextPos, fontSize, 2, BLUE);
