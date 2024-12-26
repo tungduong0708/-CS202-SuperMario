@@ -501,13 +501,12 @@ void Princess::OnBeginContact(SceneNode* other, b2Vec2 normal)
     if (player) {
         player->setAllowInput(false);
         player->setSpeed(0.0f);
-        isFree = true;
         elapsedTime = 0.0f;
-
+        string type = player->getType();
+        TextHelper::Draw("Thank you " + type + "!", getPosition(), 20, RAYWHITE);
         playSoundEffect(SoundEffect::WORLD_CLEAR);
         Game* game = Game::getInstance();
-        prevVolume = game->getSettings().volume;
-        game->getSettings().volume = 0.0f;
+        game->changeState(game->victoryState.get());
     }
 }
 
