@@ -12,7 +12,7 @@ void ObjectCreator::RegisterObject(const std::string& name, std::function<SceneN
 void ObjectCreator::InitObjects() {
     RegisterObject("horizontalmovingplatform", [](Vector2 pos) {
         float boundaries[] = {0.0f, 0.0f, pos.x - 3.0f, pos.x + 3.0f}; // Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{2.0f, 0.0f}, 10.0f, 0.0f, "movingplatform");
+        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{2.0f, 0.0f}, 10.0f, 0.0f);
         platform->Init(b2Vec2{pos.x, pos.y});
         b2Fixture* fixture = platform->getBody()->GetFixtureList();
         fixture->SetFriction(20.0f);
@@ -21,21 +21,21 @@ void ObjectCreator::InitObjects() {
 
     RegisterObject("verticalmovingplatform", [](Vector2 pos) {
         float boundaries[] = {pos.y + 3.0f, pos.y - 3.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{0.0f, 2.0f}, 5.0f, 0.0f, "movingplatform");
+        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{0.0f, 2.0f}, 5.0f, 0.0f);
         platform->Init(b2Vec2{pos.x, pos.y});
         return platform;
     });
 
     RegisterObject("upverticalmovingplatform", [](Vector2 pos) {
         float boundaries[] = {pos.y + 20.0f, pos.y - 3.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{0.0f, -2.0f}, 0.0f, 0.0f, "movingplatform");
+        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{0.0f, -2.0f}, 0.0f, 0.0f);
         platform->Init(b2Vec2{pos.x, pos.y});
         return platform;
     });
 
     RegisterObject("downverticalmovingplatform", [](Vector2 pos) {
         float boundaries[] = {pos.y + 3.0f, pos.y - 20.0f, 0.0f, 0.0f};// Adjust boundaries as needed
-        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{0.0f, 2.0f}, 0.0f, 0.0f, "movingplatform");
+        MovingPlatform* platform = new MovingPlatform(Vector2{0.6875f, 3.0f}, Vector2{0.0f, 2.0f}, 0.0f, 0.0f);
         platform->Init(b2Vec2{pos.x, pos.y});
         return platform;
     });

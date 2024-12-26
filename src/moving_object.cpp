@@ -275,8 +275,8 @@ void FireBall::Draw(Vector2 position, float angle) {
 MovingPlatform::MovingPlatform() 
     : MovingObject() {}
 
-MovingPlatform::MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle, string _type) 
-    : MovingObject(size, speed.x, angle), distance(distance), speed(speed), type(_type) 
+MovingPlatform::MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle) 
+    : MovingObject(size, speed.x, angle), distance(distance), speed(speed)
     {
 }
 
@@ -438,9 +438,18 @@ void FireBlaze::OnBeginContact(SceneNode *other, b2Vec2 normal){
     Player* player = dynamic_cast<Player*>(other);
     if (player) {
         if (player->isImmortal()) return;
-        player->setHealth(player->getHealth() - 1000);
+        if (player->getMode() == Mode::SMALL) player->setHealth(player->getHealth() - 1000);
+        /*else if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE)
+         {
+            player->changeMode(Mode::SMALL);
+            player->setInvisibleTime(1.5f);
+            b2Body* playerBody = player->getBody();
+            Vector2 pos = player->getPosition();
+            player->setPositon(b2Vec2{pos.x, pos.y});
+            playerBody->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+        }*/
+         }
     }
-}
 void FireBlaze::OnEndContact(SceneNode *other){
         
 }

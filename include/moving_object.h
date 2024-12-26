@@ -211,15 +211,9 @@ private:
     float distance;
     float curDistance = 0;
     float direction;  
-    string type;    
-
-    Vector2 orbitCenter; 
-    float orbitRadius;  
-    float orbitAngle;   
-    float orbitSpeed;    
 public:
     MovingPlatform();
-    MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle, string _type);
+    MovingPlatform(Vector2 size, Vector2 speed, float distance, float angle);
     MovingPlatform(const MovingPlatform &mp);
     virtual ~MovingPlatform();
 
@@ -230,16 +224,6 @@ public:
     void OnEndContact(SceneNode *other) override;
     void Draw() override;
     void Draw(Vector2 position, float angle = 0.0f) override;
-    void SetorbitSpeed(float speed){
-        orbitSpeed = speed;
-    }
-    void SetorbitRadius(float speed){
-        orbitRadius = speed;
-    }
-    void SetorbitCenter(Vector2 center){
-        orbitCenter = center;
-    }
-
     void accept(FileVisitor* visitor) override;
     MovingObject* copy() const override;
 };
