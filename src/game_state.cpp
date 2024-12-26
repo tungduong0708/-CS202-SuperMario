@@ -1138,6 +1138,8 @@ SelectDifficultyState::~SelectDifficultyState() {
 
 WannaSaveState::WannaSaveState(Game* game) : GameState(game) {
     // Initialize buttons
+    float buttonWidth = 300;
+    float buttonHeight = 50;
 }
 
 void WannaSaveState::update() {

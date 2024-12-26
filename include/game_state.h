@@ -237,6 +237,8 @@ public:
     void update() override;
     void draw() override;
     ~WannaSaveState() override;
+private:
+    std::vector<Button> buttons;
 };
 
 class QuitState : public GameState {
