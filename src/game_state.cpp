@@ -46,6 +46,8 @@ void MainMenuState::update() {
         Tilemap::getInstance()->LoadMapFromJson("map-1-1.json", 1);
         Tilemap::getInstance()->setPlayer("mario");
         Tilemap::getInstance()->setPlayer2("luigi");
+        Tilemap::getInstance()->GetPlayer()->setLives(5);
+        Tilemap::getInstance()->GetPlayer2()->setLives(5);
         game->changeState(game->gameplay2PState.get());
     }
     if (IsButtonClicked(buttons[2])) {
