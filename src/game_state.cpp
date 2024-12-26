@@ -26,7 +26,7 @@ MainMenuState::MainMenuState(Game* game): GameState(game)
     buttons.push_back({{column2X, 640, buttonWidth, buttonHeight}, "Exit", false});
 
     // Load background image
-    backgroundTexture = LoadTexture("../resources/background/menuBackground.png");
+    backgroundTexture = LoadTexture("../resources/background/menuBackground2.png");
 
     // Load logo image
     logoTexture = LoadTexture("../resources/images/logo/mario-logo.png");
@@ -1227,7 +1227,7 @@ void SelectDifficultyState::update() {
             tilemap->~Tilemap();
             Tilemap::SetMapType(TilemapType::TILEMAP_1P);
             tilemap = Tilemap::getInstance();
-            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
+            tilemap->LoadMapFromJson("map-1-4.json", i + 1);
             game->changeState(game->selectPlayerState.get());
         }
     }
