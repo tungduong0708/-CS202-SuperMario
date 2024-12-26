@@ -1033,7 +1033,12 @@ void GameSavingState::update() {
         }
     }
     if (isClicked) {
-        game->changeState(game->mainMenuState.get());
+        if (game->getNextState() == game->mainMenuState.get()) {
+            game->changeState(game->mainMenuState.get());
+        }
+        else {
+            game->changeState(game->quitState.get());
+        }
     }
 }
 

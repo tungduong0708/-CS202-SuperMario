@@ -77,12 +77,13 @@ void Game::run() {
         draw();
     }
 
-    if (WindowShouldClose())
-    {
+    if (WindowShouldClose() && !shouldExit) {
         setNextState(quitState.get());
         changeState(wannaSaveState.get());
-        update();
-        draw();
+        while (!shouldExit) {
+            update();
+            draw();
+        }
     }
 
     CloseAudioDevice();
