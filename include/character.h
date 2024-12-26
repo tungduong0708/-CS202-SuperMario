@@ -262,6 +262,7 @@ class Koopa : public Enemy {
 private:
     float delay;
     bool isDelay;
+    Player* playerHit = NULL;
 public:
     Koopa();
     Koopa(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, 
