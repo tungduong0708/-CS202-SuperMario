@@ -68,7 +68,16 @@ void Game::run() {
         update();
         draw();
     }
-    gameplayState->cleanup();
+
+    if (WindowShouldClose() && !shouldExit) {
+        setNextState(quitState.get());
+        changeState(wannaSaveState.get());
+        while (!shouldExit) {
+            update();
+            draw();
+        }
+    }
+
     CloseAudioDevice();
     CloseWindow();
 }

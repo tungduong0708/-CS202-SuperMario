@@ -853,7 +853,58 @@ void GameOverState::draw() {
     game->gameplayState->draw();
 
     // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.7f));
+
+    // Draw very big "Game Over" text
+    constexpr int fontSize = 96;
+    constexpr int spacing = 2;
+    string gameOverText = "Game Over";
+    Vector2 gameOverTextSize = MeasureTextEx(game->getFont(), gameOverText.c_str(), fontSize, spacing);
+    Vector2 gameOverTextPos = {
+        (game->getScreenWidth() - gameOverTextSize.x) / 2, // Center horizontally
+        (game->getScreenHeight() - gameOverTextSize.y) / 2 - 100 // Center vertically
+    };
+
+    Texture2D gameOverTexture = LoadTexture("../resources/images/logo/gameover.png");
+    // Draw texture
+    float TextureX = (game->getScreenWidth() - gameOverTexture.width) / 2;
+    float TextureY = (game->getScreenHeight() - gameOverTexture.height) / 2 - 200;
+
+    DrawTexture(gameOverTexture, TextureX, TextureY, WHITE);
+
+    score = Tilemap::getInstance()->GetPlayer()->getScore();
+
+    // Draw score in the middle of the screen below "Game Over"
+    constexpr int scoreFontSize = 32;
+    string scoreText = "Score: " + std::to_string(score);
+    Vector2 scoreTextSize = MeasureTextEx(game->getFont(), scoreText.c_str(), scoreFontSize, spacing);
+    Vector2 scoreTextPos = {
+        (game->getScreenWidth() - scoreTextSize.x) / 2, // Center horizontally
+        gameOverTextPos.y + gameOverTextSize.y + 20 // Below "Game Over" text
+    };
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), scoreText.c_str(),
+               {scoreTextPos.x + 2, scoreTextPos.y + 2}, scoreFontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), scoreText.c_str(),
+               scoreTextPos, scoreFontSize, 2, GOLD);
+
+    // Draw some funny message below the score
+    constexpr int messageFontSize = 32;
+    string messageText = "Better luck next time!";
+    Vector2 messageTextSize = MeasureTextEx(game->getFont(), messageText.c_str(), messageFontSize, spacing);
+    Vector2 messageTextPos = {
+        (game->getScreenWidth() - messageTextSize.x) / 2, // Center horizontally
+        scoreTextPos.y + scoreTextSize.y + 20 // Below the score
+    };
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), messageText.c_str(),
+               {messageTextPos.x + 2, messageTextPos.y + 2}, messageFontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), messageText.c_str(),
+               messageTextPos, messageFontSize, 2, WHITE);
 
     // Draw buttons
     for (const auto& button : buttons) {
@@ -879,12 +930,14 @@ void GameOverState::setTimeRemaining(int timeRemaining) {
 }
 
 VictoryState::VictoryState(Game* game) : GameOverState(game) {
-    float buttonWidth = 250;
-    float buttonHeight = 50;
-    float centerX = (game->getScreenWidth() - buttonWidth) / 2;
-    buttons.push_back({{centerX, 300, buttonWidth, buttonHeight}, "Main Menu", false});
-    buttons.push_back({{centerX, 375, buttonWidth, buttonHeight}, "Next Stage", false});
-    buttons.push_back({{centerX, 450, buttonWidth, buttonHeight}, "Play Again", false});
+    float buttonWidth = 300;
+    float buttonHeight = 75;
+    float column1X = game->getScreenWidth() / 2 - buttonWidth - 20;
+    float column2X = game->getScreenWidth() / 2 + 20;
+    float buttonY = game->getScreenHeight() - buttonHeight - 100;
+
+    buttons.push_back({{column1X, buttonY, buttonWidth, buttonHeight}, "Main Menu", false});
+    buttons.push_back({{column2X, buttonY, buttonWidth, buttonHeight}, "Play Again", false});
 }
 
 void VictoryState::update() {
@@ -917,10 +970,61 @@ void VictoryState::draw() {
         DrawButton(button, *game);
     }
 
-    // Draw score, high score, and time remaining
-    DrawTextEx(game->getFont(), TextFormat("Score: %d", score), {10, 10}, 20, 2, WHITE);
-    DrawTextEx(game->getFont(), TextFormat("High Score: %d", highScore), {10, 40}, 20, 2, WHITE);
-    DrawTextEx(game->getFont(), TextFormat("Time Remaining: %d", timeRemaining), {10, 70}, 20, 2, WHITE);
+    // Draw very big "Victory" text
+    constexpr int fontSize = 96;
+    constexpr int spacing = 2;
+    string gameOverText = "Victory";
+    Vector2 gameOverTextSize = MeasureTextEx(game->getFont(), gameOverText.c_str(), fontSize, spacing);
+    Vector2 gameOverTextPos = {
+        (game->getScreenWidth() - gameOverTextSize.x) / 2, // Center horizontally
+        (game->getScreenHeight() - gameOverTextSize.y) / 2 - 100 // Center vertically
+    };
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), gameOverText.c_str(),
+               {gameOverTextPos.x + 2, gameOverTextPos.y + 2}, fontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), gameOverText.c_str(),
+               gameOverTextPos, fontSize, 2, YELLOW);
+
+    score = Tilemap::getInstance()->GetPlayer()->getScore();
+
+    // Draw score in the middle of the screen below "Game Over"
+    constexpr int scoreFontSize = 40;
+    string scoreText = "Score: " + std::to_string(score);
+    Vector2 scoreTextSize = MeasureTextEx(game->getFont(), scoreText.c_str(), scoreFontSize, spacing);
+    Vector2 scoreTextPos = {
+        (game->getScreenWidth() - scoreTextSize.x) / 2, // Center horizontally
+        gameOverTextPos.y + gameOverTextSize.y + 20 // Below "Game Over" text
+    };
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), scoreText.c_str(),
+               {scoreTextPos.x + 2, scoreTextPos.y + 2}, scoreFontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), scoreText.c_str(),
+               scoreTextPos, scoreFontSize, 2, GOLD);
+
+    // Draw some funny message below the score
+    constexpr int messageFontSize = 32;
+    string messageText = "Congratulations! You saved the princess!";
+    Vector2 messageTextSize = MeasureTextEx(game->getFont(), messageText.c_str(), messageFontSize, spacing);
+    Vector2 messageTextPos = {
+        (game->getScreenWidth() - messageTextSize.x) / 2, // Center horizontally
+        scoreTextPos.y + scoreTextSize.y + 20 // Below the score
+    };
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), messageText.c_str(),
+               {messageTextPos.x + 2, messageTextPos.y + 2}, messageFontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), messageText.c_str(),
+               messageTextPos, messageFontSize, 2, WHITE);
+
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawButton(button, *game);
+    }
 }
 
 GameSavingState::GameSavingState(Game* game) : GameState(game) {
