@@ -985,7 +985,7 @@ void MonsterFlower::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!alive) return;
     Player* player = dynamic_cast<Player*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
-    if (fireball) {
+    if (fireball or (player and player->isImmortal())) {
         setHealth(getHealth() - 100);
         if (!alive) {
             Player* player = fireball->getPlayerShot();
