@@ -95,6 +95,7 @@ void ExportFileVisitor::VisitFile(Goomba *obj) {
 void ExportFileVisitor::VisitFile(Koopa *obj) {
     file << "Koopa" << std::endl;
     file << obj->getPosition().x << " " << obj->getPosition().y << std::endl;
+    file << obj->getState() << std::endl;
     file << obj->getLevel() << std::endl;
     file << obj->getHealth() << std::endl;
 }
@@ -284,11 +285,27 @@ void ImportFileVisitor::VisitFile(Goomba *obj)
 
 void ImportFileVisitor::VisitFile(Koopa *obj)
 {
+    int enemyState;
+    EnemyState state;
     float x, y;
     int level, health;
     file >> x >> y;
+    file >> enemyState;
+    if (enemyState == 0) {
+        state = EnemyState::ENEMY_WALK;
+    }
+    else if (enemyState == 1) {
+        state = EnemyState::ENEMY_DEAD;
+    }
+    else if (enemyState == 2) {
+        state = EnemyState::ENEMY_SHELL;
+    }
+    else {
+        state = EnemyState::ENEMY_SPIN;
+    }
     file >> level >> health;
     *obj = Koopa("koopa", 0.0f, true, false, 100, 100, level, 100, Vector2{1.0f, 1.0f}, -2.0f, 0.0f);
+    obj->setState(state);
     obj->Init(b2Vec2{x, y});
     obj->setLevel(level);
     obj->setHealth(health);
