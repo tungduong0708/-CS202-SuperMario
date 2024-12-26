@@ -48,6 +48,9 @@ void MainMenuState::update() {
         Tilemap::getInstance()->setPlayer2("luigi");
         Tilemap::getInstance()->GetPlayer()->setLives(5);
         Tilemap::getInstance()->GetPlayer2()->setLives(5);
+
+        Tilemap::getInstance()->SetSaveSlotLoadedFrom(SaveSlot::NOT_LOADED);
+
         game->changeState(game->gameplay2PState.get());
     }
     if (IsButtonClicked(buttons[2])) {
@@ -240,6 +243,9 @@ void SavedGameState::update() {
             }
             tilemap = Tilemap::getInstance();
             tilemap->LoadSaveGame(saveGamePath);
+
+            tilemap->SetSaveSlotLoadedFrom(static_cast<SaveSlot>(i + 1));
+
             game->changeState(game->gameplayState.get());
         }
     }
@@ -1231,6 +1237,9 @@ void SelectDifficultyState::update() {
             Tilemap::SetMapType(TilemapType::TILEMAP_1P);
             tilemap = Tilemap::getInstance();
             tilemap->LoadMapFromJson("map-1-4.json", i + 1);
+
+            tilemap->SetSaveSlotLoadedFrom(SaveSlot::NOT_LOADED);
+
             game->changeState(game->selectPlayerState.get());
         }
     }
@@ -1288,7 +1297,21 @@ void WannaSaveState::update() {
 
     // Handle button clicks
     if (IsButtonClicked(buttons[0])) {
-        game->changeState(game->gameSavingState.get());
+        SaveSlot saveSlot = Tilemap::getInstance()->GetSaveSlotLoadedFrom();
+        if (saveSlot == SaveSlot::NOT_LOADED) {
+            game->changeState(game->gameSavingState.get());
+        }
+        else {
+            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(static_cast<int>(saveSlot) + 1) + ".txt";
+            Tilemap* tilemap = Tilemap::getInstance();
+            tilemap->SaveGame(saveGamePath);
+            if (game->getNextState() == game->backToMenuState.get()) {
+            game->changeState(game->backToMenuState.get());
+            }
+            else {
+                game->changeState(game->quitState.get());
+            }
+        }
     }
     if (IsButtonClicked(buttons[1])) {
         if (game->getNextState() == game->backToMenuState.get()) {

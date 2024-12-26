@@ -968,3 +968,11 @@ Player* Tilemap::GetPlayer2() {
 Vector2 Tilemap::GetPlayer2Position() const {
     return Vector2{0.0f, 0.0f};
 }
+
+void Tilemap::SetSaveSlotLoadedFrom(SaveSlot slot) {
+    saveSlotLoadedFrom = slot;
+}
+
+SaveSlot Tilemap::GetSaveSlotLoadedFrom() const {
+    return saveSlotLoadedFrom;
+}
