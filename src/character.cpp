@@ -471,6 +471,26 @@ void Princess::Update(Vector2 playerVelocity, float deltaTime)
     setSpeed(0.0f);
     if (isFree) {
         elapsedTime += deltaTime;
+        if (elapsedTime >= 7.0f) {
+            Game* game = Game::getInstance();
+            game->changeState(game->victoryState.get());
+            game->getSettings().volume = prevVolume;
+        }
+        else {
+            Player* player = Tilemap::getInstance()->GetPlayer();
+            string type = player->getType();
+            string text = "Thank you " + type + "!";
+            int pos = min(int(round(16.0f * elapsedTime / 2.0f)), (int)text.size());
+            cout << text.substr(0, pos) << endl;
+            cout << getPosition().x << " " << getPosition().y << endl;
+
+            TextHelper::Draw(text.substr(0, pos), Vector2{getPosition().x - 4.0f, getPosition().y - 4.0f}, 9, RAYWHITE);
+            float ratio = player->getTime() / (7.0f) * deltaTime;
+            if (player->getTime() > 0) {
+                player->setTime(player->getTime() - ratio*5);
+                player->setScore(player->getScore() + ratio*100);
+            }
+        }
     }
 }
 
@@ -481,12 +501,13 @@ void Princess::OnBeginContact(SceneNode* other, b2Vec2 normal)
     if (player) {
         player->setAllowInput(false);
         player->setSpeed(0.0f);
+        isFree = true;
         elapsedTime = 0.0f;
-        string type = player->getType();
-        TextHelper::Draw("Thank you " + type + "!", getPosition(), 20, RAYWHITE);
+
         playSoundEffect(SoundEffect::WORLD_CLEAR);
         Game* game = Game::getInstance();
-        game->changeState(game->victoryState.get());
+        prevVolume = game->getSettings().volume;
+        game->getSettings().volume = 0.0f;
     }
 }
 
