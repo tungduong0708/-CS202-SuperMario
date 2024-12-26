@@ -481,8 +481,8 @@ void Princess::Update(Vector2 playerVelocity, float deltaTime)
             string type = player->getType();
             string text = "Thank you " + type + "!";
             int pos = min(int(round(16.0f * elapsedTime / 2.0f)), (int)text.size());
-            cout << text.substr(0, pos) << endl;
-            cout << getPosition().x << " " << getPosition().y << endl;
+            // cout << text.substr(0, pos) << endl;
+            // cout << getPosition().x << " " << getPosition().y << endl;
 
             TextHelper::Draw(text.substr(0, pos), Vector2{getPosition().x - 4.0f, getPosition().y - 4.0f}, 9, RAYWHITE);
             float ratio = player->getTime() / (7.0f) * deltaTime;
