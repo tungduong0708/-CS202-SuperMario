@@ -904,17 +904,17 @@ MonsterFlower::MonsterFlower(string type, float range, bool alive, int health, i
 {
     elapsedTime = 0.0f;
     Image pipeImage = LoadImage("resources/images/monsterflower/pipe.png");
-    pipe = LoadTextureFromImage(pipeImage);
+    //pipe = LoadTextureFromImage(pipeImage);
 }
 
 MonsterFlower::MonsterFlower(const MonsterFlower &mf): Enemy(mf) {
     waitTime = mf.waitTime;
     elapsedTime = mf.elapsedTime;
-    pipe = mf.pipe;
+    //pipe = mf.pipe;
 }
 
 MonsterFlower::~MonsterFlower() {
-    UnloadTexture(pipe);
+    //UnloadTexture(pipe);
 }
 
 b2Vec2 MonsterFlower::getInitialPosition() {
@@ -1024,5 +1024,5 @@ void MonsterFlower::Draw() {
     Renderer::DrawPro(texture, sourceRect, drawPosition, Vector2{size.x, size.y}, faceLeft, 0.0f, bodySize);
     Vector2 pipeSize = {2.0f, 2.0f};
     Vector2 pipePos = {initialPosition.x - 0.5f*pipeSize.x, initialPosition.y + bodySize.y};
-    Renderer::DrawPro(pipe, sourceRect, pipePos, pipeSize, true, 0.0f, pipeSize);
+    //Renderer::DrawPro(pipe, sourceRect, pipePos, pipeSize, true, 0.0f, pipeSize);
 }
