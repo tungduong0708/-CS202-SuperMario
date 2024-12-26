@@ -4,7 +4,7 @@
  "layers":[
         {
          "id":6,
-         "image":"..\/background\/bg1-1.png",
+         "image":"..\/background\/bg2.png",
          "name":"Background",
          "opacity":1,
          "repeatx":true,
