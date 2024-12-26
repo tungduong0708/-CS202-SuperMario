@@ -77,7 +77,10 @@ void Game::run() {
         draw();
     }
 
-    if (WindowShouldClose() && !shouldExit) {
+    bool isValidState = (currentState == gameplayState.get() || currentState == gameplay2PState.get()
+                        || currentState == pauseGameState.get());
+
+    if (WindowShouldClose() && isValidState && !shouldExit) {
         setNextState(quitState.get());
         changeState(wannaSaveState.get());
         while (!shouldExit) {

@@ -906,7 +906,7 @@ GameOverState::GameOverState(Game* game) : GameState(game), score(0){
     float buttonHeight = 75;
     float column1X = game->getScreenWidth() / 2 - buttonWidth - 20;
     float column2X = game->getScreenWidth() / 2 + 20;
-    float buttonY = game->getScreenHeight() - buttonHeight - 150;
+    float buttonY = game->getScreenHeight() - buttonHeight - 100;
 
     buttons.push_back({{column1X, buttonY, buttonWidth, buttonHeight}, "Main Menu", false});
     buttons.push_back({{column2X, buttonY, buttonWidth, buttonHeight}, "Retry", false});
@@ -948,7 +948,7 @@ void GameOverState::draw() {
     Texture2D gameOverTexture = LoadTexture("../resources/images/logo/gameover.png");
     // Draw texture
     float TextureX = (game->getScreenWidth() - gameOverTexture.width) / 2;
-    float TextureY = (game->getScreenHeight() - gameOverTexture.height) / 2 - 150;
+    float TextureY = 125;
 
     DrawTexture(gameOverTexture, TextureX, TextureY, WHITE);
 
@@ -960,7 +960,7 @@ void GameOverState::draw() {
     Vector2 scoreTextSize = MeasureTextEx(game->getFont(), scoreText.c_str(), scoreFontSize, spacing);
     Vector2 scoreTextPos = {
         (game->getScreenWidth() - scoreTextSize.x) / 2, // Center horizontally
-        gameOverTextPos.y + gameOverTextSize.y + 50 // Below "Game Over" text
+        TextureY + gameOverTexture.height + 20 // Below "Game Over" text
     };
 
     // Draw text shadow
