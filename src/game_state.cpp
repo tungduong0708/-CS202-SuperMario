@@ -401,7 +401,7 @@ void PauseGameState::update() {
         game->changeState(game->gameplayState.get());
     }
     if (IsButtonClicked(buttons[3])) {
-        game->setNextState(game->mainMenuState.get());
+        game->setNextState(game->backToMenuState.get());
         game->changeState(game->wannaSaveState.get());
     }
 
@@ -643,8 +643,8 @@ void ChangeStageState::draw() {
     float overlap = 0.1f;  // Overlap amount to ensure smooth transitions
 
     // Start and end colors for the gradient
-    Color startColor = (Color){255, 223, 0, 200};  // Yellow
-    Color endColor = (Color){255, 140, 0, 230};    // Orange-red
+    Color startColor = (Color){92, 179, 56, 255};  // Light-green
+    Color endColor = (Color){54, 126, 24, 255};    // Dark-green
 
     for (int i = 0; i < gradientSteps; i++) {
         float t = static_cast<float>(i) / (gradientSteps - 1);  // Interpolation factor (0 to 1)
@@ -788,7 +788,7 @@ void DeathState::draw() {
 
     // Draw the central rounded rectangle (panel)
     float rectWidth = 400.0f;
-    float rectHeight = 200.0f;
+    float rectHeight = 300.0f;
     float rectX = (game->getScreenWidth() - rectWidth) / 2;
     float rectY = (game->getScreenHeight() - rectHeight) / 2;
 
@@ -801,8 +801,8 @@ void DeathState::draw() {
     float overlap = 0.1f;  // Overlap amount to ensure smooth transitions
 
     // Start and end colors for the gradient (RGBA)
-    Color startColor = (Color){255, 0, 0, 200};  // Bright red
-    Color endColor = (Color){100, 0, 0, 230};    // Dark red (close to crimson)
+    Color startColor = (Color){255, 245, 116, 255};  
+    Color endColor = (Color){252, 199, 55, 255};    
 
     for (int i = 0; i < gradientSteps; i++) {
         float t = static_cast<float>(i) / (gradientSteps - 1);  // Interpolation factor (0 to 1)
@@ -828,6 +828,9 @@ void DeathState::draw() {
             {rectX, rectY + static_cast<float>(i) * stepHeight - overlap, rectWidth, stepHeight + overlap * 2},
             rounding, 10, stepColor);
     }
+
+    // Add a decorative border
+    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.1f, 10, 5, WHITE);
 
     // --- Draw "You Died" Text with Shadow ---
     constexpr int fontSize = 30;
@@ -881,9 +884,6 @@ void DeathState::draw() {
         DrawTextEx(game->getFont(), TextFormat("LIFE - %d", 1),
                    deathTextPos, deathFontSize, 2, WHITE);
     }
-
-    // Add a decorative border
-    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.1f, 10, 5, WHITE);
 }
 
 void DeathState::reset()
@@ -1149,8 +1149,8 @@ WannaSaveState::WannaSaveState(Game* game) : GameState(game) {
     float buttonWidth = 150;
     float buttonHeight = 75;
     float buttonY = 400;
-    float column1X = Game::getInstance()->getScreenWidth() / 2 - buttonWidth - 50;
-    float column2X = Game::getInstance()->getScreenWidth() / 2 + 50;
+    float column1X = game->getScreenWidth() / 2 - buttonWidth - 50;
+    float column2X = game->getScreenWidth() / 2 + 50;
 
     buttons.push_back({{column1X, buttonY, buttonWidth, buttonHeight}, "Yes", false});
     buttons.push_back({{column2X, buttonY, buttonWidth, buttonHeight}, "No", false});
@@ -1177,49 +1177,162 @@ void WannaSaveState::update() {
 }
 
 void WannaSaveState::draw() {
-    // Draw the underlying MainMenuState
+    // Draw the underlying GamePlayState
+    game->gameplayState->draw();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw the central rounded rectangle (panel)
+    float rectWidth = 450.0f;
+    float rectHeight = 250.0f;
+    float rectX = (game->getScreenWidth() - rectWidth) / 2;
+    float rectY = (game->getScreenHeight() - rectHeight) / 2;
+
+    // Draw shadow for depth
+    DrawRectangleRounded({rectX + 6, rectY + 6, rectWidth, rectHeight}, 0.1f, 10, Fade(BLACK, 0.4f));
+
+    // --- Smooth Gradient ---
+    int gradientSteps = 40;  // Increased steps for smoother gradient
+    float stepHeight = rectHeight / static_cast<float>(gradientSteps);  // Height of each gradient step
+    float overlap = 0.1f;  // Overlap amount to ensure smooth transitions
+
+    // Start and end colors for the gradient (RGBA)
+    Color startColor = (Color){255, 0, 0, 200};  // Bright red
+    Color endColor = (Color){100, 0, 0, 230};    // Dark red (close to crimson)
+
+    for (int i = 0; i < gradientSteps; i++) {
+        float t = static_cast<float>(i) / (gradientSteps - 1);  // Interpolation factor (0 to 1)
+        
+        // Interpolating colors
+        Color stepColor = {
+            (unsigned char)((1 - t) * startColor.r + t * endColor.r),
+            (unsigned char)((1 - t) * startColor.g + t * endColor.g),
+            (unsigned char)((1 - t) * startColor.b + t * endColor.b),
+            (unsigned char)((1 - t) * startColor.a + t * endColor.a)
+        };
+
+        // Determine the rounding for the step
+        float rounding = 0.2f;  // Default rounding
+        if (i < 10) {
+            rounding = 1.0f;  // Increased rounding for the top rectangle
+        } else if (i > gradientSteps - 10) {
+            rounding = 1.0f;  // Increased rounding for the bottom rectangle
+        }
+
+        // Draw the gradient rectangle
+        DrawRectangleRounded(
+            {rectX, rectY + static_cast<float>(i) * stepHeight - overlap, rectWidth, stepHeight + overlap * 2},
+            rounding, 10, stepColor);
+    }
+
+    // Add a decorative border
+    DrawRectangleRoundedLines({rectX, rectY, rectWidth, rectHeight}, 0.1f, 10, 5, WHITE);
+
+    // Draw text
+    string message = "";
+    if (game->getNextState() == game->backToMenuState.get()) {
+        message = "Do you want to save\n\nthe game before going back\n\nto the main menu?";
+    }
+    else if (game->getNextState() == game->quitState.get()) {
+        message = "Do you want to save\n\nthe game before quitting?";
+    }
+
+    constexpr int fontSize = 20;
+    constexpr int spacing = 1;
+    // Draw text at the center of the rectangle's width and on top of the rectangle
+    Vector2 textSize = MeasureTextEx(game->getFont(), message.c_str(), fontSize, spacing);
+    Vector2 textPos = {
+        rectX + (rectWidth - textSize.x) / 2, // Center horizontally
+        rectY + 10                             // Margin from the top
+    };
+    DrawTextEx(game->getFont(), message.c_str(), textPos, fontSize, 2, WHITE);
+
+    // Draw buttons
+    for (const auto& button : buttons) {
+        DrawYesNoButton(button);
+    }
 }
 
-WannaSaveState::~WannaSaveState() {
-    // Unload textures
-}
-
-QuitState::QuitState(Game *game) : GameState(game) {
-    // Initialize buttons
+QuitState::QuitState(Game *game) : GameState(game), elapsedTime(0.0f) {
 }
 
 void QuitState::update()
 {
-    // Update button hover states
+    elapsedTime += GetFrameTime();
+
+    if (elapsedTime > 3.0f) {
+        game->exitGame();
+    }
 }
 
 void QuitState::draw()
 {
-    // Draw the underlying MainMenuState
+    // Draw the underlying GamePlayState
+    game->gameplayState->draw();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw a very big text in the middle of the screen: "Saving and Quitting..."
+    string message = "Saving and Quitting...";
+    constexpr int fontSize = 50;
+    constexpr int spacing = 1;
+
+    Vector2 textSize = MeasureTextEx(game->getFont(), message.c_str(), fontSize, spacing);
+    Vector2 textPos = {
+        (game->getScreenWidth() - textSize.x) / 2, // Center horizontally
+        static_cast<float>(game->getScreenHeight()) / 2 // Center vertically
+    };
+    DrawTextEx(game->getFont(), message.c_str(), textPos, fontSize, 2, YELLOW);
 }
 
-QuitState::~QuitState()
-{
-    // Unload textures
-}
 
 BackToMenuState::BackToMenuState(Game *game) : QuitState(game) {
-    // Initialize buttons
 }
 
 void BackToMenuState::update()
 {
-    // Update button hover states
+    elapsedTime += GetFrameTime();
+
+    if (elapsedTime > 1.5f) {
+        game->changeState(game->mainMenuState.get());
+        reset();
+    }
 }
 
 void BackToMenuState::draw()
 {
-    // Draw the underlying MainMenuState
+    // Draw the underlying GamePlayState
+    game->mainMenuState->drawBackground();
+
+    // Draw a semi-transparent gray overlay
+    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
+
+    // Draw a very big text in the middle of the screen: "Saving and Going Back to Main Menu..."
+    string message1 = "Saving and Going Back";
+    string message2 = "to Main Menu...";
+    constexpr int fontSize = 50;
+    constexpr int spacing = 1;
+    
+    Vector2 textSize1 = MeasureTextEx(game->getFont(), message1.c_str(), fontSize, spacing);
+    Vector2 textPos1 = {
+        (game->getScreenWidth() - textSize1.x) / 2, // Center horizontally
+        static_cast<float>(game->getScreenHeight()) / 2 - 50                             // Margin from the top
+    };
+    DrawTextEx(game->getFont(), message1.c_str(), textPos1, fontSize, 2, YELLOW);
+
+    Vector2 textSize2 = MeasureTextEx(game->getFont(), message2.c_str(), fontSize, spacing);
+    Vector2 textPos2 = {
+        (game->getScreenWidth() - textSize2.x) / 2, // Center horizontally
+        static_cast<float>(game->getScreenHeight()) / 2 + 50                             // Margin from the top
+    };
+    DrawTextEx(game->getFont(), message2.c_str(), textPos2, fontSize, 2, YELLOW);
 }
 
-BackToMenuState::~BackToMenuState() 
+void BackToMenuState::reset()
 {
-    // Unload textures
+    elapsedTime = 0.0f;
 }
 
 TutorialState::TutorialState(Game* game) : GameplayState(game) {

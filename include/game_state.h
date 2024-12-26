@@ -236,7 +236,6 @@ public:
     explicit WannaSaveState(Game* game);
     void update() override;
     void draw() override;
-    ~WannaSaveState() override;
 private:
     std::vector<Button> buttons;
 };
@@ -246,9 +245,8 @@ public:
     explicit QuitState(Game* game);
     void update() override;
     void draw() override;
-    ~QuitState() override;
 protected:
-    std::vector<Button> buttons;
+    float elapsedTime = 0;
 };
 
 class BackToMenuState : public QuitState {
@@ -256,7 +254,7 @@ public:
     explicit BackToMenuState(Game* game);
     void update() override;
     void draw() override;
-    ~BackToMenuState() override;
+    void reset();
 };
 
 class TutorialState : public GameplayState
