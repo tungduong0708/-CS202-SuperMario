@@ -51,7 +51,9 @@ void MainMenuState::update() {
         game->changeState(game->gameplay2PState.get());
     }
     if (IsButtonClicked(buttons[2])) {
-        Tilemap::getInstance()->~Tilemap();
+        Tilemap* tilemap = Tilemap::getInstance();
+        tilemap->~Tilemap();
+        tilemap = Tilemap::getInstance();
         Tilemap::SetMapType(TILEMAP_1P);
         Tilemap::getInstance()->LoadMapFromJson("map-tutorial.json", 1);
         Tilemap::getInstance()->setPlayer("mario");
