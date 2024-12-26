@@ -115,9 +115,9 @@ void ExportFileVisitor::VisitFile(LarvaBubble *obj) {
 
 void ExportFileVisitor::VisitFile(MonsterFlower *obj) {
     file << "MonsterFlower" << std::endl;
-    b2Vec2 size = {obj->getSize().x, obj->getSize().y};
-    b2Vec2 diff = b2Vec2{-0.5f*size.x, 0};
-    b2Vec2 pos = b2Vec2{obj->getPosition().x, obj->getPosition().y} - diff;
+    //b2Vec2 size = {obj->getSize().x, obj->getSize().y};
+    //b2Vec2 diff = b2Vec2{-0.5f*size.x, 0};
+    b2Vec2 pos = b2Vec2{obj->getInitialPosition().x, obj->getInitialPosition().y};
     file << pos.x  << " " << pos.y << std::endl;
     file << obj->getLevel() << std::endl;
     file << obj->getHealth() << std::endl;

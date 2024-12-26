@@ -163,19 +163,19 @@ void Enemy::Dead() {
 void Enemy::Draw() {
     if (!body) return;
 
-    Player* player = Tilemap::getInstance()->GetPlayer();
-    float screenWidth = (float)GetScreenWidth() / 16.0f;
-    float diff = 0.0f;
-    if (player->isAlive() and (player->getInitialPosition().x != player->getPosition().x)) {
-        diff = body->GetPosition().x - player->getPosition().x;
-    }
-    if (abs(diff) > screenWidth/4) {
-        body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
-        return;
-    }
-    else {
-        setSpeed(speed);
-    }
+    // Player* player = Tilemap::getInstance()->GetPlayer();
+    // float screenWidth = (float)GetScreenWidth() / 16.0f;
+    // float diff = 0.0f;
+    // if (player->isAlive() and (player->getInitialPosition().x != player->getPosition().x)) {
+    //     diff = body->GetPosition().x - player->getPosition().x;
+    // }
+    // if (abs(diff) > screenWidth/4) {
+    //     body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
+    //     return;
+    // }
+    // else {
+    //     setSpeed(speed);
+    // }
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Vector2 drawPosition = { pos.x, pos.y };
@@ -915,6 +915,10 @@ MonsterFlower::MonsterFlower(const MonsterFlower &mf): Enemy(mf) {
 
 MonsterFlower::~MonsterFlower() {
     UnloadTexture(pipe);
+}
+
+b2Vec2 MonsterFlower::getInitialPosition() {
+    return initialPosition;
 }
 
 void MonsterFlower::Init(b2Vec2 position) {

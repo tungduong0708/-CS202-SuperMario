@@ -334,6 +334,8 @@ public:
     MonsterFlower(const MonsterFlower &mf);
     virtual ~MonsterFlower();
 
+    b2Vec2 getInitialPosition();
+
     void Init(b2Vec2 position);
     void Update(Vector2 playerVelocity, float deltaTime);
     void OnBeginContact(SceneNode *other, b2Vec2 normal);
