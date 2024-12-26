@@ -52,6 +52,9 @@ bool EffectManager::isLoadedFromMap()
 
 std::string EffectManager::GetEffectName(std::pair<int, int> pos)
 {
+    if (effectMap.find(pos) == effectMap.end()) {
+        return "";
+    }
     return effectMap[pos];
 }
 
@@ -85,6 +88,7 @@ bool EffectManager::UpdateEffectCount(std::pair<int, int> pos)
     effectCount[pos]--;
     if (effectCount[pos] == 0) {
         effectMap.erase(pos);
+        effectCount.erase(pos);
         return true;
     }
     return false;
