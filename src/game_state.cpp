@@ -945,17 +945,17 @@ void GameOverState::draw() {
         (game->getScreenHeight() - gameOverTextSize.y) / 2 - 100 // Center vertically
     };
 
-    // Draw text shadow
-    DrawTextEx(game->getFont(), gameOverText.c_str(),
-               {gameOverTextPos.x + 2, gameOverTextPos.y + 2}, fontSize, 2, Fade(BLACK, 0.6f));
-    // Draw main text
-    DrawTextEx(game->getFont(), gameOverText.c_str(),
-               gameOverTextPos, fontSize, 2, RED);
+    Texture2D gameOverTexture = LoadTexture("../resources/images/logo/gameover.png");
+    // Draw texture
+    float TextureX = (game->getScreenWidth() - gameOverTexture.width) / 2;
+    float TextureY = (game->getScreenHeight() - gameOverTexture.height) / 2 - 200;
+
+    DrawTexture(gameOverTexture, TextureX, TextureY, WHITE);
 
     score = Tilemap::getInstance()->GetPlayer()->getScore();
 
     // Draw score in the middle of the screen below "Game Over"
-    constexpr int scoreFontSize = 40;
+    constexpr int scoreFontSize = 32;
     string scoreText = "Score: " + std::to_string(score);
     Vector2 scoreTextSize = MeasureTextEx(game->getFont(), scoreText.c_str(), scoreFontSize, spacing);
     Vector2 scoreTextPos = {
@@ -968,7 +968,7 @@ void GameOverState::draw() {
                {scoreTextPos.x + 2, scoreTextPos.y + 2}, scoreFontSize, 2, Fade(BLACK, 0.6f));
     // Draw main text
     DrawTextEx(game->getFont(), scoreText.c_str(),
-               scoreTextPos, scoreFontSize, 2, WHITE);
+               scoreTextPos, scoreFontSize, 2, GOLD);
 
     // Draw some funny message below the score
     constexpr int messageFontSize = 32;
