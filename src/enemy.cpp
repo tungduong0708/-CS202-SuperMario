@@ -459,8 +459,8 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
             enemy->setHealth(enemy->getHealth() - 1000);
             if (!enemy->isAlive()) {
                 enemy->setState(EnemyState::ENEMY_DEAD);
-                Player* player = Tilemap::getInstance()->GetPlayer();
-                player->setAddScore(100);
+                Player* playerPtr = Tilemap::getInstance()->GetPlayer();
+                playerPtr->setAddScore(100);
                 EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
                 effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
                 playerPtr->updateScore();
