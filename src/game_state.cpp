@@ -229,6 +229,18 @@ void SavedGameState::update() {
 
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->~Tilemap();
+            ImportFileVisitor* visitor = ImportFileVisitor::getInstance();
+            visitor->setFilePath(saveGamePath);
+            visitor->openFile();
+            MapType mapType = visitor->importMapType();
+            cout << "Map type: " << mapType << endl;
+            visitor->closeFile();
+            if (mapType == MapType::ONE_PLAYER) {
+                Tilemap::SetMapType(TILEMAP_1P);
+            }
+            else if (mapType == MapType::TWO_PLAYER) {
+                Tilemap::SetMapType(TILEMAP_2P);
+            }
             tilemap = Tilemap::getInstance();
             tilemap->LoadSaveGame(saveGamePath);
             game->changeState(game->gameplayState.get());

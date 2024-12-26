@@ -109,8 +109,7 @@ private:
     Player* player2;
     Vector2 player2Position;
     bool player2Loaded = false;
-
-
+    
 public:
     Tilemap2P();
     Tilemap2P(const std::string& filePath, int difficulty);

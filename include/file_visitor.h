@@ -4,6 +4,13 @@
 #include <string>
 #include <fstream>
 
+
+enum MapType {
+    ONE_PLAYER,
+    TWO_PLAYER,
+    UNKNOWN
+};
+
 // Forward declaration
 class StaticTile;
 class KinematicTile;
@@ -73,6 +80,8 @@ public:
     void VisitFile(Player* obj) override;
     void VisitFile(Princess* obj) override;
     void VisitFile(EffectManager* obj) override;
+
+    void exportMapType(std::string type);
 };
 
 
@@ -109,6 +118,8 @@ public:
     void VisitFile(Player* obj) override;
     void VisitFile(Princess* obj) override;
     void VisitFile(EffectManager* obj) override;
+
+    MapType importMapType();
 };
 
 #endif
