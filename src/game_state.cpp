@@ -960,7 +960,7 @@ void GameOverState::draw() {
     Texture2D gameOverTexture = LoadTexture("../resources/images/logo/gameover.png");
     // Draw texture
     float TextureX = (game->getScreenWidth() - gameOverTexture.width) / 2;
-    float TextureY = (game->getScreenHeight() - gameOverTexture.height) / 2 - 200;
+    float TextureY = 125;
 
     DrawTexture(gameOverTexture, TextureX, TextureY, WHITE);
 
@@ -972,7 +972,7 @@ void GameOverState::draw() {
     Vector2 scoreTextSize = MeasureTextEx(game->getFont(), scoreText.c_str(), scoreFontSize, spacing);
     Vector2 scoreTextPos = {
         (game->getScreenWidth() - scoreTextSize.x) / 2, // Center horizontally
-        gameOverTextPos.y + gameOverTextSize.y + 20 // Below "Game Over" text
+        TextureY + gameOverTexture.height + 20 // Below "Game Over" text
     };
 
     // Draw text shadow
@@ -1013,8 +1013,9 @@ VictoryState::VictoryState(Game* game) : GameOverState(game) {
     float buttonHeight = 75;
     float column1X = game->getScreenWidth() / 2 - buttonWidth - 20;
     float column2X = game->getScreenWidth() / 2 + 20;
-    float buttonY = game->getScreenHeight() - buttonHeight - 100;
+    float buttonY = game->getScreenHeight() - buttonHeight - 150;
 
+    buttons.clear();
     buttons.push_back({{column1X, buttonY, buttonWidth, buttonHeight}, "Main Menu", false});
     buttons.push_back({{column2X, buttonY, buttonWidth, buttonHeight}, "Play Again", false});
 }
@@ -1057,12 +1058,12 @@ void VictoryState::draw() {
         (game->getScreenHeight() - gameOverTextSize.y) / 2 - 100 // Center vertically
     };
 
-    // Draw text shadow
-    DrawTextEx(game->getFont(), gameOverText.c_str(),
-               {gameOverTextPos.x + 2, gameOverTextPos.y + 2}, fontSize, 2, Fade(BLACK, 0.6f));
-    // Draw main text
-    DrawTextEx(game->getFont(), gameOverText.c_str(),
-               gameOverTextPos, fontSize, 2, YELLOW);
+    Texture2D victoryTexture = LoadTexture("../resources/images/logo/victory.png");
+    // Draw texture
+    float TextureX = (game->getScreenWidth() - victoryTexture.width) / 2;
+    float TextureY = (game->getScreenHeight() - victoryTexture.height) / 2 - 150;
+    DrawTexture(victoryTexture, TextureX, TextureY, WHITE);
+    
 
     score = Tilemap::getInstance()->GetPlayer()->getScore();
 
@@ -1072,7 +1073,7 @@ void VictoryState::draw() {
     Vector2 scoreTextSize = MeasureTextEx(game->getFont(), scoreText.c_str(), scoreFontSize, spacing);
     Vector2 scoreTextPos = {
         (game->getScreenWidth() - scoreTextSize.x) / 2, // Center horizontally
-        gameOverTextPos.y + gameOverTextSize.y + 20 // Below "Game Over" text
+        gameOverTextPos.y + gameOverTextSize.y + 30 // Below "Game Over" text
     };
 
     // Draw text shadow
@@ -1084,19 +1085,32 @@ void VictoryState::draw() {
 
     // Draw some funny message below the score
     constexpr int messageFontSize = 32;
-    string messageText = "Congratulations! You saved the princess!";
-    Vector2 messageTextSize = MeasureTextEx(game->getFont(), messageText.c_str(), messageFontSize, spacing);
-    Vector2 messageTextPos = {
-        (game->getScreenWidth() - messageTextSize.x) / 2, // Center horizontally
+    string messageText1 = "Congratulations!";
+    Vector2 messageText1Size = MeasureTextEx(game->getFont(), messageText1.c_str(), messageFontSize, spacing);
+    Vector2 messageText1Pos = {
+        (game->getScreenWidth() - messageText1Size.x) / 2, // Center horizontally
         scoreTextPos.y + scoreTextSize.y + 20 // Below the score
     };
 
-    // Draw text shadow
-    DrawTextEx(game->getFont(), messageText.c_str(),
-               {messageTextPos.x + 2, messageTextPos.y + 2}, messageFontSize, 2, Fade(BLACK, 0.6f));
+    DrawTextEx(game->getFont(), messageText1.c_str(),
+               {messageText1Pos.x + 2, messageText1Pos.y + 2}, messageFontSize, 2, Fade(BLACK, 0.6f));
     // Draw main text
-    DrawTextEx(game->getFont(), messageText.c_str(),
-               messageTextPos, messageFontSize, 2, WHITE);
+    DrawTextEx(game->getFont(), messageText1.c_str(),
+               messageText1Pos, messageFontSize, 2, WHITE);
+    
+    string messageText2 = "You saved the princess!";
+    Vector2 messageText2Size = MeasureTextEx(game->getFont(), messageText2.c_str(), messageFontSize, spacing);
+    Vector2 messageText2Pos = {
+        (game->getScreenWidth() - messageText2Size.x) / 2, // Center horizontally
+        scoreTextPos.y + scoreTextSize.y + 60 // Below the score
+    };
+
+    // Draw text shadow
+    DrawTextEx(game->getFont(), messageText2.c_str(),
+               {messageText2Pos.x + 2, messageText2Pos.y + 2}, messageFontSize, 2, Fade(BLACK, 0.6f));
+    // Draw main text
+    DrawTextEx(game->getFont(), messageText2.c_str(),
+               messageText2Pos, messageFontSize, 2, WHITE);
 
     // Draw buttons
     for (const auto& button : buttons) {
@@ -1213,7 +1227,7 @@ void SelectDifficultyState::update() {
             tilemap->~Tilemap();
             Tilemap::SetMapType(TilemapType::TILEMAP_1P);
             tilemap = Tilemap::getInstance();
-            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
+            tilemap->LoadMapFromJson("map-1-5-3.json", i + 1);
             game->changeState(game->selectPlayerState.get());
         }
     }
