@@ -7,51 +7,64 @@
 
 void DrawButton(const Button& button, const Game& game)
 {
-    // --- Updated Customizable Colors ---
-    Color frameColor = (Color){0, 0, 0, 255};       // SaddleBrown-like for the wooden frame
-    Color insetColor = (Color){212, 130, 83, 204};      // DarkGoldenRod for inset (matches the icon's interior border)
-    Color hoverInsetColor = (Color){210, 180, 140, 255}; // Tan color for hover inset (softer highlight)
-    Color shadowColor = (Color){0, 0, 0, 80};           // Semi-transparent black shadow
-    Color borderColor = (Color){0, 0, 0, 255};          // Pure black for button border
-    Color textShadowColor = (Color){0, 0, 0, 100};      // Text shadow for better visibility
-    Color textColor = (Color){255, 255, 255, 255};         // Dark brown for text (matches the icon)
+    // Define Mario-themed colors
+    Color baseColor = button.isHovered ? Fade(RED, 0.9f) : Fade(GOLD, 0.9f); // Red when hovered, gold otherwise
+    Color borderColor = button.isHovered ? Fade(WHITE, 1.0f) : Fade(DARKBLUE, 0.9f); // Border changes color
+    Color shadowColor = (Color){242, 107, 15, 255};       // Shadow color
+    Color highlightColor = Fade(YELLOW, 0.7f);   // Highlight color on top
 
-
-
-    // --- Button Shadow (3D Effect) ---
+    // --- Shadow Effect ---
     DrawRectangleRounded(
         {button.rect.x + 4, button.rect.y + 4, button.rect.width, button.rect.height},
-        0.25f, 8, shadowColor);
+        0.3f, 6, shadowColor);
 
-    // --- Button Frame (Outer Rectangle) ---
-    DrawRectangleRounded(button.rect, 0.25f, 8, frameColor);
+    // --- Button Body ---
+    // Draw main button with rounded corners
+    DrawRectangleRounded(button.rect, 0.3f, 6, baseColor);
 
-    // --- Button Inset (Inner Rectangle) ---
-    Rectangle insetRect = {button.rect.x + 6, button.rect.y + 6, button.rect.width - 12, button.rect.height - 12};
-    DrawRectangleRounded(
-        insetRect, 0.25f, 6, button.isHovered ? hoverInsetColor : insetColor);
+    // Draw highlight (top gradient effect)
+    Rectangle highlightRect = {button.rect.x, button.rect.y, button.rect.width, button.rect.height / 2};
+    DrawRectangleRounded(highlightRect, 0.3f, 6, highlightColor);
 
-    // --- Frame Border ---
-    DrawRectangleRoundedLines(button.rect, 0.25f, 8, 4, borderColor);
+    // --- Border ---
+    DrawRectangleRoundedLines(button.rect, 0.3f, 6, 6, borderColor);
 
-    // --- Button Text ---
+    // --- Text with Shadow ---
     Vector2 textSize = MeasureTextEx(game.getFont(), button.text.c_str(), 30, 1);
 
-    // Text Shadow
+    // Text shadow for depth
     DrawTextEx(
         game.getFont(),
         button.text.c_str(),
-        {button.rect.x + button.rect.width / 2 - textSize.x / 2 + 2,
-         button.rect.y + button.rect.height / 2 - textSize.y / 2 + 2},
-        30, 1, textShadowColor);
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2 + 2.5f,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2},
+        30, 1, shadowColor);
+    DrawTextEx(
+        game.getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2 - 2.5f,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2},
+        30, 1, shadowColor);
+    DrawTextEx(
+        game.getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2 + 2.5f},
+        30, 1, shadowColor);
+    DrawTextEx(
+        game.getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2 - 2.5f},
+        30, 1, shadowColor);
 
-    // Main Text
+    // Text with vibrant color
     DrawTextEx(
         game.getFont(),
         button.text.c_str(),
         {button.rect.x + button.rect.width / 2 - textSize.x / 2,
          button.rect.y + button.rect.height / 2 - textSize.y / 2},
-        30, 1, textColor);
+        30, 1, WHITE);
 }
 
 bool IsButtonClicked(const Button& button)
@@ -73,7 +86,7 @@ T Clamp(T value, T min, T max)
     return value;
 }
 
-// Customized slider drawing
+// Customized slider drawing, returns true if the slider value was changed
 void DrawMarioSlider(Rectangle rect, int& value, const float& minValue, const float& maxValue, const Font& font, const char* label)
 {
     // Define Colors with RGBA for customization
@@ -158,54 +171,64 @@ void DrawImageButton(const Game& game, const PlayerInfo& player)
     // --- Texture on the Left ---
     float texturePaddingX = 50.0f; // Padding for the texture
     float texturePaddingY = 20.0f; // Padding for the texture
-    float ratio = player.button.rect.height / player.texture.height * 5 / 6; // Scale texture to button height
-    float textureSizeX = player.texture.width * ratio;
-    float textureSizeY = player.texture.height * ratio;
-    Rectangle textureDest = {player.button.rect.x + texturePaddingX, player.button.rect.y + texturePaddingY, textureSizeX, textureSizeY};
 
-    // Draw the player's texture
-    DrawTexturePro(
-        isHovered ? player.hoverTexture : player.texture,   // Use hover texture if hovered
-        {0, 0, static_cast<float>(player.texture.width), static_cast<float>(player.texture.height)}, // Source rectangle
-        textureDest,                                        // Destination rectangle
-        {0, 0},                                             // Origin point
-        0.0f,                                               // No rotation
-        WHITE);
+    float textureSize = 0;
+
+    if (isHovered)
+    {
+        float ratio = player.button.rect.height / player.hoverTexture.height * 5 / 6; // Scale texture to button height
+        float textureSizeX = player.hoverTexture.width * ratio;
+        float textureSizeY = player.hoverTexture.height * ratio;
+        Rectangle textureDest = {player.button.rect.x + texturePaddingX, player.button.rect.y + texturePaddingY, textureSizeX, textureSizeY};
+
+        // Draw the player's texture
+        DrawTexturePro(
+            player.hoverTexture,   // Use hover texture if hovered
+            {0, 0, static_cast<float>(player.hoverTexture.width), static_cast<float>(player.hoverTexture.height)}, // Source rectangle
+            textureDest,                                        // Destination rectangle
+            {0, 0},                                             // Origin point
+            0.0f,                                               // No rotation
+            WHITE);
+
+        textureSize = textureSizeX;
+    }
+    else
+    {
+        float ratio = player.button.rect.height / player.texture.height * 5 / 6; // Scale texture to button height
+        float textureSizeX = player.texture.width * ratio;
+        float textureSizeY = player.texture.height * ratio;
+        Rectangle textureDest = {player.button.rect.x + texturePaddingX, player.button.rect.y + texturePaddingY, textureSizeX, textureSizeY};
+
+        // Draw the player's texture
+        DrawTexturePro(
+            player.texture,   // Use hover texture if hovered
+            {0, 0, static_cast<float>(player.texture.width), static_cast<float>(player.texture.height)}, // Source rectangle
+            textureDest,                                        // Destination rectangle
+            {0, 0},                                             // Origin point
+            0.0f,                                               // No rotation
+            WHITE);
+
+        textureSize = textureSizeX;
+    }
 
     // --- Text on the Right ---
-    float textX = player.button.rect.x + textureSizeX + texturePaddingX * 2; // Start text to the right of the texture
+    float textX = player.button.rect.x + textureSize + texturePaddingX * 2; // Start text to the right of the texture
     float textY = player.button.rect.y + player.button.rect.height / 2 - 50; // Center vertically
 
     // Player name (large text)
-    constexpr int nameFontSize = 35;
+    constexpr int nameFontSize = 40;
     Color textColor = player.name == "Mario" ? RED : GREEN; // Diiferent color for each player
-    // Draw shadow for player name
-    DrawTextEx(
-        game.getFont(),
-        player.name.c_str(),
-        {textX + 2, textY + 2},
-        nameFontSize, 2, shadowColor);
 
     // Draw border for player name
     DrawTextEx(
         game.getFont(),
         player.name.c_str(),
-        {textX - 1, textY - 1},
+        {textX + 3, textY},
         nameFontSize, 2, BLACK);
     DrawTextEx(
         game.getFont(),
         player.name.c_str(),
-        {textX + 1, textY - 1},
-        nameFontSize, 2, BLACK);
-    DrawTextEx(
-        game.getFont(),
-        player.name.c_str(),
-        {textX - 1, textY + 1},
-        nameFontSize, 2, BLACK);
-    DrawTextEx(
-        game.getFont(),
-        player.name.c_str(),
-        {textX + 1, textY + 1},
+        {textX, textY + 3},
         nameFontSize, 2, BLACK);
     DrawTextEx(
         game.getFont(),
@@ -230,14 +253,6 @@ void DrawImageButton(const Game& game, const PlayerInfo& player)
     }
 
     Color descColor = isHovered ? GOLD : WHITE;
-
-    // Draw the description/stats text with border
-    // Draw shadow for description
-    DrawTextEx(
-        game.getFont(),
-        description.c_str(),
-        {textX + 2, textY + nameFontSize + 22},
-        descFontSize, 1, shadowColor);
 
     // Draw border for description
     DrawTextEx(
@@ -277,18 +292,18 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
     Color hoverColor;
     if (difficulty == "Easy")
     {
-        baseColor = GREEN;
-        hoverColor = DARKGREEN;
+        hoverColor = (Color){80, 141, 105, 255};
+        baseColor = (Color){54, 126, 24, 255};
     }
     else if (difficulty == "Medium")
     {
-        baseColor = YELLOW;
-        hoverColor = ORANGE;
+        hoverColor = (Color){255, 164, 71, 255};
+        baseColor = (Color){245, 115, 40, 255};
     }
     else if (difficulty == "Hard")
     {
-        baseColor = RED;
-        hoverColor = MAROON;
+        hoverColor = (Color){255, 109, 96, 255};
+        baseColor = (Color){204, 54, 54, 255};
     }
 
     // Check hover state
@@ -312,37 +327,73 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
     // --- Border ---
     DrawRectangleRoundedLines(button.rect, 0.2f, 6, 3, borderColor);
 
-    // --- Texture/Icon on the Left ---
     float texturePadding = 10.0f; // Padding for the texture
     float textureSize = button.rect.height - texturePadding * 2; // Fit texture vertically
-    Rectangle textureDest = {button.rect.x + texturePadding, button.rect.y + texturePadding, textureSize, textureSize};
 
-    DrawTexturePro(
-        isHovered ? button.hoverTexture : button.texture,   // Use hover texture if hovered
-        {0, 0, static_cast<float>(button.texture.width), static_cast<float>(button.texture.height)}, // Source rectangle
-        textureDest,                                        // Destination rectangle
-        {0, 0},                                             // Origin point
-        0.0f,                                               // No rotation
-        WHITE);
+    if (isHovered) {
+        // --- Texture/Icon on the Left ---
+        float ratio = button.rect.height / button.hoverTexture.height * 4 / 5; // Scale texture to button height
+        float textureSizeX = button.hoverTexture.width * ratio;
+        float textureSizeY = button.hoverTexture.height * ratio;
+        Rectangle textureDest = {button.rect.x + texturePadding, button.rect.y + texturePadding, textureSizeX, textureSizeY};
+
+        DrawTexturePro(
+            button.hoverTexture,   // Use hover texture if hovered
+            {0, 0, static_cast<float>(button.hoverTexture.width), static_cast<float>(button.hoverTexture.height)}, // Source rectangle
+            textureDest,                                        // Destination rectangle
+            {0, 0},                                             // Origin point
+            0.0f,                                               // No rotation
+            WHITE);
+    }
+    else {
+        // --- Texture/Icon on the Left ---
+        float ratio = button.rect.height / button.texture.height * 4 / 5; // Scale texture to button height
+        float textureSizeX = button.texture.width * ratio;
+        float textureSizeY = button.texture.height * ratio;
+        Rectangle textureDest = {button.rect.x + texturePadding, button.rect.y + texturePadding, textureSizeX, textureSizeY};
+
+        DrawTexturePro(
+            button.texture,   // Use hover texture if hovered
+            {0, 0, static_cast<float>(button.texture.width), static_cast<float>(button.texture.height)}, // Source rectangle
+            textureDest,                                        // Destination rectangle
+            {0, 0},                                             // Origin point
+            0.0f,                                               // No rotation
+            WHITE);
+    }
 
     // --- Difficulty Name Centered ---
     float textX = button.rect.x + textureSize + texturePadding * 3; // Start text to the right of the texture
     float textY = button.rect.y + button.rect.height / 2 - 40; // Center text vertically
     constexpr int fontSize = 36; // Font size for difficulty name
 
-    // Draw shadow for text
+    // Draw border for text
     DrawTextEx(
         font, // Replace with your custom font if available
         difficulty.c_str(),
-        {textX + 2, textY + 2},
-        fontSize, 2, Fade(BLACK, 0.6f));
+        {textX + 2, textY},
+        fontSize, 2, BLACK);
+    DrawTextEx(
+        font, // Replace with your custom font if available
+        difficulty.c_str(),
+        {textX - 2, textY},
+        fontSize, 2, BLACK);
+    DrawTextEx(
+        font, // Replace with your custom font if available
+        difficulty.c_str(),
+        {textX, textY + 2},
+        fontSize, 2, BLACK);
+    DrawTextEx(
+        font, // Replace with your custom font if available
+        difficulty.c_str(),
+        {textX, textY - 2},
+        fontSize, 2, BLACK);
 
     // Draw main text
     DrawTextEx(
         font, // Replace with your custom font if available
         difficulty.c_str(),
-        {textX, textY},
-        fontSize, 2, BROWN);
+        {textX - 2, textY - 2},
+        fontSize, 2, (Color){252, 199, 55, 255});
 
     constexpr int descFontSize = 20;
     std::string description;
@@ -360,17 +411,85 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
         description = "Intense gameplay, only for \n\nthe bravest of heroes!";
     }
 
-    // // Draw shadow for description
+    // Draw border for description
     DrawTextEx(
         font,
         description.c_str(),
         {textX + 2, textY + fontSize + 10},
-        descFontSize, 1, Fade(BLACK, 0.6f));
+        descFontSize, 1, BLACK);
+    DrawTextEx(
+        font,
+        description.c_str(),
+        {textX - 2, textY + fontSize + 10},
+        descFontSize, 1, BLACK);
+    DrawTextEx(
+        font,
+        description.c_str(),
+        {textX, textY + fontSize + 8},
+        descFontSize, 1, BLACK);
+    DrawTextEx(
+        font,
+        description.c_str(),
+        {textX, textY + fontSize + 12},
+        descFontSize, 1, BLACK);
 
     // Draw main text
     DrawTextEx(
         font,
         description.c_str(),
-        {textX, textY + fontSize + 8},
-        descFontSize, 1, BLUE);
+        {textX, textY + fontSize + 10},
+        descFontSize, 1, (Color){255, 233, 160, 255});
+}
+
+void DrawYesNoButton(const Button& button) {
+    // Green for Yes, Red for No
+    Color baseColor = button.text == "Yes" ? GREEN : RED;
+    Color hoverColor = button.isHovered ? Fade(baseColor, 0.8f) : baseColor;
+    Color borderColor = button.isHovered ? WHITE : DARKBLUE;
+
+    // --- Shadow Effect ---
+    DrawRectangleRounded(
+        {button.rect.x + 4, button.rect.y + 4, button.rect.width, button.rect.height},
+        0.3f, 6, Fade(BLACK, 0.4f));
+    
+    // --- Button Background ---
+    DrawRectangleRounded(button.rect, 0.3f, 6, baseColor);
+    DrawRectangleRoundedLines(button.rect, 0.3f, 6, 2, borderColor);
+
+    // --- Text with Shadow ---
+    Vector2 textSize = MeasureTextEx(Game::getInstance()->getFont(), button.text.c_str(), 30, 1);
+
+    // Text shadow for depth
+    DrawTextEx(
+        Game::getInstance()->getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2 + 2.5f,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2},
+        30, 1, Fade(BLACK, 0.6f));
+    DrawTextEx(
+        Game::getInstance()->getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2 - 2.5f,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2},
+        30, 1, Fade(BLACK, 0.6f));
+    DrawTextEx(
+        Game::getInstance()->getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2 + 2.5f},
+        30, 1, Fade(BLACK, 0.6f));
+    DrawTextEx(
+        Game::getInstance()->getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2 - 2.5f},
+        30, 1, Fade(BLACK, 0.6f));
+    
+    // Text with vibrant color
+    DrawTextEx(
+        Game::getInstance()->getFont(),
+        button.text.c_str(),
+        {button.rect.x + button.rect.width / 2 - textSize.x / 2,
+         button.rect.y + button.rect.height / 2 - textSize.y / 2},
+        30, 1, WHITE);
 }

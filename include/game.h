@@ -35,6 +35,7 @@ public:
     [[nodiscard]] GameState* getNextState() const;
 
     void changeState(GameState* state);
+    void setNextState(GameState* state);
 
     // States
     std::unique_ptr<GameState> mainMenuState;
@@ -52,6 +53,11 @@ public:
     std::unique_ptr<GameState> changeStageState;
     std::unique_ptr<GameState> gameOverState;
     std::unique_ptr<GameState> victoryState;
+    std::unique_ptr<GameState> wannaSaveState;
+    std::unique_ptr<GameState> quitState;
+    std::unique_ptr<GameState> backToMenuState;
+    std::unique_ptr<GameState> pauseTutorialState;
+    std::unique_ptr<GameState> gameplay2PState;
 
 private:
     static Game* instance;

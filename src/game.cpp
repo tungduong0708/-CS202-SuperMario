@@ -19,6 +19,9 @@ Game::Game()
       changeStageState(nullptr),
       gameOverState(nullptr),
       victoryState(nullptr),
+      wannaSaveState(nullptr),
+      quitState(nullptr),
+      backToMenuState(nullptr),
       previousState(nullptr),
       currentState(nullptr),
       nextState(nullptr),
@@ -47,6 +50,11 @@ Game::Game()
     changeStageState = std::make_unique<ChangeStageState>(this);
     gameOverState = std::make_unique<GameOverState>(this);
     victoryState = std::make_unique<VictoryState>(this);
+    wannaSaveState = std::make_unique<WannaSaveState>(this);
+    quitState = std::make_unique<QuitState>(this);
+    backToMenuState = std::make_unique<BackToMenuState>(this);
+    pauseTutorialState = std::make_unique<PauseTutorialState>(this);
+    gameplay2PState = std::make_unique<Gameplay2PState>(this);
     currentState = mainMenuState.get();
     std::cout << "All states initialized" << std::endl;
 }
@@ -68,7 +76,19 @@ void Game::run() {
         update();
         draw();
     }
-    gameplayState->cleanup();
+
+    bool isValidState = (currentState == gameplayState.get() || currentState == gameplay2PState.get()
+                        || currentState == pauseGameState.get());
+
+    if (WindowShouldClose() && isValidState && !shouldExit) {
+        setNextState(quitState.get());
+        changeState(wannaSaveState.get());
+        while (!shouldExit) {
+            update();
+            draw();
+        }
+    }
+
     CloseAudioDevice();
     CloseWindow();
 }
@@ -130,4 +150,9 @@ GameState* Game::getNextState() const {
 void Game::changeState(GameState *state) {
     previousState = currentState;
     currentState = state;
+}
+
+void Game::setNextState(GameState *state)
+{
+    nextState = state;
 }

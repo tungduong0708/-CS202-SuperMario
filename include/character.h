@@ -4,6 +4,9 @@
 #include "imagehandler.h"
 #include "file_visitor.h"
 #include "moving_object.h"
+#include "stage_state_handler.h"
+#include "player_input_set.h"
+#include "multiplayer_position_handler.h"
 
 #ifndef CHARACTER_H
 #define CHARACTER_H
@@ -104,6 +107,10 @@ private:
     string name;
     string currentMap;
     Vector2 initialPosition;
+
+    vector<int> inputSet = PlayerInputSet::GetPlayer1Input();
+    Vector2 spawnPosition;
+
 public:
     Player();
     Player(string type, string name = "", float coins = 0.0f, int lives = 3, int health = 100, 
@@ -132,6 +139,10 @@ public:
     void SetIsOnGround(bool state);
     void SetWalkingOnPlatform(bool state);
 
+    void SetSpawnPosition(Vector2 spawnPosition);
+
+    void SetInputSet(vector<int> inputSet);
+
     int getAddScore();
     int getLives();
     float getCoins();
@@ -157,6 +168,10 @@ public:
 
     void accept(FileVisitor* visitor);
     MovingObject* copy() const;
+
+    void accept(MultiplayerHandlerVisitor* visitor);
+
+    b2Body* getBody();
 };
 
 
@@ -219,6 +234,8 @@ public:
 
     virtual void accept(FileVisitor* visitor) = 0;
     virtual MovingObject* copy() const = 0;
+
+    virtual void ContactPlayer(Player* player, b2Vec2 normal) = 0;
 };
 
 
@@ -237,12 +254,15 @@ public:
 
     void accept(FileVisitor* visitor);
     MovingObject* copy() const;
+
+    void ContactPlayer(Player* player, b2Vec2 normal);
 };
 
 class Koopa : public Enemy {
 private:
     float delay;
     bool isDelay;
+    Player* playerHit = NULL;
 public:
     Koopa();
     Koopa(string type, float range = 0, bool alive = true, bool sit = false, int health = 0, int score = 0, 
@@ -257,6 +277,8 @@ public:
 
     void accept(FileVisitor* visitor);
     MovingObject* copy() const; 
+
+    void ContactPlayer(Player* player, b2Vec2 normal);
 }; 
 
 
@@ -290,9 +312,16 @@ public:
 
     void accept(FileVisitor* visitor);
     MovingObject* copy() const;
+
+    void ContactPlayer(Player* player, b2Vec2 normal);
 };
 
 class LarvaBubble : public Enemy {
+private:
+    float gravity;
+    float initialSpeed;
+    float waitTime;
+    float elapsedTime = 0.0f;
 public:
     LarvaBubble();
     LarvaBubble(string type, float range = 0, bool alive = true, int health = 0, int score = 0, int level = 0, 
@@ -312,11 +341,7 @@ public:
 
     void Draw();
 
-private:
-    float gravity;
-    float initialSpeed;
-    float waitTime;
-    float elapsedTime = 0.0f;
+    void ContactPlayer(Player* player, b2Vec2 normal);
 };
 
 
@@ -325,7 +350,6 @@ private:
     float waitTime;
     float elapsedTime = 0.0f;
     float delayTime;
-    Texture2D pipe;
     b2Vec2 initialPosition;
 public:
     MonsterFlower();
@@ -345,6 +369,8 @@ public:
     MovingObject* copy() const;
 
     void Draw();
+
+    void ContactPlayer(Player* player, b2Vec2 normal);
 };
 
 #endif
