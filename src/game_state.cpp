@@ -401,7 +401,8 @@ void PauseGameState::update() {
         game->changeState(game->gameplayState.get());
     }
     if (IsButtonClicked(buttons[3])) {
-        game->changeState(game->gameSavingState.get());
+        game->setNextState(game->mainMenuState.get());
+        game->changeState(game->wannaSaveState.get());
     }
 
     float centerX = (game->getScreenWidth() - 400) / 2;
@@ -1140,12 +1141,34 @@ SelectDifficultyState::~SelectDifficultyState() {
 
 WannaSaveState::WannaSaveState(Game* game) : GameState(game) {
     // Initialize buttons
-    float buttonWidth = 300;
-    float buttonHeight = 50;
+    float buttonWidth = 150;
+    float buttonHeight = 75;
+    float buttonY = 400;
+    float column1X = Game::getInstance()->getScreenWidth() / 2 - buttonWidth - 50;
+    float column2X = Game::getInstance()->getScreenWidth() / 2 + 50;
+
+    buttons.push_back({{column1X, buttonY, buttonWidth, buttonHeight}, "Yes", false});
+    buttons.push_back({{column2X, buttonY, buttonWidth, buttonHeight}, "No", false});
 }
 
 void WannaSaveState::update() {
     // Update button hover states
+    for (auto& button : buttons) {
+        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
+    }
+
+    // Handle button clicks
+    if (IsButtonClicked(buttons[0])) {
+        game->changeState(game->gameSavingState.get());
+    }
+    if (IsButtonClicked(buttons[1])) {
+        if (game->getNextState() == game->backToMenuState.get()) {
+            game->changeState(game->backToMenuState.get());
+        }
+        else if (game->getNextState() == game->quitState.get()) {
+            game->changeState(game->quitState.get());
+        }
+    }
 }
 
 void WannaSaveState::draw() {
