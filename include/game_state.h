@@ -187,13 +187,9 @@ public:
 
     // Setters
     void setScore(int score);
-    void setHighScore(int highScore);
-    void setTimeRemaining(int timeRemaining);
 protected:
     std::vector<Button> buttons;
     int score;
-    int highScore;
-    int timeRemaining;
 };
 
 class VictoryState : public GameOverState
@@ -216,7 +212,6 @@ private:
     std::vector<Button> buttons;
     Texture2D backgroundTexture;
 };
-
 
 class SelectDifficultyState : public GameState
 {
