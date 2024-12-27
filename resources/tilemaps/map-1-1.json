@@ -121,18 +121,6 @@
          "objects":[
                 {
                  "height":0,
-                 "id":64,
-                 "name":"mario",
-                 "point":true,
-                 "rotation":0,
-                 "type":"player",
-                 "visible":true,
-                 "width":0,
-                 "x":59.4999999999995,
-                 "y":187.416666666667
-                }, 
-                {
-                 "height":0,
                  "id":65,
                  "name":"coin",
                  "point":true,
@@ -434,6 +422,18 @@
                  "width":0,
                  "x":1514.66666666667,
                  "y":205.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":149,
+                 "name":"mario",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player",
+                 "visible":true,
+                 "width":0,
+                 "x":3110.1080361107,
+                 "y":206.452567707563
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -441,8 +441,13 @@
          "x":0,
          "y":0
         }],
+<<<<<<< Updated upstream
  "nextlayerid":12,
  "nextobjectid":148,
+=======
+ "nextlayerid":21,
+ "nextobjectid":150,
+>>>>>>> Stashed changes
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",
