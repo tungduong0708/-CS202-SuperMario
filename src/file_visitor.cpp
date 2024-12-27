@@ -385,6 +385,7 @@ void ImportFileVisitor::VisitFile(Player *obj)
     TextHelper::loadTexture("coin", "small" + type);
     obj->Init(b2Vec2{x, y});
     obj->setInitialPosition(Vector2{initialX, initialY});
+    obj->SetSpawnPosition(Vector2{initialX, initialY});
     if (mode == 0) {
         obj->setMode(Mode::SMALL);
     }
