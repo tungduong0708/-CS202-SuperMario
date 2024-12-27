@@ -43,7 +43,7 @@ void MainMenuState::update() {
     if (IsButtonClicked(buttons[1])) {
         Tilemap::getInstance()->~Tilemap();
         Tilemap::SetMapType(TILEMAP_2P);
-        Tilemap::getInstance()->LoadMapFromJson("map-test.json", 1);
+        Tilemap::getInstance()->LoadMapFromJson("map-1-1.json", 1);
         Tilemap::getInstance()->setPlayer("mario");
         Tilemap::getInstance()->setPlayer2("luigi");
         Tilemap::getInstance()->GetPlayer()->setLives(5);
@@ -823,7 +823,24 @@ void GameOverState::update() {
     }
     if (IsButtonClicked(buttons[1])) {
         // Retry the game
-        game->changeState(game->selectDifficultyState.get());
+        if (Tilemap::getInstance()->GetPlayer2() == nullptr)
+        {
+            game->changeState(game->selectDifficultyState.get());
+        }
+        else
+        {
+            Tilemap::getInstance()->~Tilemap();
+            Tilemap::SetMapType(TILEMAP_2P);
+            Tilemap::getInstance()->LoadMapFromJson("map-1-1.json", 1);
+            Tilemap::getInstance()->setPlayer("mario");
+            Tilemap::getInstance()->setPlayer2("luigi");
+            Tilemap::getInstance()->GetPlayer()->setLives(5);
+            Tilemap::getInstance()->GetPlayer2()->setLives(5);
+
+            Tilemap::getInstance()->SetSaveSlotLoadedFrom(SaveSlot::NOT_LOADED);
+            
+            game->changeState(game->gameplay2PState.get());
+        }
     }
 }
 
