@@ -20,6 +20,7 @@ private:
     std::vector<AnimationEffect*> upperEffects; // Manage all effects
 
     Player* playerUpdated = NULL;     // Player updated the effect
+    Player* playerUpdated2 = NULL;    // Player updated the effect, in case there is already a player updated
 public:
     EffectManager() = default;
     EffectManager(std::map<std::pair<int, int>, std::string> effectMap, std::map<std::pair<int, int>, int> effectCount);
