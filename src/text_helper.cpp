@@ -68,4 +68,13 @@ void TextHelper::DrawPackage(int lives, int score, int coins, string currentMap,
     //001 (timeLeft)
     DrawTextEx(font, "TIME", {position.x + 16.0f, position.y}, (float)fontSize/16, 0, color);
     DrawTextEx(font, to_string((int)timeLeft).c_str(), {position.x + 16.1f, position.y + 0.9f}, (float)fontSize/16, 0, color);
+} 
+
+
+class Player;
+
+void TextHelper::DrawPlayerImageIcon(Texture playerTexture, Vector2 position){
+    Rectangle destRect = {position.x, position.y, 15.0f, 19.0f};
+    Rectangle sourceRect = {0, 0, (float)playerTexture.width, (float)playerTexture.height};
+    Renderer::DrawPro(playerTexture, sourceRect, {position.x, position.y - 0.25f}, Vector2{1.0f, 1.0f}, false);
 }

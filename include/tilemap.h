@@ -36,6 +36,8 @@ protected:
     std::set<std::pair<int, int>> activatedTiles;
     std::vector<Tile*> changedTiles;
 
+    SaveSlot saveSlotLoadedFrom = SaveSlot::NOT_LOADED;
+
     static TilemapType mapType;
 
     static Tilemap* instance;
@@ -82,6 +84,9 @@ public:
     virtual void setPlayer2(const std::string name);
     virtual Player* GetPlayer2();
     virtual Vector2 GetPlayer2Position() const;
+
+    void SetSaveSlotLoadedFrom(SaveSlot slot);
+    SaveSlot GetSaveSlotLoadedFrom() const;
 };
 
 class Tilemap1P : public Tilemap {
@@ -131,6 +136,9 @@ public:
     Vector2 GetLeadingPlayerPosition() const override;
 
     void UpdateMultiplayerPosition();
+
+    void UpdatePlayersInfo();
+    void DrawPlayersInfo(Vector2 position, float angle = 0.0f) const;
 };
 
 #endif

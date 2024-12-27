@@ -458,3 +458,21 @@ void Player::accept(MultiplayerHandlerVisitor *visitor) {
 b2Body* Player::getBody() {
     return body;
 }
+
+void Player::DrawImageIcon(Vector2 position, float angle) {
+    TextHelper::DrawPlayerImageIcon(getTexture(), position);
+}
+
+void Player::setScore(int score) {
+    this->score = score;
+}
+
+int Player::getScore() {
+    return score;
+}
+
+Texture Player::getTexture() {
+    string fileName = "../resources/images/smallmario/idle.png";    // Rach vl de em tim cach doi lai
+    Texture texture = LoadTexture(fileName.c_str());            
+    return texture;
+}

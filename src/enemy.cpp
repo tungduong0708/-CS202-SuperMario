@@ -666,8 +666,11 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     if (abs(diff) > 5.0f and abs(diff) < 12.5f) {
         bossState = BossState::BOSS_ATTACK;
     }
-    else {
+    else if (abs(diff) < 5.0f){
         bossState = BossState::BOSS_WALK;
+    }
+    else {
+        bossState = BossState::BOSS_IDLE;
     }
 
     if (diff > 0.0f) {
@@ -985,7 +988,7 @@ void MonsterFlower::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (!alive) return;
     Player* player = dynamic_cast<Player*>(other);
     FireBall* fireball = dynamic_cast<FireBall*>(other);
-    if (fireball) {
+    if (fireball or (player and player->isImmortal())) {
         setHealth(getHealth() - 100);
         if (!alive) {
             Player* player = fireball->getPlayerShot();
