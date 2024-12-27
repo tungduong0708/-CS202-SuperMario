@@ -281,6 +281,7 @@ void Pole::OnBeginContact(SceneNode *other, b2Vec2 normal)
         polePos.y += height;
         float scoreRatio = 5000.0f / height;
         player->setAddScore(int((polePos.y - playerPos.y) * scoreRatio)/ 10 * 10);
+        playSoundEffect(SoundEffect::FLAG_POLE_DOWN);
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", Vector2{polePos.x, polePos.y}));
         player->updateScore();

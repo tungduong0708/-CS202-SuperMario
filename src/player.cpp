@@ -326,6 +326,11 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
         health = 100;
     }
 
+    if (coins >= 100) {
+        lives++;
+        coins = coins - 100;
+    }
+
     if (alive) {
         time -= deltaTime;
     }
