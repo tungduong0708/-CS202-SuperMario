@@ -1583,16 +1583,6 @@ void Gameplay2PState::update() {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         game->changeState(game->gameOverState.get());
     }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_STAGE) {
-        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
-        cout << "Change stage" << endl;
-        game->changeState(game->changeStageState.get());
-    }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_WORLD) {
-        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
-        cout << "Change world" << endl;
-        game->changeState(game->changeStageState.get());
-    }
 }
 
 void Gameplay2PState::draw() {

@@ -255,7 +255,6 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
                                 string fPath = filePath.substr(4,3);
                                 player->setCurrentMap(fPath);
                                 player->setElapsedTime(0.0f);
-                                player->setTime(300.0f);
                             }
                         }
                         else if (object.contains("type") && object["type"] == "character") {
@@ -609,6 +608,10 @@ Tilemap1P::Tilemap1P(const std::string& filePath, int difficulty) : Tilemap(file
 Tilemap1P::~Tilemap1P() {
 }
 
+void Tilemap1P::LoadMapFromJson(const std::string& filePath, int difficulty) {
+    Tilemap::LoadMapFromJson(filePath, difficulty);
+}
+
 void Tilemap1P::LoadSaveGame(const std::string& filePath) {
     Tilemap::LoadSaveGame(filePath);
 }
@@ -672,6 +675,10 @@ Tilemap2P::Tilemap2P(const std::string& filePath, int difficulty) : Tilemap(file
 Tilemap2P::~Tilemap2P() {
     delete player2;
     player2 = nullptr;
+}
+
+void Tilemap2P::LoadMapFromJson(const std::string& filePath, int difficulty) {
+    Tilemap::LoadMapFromJson(filePath, difficulty);
 }
 
 void Tilemap2P::LoadSaveGame(const std::string &filePath)
@@ -810,23 +817,20 @@ void Tilemap2P::Update(float deltaTime) {
     if (newMapPath != "") {
         player->setTime(300.0f);
         player2->setTime(300.0f);
-        if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_STAGE || StageStateHandler::GetInstance().GetState() == StageState::CHANGE_WORLD) {
-            cout << "Changing map\n";
-            changeMap(newMapPath);
-        }
-        if (!isChangingMap && (StageStateHandler::GetInstance().GetState() != StageState::NEW_STAGE && StageStateHandler::GetInstance().GetState() != StageState::NEW_WORLD)) 
+        cout << "Changing map: " << newMapPath << endl;
+        changeMap(newMapPath);
+        player2->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
+        player2->setInitialPosition(playerPosition);
+        player2->SetSpawnPosition(playerPosition);
+        string fPath = filePath.substr(4,3);
+        player2->setCurrentMap(fPath);
+        player2->setElapsedTime(0.0f);
+        
+        if (!isChangingMap) {
             newMapPath = "";
-
-        if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
-            player->setAllowInput(false);
-            player->setAppear(false);
-            player->setSpeed(0.0f);
-
-            player2->setAllowInput(false);
-            player2->setAppear(false);
-            player2->setSpeed(0.0f);
+            cout << "Reloaded" << endl;
         }
-        else if (StageStateHandler::GetInstance().GetState() == StageState::NEW_STAGE) {
+        if (StageStateHandler::GetInstance().GetState() == StageState::NEW_STAGE || StageStateHandler::GetInstance().GetState() == StageState::NEW_WORLD) {
             player->setAllowInput(true);
             player->setAppear(true);
             player->setSpeed(5.0f);
@@ -838,33 +842,20 @@ void Tilemap2P::Update(float deltaTime) {
             player->setPositionBody(b2Vec2{GetLeadingPlayer()->getPosition().x + 1.0f, GetLeadingPlayer()->getPosition().y});
             player2->setPositionBody(b2Vec2{GetLeadingPlayer()->getPosition().x + 1.0f, GetLeadingPlayer()->getPosition().y});
 
-            StageStateHandler::GetInstance().SetState(StageState::CHANGE_STAGE);
-        }
-        else if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR) {
-            player->setAllowInput(false);
-            player->setAppear(false);
-            player->setSpeed(0.0f);
-
-            player2->setAllowInput(false);
-            player2->setAppear(false);
-            player2->setSpeed(0.0f);
-        }
-        else if (StageStateHandler::GetInstance().GetState() == StageState::NEW_WORLD) {
-            player->setAllowInput(true);
-            player->setAppear(true);
-            player->setSpeed(5.0f);
-
-            player2->setAllowInput(true);
-            player2->setAppear(true);
-            player2->setSpeed(5.0f);
-
-            player->setPositionBody(b2Vec2{GetLeadingPlayer()->getPosition().x + 1.0f, GetLeadingPlayer()->getPosition().y});
-            player2->setPositionBody(b2Vec2{GetLeadingPlayer()->getPosition().x + 1.0f, GetLeadingPlayer()->getPosition().y});
-
-            StageStateHandler::GetInstance().SetState(StageState::CHANGE_WORLD);
+            StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         }
     }
     else {
+        if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR || StageStateHandler::GetInstance().GetState() == StageState::NEW_STAGE || StageStateHandler::GetInstance().GetState() == StageState::NEW_WORLD) {
+            player->setAllowInput(false);
+            player->setAppear(false);
+            player->setSpeed(0.0f);
+
+            player2->setAllowInput(false);
+            player2->setAppear(false);
+            player2->setSpeed(0.0f);
+        }
+
         b2Vec2 leadingPlayerVelocity = {0.0f, 0.0f};
         if (GetLeadingPlayer()) 
             leadingPlayerVelocity = GetLeadingPlayer()->getVelocity();

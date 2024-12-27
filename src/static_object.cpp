@@ -128,7 +128,6 @@ void Gate::Update(Vector2 playerVelocity, float deltaTime)
     Player* player = Tilemap::getInstance()->GetPlayer();
     if (elapsedTime > delay) {
         elapsedTime = 0.0f;
-        Game::getInstance()->changeState(Game::getInstance()->changeStageState.get());
         Tilemap::getInstance()->SetNewMapPath(addressNext);
         if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
             StageStateHandler::GetInstance().SetState(StageState::NEW_STAGE);
@@ -143,6 +142,8 @@ void Gate::Update(Vector2 playerVelocity, float deltaTime)
         game->getSettings().volume = prevVolume;
         player->setSpeed(prevSpeed);
         start = false;
+
+        Game::getInstance()->changeState(Game::getInstance()->changeStageState.get());
     }
     else {
         float ratio = player->getTime() / (delay) * deltaTime;
