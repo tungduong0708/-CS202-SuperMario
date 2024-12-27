@@ -170,7 +170,8 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
     }
     
     Pole* pole = nullptr;
-    Axe* axe = nullptr;;
+    Axe* axe = nullptr;
+    bool loadedLoadedNodes = false;
     for (const auto& layer : j["layers"]) {
         std::vector<SceneNode*> nodeLayer;
         if (layer["type"] == "imagelayer" && layer["name"] != "Effect") {
@@ -250,6 +251,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
                             if (player != nullptr) {
                                 player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
                                 player->setInitialPosition(playerPosition);
+                                player->SetSpawnPosition(playerPosition);
                                 string fPath = filePath.substr(4,3);
                                 player->setCurrentMap(fPath);
                                 player->setElapsedTime(0.0f);
@@ -327,6 +329,10 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
                     }
                 }
             }
+            if (!loadedNodes.empty() && !loadedLoadedNodes) {
+                nodes.push_back(loadedNodes);
+                loadedLoadedNodes = true;
+            }
         }
         nodes.push_back(nodeLayer);
     }
@@ -334,7 +340,6 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
         activatedTiles.clear();
     }
     if (loadedNodes.size() > 0) {
-        nodes.push_back(loadedNodes);
         loadedNodes.clear();
     }
     camera = MyCamera(46.875f, playerPosition, Vector2{ (float)width, (float)height });
