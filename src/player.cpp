@@ -477,7 +477,7 @@ int Player::getScore() {
 }
 
 Texture Player::getTexture() {
-    string fileName = "../resources/images/smallmario/idle.png";    // Rach vl de em tim cach doi lai
+    string fileName = "../resources/images/smallmario/idle.png";
     Texture texture = LoadTexture(fileName.c_str());            
     return texture;
 }
