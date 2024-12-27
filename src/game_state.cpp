@@ -498,7 +498,7 @@ void ChangeStageState::update()
     lifeRemaining = player->getLives();
 
     if (elapsedTime > 3.0f) {
-        game->changeState(game->gameplayState.get());
+        game->changeState(game->getPreviousState());
         reset();
     }
 }
@@ -1582,11 +1582,14 @@ void Gameplay2PState::update() {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         game->changeState(game->gameOverState.get());
     }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
+    else if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_STAGE) {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        cout << "Change stage" << endl;
+        game->changeState(game->changeStageState.get());
     }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR) {
+    else if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_WORLD) {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        cout << "Change world" << endl;
         game->changeState(game->changeStageState.get());
     }
 }
