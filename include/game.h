@@ -11,7 +11,6 @@ struct GameSettings
     bool soundEffects;
     bool music;
     int volume;
-    int brightness;
 };
 
 class Game {

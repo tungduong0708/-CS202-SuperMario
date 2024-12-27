@@ -149,7 +149,6 @@ void SettingsState::update() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
     DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 
     // Handle button clicks
     if (IsButtonClicked(buttons[0])) {
@@ -191,7 +190,6 @@ void SettingsState::draw() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Draw sliders
     DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 SavedGameState::SavedGameState(Game* game)
@@ -373,7 +371,6 @@ void PauseGameState::update() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 
     // Handle get back when clicking empty space
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -406,7 +403,6 @@ void PauseGameState::draw() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Draw sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
@@ -1532,7 +1528,6 @@ void PauseTutorialState::update() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 
     // Handle get back when clicking empty space
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
