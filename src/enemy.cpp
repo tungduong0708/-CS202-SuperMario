@@ -578,22 +578,22 @@ Boss::Boss(string type, float range, bool alive, int health, int score, int leve
     jump = false;
     
     if (level == 1) {
-        this->health = 100;
+        this->health = 1000;
         this->strength = 100;
         this->speed = -3.0f;
-        this->bulletFreq = 4.5f;
+        this->bulletFreq = 4.0f;
     }
     else if (level == 2) {
         this->health = 1700;
         this->strength = 100;
         this->speed = -4.0f;
-        this->bulletFreq = 3.5f;
+        this->bulletFreq = 2.5f;
     }
     else if (level == 3) {
         this->health = 2250;
         this->strength = 100;
         this->speed = -5.0f;
-        this->bulletFreq = 2.0f;
+        this->bulletFreq = 1.5f;
     }
 }
 
@@ -686,20 +686,8 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
         bossState = BossState::BOSS_IDLE;
     }
 
-    if (player->isJump()) {
-        cout << "jump" << endl;
-        cout << jump << endl;
-    }
-
-    if (player->isJump() and level == 3 and isAlive()) {
-        cout << "j" << endl;
-        if (jump == true) {
-            body->ApplyLinearImpulseToCenter(b2Vec2{0.0f, -25.0f}, true);
-            jump = false;
-        }
-        if (jump == false) {
-            jump = true;
-        }
+    if (player->isJump() and level == 3 and isAlive() and (bossState == BOSS_WALK or bossState == BOSS_ATTACK)) {
+        body->ApplyLinearImpulseToCenter(b2Vec2{0.0f, -50.0f}, true);
     }
 
     if (diff > 0.0f) {
@@ -711,10 +699,10 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
 
 
     if (diff > 1.0f and bossState == BossState::BOSS_WALK) {
-        setSpeed(-abs(speed));
+        body->SetLinearVelocity(b2Vec2(-abs(speed), body->GetLinearVelocity().y)); 
     }
     else {
-        setSpeed(abs(speed));
+        body->SetLinearVelocity(b2Vec2(abs(speed), body->GetLinearVelocity().y));
     }
 
 
@@ -739,7 +727,7 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
             elapsedTime = 0.0f;
         }
     }
-    else {
+    else if (bossState == BossState::BOSS_WALK) {
         body->SetLinearVelocity(b2Vec2(speed, body->GetLinearVelocity().y));
     }
 
@@ -769,11 +757,11 @@ void Boss::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     }
     else {
         if (normal.x > 0.9f) {
-            setSpeed(-abs(speed));
+            body->SetLinearVelocity(b2Vec2(-abs(speed), body->GetLinearVelocity().y));
             faceLeft = true;
         }
         if (normal.x < -0.9f) {
-            setSpeed(+abs(speed));
+            body->SetLinearVelocity(b2Vec2(abs(speed), body->GetLinearVelocity().y));
             faceLeft = false;
         }
     }
