@@ -6,7 +6,7 @@
  "name":"ghosthouse",
  "spacing":0,
  "tilecount":8800,
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tiles":[
         {
@@ -14,7 +14,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -33,15 +32,13 @@
              "visible":true,
              "x":0,
              "y":0
-            },
-         "type":"brick"
+            }
         }, 
         {
          "id":2901,
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -67,7 +64,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -86,15 +82,13 @@
              "visible":true,
              "x":0,
              "y":0
-            },
-         "type":"brick"
+            }
         }, 
         {
          "id":2980,
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -113,15 +107,13 @@
              "visible":true,
              "x":0,
              "y":0
-            },
-         "type":"brick"
+            }
         }, 
         {
          "id":2981,
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -151,7 +143,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
