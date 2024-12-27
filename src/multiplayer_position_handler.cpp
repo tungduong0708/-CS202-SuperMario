@@ -25,12 +25,17 @@ void MultiplayerUpdatePosition::VisitPlayer(Player* player){
     }
 }
 
-MultiplayerUpdateSpawnPosition::MultiplayerUpdateSpawnPosition(MyCamera* camera): MultiplayerHandlerVisitor(camera){
+MultiplayerUpdateSpawnPosition::MultiplayerUpdateSpawnPosition(Player* otherPlayer, MyCamera* camera): otherPlayer(otherPlayer), MultiplayerHandlerVisitor(camera){
 }
 
 void MultiplayerUpdateSpawnPosition::VisitPlayer(Player* player){
     if (!player)
         return;
     
-    player->SetSpawnPosition({camera->GetLeftEdge() + 3.0f, player->getInitialPosition().y});
-}
+    // 
+    if (otherPlayer->isAlive()) {
+        player->SetSpawnPosition({otherPlayer->getPosition().x, otherPlayer->getPosition().y - 4.0f});
+    }
+    else 
+        player->SetSpawnPosition({camera->GetLeftEdge() + 3.0f, player->getInitialPosition().y});
+}   
