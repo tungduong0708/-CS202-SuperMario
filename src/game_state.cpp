@@ -209,9 +209,6 @@ SavedGameState::SavedGameState(Game* game)
     }
     // Initialize back to menu button
     buttons.push_back({{centerX, firstY + buttonHeight * 5 + spacing * 5, buttonWidth, buttonHeight}, "Back to Menu", false});
-
-    // Load background image
-    backgroundTexture = LoadTexture("../resources/images/icon/squareboard.png");
 }
 
 void SavedGameState::update() {
@@ -261,25 +258,12 @@ void SavedGameState::draw() {
     // Draw a semi-transparent gray overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
 
-    // Draw background image
-    constexpr float backgroundScale = 4.0f;
-    float textureWidth = backgroundTexture.width * backgroundScale;
-    float textureHeight = backgroundTexture.height * backgroundScale;
-    float posX = (game->getScreenWidth() - textureWidth) / 2;
-    float posY = (game->getScreenHeight() - textureHeight) / 2;
-
-    DrawTextureEx(backgroundTexture, {posX, posY}, 0.0f, backgroundScale, WHITE);
-
     // Draw buttons
     for (const auto& button : buttons) {
         DrawButton(button, *game);
     }
 }
 
-SavedGameState::~SavedGameState() {
-    // Unload background texture
-    UnloadTexture(backgroundTexture);
-}
 
 MapBuilderState::MapBuilderState(Game* game)
     : GameState(game)
@@ -1138,9 +1122,6 @@ GameSavingState::GameSavingState(Game* game) : GameState(game) {
         buttons.push_back(Button{{centerX, firstY + buttonHeight * i + spacing * i, buttonWidth, buttonHeight}, 
         "Slot " + std::to_string(i + 1), false});
     }
-
-    // Initialize background texture
-    backgroundTexture = LoadTexture("../resources/images/icon/squareboard.png");
 }
 
 void GameSavingState::update() {
@@ -1179,24 +1160,10 @@ void GameSavingState::draw() {
     // Draw a semi-transparent gray overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
 
-    // Draw background texture
-    constexpr float backgroundScale = 3.5f;
-    float textureWidth = backgroundTexture.width * backgroundScale;
-    float textureHeight = backgroundTexture.height * backgroundScale;
-    float posX = (game->getScreenWidth() - textureWidth) / 2;
-    float posY = (game->getScreenHeight() - textureHeight) / 2;
-
-    DrawTextureEx(backgroundTexture, {posX, posY}, 0.0f, backgroundScale, WHITE);
-
     // Draw buttons
     for (const auto& button : buttons) {
         DrawButton(button, *game);
     }
-}
-
-GameSavingState::~GameSavingState() {
-    // Unload textures
-    UnloadTexture(backgroundTexture);
 }
 
 SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game)
