@@ -1,2 +1,81 @@
-2 players
-map-test.json 1
+1 player
+map-1-1.json 1
+KinematicTile 2
+resources/tilesets/OverWorld.json
+13 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+15 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+42 3
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+62 9
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+60 9
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+58 9
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+173 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+96 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+94 10
+0
+1
+2 0
+Goomba
+-311.888 26584.6
+1
+100
+Goomba
+-313.267 26499.4
+1
+100
+EffectManager
+2
+95 9 star
+97 9 coin
+2
+95 9 1
+97 9 1
+Player
+90.4926 7.235
+3.71875 11.7135
+2
+mario
+6100
+7
+3
+56.1834
+1-1
