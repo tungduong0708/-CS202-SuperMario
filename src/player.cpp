@@ -252,7 +252,7 @@ void Player::HandleInput() {
         currentImage = IDLE;
     }
     
-    if (IsKeyPressed(inputSet[PlayerInput::UP])) {
+    if (IsKeyPressed(inputSet[PlayerInput::UP]) || IsKeyPressed(inputSet[PlayerInput::UP2])) {
         if (isOnGround) {
             if (mode == SMALL) {
                 playSoundEffect(SoundEffect::JUMP);
