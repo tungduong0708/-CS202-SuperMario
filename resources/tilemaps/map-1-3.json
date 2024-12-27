@@ -48,8 +48,8 @@
                  "type":"player",
                  "visible":true,
                  "width":0,
-                 "x":41.3333333333333,
-                 "y":208.333333333333
+                 "x":41,
+                 "y":194
                 }, 
                 {
                  "height":27.5,
@@ -188,7 +188,7 @@
  "nextobjectid":35,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tilesets":[
         {
