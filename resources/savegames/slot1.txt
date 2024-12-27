@@ -1,32 +1,101 @@
 1 player
-<<<<<<< HEAD
-map-1-3.json 1
-=======
-map-1-3.json 2
->>>>>>> e66b3e5c5d7f639832479a2238b54734abdb4d31
+map-1-1.json 1
+KinematicTile 2
+resources/tilesets/OverWorld.json
+13 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+15 10
+0
+1
+2 0
+MonsterFlower
+182.531 10.625
+1
+100
+MonsterFlower
+46.5 9.46875
+1
+100
+Koopa
+59.9432 12.2975
+0
+1
+100
+Koopa
+32.247 12.3004
+0
+1
+100
+Goomba
+34.719 13.0487
+1
+100
+Goomba
+59.6256 13.0475
+1
+100
+Goomba
+119.912 13.0475
+1
+100
+Goomba
+118.792 13.0475
+1
+100
+Goomba
+118.252 13.0504
+1
+100
+Goomba
+58.328 13.0475
+1
+100
+Goomba
+84.9888 13.0475
+1
+100
+Goomba
+57.1256 13.0475
+1
+100
+Goomba
+86.328 13.0475
+1
+100
+Mushroom
+15.6039 8.982
 EffectManager
-1
-59 10 mushroom_fireflower
-1
-59 10 1
+9
+42 2 star
+58 8 mushroom_fireflower
+60 8 coin
+62 8 coin
+94 9 coin
+95 9 star
+96 9 coin
+97 9 coin
+173 9 coin
+9
+42 2 1
+58 8 1
+60 8 2
+62 8 1
+94 9 1
+95 9 1
+96 9 1
+97 9 1
+173 9 1
 Player
-<<<<<<< HEAD
-2.58333 12.7975
-2.58333 13.0208
+14.5065 12.7975
+3.71875 11.7135
 0
 mario
-0
-0
-3
-296.708
-=======
-7.68036 12.735
-2.58333 13.0208
-0
-luigi
-27961
-22
+200
 1
-295.895
->>>>>>> e66b3e5c5d7f639832479a2238b54734abdb4d31
-1-3
+3
+295.829
+1-1
