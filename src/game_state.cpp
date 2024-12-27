@@ -687,6 +687,13 @@ void DeathState::draw() {
         UnloadTexture(deathTexture);
         deathTexture = LoadTexture("../resources/images/smallluigi/dead.png");
     }
+    else {
+        UnloadTexture(characterTexture);
+        characterTexture = LoadTexture("../resources/images/smallmario/idle.png");
+
+        UnloadTexture(deathTexture);
+        deathTexture = LoadTexture("../resources/images/smallmario/dead.png");
+    }
 
     // Draw the central rounded rectangle (panel)
     float rectWidth = 400.0f;
