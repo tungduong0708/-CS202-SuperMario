@@ -149,7 +149,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
     b2Fixture* fixture = deadLine->GetFixtureList();
     b2Filter filter = fixture->GetFilterData();
     filter.categoryBits = CATEGORY_ENEMY;
-    filter.maskBits = MASK_ENEMY;
+    filter.maskBits = CATEGORY_DEFAULT;
     fixture->SetFilterData(filter);
 
     deadLine->GetUserData().pointer = reinterpret_cast<uintptr_t>(deadLineNode);   
