@@ -68,3 +68,11 @@ enum MaskBits {
 // bool collide = (nodeA.getCategoryBits() & nodeB.getMaskBits()) != 0 &&
 //               (nodeA.getMaskBits() & nodeB.getCategoryBits()) != 0;
 
+enum SaveSlot {
+    SLOT_1,
+    SLOT_2,
+    SLOT_3, 
+    SLOT_4,
+    SLOT_5,
+    NOT_LOADED
+};

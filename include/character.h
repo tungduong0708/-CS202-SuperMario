@@ -165,6 +165,7 @@ public:
     void UpdateAnimation();
     void Draw();
     void Draw(Vector2 position, float angle = 0.0f);
+    void DrawImageIcon(Vector2 position, float angle = 0.0f);
 
     void accept(FileVisitor* visitor);
     MovingObject* copy() const;
@@ -172,6 +173,11 @@ public:
     void accept(MultiplayerHandlerVisitor* visitor);
 
     b2Body* getBody();
+
+    Texture getTexture();
+
+    void setScore(int score);
+    int getScore();
 };
 
 
