@@ -585,7 +585,12 @@ void AttackBall::OnBeginContact(SceneNode *other, b2Vec2 normal) {
 
     Player *player = dynamic_cast<Player*>(other);
     if (player) {
-        if (player->isImmortal()) return;
+        if (player->isImmortal()) {
+            Physics::bodiesToDestroy.push_back(body);
+            body = nullptr;
+            animations.clear();
+            return;
+        }
         if (player->getMode() == Mode::SMALL) {
             player->setHealth(player->getHealth() - damage);
             if (player->getHealth() <= 0) {
@@ -769,6 +774,9 @@ void Axe::OnBeginContact(SceneNode *other, b2Vec2 normal)
         b2Body *playerBody = player->getBody();
         playerBody->SetGravityScale(0.0f);
         player->setSpeed(0.0f);
+
+        player->setImmortal(true);
+        player->setImmortalTime(1.5f);
     }
 }
 

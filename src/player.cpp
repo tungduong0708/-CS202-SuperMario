@@ -35,19 +35,17 @@ Player::Player(string type, string name, float coins, int lives, int health,
 
     if (type == "mario") {
         this->time = 300.0f;
-        this->speed = 8.0f;
+        this->speed = 8.5f;
         force = -26.0f;
         bulletSpeed = 9.0f;
         bulletFreq = 0.37f;
-        lives = 10;
     }
     else {
         this->time = 300.0f;
-        this->speed = 9.5f;
-        force = -29.0f;
+        this->speed = 7.2f;
+        force = -28.5f;
         bulletSpeed = 8.0f;
         bulletFreq = 0.30f;
-        lives = 8;
     }
 
 }
