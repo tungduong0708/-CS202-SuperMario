@@ -140,7 +140,7 @@ void Gate::Update(Vector2 playerVelocity, float deltaTime)
     }
     else {
         float ratio = player->getTime() / (delay) * deltaTime;
-        if (player->getTime() > 0 and start) {
+        if (player->getTime() > 1 and start) {
             player->setTime(player->getTime() - ratio*5);
             player->setScore(player->getScore() + ratio*100);
         }

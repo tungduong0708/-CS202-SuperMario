@@ -187,12 +187,12 @@ Goomba::Goomba(string type, float range, bool alive, bool sit, int health, int s
     else if (level == 2) {
         this->health = 200;
         this->strength = 200;
-        this->speed = -3.0f;
+        this->speed = -4.0f;
     }
     else if (level == 3) {
         this->health = 300;
         this->strength = 300;
-        this->speed = -4.0f;
+        this->speed = -8.0f;
     }
 }
 
@@ -358,6 +358,7 @@ Koopa::Koopa(string type, float range, bool alive, bool sit, int health, int sco
 {
     faceLeft = true;
     delay = 0.2f;
+    jumpDelay = 0.0f;
     isDelay = false;
     
     if (level == 1) {
@@ -368,12 +369,12 @@ Koopa::Koopa(string type, float range, bool alive, bool sit, int health, int sco
     else if (level == 2) {
         this->health = 200;
         this->strength = 170;
-        this->speed = -3.5f;
+        this->speed = -4.5f;
     }
     else if (level == 3) {
         this->health = 350;
         this->strength = 325;
-        this->speed = -4.0f;
+        this->speed = -6.0f;
     }
 }
 
@@ -411,6 +412,16 @@ void Koopa::Update(Vector2 playerVelocity, float deltaTime) {
             delay = 0.2f;
         }
     }
+
+    if (level == 3 and isAlive()) {
+        jumpDelay += deltaTime;
+        if (jumpDelay >= 2.0f) {
+            jumpDelay = 0.0f;
+            if (state == EnemyState::ENEMY_WALK) {
+                body->ApplyLinearImpulseToCenter(b2Vec2{0.0f, -25.0f}, true);
+            }
+        }
+    }   
 
     if (state == EnemyState::ENEMY_SHELL) {
         setSpeed(0.0f);
@@ -456,11 +467,11 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
         }
     }
     else {
-        if (normal.x > 0.9f) {
+        if (normal.x > 0.5f) {
             setSpeed(-abs(speed));
             faceLeft = true;
         }
-        if (normal.x < -0.9f) {
+        if (normal.x < -0.5f) {
             setSpeed(+abs(speed));
             faceLeft = false;
         }
@@ -564,6 +575,7 @@ Boss::Boss(string type, float range, bool alive, int health, int score, int leve
     bulletSpeed = 0.0f;
     bossState = BossState::BOSS_IDLE;
     attackFire = true;
+    jump = false;
     
     if (level == 1) {
         this->health = 100;
@@ -657,6 +669,7 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     Player* player = Tilemap::getInstance()->GetPlayer();
     if (!body || !player->isAlive()) return;
     Vector2 playerPos = player->getPosition();
+    bool onGround = player->onGround();
     elapsedTime += deltaTime;
     b2Vec2 position = body->GetPosition();
     destRect.x = position.x;
@@ -671,6 +684,22 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     }
     else {
         bossState = BossState::BOSS_IDLE;
+    }
+
+    if (player->isJump()) {
+        cout << "jump" << endl;
+        cout << jump << endl;
+    }
+
+    if (player->isJump() and level == 3 and isAlive()) {
+        cout << "j" << endl;
+        if (jump == true) {
+            body->ApplyLinearImpulseToCenter(b2Vec2{0.0f, -25.0f}, true);
+            jump = false;
+        }
+        if (jump == false) {
+            jump = true;
+        }
     }
 
     if (diff > 0.0f) {
