@@ -18,6 +18,8 @@ private:
     std::map<std::pair<int, int>, int> effectCount;
     std::vector<AnimationEffect*> lowerEffects; // Manage all effects
     std::vector<AnimationEffect*> upperEffects; // Manage all effects
+
+    Player* playerUpdated = NULL;     // Player updated the effect
 public:
     EffectManager() = default;
     EffectManager(std::map<std::pair<int, int>, std::string> effectMap, std::map<std::pair<int, int>, int> effectCount);
@@ -27,13 +29,13 @@ public:
     void AddEffectCount(std::pair<int, int> pos, int count);
     void AddLowerEffect(AnimationEffect* effect);
     void AddUpperEffect(AnimationEffect* effect);
-    bool isActivePlayerEffect();
+    bool isActivePlayerEffect(Player* player);
     bool isLoadedFromMap();
     std::string GetEffectName(std::pair<int, int> pos);
     int GetEffectCount(std::pair<int, int> pos);
     std::map<std::pair<int, int>, std::string> getEffectMap();
     std::map<std::pair<int, int>, int> getEffectCountMap();
-    void setActivePlayerEffect(bool active);
+    void setActivePlayerEffect(Player* player, bool active);
     void setLoadedFromMap(bool loaded);
     bool UpdateEffectCount(std::pair<int, int> pos);
     void Update(float deltaTime);

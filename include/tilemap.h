@@ -87,6 +87,8 @@ public:
 
     void SetSaveSlotLoadedFrom(SaveSlot slot);
     SaveSlot GetSaveSlotLoadedFrom() const;
+
+    virtual bool isActiveAnyPlayerEffect() const = 0;
 };
 
 class Tilemap1P : public Tilemap {
@@ -107,6 +109,8 @@ public:
     Player* GetLeadingPlayer() const override;
     Player* GetFollowingPlayer() const override;
     Vector2 GetLeadingPlayerPosition() const override;
+
+    bool isActiveAnyPlayerEffect() const override;
 };
 
 class Tilemap2P : public Tilemap {
@@ -139,6 +143,8 @@ public:
 
     void UpdatePlayersInfo();
     void DrawPlayersInfo(Vector2 position, float angle = 0.0f) const;
+
+    bool isActiveAnyPlayerEffect() const override;
 };
 
 #endif
