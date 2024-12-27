@@ -149,7 +149,6 @@ void SettingsState::update() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
     DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 
     // Handle button clicks
     if (IsButtonClicked(buttons[0])) {
@@ -191,7 +190,6 @@ void SettingsState::draw() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Draw sliders
     DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 SavedGameState::SavedGameState(Game* game)
@@ -373,7 +371,6 @@ void PauseGameState::update() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 
     // Handle get back when clicking empty space
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -406,7 +403,6 @@ void PauseGameState::draw() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Draw sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
@@ -502,7 +498,7 @@ void ChangeStageState::update()
     lifeRemaining = player->getLives();
 
     if (elapsedTime > 3.0f) {
-        game->changeState(game->gameplayState.get());
+        game->changeState(game->getPreviousState());
         reset();
     }
 }
@@ -1187,7 +1183,8 @@ void WannaSaveState::update() {
             game->changeState(game->gameSavingState.get());
         }
         else {
-            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(static_cast<int>(saveSlot) + 1) + ".txt";
+            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(static_cast<int>(saveSlot)) + ".txt";
+            cout << "Save to path: " << saveGamePath << endl;
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->SaveGame(saveGamePath);
             if (game->getNextState() == game->backToMenuState.get()) {
@@ -1532,7 +1529,6 @@ void PauseTutorialState::update() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 
     // Handle get back when clicking empty space
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -1587,11 +1583,14 @@ void Gameplay2PState::update() {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         game->changeState(game->gameOverState.get());
     }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
+    else if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_STAGE) {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        cout << "Change stage" << endl;
+        game->changeState(game->changeStageState.get());
     }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR) {
+    else if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_WORLD) {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        cout << "Change world" << endl;
         game->changeState(game->changeStageState.get());
     }
 }

@@ -104,6 +104,7 @@ private:
     float bulletFreq;
     bool isWalkingOnPlatform;
     bool allowInput; // allow to handle input
+    bool jump; // is user input jump
     string name;
     string currentMap;
     Vector2 initialPosition;
@@ -135,6 +136,7 @@ public:
     void setBulletFreq(float bf);
     void setInitialPosition(Vector2 pos);
     void setAllowInput(bool state);
+    void setJump(bool j);
     void impulseForce(Vector2 force);
     void updateScore(int s);
     void updateScore();
@@ -152,6 +154,7 @@ public:
     float getBulletSpeed();
     float getBulletFreq();
     float getTime();
+    bool isJump();
     bool isImmortal();
     bool isAllowInput();
     Vector2 getInitialPosition();
@@ -273,6 +276,7 @@ public:
 class Koopa : public Enemy {
 private:
     float delay;
+    float jumpDelay;
     bool isDelay;
     Player* playerHit = NULL;
 public:
@@ -300,6 +304,7 @@ private:
     float bulletSpeed;
     float timer; // total time of 3 attack frames
     bool attackFire;
+    bool jump;
     BossState bossState;
 public:
     Boss();

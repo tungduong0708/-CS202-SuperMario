@@ -31,6 +31,7 @@ Player::Player(string type, string name, float coins, int lives, int health,
     this->mode = Mode::SMALL;
     this->elapsedTime = 0.0f;
     this->allowInput = true;
+    this->jump = false;
 
     if (type == "mario") {
         this->time = 300.0f;
@@ -137,6 +138,10 @@ void Player::setAllowInput(bool state) {
     allowInput = state;
 }
 
+void Player::setJump(bool j) {
+    jump = j;
+}
+
 void Player::impulseForce(Vector2 force) { 
     body->ApplyLinearImpulseToCenter(b2Vec2(force.x, force.y), true);
 }
@@ -188,6 +193,10 @@ float Player::getTime() {
     return time;
 }
 
+bool Player::isJump() {
+    return jump;
+}
+
 float Player::getForce() {
     return force;
 }
@@ -220,7 +229,8 @@ void Player::HandleInput() {
         }
         faceLeft = false;
 
-    } else 
+    } 
+    else 
     if (IsKeyDown(inputSet[PlayerInput::LEFT])) {
         body->SetLinearVelocity(b2Vec2(-speed, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
@@ -251,6 +261,10 @@ void Player::HandleInput() {
         previousImage = currentImage;
         currentImage = IDLE;
     }
+
+    if (jump == true) {
+        jump = false;
+    }
     
     if (IsKeyPressed(inputSet[PlayerInput::UP]) || IsKeyPressed(inputSet[PlayerInput::UP2])) {
         if (isOnGround) {
@@ -265,8 +279,11 @@ void Player::HandleInput() {
             previousImage = currentImage;
             currentImage = ImageSet::JUMP;
             isOnGround = false;
+            jump = true;
         }
     }
+
+
 
     // default frequency of the bullet: 0.4 seconds
     if (IsKeyPressed(inputSet[PlayerInput::SHOOT]) && mode == Mode::FIRE) {
@@ -317,6 +334,7 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
     }    
 
     if (time <= 0) {
+        cout << "Time's up!" << endl;
         alive = false;
         time = 300.0f;
     }
@@ -332,7 +350,8 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
     }
 
     if (alive) {
-        time -= deltaTime;
+        if (StageStateHandler::GetInstance().GetState() != StageState::VICTORY_STATE) 
+            time -= deltaTime;
     }
     else {
         Dead();
@@ -396,7 +415,7 @@ void Player::Draw() {
 }
 
 void Player::Draw(Vector2 position, float angle) {
-    TextHelper::DrawPackage(lives, score, coins, currentMap, time, position, 9, WHITE);
+    TextHelper::DrawPackage(lives, score, coins, currentMap, time - 1, position, 9, WHITE);
 }
 
 void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)

@@ -502,9 +502,14 @@ void Princess::OnBeginContact(SceneNode* other, b2Vec2 normal)
         player->setAllowInput(false);
         player->setSpeed(0.0f);
         elapsedTime = 0.0f;
+        isFree = true;
+
         string type = player->getType();
         TextHelper::Draw("Thank you " + type + "!", getPosition(), 20, RAYWHITE);
-        playSoundEffect(SoundEffect::WORLD_CLEAR);
+        if (StageStateHandler::GetInstance().GetState() != StageState::VICTORY_STATE) 
+            playSoundEffect(SoundEffect::WORLD_CLEAR);
+            
+        StageStateHandler::GetInstance().SetState(StageState::VICTORY_STATE);
     }
 }
 

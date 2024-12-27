@@ -31,7 +31,7 @@ Game::Game()
     font = LoadFont("../resources/fonts/SuperMario256.ttf");
     music = LoadMusicStream("../resources/audio/01. Ground Theme.mp3");
     PlayMusicStream(music);
-    settings = { true, true, 100, 50 };
+    settings = { true, true, 100 };
     std::cout << "Initializing Game" << std::endl;
     mainMenuState = std::make_unique<MainMenuState>(this);
     settingsState = std::make_unique<SettingsState>(this);
@@ -103,7 +103,6 @@ void Game::update() {
 
 void Game::draw() {
     BeginDrawing();
-    ClearBackground(Fade(RAYWHITE, settings.brightness / 100.0f)); // Update brightness
     if (currentState)
     {
         currentState->draw();
