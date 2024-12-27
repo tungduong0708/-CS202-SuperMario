@@ -85,19 +85,6 @@ private:
     std::vector<Button> buttons;
 };
 
-class MapBuilderState : public GameState
-{
-public:
-    explicit MapBuilderState(Game* game);
-    void update() override;
-    void draw() override;
-    ~MapBuilderState() override;
-
-private:
-    Texture2D backgroundTexture{};
-    Button pauseButton;
-};
-
 class GameplayState : public GameState
 {
 public:
@@ -120,14 +107,6 @@ public:
 
 protected:
     std::vector<Button> buttons;
-};
-
-class MapPauseState : public PauseGameState
-{
-public:
-    explicit MapPauseState(Game* game);
-    void update() override;
-    void draw() override;
 };
 
 class SelectPlayerState : public GameState
