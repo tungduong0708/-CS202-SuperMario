@@ -111,6 +111,8 @@ private:
     vector<int> inputSet = PlayerInputSet::GetPlayer1Input();
     Vector2 spawnPosition;
 
+    bool isActiveEffectOnThisPlayer = false;
+
 public:
     Player();
     Player(string type, string name = "", float coins = 0.0f, int lives = 3, int health = 100, 
@@ -178,6 +180,9 @@ public:
 
     void setScore(int score);
     int getScore();
+
+    bool getActiveEffectOnThisPlayer();
+    void setActiveEffectOnThisPlayer(bool active);
 };
 
 

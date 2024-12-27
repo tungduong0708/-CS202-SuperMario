@@ -504,7 +504,7 @@ void Tilemap::Update(float deltaTime) {
             }
         }
         effectManager->Update(deltaTime);
-        if (!effectManager->isActivePlayerEffect()) {
+        if (!effectManager->isActivePlayerEffect(player)) {
             if (player->isAlive()) 
                 camera.Update(player->getPosition());  
             player->HandleInput();
@@ -529,7 +529,7 @@ void Tilemap::Draw() const {
         }
     }
     Vector2 cameraTarget = camera.GetCameraTarget();
-    if (!effectManager->isActivePlayerEffect()) {
+    if (!effectManager->isActivePlayerEffect(player)) {
         player->Draw();
     }
     player->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
@@ -652,6 +652,13 @@ Player* Tilemap1P::GetFollowingPlayer() const {
 Vector2 Tilemap1P::GetLeadingPlayerPosition() const {
     return playerPosition;
 }
+
+bool Tilemap1P::isActiveAnyPlayerEffect() const {
+    return effectManager->isActivePlayerEffect(player);
+}
+
+
+
 
 Tilemap2P::Tilemap2P() : Tilemap() {
     player2 = nullptr;
@@ -821,16 +828,23 @@ void Tilemap2P::Update(float deltaTime) {
             }
         }
         effectManager->Update(deltaTime);
-        if (!effectManager->isActivePlayerEffect()) {
-            if (GetLeadingPlayer() && GetLeadingPlayer()->getPosition().x > camera.GetCameraTarget().x) 
-                camera.Update(GetLeadingPlayer()->getPosition());  
-
+        if (!isActiveAnyPlayerEffect()) {
+            if (GetLeadingPlayer()) {
+                if (GetLeadingPlayer()->getPosition().x > camera.GetCameraTarget().x) {
+                    camera.Update(GetLeadingPlayer()->getPosition());
+                }
+                else {
+                    camera.Update(Vector2{camera.GetCameraTarget().x - deltaTime*(camera.GetCameraTarget().x - GetLeadingPlayer()->getPosition().x), GetLeadingPlayer()->getPosition().y});
+                }
+            }
+        }
+        if (!effectManager->isActivePlayerEffect(player)) {
             player->HandleInput();
             player->Update(Vector2{player->getVelocity().x, player->getVelocity().y}, deltaTime);
-
+        }
+        if (!effectManager->isActivePlayerEffect(player2)) {
             player2->HandleInput();
             player2->Update(Vector2{player2->getVelocity().x, player2->getVelocity().y}, deltaTime);
-
         }
         UpdatePlayersInfo();
         UpdateMultiplayerPosition();
@@ -853,8 +867,10 @@ void Tilemap2P::Draw() const {
         }
     }
     Vector2 cameraTarget = camera.GetCameraTarget();
-    if (!effectManager->isActivePlayerEffect()) {
+    if (!effectManager->isActivePlayerEffect(player)) {
         player->Draw();
+    }
+    if (!effectManager->isActivePlayerEffect(player2)) {
         player2->Draw();
     }
 
@@ -933,9 +949,9 @@ void Tilemap2P::setPlayer2(const std::string name) {
 
 void Tilemap2P::UpdateMultiplayerPosition(){
     player->accept(new MultiplayerUpdatePosition(&camera, player2->getVelocity()));
-    player->accept(new MultiplayerUpdateSpawnPosition(&camera));
+    player->accept(new MultiplayerUpdateSpawnPosition(player2, &camera));
     player2->accept(new MultiplayerUpdatePosition(&camera, player->getVelocity()));
-    player2->accept(new MultiplayerUpdateSpawnPosition(&camera));
+    player2->accept(new MultiplayerUpdateSpawnPosition(player, &camera));
 }
 
 void Tilemap2P::UpdatePlayersInfo(){
@@ -954,6 +970,9 @@ void Tilemap2P::DrawPlayersInfo(Vector2 position, float angle) const {
     player2->Draw({position.x + player->getSize().x + 0.2f, position.y}, angle);
 }
 
+bool Tilemap2P::isActiveAnyPlayerEffect() const {
+    return effectManager->isActivePlayerEffect(player) || effectManager->isActivePlayerEffect(player2);
+}
 
 
 

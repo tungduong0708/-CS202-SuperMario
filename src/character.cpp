@@ -262,7 +262,7 @@ void Character::Dead()
 
 void Character::Update(Vector2 playerVelocity, float deltaTime) {
     EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-    if (modeChanged && !effectManager->isActivePlayerEffect()) {
+    if (modeChanged && !Tilemap::getInstance()->isActiveAnyPlayerEffect()) {
         UpdateMode(mode, b2Vec2{position.x, position.y});
         modeChanged = false;
     }

@@ -252,7 +252,7 @@ void Player::HandleInput() {
         currentImage = IDLE;
     }
     
-    if (IsKeyPressed(inputSet[PlayerInput::UP])) {
+    if (IsKeyPressed(inputSet[PlayerInput::UP]) || IsKeyPressed(inputSet[PlayerInput::UP2])) {
         if (isOnGround) {
             if (mode == SMALL) {
                 playSoundEffect(SoundEffect::JUMP);
@@ -340,11 +340,12 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
 }
 
 void Player::Dead() {
+    cout << "Spawn at: " << spawnPosition.x << ", " << spawnPosition.y << endl;
     EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-    if (effectManager->isActivePlayerEffect()) {
+    if (effectManager->isActivePlayerEffect(this)) {
         return;
     }
-    if (!effectManager->isActivePlayerEffect()) {
+    if (!effectManager->isActivePlayerEffect(this)) {
         if (body) {
             b2Vec2 pos = body->GetPosition();
             Physics::world.DestroyBody(body);
@@ -353,7 +354,7 @@ void Player::Dead() {
             lives--;
             std::string effectName = "dead_" + type;
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, Vector2{pos.x, pos.y}));
-            effectManager->setActivePlayerEffect(true);
+            effectManager->setActivePlayerEffect(this, true);
         }
         else {
             if (lives == 0) {
@@ -424,7 +425,7 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
             std::string effectName = "grow_" + type;
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, Vector2{pos.x, pos.y + size.y}));
-            effectManager->setActivePlayerEffect(true);
+            effectManager->setActivePlayerEffect(this, true);
             body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
         }
     }
@@ -480,4 +481,12 @@ Texture Player::getTexture() {
     string fileName = "../resources/images/smallmario/idle.png";
     Texture texture = LoadTexture(fileName.c_str());            
     return texture;
+}
+
+bool Player::getActiveEffectOnThisPlayer() {
+    return isActiveEffectOnThisPlayer;
+}
+
+void Player::setActiveEffectOnThisPlayer(bool active) {
+    isActiveEffectOnThisPlayer = active;
 }

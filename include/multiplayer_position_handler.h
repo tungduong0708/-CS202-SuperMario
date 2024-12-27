@@ -23,7 +23,9 @@ public:
 };
 
 class MultiplayerUpdateSpawnPosition : public MultiplayerHandlerVisitor{
+private:
+    Player* otherPlayer;
 public:
-    MultiplayerUpdateSpawnPosition(MyCamera* camera);
+    MultiplayerUpdateSpawnPosition(Player* otherPlayer, MyCamera* camera);
     void VisitPlayer(Player* player) override;
 };
