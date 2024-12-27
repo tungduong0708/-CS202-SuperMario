@@ -1183,7 +1183,8 @@ void WannaSaveState::update() {
             game->changeState(game->gameSavingState.get());
         }
         else {
-            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(static_cast<int>(saveSlot) + 1) + ".txt";
+            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(static_cast<int>(saveSlot)) + ".txt";
+            cout << "Save to path: " << saveGamePath << endl;
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->SaveGame(saveGamePath);
             if (game->getNextState() == game->backToMenuState.get()) {
