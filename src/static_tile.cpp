@@ -171,6 +171,9 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                     Physics::bodiesToDestroy.push_back(GetBody());
                     SetBody(nullptr);
                     isDestroyed = true;
+
+                    Tilemap* tilemap = Tilemap::getInstance();
+                    tilemap->addChangedTile(this);
                 }
             }
             else if (normal.y < -0.5f && !isActivated) {
