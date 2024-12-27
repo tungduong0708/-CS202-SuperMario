@@ -164,18 +164,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":16,
-                 "name":"mario",
-                 "point":true,
-                 "rotation":0,
-                 "type":"player",
-                 "visible":true,
-                 "width":0,
-                 "x":100.136363636364,
-                 "y":152.363636363636
-                }, 
-                {
-                 "height":0,
                  "id":17,
                  "name":"larvabubble",
                  "point":true,
@@ -185,6 +173,18 @@
                  "width":0,
                  "x":526,
                  "y":239
+                }, 
+                {
+                 "height":0,
+                 "id":19,
+                 "name":"mario",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player",
+                 "visible":true,
+                 "width":0,
+                 "x":111.538972248042,
+                 "y":136.768025494622
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -220,7 +220,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":18,
+ "nextobjectid":20,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

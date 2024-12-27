@@ -128,8 +128,14 @@ void Gate::Update(Vector2 playerVelocity, float deltaTime)
     Player* player = Tilemap::getInstance()->GetPlayer();
     if (elapsedTime > delay) {
         elapsedTime = 0.0f;
+        Game::getInstance()->changeState(Game::getInstance()->changeStageState.get());
         Tilemap::getInstance()->SetNewMapPath(addressNext);
-        StageStateHandler::GetInstance().SetState(StageState::WORLD_CLEAR);
+        if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
+            StageStateHandler::GetInstance().SetState(StageState::NEW_STAGE);
+        }
+        else if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR) {
+            StageStateHandler::GetInstance().SetState(StageState::NEW_WORLD);
+        }
 
         player->setAllowInput(true);
         player->setAppear(true);
@@ -144,6 +150,7 @@ void Gate::Update(Vector2 playerVelocity, float deltaTime)
             player->setTime(player->getTime() - ratio*5);
             player->setScore(player->getScore() + ratio*100);
         }
+        cout << "Time: " << player->getTime() << endl;
     }
 }
 
@@ -158,12 +165,15 @@ void Gate::OnBeginContact(SceneNode *other, b2Vec2 normal)
         Tilemap* tilemap = Tilemap::getInstance();
         if (addressNext[7] == '-' && tilemap->GetCurrentMapPath()[7] == '-') {
             tilemap->SetNewMapPath(addressNext);
-            StageStateHandler::GetInstance().SetState(StageState::STAGE_CLEAR);
+            StageStateHandler::GetInstance().SetState(StageState::WORLD_CLEAR);
+            playSoundEffect(SoundEffect::WORLD_CLEAR);
         } else {
             start = true;
             elapsedTime = 0.0f;
 
+            StageStateHandler::GetInstance().SetState(StageState::STAGE_CLEAR);
             playSoundEffect(SoundEffect::STAGE_CLEAR);
+
             player->setAllowInput(false);
             player->setAppear(false);
             prevSpeed = player->getSpeed();
@@ -239,32 +249,62 @@ void Pole::Update(Vector2 playerVelocity, float deltaTime)
     if (activated) return;
     if (activating && (!flagOnGround || !playerOnGround))
     {
-        Player *player = Tilemap::getInstance()->GetPlayer();
-        Vector2 playerPos = player->getPosition();
         Vector2 flagPos = flag->getPosition();
         Vector2 polePos = getPosition();
-        if (playerPos.y + player->getSize().y + 0.5f >= polePos.y + height)
-        {
-            playerOnGround = true;
-        }
-        else if (!playerOnGround) {
-            player->setPositionBody(b2Vec2{playerPos.x, playerPos.y});
-        }
-        if (flagPos.y + flag->getSize().y + 0.5f >= polePos.y + height)
-        {
-            flagOnGround = true;
-        }
-        else if (!flagOnGround) {
-            flag->setPosition(Vector2{flagPos.x, flagPos.y + 5.0f * speed * deltaTime});
+        if (playerTouching != NULL) {
+            Player* player = playerTouching;
+            Vector2 playerPos = player->getPosition();
+            if (playerPos.y + player->getSize().y + 0.5f >= polePos.y + height)
+            {
+                playerOnGround = true;
+            }
+            else if (!playerOnGround) {
+                player->setPositionBody(b2Vec2{playerPos.x, playerPos.y});
+            }
+            if (flagPos.y + flag->getSize().y + 0.5f >= polePos.y + height)
+            {
+                flagOnGround = true;
+            }
+            else if (!flagOnGround) {
+                flag->setPosition(Vector2{flagPos.x, flagPos.y + 5.0f * speed * deltaTime});
+            }
         }
 
+        if (playerTouching2 != NULL) {
+            Player* player = playerTouching;
+            Vector2 playerPos = player->getPosition();
+            if (playerPos.y + player->getSize().y + 0.5f >= polePos.y + height)
+            {
+                playerOnGround = true;
+            }
+            else if (!playerOnGround) {
+                player->setPositionBody(b2Vec2{playerPos.x, playerPos.y});
+            }
+            if (flagPos.y + flag->getSize().y + 0.5f >= polePos.y + height)
+            {
+                flagOnGround = true;
+            }
+            else if (!flagOnGround) {
+                flag->setPosition(Vector2{flagPos.x, flagPos.y + 5.0f * speed * deltaTime});
+            }
+        }
         if (flagOnGround && playerOnGround) {
             activating = false;
             activated = true;
-            player->setCurrentImage(ImageSet::WALK);
-            player->setAllowInput(true);
-            player->getBody()->SetGravityScale(1.0f);
-            player->setSpeed(prevPlayerSpeed);
+            if (playerTouching != NULL) {
+                playerTouching->setCurrentImage(ImageSet::WALK);
+                playerTouching->setAllowInput(true);
+                playerTouching->getBody()->SetGravityScale(1.0f);
+                playerTouching->setSpeed(prevPlayerSpeed);
+                playerTouching = NULL;
+            }
+            if (playerTouching2 != NULL) {
+                playerTouching2->setCurrentImage(ImageSet::WALK);
+                playerTouching2->setAllowInput(true);
+                playerTouching2->getBody()->SetGravityScale(1.0f);
+                playerTouching2->setSpeed(prevPlayerSpeed);
+                playerTouching2 = NULL;
+            }
         }
     }
 }
@@ -275,13 +315,21 @@ void Pole::OnBeginContact(SceneNode *other, b2Vec2 normal)
     Player *player = dynamic_cast<Player *>(other);
     if (player != nullptr)
     {
+        if (playerTouching == NULL) {
+            playerTouching = player;
+        }
+        else if (playerTouching2 == NULL) {
+            playerTouching2 = player;
+        }
+        if (!activating) {
+            playSoundEffect(SoundEffect::FLAG_POLE_DOWN);
+        }
         activating = true;
         Vector2 playerPos = player->getPosition();
         Vector2 polePos = getPosition();
         polePos.y += height;
         float scoreRatio = 5000.0f / height;
         player->setAddScore(int((polePos.y - playerPos.y) * scoreRatio)/ 10 * 10);
-        playSoundEffect(SoundEffect::FLAG_POLE_DOWN);
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", Vector2{polePos.x, polePos.y}));
         player->updateScore();

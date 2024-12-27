@@ -158,18 +158,6 @@
          "objects":[
                 {
                  "height":0,
-                 "id":64,
-                 "name":"mario",
-                 "point":true,
-                 "rotation":0,
-                 "type":"player",
-                 "visible":true,
-                 "width":0,
-                 "x":59.4999999999995,
-                 "y":187.416666666667
-                }, 
-                {
-                 "height":0,
                  "id":65,
                  "name":"coin",
                  "point":true,
@@ -471,6 +459,18 @@
                  "width":0,
                  "x":1514.66666666667,
                  "y":205.333333333333
+                }, 
+                {
+                 "height":0,
+                 "id":150,
+                 "name":"mario",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player",
+                 "visible":true,
+                 "width":0,
+                 "x":3113.06792955454,
+                 "y":176.113659908243
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -479,7 +479,7 @@
          "y":0
         }],
  "nextlayerid":21,
- "nextobjectid":148,
+ "nextobjectid":151,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

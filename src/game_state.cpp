@@ -498,7 +498,7 @@ void ChangeStageState::update()
     lifeRemaining = player->getLives();
 
     if (elapsedTime > 3.0f) {
-        game->changeState(game->gameplayState.get());
+        game->changeState(game->getPreviousState());
         reset();
     }
 }
@@ -1117,7 +1117,7 @@ void SelectDifficultyState::update() {
             tilemap->~Tilemap();
             Tilemap::SetMapType(TilemapType::TILEMAP_1P);
             tilemap = Tilemap::getInstance();
-            tilemap->LoadMapFromJson("map-1-5-3.json", i + 1);
+            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
 
             tilemap->SetSaveSlotLoadedFrom(SaveSlot::NOT_LOADED);
 
@@ -1183,7 +1183,8 @@ void WannaSaveState::update() {
             game->changeState(game->gameSavingState.get());
         }
         else {
-            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(static_cast<int>(saveSlot) + 1) + ".txt";
+            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(static_cast<int>(saveSlot)) + ".txt";
+            cout << "Save to path: " << saveGamePath << endl;
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->SaveGame(saveGamePath);
             if (game->getNextState() == game->backToMenuState.get()) {
@@ -1582,11 +1583,14 @@ void Gameplay2PState::update() {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         game->changeState(game->gameOverState.get());
     }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
+    else if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_STAGE) {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        cout << "Change stage" << endl;
+        game->changeState(game->changeStageState.get());
     }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR) {
+    else if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_WORLD) {
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        cout << "Change world" << endl;
         game->changeState(game->changeStageState.get());
     }
 }

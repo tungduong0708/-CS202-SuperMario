@@ -1,76 +1,63 @@
-1 player
+2 players
 map-1-1.json 1
-KinematicTile 2
-resources/tilesets/OverWorld.json
-15 10
-0
-1
-2 0
-StaticTile 3
-resources/tilesets/OverWorld.json
-16 10
-1 0
-StaticTile 3
-resources/tilesets/OverWorld.json
-14 10
-1 0
 MonsterFlower
-15.5208 7.60417
-2
+182.531 10.625
+1
 100
 MonsterFlower
 46.5 9.46875
 1
 100
 Koopa
-69.4783 12.2975
+69.1454 12.2975
 0
 1
 100
 Koopa
-30.7537 12.2975
+32.8862 12.2975
 0
 1
 100
 Goomba
-35.9044 13.0475
+32.3485 13.0475
 1
 100
 Goomba
-56.8406 13.0475
+55.5192 13.046
 1
 100
 Goomba
-130.441 13.0475
+130.896 13.0475
 1
 100
 Goomba
-127.441 13.0475
+127.921 13.0475
 1
 100
 Goomba
-128.875 13.0475
+129.28 13.0475
 1
 100
 Goomba
-58.1443 13.0475
+56.7715 13.0475
 1
 100
 Goomba
-79.6348 13.0438
+112.334 568.778
 1
 100
 Goomba
-59.3426 13.0475
+57.9983 13.0475
 1
 100
 Goomba
-78.2496 13.0504
+111.108 494.047
 1
 100
 EffectManager
-10
+11
 13 9 coin
+15 9 mushroom_fireflower
 42 2 star
 58 8 mushroom_fireflower
 60 8 coin
@@ -80,8 +67,9 @@ EffectManager
 96 9 coin
 97 9 coin
 173 9 coin
-10
+11
 13 9 1
+15 9 1
 42 2 1
 58 8 1
 60 8 2
@@ -92,12 +80,22 @@ EffectManager
 97 9 1
 173 9 1
 Player
-14.1717 12.235
-3.71875 11.7135
-1
-mario
-1000
+212.871 12.7975
+194.567 11.0071
 0
-3
-292.029
+mario
+8565
+0
+5
+289.315
+1-1
+Player
+210.035 12.735
+194.567 11.0071
+0
+luigi
+8565
+0
+5
+289.315
 1-1

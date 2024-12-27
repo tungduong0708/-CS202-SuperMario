@@ -332,6 +332,7 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
     }    
 
     if (time <= 0) {
+        cout << "Time's up!" << endl;
         alive = false;
         time = 300.0f;
     }
@@ -347,7 +348,8 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
     }
 
     if (alive) {
-        time -= deltaTime;
+        if (StageStateHandler::GetInstance().GetState() != StageState::VICTORY_STATE) 
+            time -= deltaTime;
     }
     else {
         Dead();
