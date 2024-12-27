@@ -251,6 +251,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
                             if (player != nullptr) {
                                 player->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
                                 player->setInitialPosition(playerPosition);
+                                player->SetSpawnPosition(playerPosition);
                                 string fPath = filePath.substr(4,3);
                                 player->setCurrentMap(fPath);
                                 player->setElapsedTime(0.0f);
