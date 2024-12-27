@@ -209,9 +209,6 @@ SavedGameState::SavedGameState(Game* game)
     }
     // Initialize back to menu button
     buttons.push_back({{centerX, firstY + buttonHeight * 5 + spacing * 5, buttonWidth, buttonHeight}, "Back to Menu", false});
-
-    // Load background image
-    backgroundTexture = LoadTexture("../resources/images/icon/squareboard.png");
 }
 
 void SavedGameState::update() {
@@ -261,59 +258,10 @@ void SavedGameState::draw() {
     // Draw a semi-transparent gray overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
 
-    // Draw background image
-    constexpr float backgroundScale = 4.0f;
-    float textureWidth = backgroundTexture.width * backgroundScale;
-    float textureHeight = backgroundTexture.height * backgroundScale;
-    float posX = (game->getScreenWidth() - textureWidth) / 2;
-    float posY = (game->getScreenHeight() - textureHeight) / 2;
-
-    DrawTextureEx(backgroundTexture, {posX, posY}, 0.0f, backgroundScale, WHITE);
-
     // Draw buttons
     for (const auto& button : buttons) {
         DrawButton(button, *game);
     }
-}
-
-SavedGameState::~SavedGameState() {
-    // Unload background texture
-    UnloadTexture(backgroundTexture);
-}
-
-MapBuilderState::MapBuilderState(Game* game)
-    : GameState(game)
-{
-    backgroundTexture = LoadTexture("../resources/background/menuBackground.png");
-    float buttonWidth = 50;
-    float buttonHeight = 50;
-    pauseButton = {{game->getScreenWidth() - buttonWidth - 10, 10, buttonWidth, buttonHeight}, "II", false};
-}
-
-void MapBuilderState::update() {
-    // Update pause button hover state
-    pauseButton.isHovered = CheckCollisionPointRec(GetMousePosition(), pauseButton.rect);
-
-    // Handle pause button click
-    if (IsButtonClicked(pauseButton)) {
-        game->changeState(game->mapPauseState.get());
-    }
-}
-
-void MapBuilderState::draw() {
-    DrawTexturePro(
-        backgroundTexture,
-        {0, 0, static_cast<float>(backgroundTexture.width), static_cast<float>(backgroundTexture.height)},
-        {0, 0, static_cast<float>(game->getScreenWidth()), static_cast<float>(game->getScreenHeight())},
-        {0, 0},
-        0.0f,
-        WHITE
-    );
-    DrawButton(pauseButton, *game);
-}
-
-MapBuilderState::~MapBuilderState() {
-    UnloadTexture(backgroundTexture);
 }
 
 GameplayState::GameplayState(Game* game)
@@ -446,76 +394,6 @@ void PauseGameState::update() {
 void PauseGameState::draw() {
     // Draw the underlying GameplayState
     game->gameplayState->draw();
-
-    // Draw a semi-transparent gray overlay
-    DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
-
-    // Draw buttons
-    for (const auto& button : buttons) {
-        DrawButton(button, *game);
-    }
-
-    float centerX = (game->getScreenWidth() - 400) / 2;
-    // Draw sliders
-    DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
-}
-
-MapPauseState::MapPauseState(Game *game) : PauseGameState(game)
-{   
-}
-
-void MapPauseState::update()
-{
-    // Update button texts based on settings
-    buttons[0].text = game->getSettings().music ? "Music: On" : "Music: Off";
-    buttons[1].text = game->getSettings().soundEffects ? "Sound Effects: On" : "Sound Effects: Off";
-
-    // Update button hover states
-    for (auto& button : buttons) {
-        button.isHovered = CheckCollisionPointRec(GetMousePosition(), button.rect);
-    }
-
-    // Handle button clicks
-    if (IsButtonClicked(buttons[0])) {
-        game->getSettings().music = !game->getSettings().music;
-    }
-    if (IsButtonClicked(buttons[1])) {
-        game->getSettings().soundEffects = !game->getSettings().soundEffects;
-        SoundEffectHandler::SwitchEnableSoundEffects();
-    }
-    if (IsButtonClicked(buttons[2])) {
-        game->changeState(game->mapBuilderState.get());
-    }
-    if (IsButtonClicked(buttons[3])) {
-        game->changeState(game->mainMenuState.get());
-    }
-
-    float centerX = (game->getScreenWidth() - 400) / 2;
-    // Update sliders
-    DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
-
-    // Handle get back when clicking empty space
-    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        if (CheckCollisionPointRec(GetMousePosition(), {centerX, 525, 400, 50}) || CheckCollisionPointRec(GetMousePosition(), {centerX, 625, 400, 50}))
-            MouseClickToEmptySpaceHandler::SetIsTrue(false);
-        else if (CheckCollisionPointRec(GetMousePosition(), buttons[0].rect) || CheckCollisionPointRec(GetMousePosition(), buttons[1].rect)
-            || CheckCollisionPointRec(GetMousePosition(), buttons[2].rect) || CheckCollisionPointRec(GetMousePosition(), buttons[3].rect))
-            MouseClickToEmptySpaceHandler::SetIsTrue(false);
-        else {
-            MouseClickToEmptySpaceHandler::SetIsTrue(true);
-        }
-    }
-    else if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && MouseClickToEmptySpaceHandler::GetIsTrue()) {
-        game->changeState(game->mapBuilderState.get());
-    }
-}
-
-void MapPauseState::draw()
-{
-    // Draw the underlying MapBuiderState
-    game->mapBuilderState->draw();
 
     // Draw a semi-transparent gray overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
@@ -1138,9 +1016,6 @@ GameSavingState::GameSavingState(Game* game) : GameState(game) {
         buttons.push_back(Button{{centerX, firstY + buttonHeight * i + spacing * i, buttonWidth, buttonHeight}, 
         "Slot " + std::to_string(i + 1), false});
     }
-
-    // Initialize background texture
-    backgroundTexture = LoadTexture("../resources/images/icon/squareboard.png");
 }
 
 void GameSavingState::update() {
@@ -1179,24 +1054,10 @@ void GameSavingState::draw() {
     // Draw a semi-transparent gray overlay
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.5f));
 
-    // Draw background texture
-    constexpr float backgroundScale = 3.5f;
-    float textureWidth = backgroundTexture.width * backgroundScale;
-    float textureHeight = backgroundTexture.height * backgroundScale;
-    float posX = (game->getScreenWidth() - textureWidth) / 2;
-    float posY = (game->getScreenHeight() - textureHeight) / 2;
-
-    DrawTextureEx(backgroundTexture, {posX, posY}, 0.0f, backgroundScale, WHITE);
-
     // Draw buttons
     for (const auto& button : buttons) {
         DrawButton(button, *game);
     }
-}
-
-GameSavingState::~GameSavingState() {
-    // Unload textures
-    UnloadTexture(backgroundTexture);
 }
 
 SelectDifficultyState::SelectDifficultyState(Game* game) : GameState(game)
