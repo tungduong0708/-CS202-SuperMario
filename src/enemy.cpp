@@ -666,8 +666,11 @@ void Boss::Update(Vector2 playerVelocity, float deltaTime) {
     if (abs(diff) > 5.0f and abs(diff) < 12.5f) {
         bossState = BossState::BOSS_ATTACK;
     }
-    else {
+    else if (abs(diff) < 5.0f){
         bossState = BossState::BOSS_WALK;
+    }
+    else {
+        bossState = BossState::BOSS_IDLE;
     }
 
     if (diff > 0.0f) {
