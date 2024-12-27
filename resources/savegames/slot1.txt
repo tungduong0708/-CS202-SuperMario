@@ -1,285 +1,103 @@
 1 player
-map-1-5-3.json 2
-KinematicTile 52
-resources/tilesets/tiles-2.json
-46 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-46 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-47 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-47 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-47 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-46 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-48 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-48 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-49 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-49 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-49 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-48 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-50 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-50 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-50 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-52 10
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-52 9
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 10
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 9
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-52 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-55 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 5
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-55 5
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-56 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-56 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-57 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-56 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-55 9
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-55 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 9
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-55 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 5
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-52 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-52 5
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-51 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-51 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-51 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-52 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 10
-0
-0
+map-1-1.json 1
+KinematicTile 2
+resources/tilesets/OverWorld.json
+15 10
+0
+1
+2 0
+StaticTile 3
+resources/tilesets/OverWorld.json
+16 10
+1 0
+StaticTile 3
+resources/tilesets/OverWorld.json
+14 10
+1 0
 MonsterFlower
 15.5208 7.60417
 2
 100
 MonsterFlower
-23.5208 6.52083
-2
+46.5 9.46875
+1
 100
-MonsterFlower
-39.5625 7.45833
-2
-100
-MonsterFlower
-70.4792 10.5833
-2
-100
-MonsterFlower
-77.5625 10.6042
-2
-100
-LarvaBubble
-92.1705 14.2849
-2
-100
-Boss
-110.452 23.8088
-2
-1700
 Koopa
-193.453 6112.25
+69.4783 12.2975
 0
-2
-200
-MonsterFlower
-53.4375 9.5625
-2
+1
 100
-LarvaBubble
-90.9645 13.4177
-2
+Koopa
+30.7537 12.2975
+0
+1
 100
-LarvaBubble
-32.875 13.9487
-2
+Goomba
+35.9044 13.0475
+1
+100
+Goomba
+56.8406 13.0475
+1
+100
+Goomba
+130.441 13.0475
+1
+100
+Goomba
+127.441 13.0475
+1
+100
+Goomba
+128.875 13.0475
+1
+100
+Goomba
+58.1443 13.0475
+1
+100
+Goomba
+79.6348 13.0438
+1
+100
+Goomba
+59.3426 13.0475
+1
+100
+Goomba
+78.2496 13.0504
+1
 100
 EffectManager
-0
-0
+10
+13 9 coin
+42 2 star
+58 8 mushroom_fireflower
+60 8 coin
+62 8 coin
+94 9 coin
+95 9 star
+96 9 coin
+97 9 coin
+173 9 coin
+10
+13 9 1
+42 2 1
+58 8 1
+60 8 2
+62 8 1
+94 9 1
+95 9 1
+96 9 1
+97 9 1
+173 9 1
 Player
-120.766 12.7975
-6.25852 9.52273
-0
+14.1717 12.235
+3.71875 11.7135
+1
 mario
-49858
-2
-2
-239.306
-1-5
+1000
+0
+3
+292.029
+1-1
