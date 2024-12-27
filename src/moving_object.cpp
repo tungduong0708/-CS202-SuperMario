@@ -182,7 +182,7 @@ void FireBall::setPlayerShot(Player* player){
     playerShot = player;
 }
 
-Player* FireBall::getPlayerShot(){
+Player* FireBall::getPlayerShot() {
     return playerShot;
 }
 

@@ -991,12 +991,21 @@ void MonsterFlower::OnBeginContact(SceneNode *other, b2Vec2 normal) {
     if (fireball or (player and player->isImmortal())) {
         setHealth(getHealth() - 100);
         if (!alive) {
-            Player* player = fireball->getPlayerShot();
-            player->setAddScore(100);
-            EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-            effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
-            player->updateScore();
-            Dead();
+            if (fireball) {
+                Player* player1 = fireball->getPlayerShot();
+                player1->setAddScore(100);
+                EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+                effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+                player1->updateScore();
+                Dead();
+            }
+            else {
+                player->setAddScore(100);
+                EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
+                effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
+                player->updateScore();
+                Dead();
+            }
         }
     }
     else if (player) {
@@ -1005,6 +1014,8 @@ void MonsterFlower::OnBeginContact(SceneNode *other, b2Vec2 normal) {
 }
 
 void MonsterFlower::ContactPlayer(Player* player, b2Vec2 normal) {
+    if (!player) return;
+    if (!body)  return;
     Vector2 playerPos = player->getPosition();
     Vector2 flowerPos = {body->GetPosition().x, body->GetPosition().y};
     if (playerPos.y + player->getSize().y >= flowerPos.y && playerPos.y <= initialPosition.y + size.y) {
