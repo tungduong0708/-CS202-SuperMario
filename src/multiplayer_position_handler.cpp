@@ -45,7 +45,7 @@ void MultiplayerUpdateSpawnPosition::VisitPlayer(Player* player){
     
     // 
     if (otherPlayer->isAlive()) {
-        player->SetSpawnPosition({otherPlayer->getPosition().x, otherPlayer->getPosition().y - 4.0f});
+        player->SetSpawnPosition({otherPlayer->getPosition().x, otherPlayer->getPosition().y - 2.0f});
     }
     else {
         cout << "Both player dead" << endl;

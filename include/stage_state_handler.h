@@ -10,7 +10,8 @@ enum StageState {
     NEW_STAGE,
     NEW_WORLD,
     CHANGE_STAGE,
-    CHANGE_WORLD
+    CHANGE_WORLD,
+    VICTORY_STATE
 };
 
 class StageStateHandler {   //To handle player's dead, stage clear, game over, etc.

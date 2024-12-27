@@ -350,7 +350,8 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
     }
 
     if (alive) {
-        time -= deltaTime;
+        if (StageStateHandler::GetInstance().GetState() != StageState::VICTORY_STATE) 
+            time -= deltaTime;
     }
     else {
         Dead();

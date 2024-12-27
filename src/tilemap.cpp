@@ -928,7 +928,7 @@ void Tilemap2P::Draw() const {
         player2->Draw();
     }
 
-    DrawPlayersInfo(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f); 
+    DrawPlayersInfo(Vector2{cameraTarget.x - 10.2f, cameraTarget.y - 7.0f}, 0.0f); 
     effectManager->DrawUpper();
     EndMode2D();
 }
