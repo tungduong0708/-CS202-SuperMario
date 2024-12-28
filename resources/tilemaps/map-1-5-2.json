@@ -215,30 +215,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":18,
-                 "name":"goomba",
-                 "point":true,
-                 "rotation":0,
-                 "type":"character",
-                 "visible":true,
-                 "width":0,
-                 "x":124.25,
-                 "y":199.75
-                }, 
-                {
-                 "height":0,
-                 "id":19,
-                 "name":"goomba",
-                 "point":true,
-                 "rotation":0,
-                 "type":"character",
-                 "visible":true,
-                 "width":0,
-                 "x":106.5,
-                 "y":198.25
-                }, 
-                {
-                 "height":0,
                  "id":20,
                  "name":"koopa",
                  "point":true,
