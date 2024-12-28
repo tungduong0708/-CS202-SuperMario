@@ -1,222 +1,260 @@
 1 player
-map-1-2-2.json 2
+map-1-5-3.json 2
 KinematicTile 2
 resources/tilesets/OverWorld.json
-10 10
-0
-1
-2 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-11 10
-0
-1
-2 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-12 10
-0
-1
-2 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-13 10
-0
-1
-2 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-14.015 10
-0
-1
-2 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-32 5
-0
-1
-2 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-33 5
-0
-1
-2 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-36 10
+31 7
 0
 1
 2 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-41 6
+46 7
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-42 6
+46 6
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-43 6
+47 6
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-44 6
+47 7
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-58 9
+47 8
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-59 9
+48 8
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-60 9
+48 7
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-61 9
+51 8
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-85 6
+50 8
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-84 6
+51 7
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-86 6
+52 7
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-87 6
+51 6
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-88 6
+52 6
 0
 0
 KinematicTile 52
 resources/tilesets/tiles-2.json
-89 6
+52 5
 0
 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-104 6
+KinematicTile 52
+resources/tilesets/tiles-2.json
+53 6
 0
-1
-2 0
-KinematicTile 2
-resources/tilesets/OverWorld.json
-103 6
 0
-1
-2 0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+53 5
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+53 4
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+53 7
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+54 7
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+54 6
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+54 8
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+53 8
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+54 9
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+55 9
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+55 8
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+54 10
+0
+0
 MonsterFlower
-109.26 8.71875
+15.5208 7.60417
 2
 100
 MonsterFlower
-103.354 9.65625
+23.5208 6.52083
 2
 100
-Goomba
-4.95752 12.0475
+MonsterFlower
+39.5625 7.45833
+2
+100
+MonsterFlower
+70.4792 10.5833
+2
+100
+MonsterFlower
+77.5625 10.6042
+2
+100
+LarvaBubble
+92.1705 8.88496
+2
+100
+Boss
+110.481 8.985
+2
+1700
+Koopa
+146.739 1411.15
+0
 2
 200
-Goomba
-24.3404 12.0477
+MonsterFlower
+53.4375 9.5625
+2
+100
+LarvaBubble
+90.9645 8.92764
+2
+100
+LarvaBubble
+33.0625 8.81129
+2
+100
+LarvaBubble
+31.625 8.88207
+2
+100
+LarvaBubble
+34.1562 8.80436
+2
+100
+Koopa
+17.1001 9.9225
+2
 2
 200
 Koopa
-158.984 14.9197
-3
+-36.4499 2399.99
+0
+2
+200
+Koopa
+75.035 12.2975
+0
 2
 200
 Goomba
-20.7386 3579.33
+21.4012 10.0475
+2
+200
+Koopa
+67.6992 12.2975
+0
 2
 200
 Goomba
-18.4843 3715.58
+68.4439 13.043
 2
 200
 Goomba
-19.6147 3647.56
+67.9076 13.0427
 2
 200
 Goomba
-56.0135 4044.97
+67.2888 13.0475
 2
 200
 Goomba
-55.09 4100.69
+68.2829 13.0476
 2
 200
 Goomba
-25.777 12.0475
+67.5216 13.0485
 2
 200
 Goomba
-27.6456 12.0475
+74.6023 13.0475
 2
 200
 Goomba
-28.6087 12.0475
+25.7425 2082.84
 2
 200
 Goomba
-29.132 12.0475
+23.8727 1999.19
 2
 200
 EffectManager
-10
-29 8 coin
-81 9 coin
-82 9 coin
-123 5 coin
-128 7 coin
-129 7 coin
-130 7 coin
-131 7 coin
-143 8 coin
-144 8 coin
-10
-29 8 6
-81 9 1
-82 9 1
-123 5 1
-128 7 1
-129 7 1
-130 7 1
-131 7 1
-143 8 1
-144 8 1
+0
+0
 Player
-118.305 11.235
-3.10417 4.55208
-1
+63.209 9.7975
+6.6875 9.8125
+0
 mario
-19477
-29
-4
-260.584
-1-2
+49960
+98
+1
+274.264
+1-5

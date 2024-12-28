@@ -426,9 +426,9 @@ void Koopa::Update(Vector2 playerVelocity, float deltaTime) {
     if (state == EnemyState::ENEMY_SHELL) {
         setSpeed(0.0f);
     }
-    else if (state == EnemyState::ENEMY_SPIN) {
-        setSpeed(15.0f);
-    }
+    // else if (state == EnemyState::ENEMY_SPIN) {
+    //     speed = 15.0f;
+    // }
 }
 
 void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
