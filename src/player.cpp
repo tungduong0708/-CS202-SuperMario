@@ -342,6 +342,11 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
         health = 100;
     }
 
+    if (body) position = Vector2{body->GetPosition().x, body->GetPosition().y};
+    if (Tilemap::getInstance()->GetHeight() < position.y) {
+        alive = false;
+    }
+
     if (coins >= 100) {
         lives++;
         coins = coins - 100;
