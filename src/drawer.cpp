@@ -290,20 +290,20 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
     // Define base colors for difficulty levels
     Color baseColor;
     Color hoverColor;
-    if (difficulty == "Easy")
+    if (difficulty == "Hard")
     {
-        hoverColor = (Color){80, 141, 105, 255};
-        baseColor = (Color){54, 126, 24, 255};
+        baseColor = (Color){198, 35, 0, 255};
+        hoverColor = (Color){255, 69, 0, 255};
     }
-    else if (difficulty == "Medium")
+    else if (difficulty == "Nightmare")
     {
-        hoverColor = (Color){255, 164, 71, 255};
-        baseColor = (Color){245, 115, 40, 255};
+        baseColor = (Color){80, 0, 115, 255};
+        hoverColor = (Color){25, 25, 112, 255};
     }
-    else if (difficulty == "Hard")
+    else if (difficulty == "Asian")
     {
-        hoverColor = (Color){255, 109, 96, 255};
-        baseColor = (Color){204, 54, 54, 255};
+        baseColor = (Color){42, 0, 78, 255};
+        hoverColor = (Color){70, 70, 70, 255};
     }
 
     // Check hover state
@@ -395,20 +395,20 @@ void DrawDifficultyButton(const ImageButton& button, const std::string& difficul
         {textX - 2, textY - 2},
         fontSize, 2, (Color){252, 199, 55, 255});
 
-    constexpr int descFontSize = 20;
+    constexpr int descFontSize = 16;
     std::string description;
 
-    if (difficulty == "Easy")
+    if (difficulty == "Hard")
     {
-        description = "Relaxed pace, perfect for \n\nbeginners to enjoy.";
+        description = "Every step is torment, survival demands\n\nrelentless precision and grit.";
     }
-    else if (difficulty == "Medium")
+    else if (difficulty == "Nightmare")
     {
-        description = "Balanced challenge for \n\nseasoned and casual players alike.";
+        description = "A descent into despair, where hope and\n\nvictory are distant dreams.";
     }
-    else if (difficulty == "Hard")
+    else if (difficulty == "Asian")
     {
-        description = "Intense gameplay, only for \n\nthe bravest of heroes!";
+        description = "An unforgiving void, mocking every effort\n\nwith inevitable, crushing defeat.";
     }
 
     // Draw border for description

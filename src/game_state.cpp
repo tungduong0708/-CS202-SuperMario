@@ -24,7 +24,7 @@ MainMenuState::MainMenuState(Game* game): GameState(game)
     buttons.push_back({{column2X, 540, buttonWidth, buttonHeight}, "Exit", false});
 
     // Load background image
-    backgroundTexture = LoadTexture("../resources/background/menuBackground4.png");
+    backgroundTexture = LoadTexture("../resources/background/menuBackground5.png");
 
     // Load logo image
     logoTexture = LoadTexture("../resources/images/logo/mario-logo.png");
@@ -1146,9 +1146,9 @@ void SelectDifficultyState::draw() {
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.6f));
 
     // Draw buttons
-    DrawDifficultyButton(buttons[0], "Easy");
-    DrawDifficultyButton(buttons[1], "Medium");
-    DrawDifficultyButton(buttons[2], "Hard");
+    DrawDifficultyButton(buttons[0], "Hard");
+    DrawDifficultyButton(buttons[1], "Nightmare");
+    DrawDifficultyButton(buttons[2], "Asian");
 }
 
 SelectDifficultyState::~SelectDifficultyState() {

@@ -26,7 +26,6 @@ void SoundEffectHandler::PlaySoundEffect(SoundEffect effect) {
         return;
     }
     if (soundEffects.find(effect) != soundEffects.end()) {
-        cout << "Playing sound effect" << endl;
         PlaySound(soundEffects[effect]);
     }
 }
