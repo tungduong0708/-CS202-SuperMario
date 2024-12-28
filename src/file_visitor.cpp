@@ -339,7 +339,7 @@ void ImportFileVisitor::VisitFile(MonsterFlower *obj)
     int level, health;
     file >> x >> y;
     file >> level >> health;
-    *obj = MonsterFlower("monsterflower", 0.0f, true, 100, 100, 1, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f);
+    *obj = MonsterFlower("monsterflower", 0.0f, true, 100, 100, 1, 100, Vector2{1.0f, 1.0f});
     obj->Init(b2Vec2{x, y});
     obj->setLevel(level);
     obj->setHealth(health);
