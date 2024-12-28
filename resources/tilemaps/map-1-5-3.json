@@ -365,6 +365,18 @@
                  "width":0,
                  "x":1324,
                  "y":191
+                }, 
+                {
+                 "height":0,
+                 "id":38,
+                 "name":"mario",
+                 "point":true,
+                 "rotation":0,
+                 "type":"player",
+                 "visible":true,
+                 "width":0,
+                 "x":107,
+                 "y":157
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -400,7 +412,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":38,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

@@ -6,7 +6,7 @@
  "name":"SMW_tileset",
  "spacing":1,
  "tilecount":460,
- "tiledversion":"1.11.0",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tiles":[
         {
@@ -918,6 +918,7 @@
          "objectgroup":
             {
              "draworder":"index",
+             "id":2,
              "name":"",
              "objects":[
                     {
@@ -927,8 +928,8 @@
                      "rotation":0,
                      "type":"",
                      "visible":true,
-                     "width":15,
-                     "x":1,
+                     "width":16,
+                     "x":0,
                      "y":0
                     }],
              "opacity":1,
@@ -943,6 +944,7 @@
          "objectgroup":
             {
              "draworder":"index",
+             "id":2,
              "name":"",
              "objects":[
                     {
@@ -952,7 +954,7 @@
                      "rotation":0,
                      "type":"",
                      "visible":true,
-                     "width":15,
+                     "width":15.9375,
                      "x":0,
                      "y":0
                     }],
@@ -3178,6 +3180,7 @@
          "objectgroup":
             {
              "draworder":"index",
+             "id":6,
              "name":"",
              "objects":[
                     {
@@ -3187,7 +3190,7 @@
                      "polygon":[
                             {
                              "x":0,
-                             "y":0
+                             "y":4.1875
                             }, 
                             {
                              "x":16,
@@ -3401,7 +3404,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -3445,7 +3447,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -3582,7 +3583,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -3679,7 +3679,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
@@ -4479,7 +4478,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":3,
              "name":"",
              "objects":[
                     {
@@ -4506,7 +4504,6 @@
          "objectgroup":
             {
              "draworder":"index",
-             "id":2,
              "name":"",
              "objects":[
                     {
