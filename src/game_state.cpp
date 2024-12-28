@@ -74,7 +74,6 @@ void MainMenuState::update() {
 }
 
 void MainMenuState::draw() {
-    // Draw the current background frame resized to fit the screen
     DrawTexturePro(
         backgroundTexture,
         {0, 0, static_cast<float>(backgroundTexture.width), static_cast<float>(backgroundTexture.height)},
