@@ -1,0 +1,14 @@
+{ "columns":38,
+ "image":"tutorial.png",
+ "imageheight":225,
+ "imagewidth":608,
+ "margin":0,
+ "name":"tutorial",
+ "spacing":0,
+ "tilecount":532,
+ "tiledversion":"1.10.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10"
+}
