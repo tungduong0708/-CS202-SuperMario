@@ -107,6 +107,7 @@ void Mushroom::OnBeginContact(SceneNode* other, b2Vec2 normal) {
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
         player->updateScore();
+
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();
@@ -150,10 +151,15 @@ void FireFlower::Init(b2Vec2 position) {
 void FireFlower::OnBeginContact(SceneNode* other, b2Vec2 normal) {
     Player* player = dynamic_cast<Player*>(other);
     if (player != nullptr) {
+        if (player->getMode() == Mode::BIG or player->getMode() == Mode::FIRE) {
+            player->setLives(player->getLives() + 1);
+        }
+
         player->setAddScore(1500);
         EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
         effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect("score", getPosition()));
         player->updateScore();
+
         Physics::bodiesToDestroy.push_back(body);
         body = nullptr;
         animations.clear();

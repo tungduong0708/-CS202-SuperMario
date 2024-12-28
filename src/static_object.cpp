@@ -166,8 +166,8 @@ void Gate::OnBeginContact(SceneNode *other, b2Vec2 normal)
         Tilemap* tilemap = Tilemap::getInstance();
         if (addressNext[7] == '-' && tilemap->GetCurrentMapPath()[7] == '-') {
             tilemap->SetNewMapPath(addressNext);
-            StageStateHandler::GetInstance().SetState(StageState::WORLD_CLEAR);
-            playSoundEffect(SoundEffect::WORLD_CLEAR);
+            // StageStateHandler::GetInstance().SetState(StageState::WORLD_CLEAR);
+            // playSoundEffect(SoundEffect::WORLD_CLEAR);
         } else {
             start = true;
             elapsedTime = 0.0f;
