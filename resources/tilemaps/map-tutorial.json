@@ -231,18 +231,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":126,
-                 "name":"coin",
-                 "point":true,
-                 "rotation":0,
-                 "type":"2",
-                 "visible":true,
-                 "width":0,
-                 "x":968.333333333333,
-                 "y":137
-                }, 
-                {
-                 "height":0,
                  "id":127,
                  "name":"coin",
                  "point":true,
@@ -316,6 +304,18 @@
                  "width":0,
                  "x":1415.64272998582,
                  "y":66.8991108557785
+                }, 
+                {
+                 "height":0,
+                 "id":158,
+                 "name":"mushroom_fireflower",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":967.666666666667,
+                 "y":135.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -324,10 +324,10 @@
          "y":0
         }],
  "nextlayerid":14,
- "nextobjectid":158,
+ "nextobjectid":159,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.10.2",
+ "tiledversion":"1.11.0",
  "tileheight":16,
  "tilesets":[
         {
