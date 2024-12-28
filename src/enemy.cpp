@@ -1039,7 +1039,7 @@ void MonsterFlower::ContactPlayer(Player* player, b2Vec2 normal) {
     if (!body)  return;
     Vector2 playerPos = player->getPosition();
     Vector2 flowerPos = {body->GetPosition().x, body->GetPosition().y};
-    if (playerPos.y + player->getSize().y >= flowerPos.y && playerPos.y <= initialPosition.y + size.y) {
+    if (playerPos.y + player->getSize().y >= flowerPos.y - 0.2f && playerPos.y <= initialPosition.y + size.y + 0.2f) {
         if (player->isImmortal()) return;
         if (player->getMode() == Mode::SMALL) {
             player->setHealth(player->getHealth() - getStrength());
