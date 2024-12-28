@@ -1,23 +1,32 @@
 1 player
 map-1-5-3.json 1
+map-1-5-3.json 1
 MonsterFlower
+15.5208 7.60417
 15.5208 7.60417
 1
 100
 MonsterFlower
 23.5208 6.52083
+23.5208 6.52083
 1
 100
-MonsterFlower
-39.5625 7.45833
+Koopa
+53.3332 12.2943
+0
 1
 100
-MonsterFlower
-70.4792 10.5833
+Koopa
+34.3937 12.2975
+0
 1
 100
-MonsterFlower
-77.5625 10.6042
+Goomba
+30.777 13.0475
+1
+100
+Goomba
+66.2278 13.0475
 1
 100
 LarvaBubble
@@ -35,6 +44,8 @@ Koopa
 100
 MonsterFlower
 53.4375 9.5625
+MonsterFlower
+53.4375 9.5625
 1
 100
 LarvaBubble
@@ -48,11 +59,13 @@ LarvaBubble
 EffectManager
 0
 0
+0
+0
 Player
 6.25851 10.7975
 6.25852 9.52273
 0
-mario
+luigi
 0
 0
 3

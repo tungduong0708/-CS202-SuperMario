@@ -58,9 +58,13 @@ StaticTile::StaticTile(StaticTile& other) : Tile(other)
             body->GetUserData().pointer = reinterpret_cast<uintptr_t>(this);
             SetBody(body);
 
-            if (type == "larva") {
+            if (type == "larva" || type == "spine") {
                 b2Fixture* fixture = body->GetFixtureList();
                 fixture->SetSensor(true);
+                b2Filter filter = fixture->GetFilterData();
+                filter.categoryBits = CATEGORY_ENEMY;
+                filter.maskBits = MASK_ENEMY;
+                fixture->SetFilterData(filter);
             }
         }
     }
@@ -171,6 +175,9 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                     Physics::bodiesToDestroy.push_back(GetBody());
                     SetBody(nullptr);
                     isDestroyed = true;
+
+                    Tilemap* tilemap = Tilemap::getInstance();
+                    tilemap->addChangedTile(this);
                 }
             }
             else if (normal.y < -0.5f && !isActivated) {
@@ -197,7 +204,7 @@ void StaticTile::OnBeginContact(SceneNode* other, b2Vec2 normal)
                 }
             }
         }
-        if (getType() == "larva") {
+        if (getType() == "larva" || getType() == "spine") {
             playerPtr->setHealth(playerPtr->getHealth() - 1000);   
         }
     }

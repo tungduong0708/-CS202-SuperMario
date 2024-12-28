@@ -31,22 +31,21 @@ Player::Player(string type, string name, float coins, int lives, int health,
     this->mode = Mode::SMALL;
     this->elapsedTime = 0.0f;
     this->allowInput = true;
+    this->jump = false;
 
     if (type == "mario") {
         this->time = 300.0f;
-        this->speed = 8.0f;
-        force = -26.0f;
+        this->speed = 8.5f;
+        force = -27.0f;
         bulletSpeed = 9.0f;
         bulletFreq = 0.37f;
-        lives = 10;
     }
     else {
         this->time = 300.0f;
-        this->speed = 9.5f;
+        this->speed = 7.5f;
         force = -29.0f;
         bulletSpeed = 8.0f;
         bulletFreq = 0.30f;
-        lives = 8;
     }
 
 }
@@ -137,6 +136,10 @@ void Player::setAllowInput(bool state) {
     allowInput = state;
 }
 
+void Player::setJump(bool j) {
+    jump = j;
+}
+
 void Player::impulseForce(Vector2 force) { 
     body->ApplyLinearImpulseToCenter(b2Vec2(force.x, force.y), true);
 }
@@ -188,6 +191,10 @@ float Player::getTime() {
     return time;
 }
 
+bool Player::isJump() {
+    return jump;
+}
+
 float Player::getForce() {
     return force;
 }
@@ -220,7 +227,8 @@ void Player::HandleInput() {
         }
         faceLeft = false;
 
-    } else 
+    } 
+    else 
     if (IsKeyDown(inputSet[PlayerInput::LEFT])) {
         body->SetLinearVelocity(b2Vec2(-speed, body->GetLinearVelocity().y));
         if (currentImage != JUMP) {
@@ -251,8 +259,12 @@ void Player::HandleInput() {
         previousImage = currentImage;
         currentImage = IDLE;
     }
+
+    if (jump == true) {
+        jump = false;
+    }
     
-    if (IsKeyPressed(inputSet[PlayerInput::UP])) {
+    if (IsKeyPressed(inputSet[PlayerInput::UP]) || IsKeyPressed(inputSet[PlayerInput::UP2])) {
         if (isOnGround) {
             if (mode == SMALL) {
                 playSoundEffect(SoundEffect::JUMP);
@@ -265,8 +277,11 @@ void Player::HandleInput() {
             previousImage = currentImage;
             currentImage = ImageSet::JUMP;
             isOnGround = false;
+            jump = true;
         }
     }
+
+
 
     // default frequency of the bullet: 0.4 seconds
     if (IsKeyPressed(inputSet[PlayerInput::SHOOT]) && mode == Mode::FIRE) {
@@ -317,6 +332,7 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
     }    
 
     if (time <= 0) {
+        cout << "Time's up!" << endl;
         alive = false;
         time = 300.0f;
     }
@@ -332,7 +348,8 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
     }
 
     if (alive) {
-        time -= deltaTime;
+        if (StageStateHandler::GetInstance().GetState() != StageState::VICTORY_STATE) 
+            time -= deltaTime;
     }
     else {
         Dead();
@@ -340,11 +357,12 @@ void Player::Update(Vector2 playerVelocity, float deltaTime) {
 }
 
 void Player::Dead() {
+    cout << "Spawn at: " << spawnPosition.x << ", " << spawnPosition.y << endl;
     EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-    if (effectManager->isActivePlayerEffect()) {
+    if (effectManager->isActivePlayerEffect(this)) {
         return;
     }
-    if (!effectManager->isActivePlayerEffect()) {
+    if (!effectManager->isActivePlayerEffect(this)) {
         if (body) {
             b2Vec2 pos = body->GetPosition();
             Physics::world.DestroyBody(body);
@@ -353,7 +371,7 @@ void Player::Dead() {
             lives--;
             std::string effectName = "dead_" + type;
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, Vector2{pos.x, pos.y}));
-            effectManager->setActivePlayerEffect(true);
+            effectManager->setActivePlayerEffect(this, true);
         }
         else {
             if (lives == 0) {
@@ -395,7 +413,7 @@ void Player::Draw() {
 }
 
 void Player::Draw(Vector2 position, float angle) {
-    TextHelper::DrawPackage(lives, score, coins, currentMap, time, position, 9, WHITE);
+    TextHelper::DrawPackage(lives, score, coins, currentMap, time - 1, position, 9, WHITE);
 }
 
 void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
@@ -424,7 +442,7 @@ void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
             EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
             std::string effectName = "grow_" + type;
             effectManager->AddUpperEffect(AnimationEffectCreator::CreateAnimationEffect(effectName, Vector2{pos.x, pos.y + size.y}));
-            effectManager->setActivePlayerEffect(true);
+            effectManager->setActivePlayerEffect(this, true);
             body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
         }
     }
@@ -477,7 +495,15 @@ int Player::getScore() {
 }
 
 Texture Player::getTexture() {
-    string fileName = "../resources/images/smallmario/idle.png";    // Rach vl de em tim cach doi lai
+    string fileName = "../resources/images/smallmario/idle.png";
     Texture texture = LoadTexture(fileName.c_str());            
     return texture;
+}
+
+bool Player::getActiveEffectOnThisPlayer() {
+    return isActiveEffectOnThisPlayer;
+}
+
+void Player::setActiveEffectOnThisPlayer(bool active) {
+    isActiveEffectOnThisPlayer = active;
 }

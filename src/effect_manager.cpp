@@ -40,9 +40,9 @@ void EffectManager::AddUpperEffect(AnimationEffect *effect)
     upperEffects.push_back(effect);
 }
 
-bool EffectManager::isActivePlayerEffect()
+bool EffectManager::isActivePlayerEffect(Player* player)
 {
-    return activePlayerEffect;
+    return player->getActiveEffectOnThisPlayer();
 }
 
 bool EffectManager::isLoadedFromMap()
@@ -73,9 +73,13 @@ std::map<std::pair<int, int>, int> EffectManager::getEffectCountMap()
     return effectCount;
 }
 
-void EffectManager::setActivePlayerEffect(bool active)
+void EffectManager::setActivePlayerEffect(Player* player, bool active)
 {
-    activePlayerEffect = active;
+    if (!playerUpdated)
+        this->playerUpdated = player;
+    else 
+        this->playerUpdated2 = player;
+    player->setActiveEffectOnThisPlayer(active);
 }
 
 void EffectManager::setLoadedFromMap(bool loaded)
@@ -125,7 +129,14 @@ void EffectManager::Update(float deltaTime)
             GrowMarioEffect* growMarioEffect = dynamic_cast<GrowMarioEffect*>(*it);
             GrowLuigiEffect* growLuigiEffect = dynamic_cast<GrowLuigiEffect*>(*it);
             if (deadMario || deadLuigiEffect || growMarioEffect || growLuigiEffect) {
-                activePlayerEffect = false;
+                if (playerUpdated) {
+                    playerUpdated->setActiveEffectOnThisPlayer(false);
+                    playerUpdated = NULL;
+                }
+                if (playerUpdated2) {
+                    playerUpdated2->setActiveEffectOnThisPlayer(false);
+                    playerUpdated2 = NULL;
+                }
             }
             delete *it;            // Free memory
             it = upperEffects.erase(it); // Erase element and get a valid iterator to the next element

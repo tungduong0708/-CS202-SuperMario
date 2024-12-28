@@ -149,7 +149,7 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
     b2Fixture* fixture = deadLine->GetFixtureList();
     b2Filter filter = fixture->GetFilterData();
     filter.categoryBits = CATEGORY_ENEMY;
-    filter.maskBits = MASK_ENEMY;
+    filter.maskBits = CATEGORY_DEFAULT;
     fixture->SetFilterData(filter);
 
     deadLine->GetUserData().pointer = reinterpret_cast<uintptr_t>(deadLineNode);   
@@ -255,7 +255,6 @@ void Tilemap::LoadMapFromJson(const std::string &filePath, int difficulty)
                                 string fPath = filePath.substr(4,3);
                                 player->setCurrentMap(fPath);
                                 player->setElapsedTime(0.0f);
-                                player->setTime(300.0f);
                             }
                         }
                         else if (object.contains("type") && object["type"] == "character") {
@@ -493,6 +492,7 @@ void Tilemap::SaveGame(std::string filePath) const
 
 void Tilemap::Update(float deltaTime) {
     if (newMapPath != "") {
+        player->setTime(300.0f);
         changeMap(newMapPath);
         if (!isChangingMap) newMapPath = "";
     }
@@ -504,7 +504,7 @@ void Tilemap::Update(float deltaTime) {
             }
         }
         effectManager->Update(deltaTime);
-        if (!effectManager->isActivePlayerEffect()) {
+        if (!effectManager->isActivePlayerEffect(player)) {
             if (player->isAlive()) 
                 camera.Update(player->getPosition());  
             player->HandleInput();
@@ -529,7 +529,7 @@ void Tilemap::Draw() const {
         }
     }
     Vector2 cameraTarget = camera.GetCameraTarget();
-    if (!effectManager->isActivePlayerEffect()) {
+    if (!effectManager->isActivePlayerEffect(player)) {
         player->Draw();
     }
     player->Draw(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f);
@@ -608,6 +608,10 @@ Tilemap1P::Tilemap1P(const std::string& filePath, int difficulty) : Tilemap(file
 Tilemap1P::~Tilemap1P() {
 }
 
+void Tilemap1P::LoadMapFromJson(const std::string& filePath, int difficulty) {
+    Tilemap::LoadMapFromJson(filePath, difficulty);
+}
+
 void Tilemap1P::LoadSaveGame(const std::string& filePath) {
     Tilemap::LoadSaveGame(filePath);
 }
@@ -653,6 +657,13 @@ Vector2 Tilemap1P::GetLeadingPlayerPosition() const {
     return playerPosition;
 }
 
+bool Tilemap1P::isActiveAnyPlayerEffect() const {
+    return effectManager->isActivePlayerEffect(player);
+}
+
+
+
+
 Tilemap2P::Tilemap2P() : Tilemap() {
     player2 = nullptr;
 }
@@ -664,6 +675,10 @@ Tilemap2P::Tilemap2P(const std::string& filePath, int difficulty) : Tilemap(file
 Tilemap2P::~Tilemap2P() {
     delete player2;
     player2 = nullptr;
+}
+
+void Tilemap2P::LoadMapFromJson(const std::string& filePath, int difficulty) {
+    Tilemap::LoadMapFromJson(filePath, difficulty);
 }
 
 void Tilemap2P::LoadSaveGame(const std::string &filePath)
@@ -800,10 +815,47 @@ void Tilemap2P::SaveGame(std::string filePath) const
 
 void Tilemap2P::Update(float deltaTime) {
     if (newMapPath != "") {
+        player->setTime(300.0f);
+        player2->setTime(300.0f);
+        cout << "Changing map: " << newMapPath << endl;
         changeMap(newMapPath);
-        if (!isChangingMap) newMapPath = "";
+        player2->setPositionBody(b2Vec2{playerPosition.x, playerPosition.y});
+        player2->setInitialPosition(playerPosition);
+        player2->SetSpawnPosition(playerPosition);
+        string fPath = filePath.substr(4,3);
+        player2->setCurrentMap(fPath);
+        player2->setElapsedTime(0.0f);
+        
+        if (!isChangingMap) {
+            newMapPath = "";
+            cout << "Reloaded" << endl;
+        }
+        if (StageStateHandler::GetInstance().GetState() == StageState::NEW_STAGE || StageStateHandler::GetInstance().GetState() == StageState::NEW_WORLD) {
+            player->setAllowInput(true);
+            player->setAppear(true);
+            player->setSpeed(5.0f);
+
+            player2->setAllowInput(true);
+            player2->setAppear(true);
+            player2->setSpeed(5.0f);
+
+            player->setPositionBody(b2Vec2{GetLeadingPlayer()->getPosition().x + 1.0f, GetLeadingPlayer()->getPosition().y});
+            player2->setPositionBody(b2Vec2{GetLeadingPlayer()->getPosition().x + 1.0f, GetLeadingPlayer()->getPosition().y});
+
+            StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
+        }
     }
     else {
+        if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR || StageStateHandler::GetInstance().GetState() == StageState::NEW_STAGE || StageStateHandler::GetInstance().GetState() == StageState::NEW_WORLD) {
+            player->setAllowInput(false);
+            player->setAppear(false);
+            player->setSpeed(0.0f);
+
+            player2->setAllowInput(false);
+            player2->setAppear(false);
+            player2->setSpeed(0.0f);
+        }
+
         b2Vec2 leadingPlayerVelocity = {0.0f, 0.0f};
         if (GetLeadingPlayer()) 
             leadingPlayerVelocity = GetLeadingPlayer()->getVelocity();
@@ -821,16 +873,23 @@ void Tilemap2P::Update(float deltaTime) {
             }
         }
         effectManager->Update(deltaTime);
-        if (!effectManager->isActivePlayerEffect()) {
-            if (GetLeadingPlayer() && GetLeadingPlayer()->getPosition().x > camera.GetCameraTarget().x) 
-                camera.Update(GetLeadingPlayer()->getPosition());  
-
+        if (!isActiveAnyPlayerEffect()) {
+            if (GetLeadingPlayer()) {
+                if (GetLeadingPlayer()->getPosition().x > camera.GetCameraTarget().x) {
+                    camera.Update(GetLeadingPlayer()->getPosition());
+                }
+                else {
+                    camera.Update(Vector2{camera.GetCameraTarget().x - deltaTime*(camera.GetCameraTarget().x - GetLeadingPlayer()->getPosition().x), GetLeadingPlayer()->getPosition().y});
+                }
+            }
+        }
+        if (!effectManager->isActivePlayerEffect(player)) {
             player->HandleInput();
             player->Update(Vector2{player->getVelocity().x, player->getVelocity().y}, deltaTime);
-
+        }
+        if (!effectManager->isActivePlayerEffect(player2)) {
             player2->HandleInput();
             player2->Update(Vector2{player2->getVelocity().x, player2->getVelocity().y}, deltaTime);
-
         }
         UpdatePlayersInfo();
         UpdateMultiplayerPosition();
@@ -853,12 +912,14 @@ void Tilemap2P::Draw() const {
         }
     }
     Vector2 cameraTarget = camera.GetCameraTarget();
-    if (!effectManager->isActivePlayerEffect()) {
+    if (!effectManager->isActivePlayerEffect(player)) {
         player->Draw();
+    }
+    if (!effectManager->isActivePlayerEffect(player2)) {
         player2->Draw();
     }
 
-    DrawPlayersInfo(Vector2{cameraTarget.x - 9.5f, cameraTarget.y - 7.0f}, 0.0f); 
+    DrawPlayersInfo(Vector2{cameraTarget.x - 10.2f, cameraTarget.y - 7.0f}, 0.0f); 
     effectManager->DrawUpper();
     EndMode2D();
 }
@@ -933,12 +994,15 @@ void Tilemap2P::setPlayer2(const std::string name) {
 
 void Tilemap2P::UpdateMultiplayerPosition(){
     player->accept(new MultiplayerUpdatePosition(&camera, player2->getVelocity()));
-    player->accept(new MultiplayerUpdateSpawnPosition(&camera));
+    player->accept(new MultiplayerUpdateSpawnPosition(player2, &camera));
     player2->accept(new MultiplayerUpdatePosition(&camera, player->getVelocity()));
-    player2->accept(new MultiplayerUpdateSpawnPosition(&camera));
+    player2->accept(new MultiplayerUpdateSpawnPosition(player, &camera));
 }
 
 void Tilemap2P::UpdatePlayersInfo(){
+    player->setTime(min(player->getTime(), player2->getTime()));
+    player2->setTime(min(player->getTime(), player2->getTime()));
+
     player->setLives(min(player->getLives(), player2->getLives()));
     player2->setLives(min(player->getLives(), player2->getLives()));
 
@@ -953,6 +1017,12 @@ void Tilemap2P::DrawPlayersInfo(Vector2 position, float angle) const {
     player->DrawImageIcon(position);
     player2->Draw({position.x + player->getSize().x + 0.2f, position.y}, angle);
 }
+
+bool Tilemap2P::isActiveAnyPlayerEffect() const {
+    return effectManager->isActivePlayerEffect(player) || effectManager->isActivePlayerEffect(player2);
+}
+
+
 
 
 

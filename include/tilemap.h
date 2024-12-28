@@ -57,7 +57,6 @@ public:
     std::pair<std::string, int> GetTilesetInfo(int tileIdx) const;
     void addNode(SceneNode* node);
     void addChangedTile(Tile* tile);
-    void LoadMapFromJson(const std::string& filePath, int difficulty);
     void SetNewMapPath(const std::string& path);
     std::string GetCurrentMapPath() const;
     std::string GetNewMapPath() const;
@@ -87,6 +86,10 @@ public:
 
     void SetSaveSlotLoadedFrom(SaveSlot slot);
     SaveSlot GetSaveSlotLoadedFrom() const;
+
+    virtual bool isActiveAnyPlayerEffect() const = 0;
+
+    virtual void LoadMapFromJson(const std::string& filePath, int difficulty);
 };
 
 class Tilemap1P : public Tilemap {
@@ -107,6 +110,10 @@ public:
     Player* GetLeadingPlayer() const override;
     Player* GetFollowingPlayer() const override;
     Vector2 GetLeadingPlayerPosition() const override;
+
+    bool isActiveAnyPlayerEffect() const override;
+
+    void LoadMapFromJson(const std::string& filePath, int difficulty) override;
 };
 
 class Tilemap2P : public Tilemap {
@@ -139,6 +146,10 @@ public:
 
     void UpdatePlayersInfo();
     void DrawPlayersInfo(Vector2 position, float angle = 0.0f) const;
+
+    bool isActiveAnyPlayerEffect() const override;
+
+    void LoadMapFromJson(const std::string& filePath, int difficulty) override;
 };
 
 #endif

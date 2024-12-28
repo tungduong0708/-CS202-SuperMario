@@ -149,7 +149,6 @@ void SettingsState::update() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
     DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 
     // Handle button clicks
     if (IsButtonClicked(buttons[0])) {
@@ -191,7 +190,6 @@ void SettingsState::draw() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Draw sliders
     DrawMarioSlider({centerX, 500, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 600, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 SavedGameState::SavedGameState(Game* game)
@@ -373,7 +371,6 @@ void PauseGameState::update() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 
     // Handle get back when clicking empty space
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -406,7 +403,6 @@ void PauseGameState::draw() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Draw sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 }
 
 SelectPlayerState::SelectPlayerState(Game* game) : GameState(game) {
@@ -502,7 +498,7 @@ void ChangeStageState::update()
     lifeRemaining = player->getLives();
 
     if (elapsedTime > 3.0f) {
-        game->changeState(game->gameplayState.get());
+        game->changeState(game->getPreviousState());
         reset();
     }
 }
@@ -687,6 +683,13 @@ void DeathState::draw() {
         UnloadTexture(deathTexture);
         deathTexture = LoadTexture("../resources/images/smallluigi/dead.png");
     }
+    else {
+        UnloadTexture(characterTexture);
+        characterTexture = LoadTexture("../resources/images/smallmario/idle.png");
+
+        UnloadTexture(deathTexture);
+        deathTexture = LoadTexture("../resources/images/smallmario/dead.png");
+    }
 
     // Draw the central rounded rectangle (panel)
     float rectWidth = 400.0f;
@@ -823,7 +826,24 @@ void GameOverState::update() {
     }
     if (IsButtonClicked(buttons[1])) {
         // Retry the game
-        game->changeState(game->selectDifficultyState.get());
+        if (Tilemap::getInstance()->GetPlayer2() == nullptr)
+        {
+            game->changeState(game->selectDifficultyState.get());
+        }
+        else
+        {
+            Tilemap::getInstance()->~Tilemap();
+            Tilemap::SetMapType(TILEMAP_2P);
+            Tilemap::getInstance()->LoadMapFromJson("map-1-1.json", 1);
+            Tilemap::getInstance()->setPlayer("mario");
+            Tilemap::getInstance()->setPlayer2("luigi");
+            Tilemap::getInstance()->GetPlayer()->setLives(5);
+            Tilemap::getInstance()->GetPlayer2()->setLives(5);
+
+            Tilemap::getInstance()->SetSaveSlotLoadedFrom(SaveSlot::NOT_LOADED);
+            
+            game->changeState(game->gameplay2PState.get());
+        }
     }
 }
 
@@ -1163,7 +1183,8 @@ void WannaSaveState::update() {
             game->changeState(game->gameSavingState.get());
         }
         else {
-            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(static_cast<int>(saveSlot) + 1) + ".txt";
+            std::string saveGamePath = "../resources/savegames/slot" + std::to_string(static_cast<int>(saveSlot)) + ".txt";
+            cout << "Save to path: " << saveGamePath << endl;
             Tilemap* tilemap = Tilemap::getInstance();
             tilemap->SaveGame(saveGamePath);
             if (game->getNextState() == game->backToMenuState.get()) {
@@ -1508,7 +1529,6 @@ void PauseTutorialState::update() {
     float centerX = (game->getScreenWidth() - 400) / 2;
     // Update sliders
     DrawMarioSlider({centerX, 525, 400, 50}, game->getSettings().volume, 0, 100, game->getFont(), "Volume");
-    DrawMarioSlider({centerX, 625, 400, 50}, game->getSettings().brightness, 0, 100, game->getFont(), "Brightness");
 
     // Handle get back when clicking empty space
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -1562,13 +1582,6 @@ void Gameplay2PState::update() {
         playSoundEffect(SoundEffect::GAME_OVER);
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         game->changeState(game->gameOverState.get());
-    }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::STAGE_CLEAR) {
-        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
-    }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::WORLD_CLEAR) {
-        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
-        game->changeState(game->changeStageState.get());
     }
 }
 

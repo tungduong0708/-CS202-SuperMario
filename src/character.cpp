@@ -262,7 +262,7 @@ void Character::Dead()
 
 void Character::Update(Vector2 playerVelocity, float deltaTime) {
     EffectManager* effectManager = Tilemap::getInstance()->GetEffectManager();
-    if (modeChanged && !effectManager->isActivePlayerEffect()) {
+    if (modeChanged && !Tilemap::getInstance()->isActiveAnyPlayerEffect()) {
         UpdateMode(mode, b2Vec2{position.x, position.y});
         modeChanged = false;
     }
@@ -502,11 +502,14 @@ void Princess::OnBeginContact(SceneNode* other, b2Vec2 normal)
         player->setAllowInput(false);
         player->setSpeed(0.0f);
         elapsedTime = 0.0f;
+        isFree = true;
+
         string type = player->getType();
         TextHelper::Draw("Thank you " + type + "!", getPosition(), 20, RAYWHITE);
-        playSoundEffect(SoundEffect::WORLD_CLEAR);
-        Game* game = Game::getInstance();
-        game->changeState(game->victoryState.get());
+        if (StageStateHandler::GetInstance().GetState() != StageState::VICTORY_STATE) 
+            playSoundEffect(SoundEffect::WORLD_CLEAR);
+            
+        StageStateHandler::GetInstance().SetState(StageState::VICTORY_STATE);
     }
 }
 

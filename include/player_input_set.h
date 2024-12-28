@@ -7,7 +7,8 @@ enum PlayerInput {
     RIGHT,
     UP,
     DOWN,
-    SHOOT
+    SHOOT,
+    UP2
 };
 
 class PlayerInputSet {

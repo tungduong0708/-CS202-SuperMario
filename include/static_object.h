@@ -68,6 +68,10 @@ private:
     float height;
     float prevPlayerSpeed;
     Flag* flag;
+
+    Player* playerTouching = NULL;
+    Player* playerTouching2 = NULL;
+    
 public:
     Pole();
     Pole(b2Body* body);

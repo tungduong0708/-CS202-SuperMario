@@ -211,13 +211,11 @@ void ImportFileVisitor::VisitFile(StaticTile *obj)
     bool isDestroyed, isActivated;
     file >> id >> tilesetPath >> x >> y;
     file >> isDestroyed >> isActivated;
-    if (!isDestroyed) {
-        *obj = StaticTile(id, Vector2{x, y}, "", tilesetPath);
-        obj->setIsDestroyed(isDestroyed);
-        obj->setIsActivated(isActivated);
+    *obj = StaticTile(id, Vector2{x, y}, "", tilesetPath);
+    obj->setIsDestroyed(isDestroyed);
+    obj->setIsActivated(isActivated);
+    if (isDestroyed) {
         obj->createBody();
-    } else {
-        obj = nullptr; // StaticTile remains destroyed
     }
 }
 
