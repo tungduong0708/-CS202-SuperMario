@@ -275,7 +275,7 @@ void ImportFileVisitor::VisitFile(Goomba *obj)
     int level, health;
     file >> x >> y;
     file >> level >> health;
-    *obj = Goomba("goomba", 0.0f, true, false, 100, 100, level, 100, Vector2{1.0f, 1.0f}, -2.0f, 0.0f);
+    *obj = Goomba("goomba", 0.0f, true, false, 100, 100, level, 100, Vector2{1.0f, 1.0f});
     obj->Init(b2Vec2{x, y});
     obj->setLevel(level);
     obj->setHealth(health);
