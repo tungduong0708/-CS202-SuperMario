@@ -413,7 +413,7 @@ void Player::Draw() {
 }
 
 void Player::Draw(Vector2 position, float angle) {
-    TextHelper::DrawPackage(lives, score, coins, currentMap, time - 1, position, 9, WHITE);
+    TextHelper::DrawPackage(lives, score, coins, currentMap, time - 10, position, 9, WHITE);
 }
 
 void Player::OnBeginContact(SceneNode *other, b2Vec2 normal)
