@@ -915,6 +915,7 @@ void Tilemap2P::Draw() const {
     if (!effectManager->isActivePlayerEffect(player)) {
         player->Draw();
     }
+
     if (!effectManager->isActivePlayerEffect(player2)) {
         player2->Draw();
     }

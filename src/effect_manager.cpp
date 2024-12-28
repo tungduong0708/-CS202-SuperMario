@@ -42,6 +42,7 @@ void EffectManager::AddUpperEffect(AnimationEffect *effect)
 
 bool EffectManager::isActivePlayerEffect(Player* player)
 {
+    if (!player) return false;
     return player->getActiveEffectOnThisPlayer();
 }
 

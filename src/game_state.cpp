@@ -59,8 +59,8 @@ void MainMenuState::update() {
     if (IsButtonClicked(buttons[3])) {
         Tilemap* tilemap = Tilemap::getInstance();
         tilemap->~Tilemap();
-        tilemap = Tilemap::getInstance();
         Tilemap::SetMapType(TILEMAP_1P);
+        tilemap = Tilemap::getInstance();
         Tilemap::getInstance()->LoadMapFromJson("map-tutorial.json", 1);
         Tilemap::getInstance()->setPlayer("mario");
         game->changeState(game->tutorialState.get());
@@ -1117,7 +1117,7 @@ void SelectDifficultyState::update() {
             tilemap->~Tilemap();
             Tilemap::SetMapType(TilemapType::TILEMAP_1P);
             tilemap = Tilemap::getInstance();
-            tilemap->LoadMapFromJson("map-1-5-3.json", i + 1);
+            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
 
             tilemap->SetSaveSlotLoadedFrom(SaveSlot::NOT_LOADED);
 

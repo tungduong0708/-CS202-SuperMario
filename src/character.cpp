@@ -275,7 +275,7 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
     curAnim = animations[currentImage];
     Animation prevAnim = animations[previousImage];
     if (previousImage == HOLD && prevAnim.getTimer() <= prevAnim.getFrameTime(0)) {
-        currentImage = HOLD; // delay the hold animation 
+        currentImage = HOLD;
     }
 
     animations[currentImage].Update(deltaTime);
@@ -291,13 +291,11 @@ void Character::Update(Vector2 playerVelocity, float deltaTime) {
         immortalTime -= deltaTime;
         colorChangeTimer += deltaTime;
 
-        // Change color every 1 second
         if (colorChangeTimer >= 0.05f) {
             colorIndex = (colorIndex + 1) % colors.size();
-            colorChangeTimer = 0.0f;  // Reset the timer
+            colorChangeTimer = 0.0f; 
         }
 
-        // End immortal state
         if (immortalTime <= 0) {
             immortal = false;
         }
@@ -528,7 +526,6 @@ void Princess::Dead()
 void Princess::Draw()
 {
     if (!appear) return;
-    cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Vector2 drawPosition = { pos.x, pos.y };
