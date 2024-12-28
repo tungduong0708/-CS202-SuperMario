@@ -6,7 +6,7 @@
  "name":"SMW_tileset",
  "spacing":1,
  "tilecount":460,
- "tiledversion":"1.11.0",
+ "tiledversion":"1.10.2",
  "tileheight":16,
  "tiles":[
         {
@@ -3180,6 +3180,7 @@
          "objectgroup":
             {
              "draworder":"index",
+             "id":6,
              "name":"",
              "objects":[
                     {
@@ -3189,7 +3190,7 @@
                      "polygon":[
                             {
                              "x":0,
-                             "y":0
+                             "y":4.1875
                             }, 
                             {
                              "x":16,
