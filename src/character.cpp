@@ -528,6 +528,7 @@ void Princess::Dead()
 void Princess::Draw()
 {
     if (!appear) return;
+    cout << body->GetPosition().x << " " << body->GetPosition().y << endl;
     b2Vec2 pos = body->GetPosition();
     sourceRect = { 0, 0, static_cast<float>(texture.width), static_cast<float>(texture.height) };
     Vector2 drawPosition = { pos.x, pos.y };

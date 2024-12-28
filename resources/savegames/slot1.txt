@@ -1,141 +1,5 @@
 1 player
 map-1-5-3.json 2
-KinematicTile 2
-resources/tilesets/OverWorld.json
-31 7
-0
-1
-2 0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-46 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-46 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-47 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-47 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-47 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-48 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-48 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-51 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-50 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-51 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-52 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-51 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-52 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-52 5
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 5
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 4
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 7
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 6
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-53 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 9
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-55 9
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-55 8
-0
-0
-KinematicTile 52
-resources/tilesets/tiles-2.json
-54 10
-0
-0
 MonsterFlower
 15.5208 7.60417
 2
@@ -157,15 +21,15 @@ MonsterFlower
 2
 100
 LarvaBubble
-92.1705 8.88496
+92.1705 9.77038
 2
 100
 Boss
-110.481 8.985
+110.441 8.985
 2
 1700
 Koopa
-146.739 1411.15
+79.8195 12.2975
 0
 2
 200
@@ -174,87 +38,89 @@ MonsterFlower
 2
 100
 LarvaBubble
-90.9645 8.92764
+90.9645 9.41802
 2
 100
 LarvaBubble
-33.0625 8.81129
+33.0625 9.6474
 2
 100
 LarvaBubble
-31.625 8.88207
+31.625 9.61837
 2
 100
 LarvaBubble
-34.1562 8.80436
+34.1562 9.8343
 2
 100
 Koopa
-17.1001 9.9225
-2
-2
-200
-Koopa
--36.4499 2399.99
+21.679 9.2975
 0
 2
 200
 Koopa
-75.035 12.2975
+30.3159 9.2975
 0
-2
-200
-Goomba
-21.4012 10.0475
 2
 200
 Koopa
-67.6992 12.2975
+74.4984 12.2975
 0
 2
 200
 Goomba
-68.4439 13.043
+20.2074 10.0475
+2
+200
+Koopa
+44.6552 9.2975
+0
 2
 200
 Goomba
-67.9076 13.0427
+56.4914 10.0475
 2
 200
 Goomba
-67.2888 13.0475
+53.0851 10.0475
 2
 200
 Goomba
-68.2829 13.0476
+54.124 10.0475
 2
 200
 Goomba
-67.5216 13.0485
+55.1924 10.0475
 2
 200
 Goomba
-74.6023 13.0475
+57.3545 10.0475
 2
 200
 Goomba
-25.7425 2082.84
+75.9519 13.0475
 2
 200
 Goomba
-23.8727 1999.19
+83.9749 13.0475
+2
+200
+Goomba
+82.0754 13.0475
 2
 200
 EffectManager
-0
-0
+1
+31 6 coin
+1
+31 6 1
 Player
-63.209 9.7975
-6.6875 9.8125
+68.375 12.7931
+68.375 12.1875
 0
 mario
-49960
-98
-1
-274.264
+0
+0
+3
+296.588
 1-5

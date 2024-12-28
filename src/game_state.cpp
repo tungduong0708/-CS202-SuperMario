@@ -1117,7 +1117,7 @@ void SelectDifficultyState::update() {
             tilemap->~Tilemap();
             Tilemap::SetMapType(TilemapType::TILEMAP_1P);
             tilemap = Tilemap::getInstance();
-            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
+            tilemap->LoadMapFromJson("map-1-5-3.json", i + 1);
 
             tilemap->SetSaveSlotLoadedFrom(SaveSlot::NOT_LOADED);
 
