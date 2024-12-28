@@ -192,7 +192,7 @@ Goomba::Goomba(string type, float range, bool alive, bool sit, int health, int s
     else if (level == 3) {
         this->health = 300;
         this->strength = 300;
-        this->speed = -8.0f;
+        this->speed = -6.0f;
     }
 }
 

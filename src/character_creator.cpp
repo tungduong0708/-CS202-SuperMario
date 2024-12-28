@@ -9,21 +9,20 @@ void CharacterCreator::RegisterCharacter(const std::string& name, std::function<
 
 void CharacterCreator::InitCharacters() {
     RegisterCharacter("goomba", [](Vector2 pos, int difficulty) { 
-        Goomba* goomba = new Goomba("goomba", 0.0f, true, false, 100, 100, difficulty, 100, Vector2{1.0f, 1.0f}, -2.0f, 0.0f); 
+        Goomba* goomba = new Goomba("goomba", 0.0f, true, false, 100, 100, difficulty, 100, Vector2{1.0f, 1.0f}); 
         goomba->Init(b2Vec2{pos.x, pos.y});
         goomba->setSpeed(-2.0f);
         return goomba;
     });
     RegisterCharacter("koopa", [](Vector2 pos, int difficulty) { 
-        Koopa* koopa = new Koopa("koopa", 0.0f, true, false, 100, 100, difficulty, 100, Vector2{1.0f, 1.0f}, -2.0f, 0.0f); 
+        Koopa* koopa = new Koopa("koopa", 0.0f, true, false, 100, 100, difficulty, 100, Vector2{1.0f, 1.0f}); 
         koopa->Init(b2Vec2{pos.x, pos.y});
         koopa->setSpeed(-2.0f);
         return koopa;
     });
     RegisterCharacter("boss", [](Vector2 pos, int difficulty) { 
-        Boss* boss = new Boss("boss", 0.0f, true, 100, 100, difficulty, 100, Vector2{1.0f, 1.0f}, 1.0f, 0.0f); 
+        Boss* boss = new Boss("boss", 0.0f, true, 100, 100, difficulty, 100, Vector2{1.0f, 1.0f}); 
         boss->Init(b2Vec2{pos.x, pos.y});
-        boss->setSpeed(-2.0f);
         return boss;
     });
     RegisterCharacter("larvabubble", [](Vector2 pos, int difficulty) { 
