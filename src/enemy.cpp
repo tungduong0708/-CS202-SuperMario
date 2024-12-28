@@ -467,12 +467,13 @@ void Koopa::OnBeginContact(SceneNode *other, b2Vec2 normal)
         }
     }
     else {
+        cout << normal.x << endl;
         if (normal.x > 0.5f) {
-            body->SetLinearVelocity(b2Vec2(-abs(speed), body->GetLinearVelocity().y));
+            setSpeed(-abs(speed));
             faceLeft = true;
         }
         if (normal.x < -0.5f) {
-            body->SetLinearVelocity(b2Vec2(abs(speed), body->GetLinearVelocity().y));
+            setSpeed(abs(speed));
             faceLeft = false;
         }
     }
