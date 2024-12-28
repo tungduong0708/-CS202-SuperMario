@@ -24,7 +24,7 @@ MainMenuState::MainMenuState(Game* game): GameState(game)
     buttons.push_back({{column2X, 540, buttonWidth, buttonHeight}, "Exit", false});
 
     // Load background image
-    backgroundTexture = LoadTexture("../resources/background/menuBackground2.png");
+    backgroundTexture = LoadTexture("../resources/background/menuBackground4.png");
 
     // Load logo image
     logoTexture = LoadTexture("../resources/images/logo/mario-logo.png");
@@ -1117,7 +1117,7 @@ void SelectDifficultyState::update() {
             tilemap->~Tilemap();
             Tilemap::SetMapType(TilemapType::TILEMAP_1P);
             tilemap = Tilemap::getInstance();
-            tilemap->LoadMapFromJson("map-1-1.json", i + 1);
+            tilemap->LoadMapFromJson("map-1-5-3.json", i + 1);
 
             tilemap->SetSaveSlotLoadedFrom(SaveSlot::NOT_LOADED);
 
@@ -1582,16 +1582,6 @@ void Gameplay2PState::update() {
         playSoundEffect(SoundEffect::GAME_OVER);
         StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
         game->changeState(game->gameOverState.get());
-    }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_STAGE) {
-        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
-        cout << "Change stage" << endl;
-        game->changeState(game->changeStageState.get());
-    }
-    else if (StageStateHandler::GetInstance().GetState() == StageState::CHANGE_WORLD) {
-        StageStateHandler::GetInstance().SetState(StageState::NORMAL_STATE);
-        cout << "Change world" << endl;
-        game->changeState(game->changeStageState.get());
     }
 }
 
