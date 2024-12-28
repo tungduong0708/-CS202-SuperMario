@@ -475,10 +475,10 @@ void Tilemap::SaveGame(std::string filePath) const
     }
     for (auto& layer : nodes) {
         for (auto& node : layer) {
-            Enemy* enemy = dynamic_cast<Enemy*>(node);
+            Character* character = dynamic_cast<Character*>(node);
             ActiveItem* item = dynamic_cast<ActiveItem*>(node);
-            if (enemy && enemy->isAlive()) {
-                enemy->accept(visitor);
+            if (character && character->isAlive()) {
+                character->accept(visitor);
             }
             else if (item && item->isAvailable()) {
                 item->accept(visitor);
