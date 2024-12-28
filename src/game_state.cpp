@@ -1146,9 +1146,9 @@ void SelectDifficultyState::draw() {
     DrawRectangle(0, 0, game->getScreenWidth(), game->getScreenHeight(), Fade(GRAY, 0.6f));
 
     // Draw buttons
-    DrawDifficultyButton(buttons[0], "Easy");
-    DrawDifficultyButton(buttons[1], "Medium");
-    DrawDifficultyButton(buttons[2], "Hard");
+    DrawDifficultyButton(buttons[0], "Hard");
+    DrawDifficultyButton(buttons[1], "Nightmare");
+    DrawDifficultyButton(buttons[2], "Asian");
 }
 
 SelectDifficultyState::~SelectDifficultyState() {
