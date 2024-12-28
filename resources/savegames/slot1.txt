@@ -1,178 +1,170 @@
 1 player
-map-1-1.json 1
+map-1-2-2.json 1
 KinematicTile 2
 resources/tilesets/OverWorld.json
-13 10
+10 10
 0
 1
 2 0
 KinematicTile 2
 resources/tilesets/OverWorld.json
-15 10
+12 10
 0
 1
 2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+11 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+13.015 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+14 10
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+29 9
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+33 5
+0
+1
+2 0
+KinematicTile 2
+resources/tilesets/OverWorld.json
+36 10
+0
+1
+2 0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+41 6
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+42 6
+0
+0
+KinematicTile 52
+resources/tilesets/tiles-2.json
+43 6
+0
+0
 MonsterFlower
-182.531 10.625
+109.26 8.71875
 1
 100
 MonsterFlower
-46.5 9.46875
+103.354 9.65625
 1
 100
-MonsterFlower
-172.469 7.70312
-1
-100
-MonsterFlower
-174 7.71875
-1
-100
-MonsterFlower
-163.5 9.59375
-1
-100
-MonsterFlower
-20.5 5.5
+Goomba
+28.3774 12.0475
 1
 100
 Koopa
-61.9493 12.2975
+30.4608 2451.02
 0
 1
 100
 Koopa
-34.2071 12.2906
+48.9531 11.2928
 0
 1
 100
 Goomba
-32.7176 13.0489
+43.7099 12.0475
 1
 100
 Goomba
-57.7238 13.0489
+59.6094 12.0475
 1
 100
 Goomba
-122.879 13.0475
+58.3092 12.0475
 1
 100
 Goomba
-120.813 13.0475
+-1.05105 4763
 1
 100
 Goomba
-121.614 13.0475
+-3.29937 4897.98
 1
 100
 Goomba
-56.4556 13.0475
+-2.13945 4827.96
 1
 100
 Goomba
-83.1224 13.0475
+34.2262 5227.25
 1
 100
 Goomba
-55.2235 13.0475
+33.2947 5282.67
 1
 100
 Goomba
-84.4558 13.0475
+29.8005 12.0475
 1
 100
 Goomba
-119.884 13.0475
+28.2772 12.0475
 1
 100
 Goomba
-118.864 13.0429
-1
-100
-Goomba
-117.889 13.0475
-1
-100
-Goomba
-118.758 13.0504
-1
-100
-Goomba
-109.052 13.0475
-1
-100
-Koopa
-36.4072 231.59
-0
-1
-100
-Koopa
-37.2561 179.899
-0
-1
-100
-Koopa
-84.8799 12.2975
-0
-1
-100
-Koopa
-110.711 12.2975
-0
-1
-100
-Koopa
-147.272 12.2975
-0
-1
-100
-Koopa
-126.353 12.2975
-0
-1
-100
-Koopa
-161.712 12.2989
-0
+28.473 12.0475
 1
 100
 EffectManager
 13
-42 2 star
-58 8 mushroom_fireflower
-60 8 coin
-62 8 coin
-94 9 coin
-95 9 star
-96 9 coin
-97 9 coin
-137 5 coin
-138 5 coin
-139 5 coin
-153 5 coin
-154 5 coin
+32 4 coin
+81 9 coin
+82 9 coin
+103 7 coin
+104 7 coin
+122 6 coin
+123 6 coin
+128 7 coin
+129 7 coin
+130 7 coin
+131 7 coin
+143 8 coin
+144 8 coin
 13
-42 2 1
-58 8 1
-60 8 2
-62 8 1
-94 9 1
-95 9 1
-96 9 1
-97 9 1
-137 5 1
-138 5 1
-139 5 1
-153 5 1
-154 5 1
+32 4 1
+81 9 1
+82 9 1
+103 7 1
+104 7 1
+122 6 1
+123 6 1
+128 7 1
+129 7 1
+130 7 1
+131 7 1
+143 8 1
+144 8 1
 Player
-16.3495 8.235
-5.1875 11.8385
+43.2259 6.235
+3.10417 4.55208
 1
 mario
-1200
-1
+19057
+24
 4
-296.38
-1-1
+249.491
+1-2
