@@ -374,7 +374,7 @@ void Player::Dead() {
             effectManager->setActivePlayerEffect(this, true);
         }
         else {
-            if (lives == 0) {
+            if (lives <= 0) {
                 // game over
                 Game* game = Game::getInstance();
                 StageStateHandler::GetInstance().SetState(StageState::GAME_OVER);
